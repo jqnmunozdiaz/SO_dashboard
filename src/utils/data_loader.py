@@ -3,6 +3,7 @@ Data loading utilities for the DRM dashboard
 """
 
 import pandas as pd
+import numpy as np
 import os
 from typing import Dict, List, Optional
 
@@ -199,61 +200,112 @@ def create_sample_flood_risk_data() -> pd.DataFrame:
     return pd.DataFrame(data)
 
 
+def load_real_disaster_data(file_path: Optional[str] = None) -> pd.DataFrame:
+    """
+    Load real EM-DAT disaster data for African countries
+    
+    Args:
+        file_path: Path to processed EM-DAT CSV file
+        
+    Returns:
+        DataFrame with real disaster data
+    """
+    if file_path is None:
+        file_path = os.path.join('data', 'processed', 'african_disasters_emdat.csv')
+    
+    try:
+        # Read CSV and handle duplicate column names
+        df = pd.read_csv(file_path)
+        
+        # Fix duplicate column names if they exist
+        cols = pd.Series(df.columns)
+        for dup in cols[cols.duplicated()].unique():
+            cols[cols[cols == dup].index.values.tolist()] = [dup + '_' + str(i) if i != 0 else dup 
+                                                            for i in range(sum(cols == dup))]
+        df.columns = cols
+        
+        # Clean and standardize the data
+        if 'year' in df.columns:
+            df['year'] = pd.to_numeric(df['year'], errors='coerce')
+            df = df.dropna(subset=['year'])
+            df['year'] = df['year'].astype(int)
+        
+        # Ensure we have the required columns
+        if 'country' not in df.columns or 'country_code' not in df.columns:
+            raise ValueError("Missing required columns (country, country_code)")
+        
+        # Clean numeric columns
+        numeric_columns = ['deaths', 'injured', 'affected_population', 'homeless', 'economic_damage_usd']
+        for col in numeric_columns:
+            if col in df.columns:
+                df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
+        
+        # Add affected_population column if missing (using deaths as proxy)
+        if 'affected_population' not in df.columns and 'deaths' in df.columns:
+            df['affected_population'] = df['deaths'] * 10  # Rough estimate
+        elif 'affected_population' not in df.columns:
+            df['affected_population'] = 1000  # Default value
+        
+        # Add economic_damage_usd if missing
+        if 'economic_damage_usd' not in df.columns:
+            df['economic_damage_usd'] = df.get('deaths', 0) * 100000  # Rough estimate
+        
+        # Standardize disaster types to match dashboard categories
+        if 'disaster_type' in df.columns:
+            disaster_mapping = {
+                'flood': 'flood',
+                'drought': 'drought', 
+                'storm': 'storm',
+                'earthquake': 'earthquake',
+                'wildfire': 'wildfire',
+                'epidemic': 'epidemic',
+                'volcanic': 'volcanic',
+                'extreme_temperature': 'extreme_temperature',
+                'mass_movement': 'landslide'
+            }
+            
+            # Map disaster types, keeping unmapped types as 'other'
+            df['disaster_type_mapped'] = df['disaster_type'].map(disaster_mapping).fillna('other')
+            df['disaster_type'] = df['disaster_type_mapped']
+            df = df.drop('disaster_type_mapped', axis=1)
+        
+        # Filter recent years for better dashboard performance (last 50 years)
+        current_year = 2025
+        df = df[df['year'] >= (current_year - 50)]
+        
+        return df
+        
+    except FileNotFoundError:
+        print(f"Real disaster data file not found: {file_path}")
+        print("Falling back to sample data")
+        return create_sample_disaster_data()
+    except Exception as e:
+        print(f"Error loading real disaster data: {str(e)}")
+        print("Falling back to sample data")
+        return create_sample_disaster_data()
+
+
 def get_subsaharan_countries() -> List[Dict[str, str]]:
     """
-    Get list of Sub-Saharan African countries with codes
+    Get list of Sub-Saharan African countries with codes (excludes North African countries)
     
     Returns:
         List of dictionaries with country names and ISO codes
     """
-    return [
-        {'name': 'Nigeria', 'code': 'NGA'},
-        {'name': 'Kenya', 'code': 'KEN'},
-        {'name': 'Ethiopia', 'code': 'ETH'},
-        {'name': 'Ghana', 'code': 'GHA'},
-        {'name': 'Tanzania', 'code': 'TZA'},
-        {'name': 'Uganda', 'code': 'UGA'},
-        {'name': 'Mozambique', 'code': 'MOZ'},
-        {'name': 'Madagascar', 'code': 'MDG'},
-        {'name': 'Cameroon', 'code': 'CMR'},
-        {'name': 'Mali', 'code': 'MLI'},
-        {'name': 'Burkina Faso', 'code': 'BFA'},
-        {'name': 'Niger', 'code': 'NER'},
-        {'name': 'Senegal', 'code': 'SEN'},
-        {'name': 'Chad', 'code': 'TCD'},
-        {'name': 'Rwanda', 'code': 'RWA'},
-        {'name': 'Benin', 'code': 'BEN'},
-        {'name': 'Burundi', 'code': 'BDI'},
-        {'name': 'Togo', 'code': 'TGO'},
-        {'name': 'Sierra Leone', 'code': 'SLE'},
-        {'name': 'Liberia', 'code': 'LBR'},
-        {'name': 'Central African Republic', 'code': 'CAF'},
-        {'name': 'Mauritania', 'code': 'MRT'},
-        {'name': 'Gambia', 'code': 'GMB'},
-        {'name': 'Guinea-Bissau', 'code': 'GNB'},
-        {'name': 'Guinea', 'code': 'GIN'},
-        {'name': 'Ivory Coast', 'code': 'CIV'},
-        {'name': 'Zambia', 'code': 'ZMB'},
-        {'name': 'Zimbabwe', 'code': 'ZWE'},
-        {'name': 'Botswana', 'code': 'BWA'},
-        {'name': 'Namibia', 'code': 'NAM'},
-        {'name': 'South Africa', 'code': 'ZAF'},
-        {'name': 'Lesotho', 'code': 'LSO'},
-        {'name': 'Eswatini', 'code': 'SWZ'},
-        {'name': 'Malawi', 'code': 'MWI'},
-        {'name': 'Angola', 'code': 'AGO'},
-        {'name': 'Democratic Republic of Congo', 'code': 'COD'},
-        {'name': 'Republic of Congo', 'code': 'COG'},
-        {'name': 'Gabon', 'code': 'GAB'},
-        {'name': 'Equatorial Guinea', 'code': 'GNQ'},
-        {'name': 'São Tomé and Príncipe', 'code': 'STP'},
-        {'name': 'Cape Verde', 'code': 'CPV'},
-        {'name': 'Comoros', 'code': 'COM'},
-        {'name': 'Mauritius', 'code': 'MUS'},
-        {'name': 'Seychelles', 'code': 'SYC'},
-        {'name': 'Djibouti', 'code': 'DJI'},
-        {'name': 'Eritrea', 'code': 'ERI'},
-        {'name': 'Somalia', 'code': 'SOM'},
-        {'name': 'South Sudan', 'code': 'SSD'},
-        {'name': 'Sudan', 'code': 'SDN'}
-    ]
+    # Sub-Saharan African countries (excluding North Africa: Algeria, Egypt, Libya, Morocco, Tunisia)
+    SUB_SAHARAN_COUNTRIES = {
+        'AGO': 'Angola', 'BEN': 'Benin', 'BWA': 'Botswana', 'BFA': 'Burkina Faso',
+        'BDI': 'Burundi', 'CMR': 'Cameroon', 'CPV': 'Cape Verde', 'CAF': 'Central African Republic',
+        'TCD': 'Chad', 'COM': 'Comoros', 'COG': 'Congo', 'COD': 'Democratic Republic of Congo',
+        'DJI': 'Djibouti', 'GNQ': 'Equatorial Guinea', 'ERI': 'Eritrea', 'SWZ': 'Eswatini',
+        'ETH': 'Ethiopia', 'GAB': 'Gabon', 'GMB': 'Gambia', 'GHA': 'Ghana', 'GIN': 'Guinea',
+        'GNB': 'Guinea-Bissau', 'CIV': 'Ivory Coast', 'KEN': 'Kenya', 'LSO': 'Lesotho', 'LBR': 'Liberia',
+        'MDG': 'Madagascar', 'MWI': 'Malawi', 'MLI': 'Mali', 'MRT': 'Mauritania',
+        'MUS': 'Mauritius', 'MOZ': 'Mozambique', 'NAM': 'Namibia', 'NER': 'Niger',
+        'NGA': 'Nigeria', 'RWA': 'Rwanda', 'STP': 'São Tomé and Príncipe', 'SEN': 'Senegal',
+        'SYC': 'Seychelles', 'SLE': 'Sierra Leone', 'SOM': 'Somalia', 'ZAF': 'South Africa',
+        'SSD': 'South Sudan', 'SDN': 'Sudan', 'TZA': 'Tanzania', 'TGO': 'Togo',
+        'UGA': 'Uganda', 'ZMB': 'Zambia', 'ZWE': 'Zimbabwe'
+    }
+    
+    return [{'name': name, 'code': code} for code, name in SUB_SAHARAN_COUNTRIES.items()]

@@ -6,6 +6,15 @@ from dash import Input, Output
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
+import numpy as np
+
+try:
+    from ..utils.data_loader import create_sample_urbanization_data
+except ImportError:
+    import sys
+    import os
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+    from src.utils.data_loader import create_sample_urbanization_data
 
 
 def register_callbacks(app):
@@ -40,50 +49,50 @@ def register_callbacks(app):
     )
     def update_urbanization_trend(indicator, countries):
         """Update urbanization trend chart"""
-        # Sample data for urbanization trends
-        years = list(range(2000, 2024))
+        try:
+            # Load actual sample data
+            sample_data = create_sample_urbanization_data()
+            
+            # Filter by countries if selected
+            if countries:
+                # Map country codes to names for filtering
+                country_code_to_name = {
+                    'NGA': 'Nigeria', 'KEN': 'Kenya', 'ETH': 'Ethiopia',
+                    'GHA': 'Ghana', 'TZA': 'Tanzania', 'UGA': 'Uganda',
+                    'RWA': 'Rwanda', 'SEN': 'Senegal', 'BFA': 'Burkina Faso',
+                    'CIV': 'Ivory Coast'
+                }
+                selected_countries = [country_code_to_name.get(code, code) for code in countries]
+                sample_data = sample_data[sample_data['country'].isin(selected_countries)]
+                
+        except Exception as e:
+            # Fallback data
+            years = list(range(2000, 2024))
+            sample_data = pd.DataFrame({
+                'year': years * 3,
+                'country': ['Nigeria'] * len(years) + ['Kenya'] * len(years) + ['Ethiopia'] * len(years),
+                'urban_population_pct': (
+                    [35 + i * 0.8 for i in range(len(years))] +
+                    [25 + i * 1.2 for i in range(len(years))] +
+                    [15 + i * 0.9 for i in range(len(years))]
+                ),
+                'urban_growth_rate': (
+                    [3.5 + 0.1 * (i % 5) for i in range(len(years))] +
+                    [4.2 + 0.15 * (i % 4) for i in range(len(years))] +
+                    [5.1 + 0.12 * (i % 6) for i in range(len(years))]
+                ),
+                'population_density': (
+                    [120 + i * 2.5 for i in range(len(years))] +
+                    [85 + i * 1.8 for i in range(len(years))] +
+                    [65 + i * 1.2 for i in range(len(years))]
+                )
+            })
         
-        # Sample data for different countries
-        sample_data = pd.DataFrame({
-            'year': years * 3,
-            'country': ['Nigeria'] * len(years) + ['Kenya'] * len(years) + ['Ethiopia'] * len(years),
-            'urban_pop_pct': (
-                [35 + i * 0.8 for i in range(len(years))] +
-                [25 + i * 1.2 for i in range(len(years))] +
-                [15 + i * 0.9 for i in range(len(years))]
-            ),
-            'urban_growth': (
-                [3.5 + 0.1 * (i % 5) for i in range(len(years))] +
-                [4.2 + 0.15 * (i % 4) for i in range(len(years))] +
-                [5.1 + 0.12 * (i % 6) for i in range(len(years))]
-            ),
-            'pop_density': (
-                [120 + i * 2.5 for i in range(len(years))] +
-                [85 + i * 1.8 for i in range(len(years))] +
-                [65 + i * 1.2 for i in range(len(years))]
-            )
-        })
-        
-        if countries:
-            sample_data = sample_data[sample_data['country'].isin([
-                'Nigeria' if 'NGA' in countries else None,
-                'Kenya' if 'KEN' in countries else None,
-                'Ethiopia' if 'ETH' in countries else None
-            ].remove(None) if None in [
-                'Nigeria' if 'NGA' in countries else None,
-                'Kenya' if 'KEN' in countries else None,
-                'Ethiopia' if 'ETH' in countries else None
-            ] else [
-                'Nigeria' if 'NGA' in countries else None,
-                'Kenya' if 'KEN' in countries else None,
-                'Ethiopia' if 'ETH' in countries else None
-            ])]
-        
-        y_column = indicator or 'urban_pop_pct'
+        y_column = indicator or 'urban_population_pct'
         title_map = {
-            'urban_pop_pct': 'Urban Population Percentage Over Time',
-            'urban_growth': 'Urban Growth Rate Over Time',
-            'pop_density': 'Population Density Over Time'
+            'urban_population_pct': 'Urban Population Percentage Over Time',
+            'urban_growth_rate': 'Urban Growth Rate Over Time',
+            'population_density': 'Population Density Over Time'
         }
         
         fig = px.line(
@@ -117,15 +126,15 @@ def register_callbacks(app):
         country_codes = ['NGA', 'KEN', 'ETH', 'GHA', 'TZA', 'UGA', 'RWA', 'SEN', 'BFA', 'CIV']
         
         # Sample values based on indicator
-        if indicator == 'urban_pop_pct':
+        if indicator == 'urban_population_pct':
             values = [52, 28, 22, 57, 35, 25, 17, 48, 31, 52]
             title = 'Urban Population Percentage by Country'
             colorbar_title = 'Urban Pop %'
-        elif indicator == 'urban_growth':
+        elif indicator == 'urban_growth_rate':
             values = [4.2, 4.8, 5.6, 3.8, 5.2, 5.8, 3.2, 4.1, 6.1, 4.5]
             title = 'Urban Growth Rate by Country'
             colorbar_title = 'Growth Rate %'
-        else:  # pop_density
+        else:  # population_density
             values = [226, 95, 115, 137, 67, 228, 525, 87, 76, 83]
             title = 'Population Density by Country'
             colorbar_title = 'People/km²'

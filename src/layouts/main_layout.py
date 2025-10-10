@@ -81,9 +81,11 @@ def create_disaster_tab_content():
                         html.Label("Year Range:"),
                         dcc.RangeSlider(
                             id="disaster-year-slider",
-                            marks={i: str(i) for i in range(1990, 2025, 5)},
+                            marks={i: str(i) for i in range(1975, 2030, 10)},
+                            min=1975,
+                            max=2025,
                             step=1,
-                            value=[2000, 2023]
+                            value=[2000, 2025]
                         )
                     ])
                 ])

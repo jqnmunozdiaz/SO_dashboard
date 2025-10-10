@@ -6,6 +6,15 @@ from dash import Input, Output
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
+import numpy as np
+
+try:
+    from ..utils.data_loader import create_sample_flood_risk_data
+except ImportError:
+    import sys
+    import os
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+    from src.utils.data_loader import create_sample_flood_risk_data
 
 
 def register_callbacks(app):
@@ -18,18 +27,28 @@ def register_callbacks(app):
     )
     def update_flood_risk_map(risk_levels, scenario):
         """Update flood risk map"""
-        # Sample flood risk data
-        country_codes = ['NGA', 'KEN', 'ETH', 'GHA', 'TZA', 'UGA', 'MOZ', 'MDG', 'CMR', 'MLI']
-        country_names = ['Nigeria', 'Kenya', 'Ethiopia', 'Ghana', 'Tanzania', 
-                        'Uganda', 'Mozambique', 'Madagascar', 'Cameroon', 'Mali']
-        
-        # Risk values based on scenario
-        if scenario == 'current':
-            risk_values = [7.2, 5.8, 4.3, 6.9, 6.1, 5.2, 8.1, 7.8, 5.9, 3.4]
-        elif scenario == '2030':
-            risk_values = [7.8, 6.2, 4.9, 7.3, 6.7, 5.8, 8.6, 8.3, 6.4, 3.9]
-        else:  # 2050
-            risk_values = [8.5, 6.8, 5.6, 7.9, 7.4, 6.5, 9.2, 8.9, 7.1, 4.5]
+        try:
+            # Load actual flood risk data
+            flood_data = create_sample_flood_risk_data()
+            scenario_data = flood_data[flood_data['scenario'] == scenario]
+            
+            country_codes = scenario_data['country_code'].tolist()
+            country_names = scenario_data['country'].tolist()
+            risk_values = scenario_data['flood_risk_level'].tolist()
+            
+        except Exception as e:
+            # Fallback data
+            country_codes = ['NGA', 'KEN', 'ETH', 'GHA', 'TZA', 'UGA', 'MOZ', 'MDG', 'CMR', 'MLI']
+            country_names = ['Nigeria', 'Kenya', 'Ethiopia', 'Ghana', 'Tanzania', 
+                            'Uganda', 'Mozambique', 'Madagascar', 'Cameroon', 'Mali']
+            
+            # Risk values based on scenario
+            if scenario == 'current':
+                risk_values = [7.2, 5.8, 4.3, 6.9, 6.1, 5.2, 8.1, 7.8, 5.9, 3.4]
+            elif scenario == '2030':
+                risk_values = [7.8, 6.2, 4.9, 7.3, 6.7, 5.8, 8.6, 8.3, 6.4, 3.9]
+            else:  # 2050
+                risk_values = [8.5, 6.8, 5.6, 7.9, 7.4, 6.5, 9.2, 8.9, 7.1, 4.5]
         
         fig = go.Figure(data=go.Choropleth(
             locations=country_codes,
@@ -98,30 +117,34 @@ def register_callbacks(app):
     )
     def update_flood_vulnerability_chart(risk_levels, scenario):
         """Update flood vulnerability analysis chart"""
-        # Sample vulnerability data
-        countries = ['Nigeria', 'Mozambique', 'Madagascar', 'Ghana', 'Tanzania', 
-                    'Kenya', 'Uganda', 'Cameroon', 'Ethiopia', 'Mali']
+        try:
+            # Load actual flood risk data
+            flood_data = create_sample_flood_risk_data()
+            scenario_data = flood_data[flood_data['scenario'] == scenario]
+            
+            # Create vulnerability DataFrame
+            vuln_data = scenario_data[['country', 'exposure', 'sensitivity', 'adaptive_capacity']].copy()
+            
+        except Exception as e:
+            # Fallback vulnerability data
+            countries = ['Nigeria', 'Mozambique', 'Madagascar', 'Ghana', 'Tanzania', 
+                        'Kenya', 'Uganda', 'Cameroon', 'Ethiopia', 'Mali']
+            
+            # Vulnerability factors
+            exposure = [8.5, 9.2, 8.8, 7.3, 6.9, 6.2, 5.8, 6.4, 5.1, 4.2]
+            sensitivity = [7.8, 8.5, 8.1, 6.9, 6.5, 5.9, 5.4, 6.1, 6.8, 5.2]
+            adaptive_capacity = [4.2, 3.8, 4.1, 5.8, 5.2, 6.1, 5.9, 5.3, 4.6, 4.9]
+            
+            # Create DataFrame
+            vuln_data = pd.DataFrame({
+                'country': countries,
+                'exposure': exposure,
+                'sensitivity': sensitivity,
+                'adaptive_capacity': adaptive_capacity
+            })
         
-        # Vulnerability factors
-        exposure = [8.5, 9.2, 8.8, 7.3, 6.9, 6.2, 5.8, 6.4, 5.1, 4.2]
-        sensitivity = [7.8, 8.5, 8.1, 6.9, 6.5, 5.9, 5.4, 6.1, 6.8, 5.2]
-        adaptive_capacity = [4.2, 3.8, 4.1, 5.8, 5.2, 6.1, 5.9, 5.3, 4.6, 4.9]
-        
-        # Create vulnerability index (higher exposure + sensitivity - adaptive capacity = higher vulnerability)
-        vulnerability_index = [exp + sens - adapt for exp, sens, adapt in 
-                             zip(exposure, sensitivity, adaptive_capacity)]
-        
-        # Create DataFrame
-        vuln_data = pd.DataFrame({
-            'country': countries,
-            'exposure': exposure,
-            'sensitivity': sensitivity,
-            'adaptive_capacity': adaptive_capacity,
-            'vulnerability_index': vulnerability_index
-        })
-        
-        # Sort by vulnerability index
-        vuln_data = vuln_data.sort_values('vulnerability_index', ascending=True)
+        # Sort by exposure (as a proxy for vulnerability)
+        vuln_data = vuln_data.sort_values('exposure', ascending=True)
         
         fig = go.Figure()
         

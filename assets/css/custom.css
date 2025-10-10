@@ -1,0 +1,278 @@
+/* Custom CSS for Sub-Saharan Africa DRM Dashboard */
+
+/* Main layout styling */
+.container-fluid {
+    padding: 20px;
+}
+
+/* Header styling */
+h1 {
+    color: #2c3e50;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+/* Tab styling */
+.nav-tabs {
+    border-bottom: 2px solid #2c3e50;
+    margin-bottom: 20px;
+}
+
+.nav-tabs .nav-link {
+    color: #2c3e50;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-weight: 500;
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: transparent;
+    border-bottom-color: #3498db;
+    color: #3498db;
+}
+
+.nav-tabs .nav-link.active {
+    color: #2c3e50;
+    background-color: transparent;
+    border-color: transparent;
+    border-bottom-color: #2c3e50;
+}
+
+/* Card styling */
+.card {
+    border: 1px solid #bdc3c7;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: #ecf0f1;
+    border-bottom: 1px solid #bdc3c7;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Filter controls styling */
+.form-control, .form-select {
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* Dropdown styling */
+.Select-control {
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+}
+
+.Select-control:hover {
+    border-color: #3498db;
+}
+
+.Select-control.is-focused {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* Button styling */
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+/* Chart containers */
+.chart-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Loading spinner */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}
+
+.spinner-border {
+    color: #3498db;
+}
+
+/* Statistics cards */
+.stat-card {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.stat-card p {
+    margin-bottom: 0;
+    opacity: 0.9;
+}
+
+/* Risk level indicators */
+.risk-low {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.risk-medium {
+    background-color: #f39c12;
+    color: white;
+}
+
+.risk-high {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.risk-very-high {
+    background-color: #8b0000;
+    color: white;
+}
+
+/* Footer styling */
+.footer {
+    margin-top: 50px;
+    padding: 20px 0;
+    border-top: 1px solid #bdc3c7;
+    color: #7f8c8d;
+    text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    .stat-card h3 {
+        font-size: 2rem;
+    }
+}
+
+/* Custom plotly styling */
+.js-plotly-plot .plotly .main-svg {
+    border-radius: 8px;
+}
+
+/* Tooltip styling */
+.tooltip-inner {
+    background-color: #2c3e50;
+    color: white;
+    border-radius: 4px;
+}
+
+/* Legend styling for disaster types */
+.disaster-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.disaster-legend-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 4px;
+    background-color: #ecf0f1;
+    font-size: 0.9rem;
+}
+
+.disaster-legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+/* Country comparison table */
+.comparison-table {
+    margin-top: 20px;
+}
+
+.comparison-table th {
+    background-color: #2c3e50;
+    color: white;
+    text-align: center;
+}
+
+.comparison-table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Alert messages */
+.alert {
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+}
+
+/* Data source attribution */
+.data-source {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+/* Map controls */
+.map-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}

@@ -32,4 +32,7 @@ urbanization_callbacks.register_callbacks(app)
 flood_risk_callbacks.register_callbacks(app)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8050)
+    import os
+    port = int(os.environ.get('PORT', 8050))
+    debug = os.environ.get('ENVIRONMENT', 'development') == 'development'
+    app.run(debug=debug, host='0.0.0.0', port=port)

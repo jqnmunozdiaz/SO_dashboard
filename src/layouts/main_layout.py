@@ -10,9 +10,6 @@ def create_main_layout():
     """Create the main dashboard layout"""
     
     return dbc.Container([
-        # Theme store
-        dcc.Store(id='theme-store', data={'theme': 'light'}),
-        
         # Header
         dbc.Row([
             dbc.Col([
@@ -21,21 +18,12 @@ def create_main_layout():
                         html.H1(
                             "Sub-Saharan Africa Disaster Risk Management Dashboard",
                             className="text-center mb-4",
-                            id="main-title",
                             style={'color': '#2c3e50', 'font-weight': 'bold'}
                         ),
-                    ], width=10),
-                    dbc.Col([
-                        dbc.Switch(
-                            id="theme-toggle",
-                            label="🌙 Dark Mode",
-                            value=False,
-                            className="mt-3",
-                            style={'font-size': '0.9rem'}
-                        )
-                    ], width=2, className="text-end")
+                    ], width=12),
+
                 ]),
-                html.Hr(id="header-hr"),
+                html.Hr(),
             ], width=12)
         ]),
         
@@ -61,16 +49,15 @@ def create_main_layout():
         # Footer
         dbc.Row([
             dbc.Col([
-                html.Hr(id="footer-hr"),
+                html.Hr(),
                 html.P(
                     "World Bank Disaster Risk Management - Sub-Saharan Africa Dashboard",
-                    className="text-center text-muted small",
-                    id="footer-text"
+                    className="text-center text-muted small"
                 )
             ], width=12)
         ], className="mt-5")
         
-    ], fluid=True, id="main-container")
+    ], fluid=True)
 
 
 def create_disaster_tab_content():

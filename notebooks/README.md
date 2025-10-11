@@ -1,5 +1,6 @@
 # Notebooks
 
+Updated readme
 This directory contains Jupyter notebooks for data exploration, analysis, and visualization development.
 
 ## Notebooks Overview

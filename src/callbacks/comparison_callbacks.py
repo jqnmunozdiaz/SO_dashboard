@@ -32,10 +32,10 @@ def register_callbacks(app):
     """Register all comparison-related callbacks"""
     
     @app.callback(
-        Output('comparison-country-dropdown', 'options'),
+        Output('comparison-additional-countries', 'options'),
         Input('main-tabs', 'active_tab')
     )
-    def update_comparison_country_options(active_tab):
+    def update_comparison_additional_countries_options(active_tab):
         """Update country dropdown options for comparison tab"""
         if active_tab == 'comparison':
             countries = get_subsaharan_countries()
@@ -45,12 +45,18 @@ def register_callbacks(app):
     
     @app.callback(
         Output('comparison-main-chart', 'figure'),
-        [Input('comparison-country-dropdown', 'value'),
+        [Input('main-country-filter', 'value'),
+         Input('comparison-additional-countries', 'value'),
          Input('comparison-metrics', 'value'),
          Input('comparison-chart-type', 'value')]
     )
-    def update_comparison_chart(countries, metrics, chart_type):
+    def update_comparison_chart(main_country, additional_countries, metrics, chart_type):
         """Update the main comparison chart"""
+        # Combine main country with additional countries
+        countries = [main_country] if main_country else []
+        if additional_countries:
+            countries.extend(additional_countries)
+        
         if not countries or not metrics:
             # Return empty chart
             fig = go.Figure()
@@ -74,11 +80,17 @@ def register_callbacks(app):
     
     @app.callback(
         Output('comparison-summary-table', 'children'),
-        [Input('comparison-country-dropdown', 'value'),
+        [Input('main-country-filter', 'value'),
+         Input('comparison-additional-countries', 'value'),
          Input('comparison-metrics', 'value')]
     )
-    def update_comparison_table(countries, metrics):
+    def update_comparison_table(main_country, additional_countries, metrics):
         """Update the comparison summary table"""
+        # Combine main country with additional countries
+        countries = [main_country] if main_country else []
+        if additional_countries:
+            countries.extend(additional_countries)
+        
         if not countries or not metrics:
             return html.Div("Select countries and metrics to view comparison table.")
         

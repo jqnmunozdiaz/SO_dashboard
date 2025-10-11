@@ -5,6 +5,7 @@ Main layout for the Sub-Saharan Africa DRM Dashboard
 import dash
 from dash import html, dcc
 import dash_bootstrap_components as dbc
+from src.utils.data_loader import get_subsaharan_countries
 
 def create_main_layout():
     """Create the main dashboard layout"""
@@ -24,6 +25,33 @@ def create_main_layout():
 
                 ]),
                 html.Hr(),
+            ], width=12)
+        ]),
+        
+        # Main country filter (applies to all tabs)
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardBody([
+                        dbc.Row([
+                            dbc.Col([
+                                html.Label("Select Country:", className="fw-bold", style={'color': '#2c3e50'}),
+                            ], width=3),
+                            dbc.Col([
+                                dcc.Dropdown(
+                                    id="main-country-filter",
+                                    options=[
+                                        {'label': country['name'], 'value': country['code']}
+                                        for country in get_subsaharan_countries()
+                                    ],
+                                    value=get_subsaharan_countries()[0]['code'],  # Default to first country
+                                    placeholder="Select a country...",
+                                    className="mb-0"
+                                )
+                            ], width=9)
+                        ], align="center")
+                    ])
+                ], className="mb-3", style={'backgroundColor': '#f8f9fa', 'border': '1px solid #dee2e6'})
             ], width=12)
         ]),
         
@@ -69,13 +97,6 @@ def create_disaster_tab_content():
                 dbc.Card([
                     dbc.CardBody([
                         html.H5("Filters", className="card-title"),
-                        html.Label("Select Countries:"),
-                        dcc.Dropdown(
-                            id="disaster-country-dropdown",
-                            multi=True,
-                            placeholder="Select countries..."
-                        ),
-                        html.Br(),
                         html.Label("Disaster Type:"),
                         dcc.Dropdown(
                             id="disaster-type-dropdown",
@@ -133,13 +154,6 @@ def create_urbanization_tab_content():
                                 {'label': 'Population Density', 'value': 'pop_density'},
                             ],
                             value='urban_pop_pct'
-                        ),
-                        html.Br(),
-                        html.Label("Countries:"),
-                        dcc.Dropdown(
-                            id="urban-country-dropdown",
-                            multi=True,
-                            placeholder="Select countries..."
                         )
                     ])
                 ])

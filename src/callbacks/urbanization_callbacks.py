@@ -20,50 +20,30 @@ except ImportError:
 def register_callbacks(app):
     """Register all urbanization-related callbacks"""
     
-    @app.callback(
-        Output('urban-country-dropdown', 'options'),
-        Input('main-tabs', 'active_tab')
-    )
-    def update_urban_country_options(active_tab):
-        """Update country dropdown options for urbanization tab"""
-        if active_tab == 'urbanization':
-            countries = [
-                {'label': 'Nigeria', 'value': 'NGA'},
-                {'label': 'Kenya', 'value': 'KEN'},
-                {'label': 'Ethiopia', 'value': 'ETH'},
-                {'label': 'Ghana', 'value': 'GHA'},
-                {'label': 'Tanzania', 'value': 'TZA'},
-                {'label': 'Uganda', 'value': 'UGA'},
-                {'label': 'Rwanda', 'value': 'RWA'},
-                {'label': 'Senegal', 'value': 'SEN'},
-                {'label': 'Burkina Faso', 'value': 'BFA'},
-                {'label': 'Ivory Coast', 'value': 'CIV'},
-            ]
-            return countries
-        return []
+
     
     @app.callback(
         Output('urbanization-trend-chart', 'figure'),
         [Input('urban-indicator-dropdown', 'value'),
-         Input('urban-country-dropdown', 'value')]
+         Input('main-country-filter', 'value')]
     )
-    def update_urbanization_trend(indicator, countries):
+    def update_urbanization_trend(indicator, selected_country):
         """Update urbanization trend chart"""
         try:
             # Load actual sample data
             sample_data = create_sample_urbanization_data()
             
-            # Filter by countries if selected
-            if countries:
-                # Map country codes to names for filtering
+            # Filter by selected country
+            if selected_country:
+                # Map country code to name for filtering
                 country_code_to_name = {
                     'NGA': 'Nigeria', 'KEN': 'Kenya', 'ETH': 'Ethiopia',
                     'GHA': 'Ghana', 'TZA': 'Tanzania', 'UGA': 'Uganda',
                     'RWA': 'Rwanda', 'SEN': 'Senegal', 'BFA': 'Burkina Faso',
                     'CIV': 'Ivory Coast'
                 }
-                selected_countries = [country_code_to_name.get(code, code) for code in countries]
-                sample_data = sample_data[sample_data['country'].isin(selected_countries)]
+                selected_country_name = country_code_to_name.get(selected_country, selected_country)
+                sample_data = sample_data[sample_data['country'] == selected_country_name]
                 
         except Exception as e:
             # Fallback data
@@ -118,9 +98,9 @@ def register_callbacks(app):
     @app.callback(
         Output('urbanization-map', 'figure'),
         [Input('urban-indicator-dropdown', 'value'),
-         Input('urban-country-dropdown', 'value')]
+         Input('main-country-filter', 'value')]
     )
-    def update_urbanization_map(indicator, countries):
+    def update_urbanization_map(indicator, selected_country):
         """Update urbanization map visualization"""
         # Sample data for map
         country_codes = ['NGA', 'KEN', 'ETH', 'GHA', 'TZA', 'UGA', 'RWA', 'SEN', 'BFA', 'CIV']

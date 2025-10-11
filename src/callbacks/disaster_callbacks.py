@@ -22,46 +22,7 @@ except ImportError:
 def register_callbacks(app):
     """Register all disaster-related callbacks"""
     
-    @app.callback(
-        Output('disaster-country-dropdown', 'options'),
-        Input('main-tabs', 'active_tab')
-    )
-    def update_disaster_country_options(active_tab):
-        """Update country dropdown options for disaster tab"""
-        if active_tab == 'disasters':
-            try:
-                # Load real disaster data to get available countries
-                disaster_data = load_real_disaster_data()
-                if 'country' in disaster_data.columns and 'country_code' in disaster_data.columns:
-                    # Get unique countries from real data
-                    country_data = disaster_data[['country', 'country_code']].drop_duplicates()
-                    countries = [
-                        {'label': row['country'], 'value': row['country_code']}
-                        for _, row in country_data.iterrows()
-                        if pd.notna(row['country']) and pd.notna(row['country_code'])
-                    ]
-                    # Sort by country name
-                    countries = sorted(countries, key=lambda x: x['label'])
-                    return countries
-                else:
-                    # Fallback if columns missing
-                    raise ValueError("Required columns not found")
-            except Exception as e:
-                # Fallback to top African countries
-                countries = [
-                    {'label': 'Nigeria', 'value': 'NGA'},
-                    {'label': 'Democratic Republic of Congo', 'value': 'COD'},
-                    {'label': 'South Africa', 'value': 'ZAF'},
-                    {'label': 'Egypt', 'value': 'EGY'},
-                    {'label': 'Kenya', 'value': 'KEN'},
-                    {'label': 'Tanzania', 'value': 'TZA'},
-                    {'label': 'Sudan', 'value': 'SDN'},
-                    {'label': 'Uganda', 'value': 'UGA'},
-                    {'label': 'Ethiopia', 'value': 'ETH'},
-                    {'label': 'Mozambique', 'value': 'MOZ'},
-                ]
-                return countries
-        return []
+
     
     @app.callback(
         Output('disaster-type-dropdown', 'options'),
@@ -118,12 +79,12 @@ def register_callbacks(app):
     
     @app.callback(
         Output('disaster-timeline-chart', 'figure'),
-        [Input('disaster-country-dropdown', 'value'),
+        [Input('main-country-filter', 'value'),
          Input('disaster-type-dropdown', 'value'),
          Input('disaster-year-slider', 'value')],
         prevent_initial_call=False
     )
-    def update_disaster_timeline(countries, disaster_types, year_range):
+    def update_disaster_timeline(selected_country, disaster_types, year_range):
         """Update disaster timeline chart"""
         # Load real EM-DAT data
         try:
@@ -137,8 +98,8 @@ def register_callbacks(app):
             filtered_data = sample_data.copy()
             
             # Filter data based on inputs (with None checks)
-            if countries and len(countries) > 0 and 'country_code' in filtered_data.columns:
-                filtered_data = filtered_data[filtered_data['country_code'].isin(countries)]
+            if selected_country and 'country_code' in filtered_data.columns:
+                filtered_data = filtered_data[filtered_data['country_code'] == selected_country]
             
             if disaster_types and len(disaster_types) > 0 and 'disaster_type' in filtered_data.columns:
                 filtered_data = filtered_data[filtered_data['disaster_type'].isin(disaster_types)]
@@ -235,19 +196,19 @@ def register_callbacks(app):
     
     @app.callback(
         Output('disaster-map', 'figure'),
-        [Input('disaster-country-dropdown', 'value'),
+        [Input('main-country-filter', 'value'),
          Input('disaster-type-dropdown', 'value'),
          Input('disaster-year-slider', 'value')],
         prevent_initial_call=False
     )
-    def update_disaster_map(countries, disaster_types, year_range):
+    def update_disaster_map(selected_country, disaster_types, year_range):
         """Update disaster map visualization"""
         try:
             # Load real disaster data
             sample_data = load_real_disaster_data()
             
-            if countries and len(countries) > 0:
-                sample_data = sample_data[sample_data['country_code'].isin(countries)]
+            if selected_country:
+                sample_data = sample_data[sample_data['country_code'] == selected_country]
             if disaster_types and len(disaster_types) > 0:
                 sample_data = sample_data[sample_data['disaster_type'].isin(disaster_types)]
             if year_range and len(year_range) == 2:
@@ -302,20 +263,20 @@ def register_callbacks(app):
     
     @app.callback(
         Output('disaster-impact-chart', 'figure'),
-        [Input('disaster-country-dropdown', 'value'),
+        [Input('main-country-filter', 'value'),
          Input('disaster-type-dropdown', 'value'),
          Input('disaster-year-slider', 'value')],
         prevent_initial_call=False
     )
-    def update_disaster_impact_chart(countries, disaster_types, year_range):
+    def update_disaster_impact_chart(selected_country, disaster_types, year_range):
         """Update disaster impact statistics chart"""
         try:
             # Load real EM-DAT data
             sample_data = load_real_disaster_data()
             
             # Filter data based on inputs
-            if countries and len(countries) > 0:
-                sample_data = sample_data[sample_data['country_code'].isin(countries)]
+            if selected_country:
+                sample_data = sample_data[sample_data['country_code'] == selected_country]
             if disaster_types and len(disaster_types) > 0:
                 sample_data = sample_data[sample_data['disaster_type'].isin(disaster_types)]
             if year_range and len(year_range) == 2:

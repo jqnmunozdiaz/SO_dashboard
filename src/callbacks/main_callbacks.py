@@ -46,12 +46,14 @@ def create_comparison_tab_content():
                 dbc.Card([
                     dbc.CardBody([
                         html.H5("Comparison Settings", className="card-title"),
-                        html.Label("Select Countries (max 5):"),
+                        html.P("Use the main country filter above to select the primary country for comparison.", 
+                               className="text-muted small"),
+                        html.Label("Additional Countries for Comparison:"),
                         dcc.Dropdown(
-                            id="comparison-country-dropdown",
+                            id="comparison-additional-countries",
                             multi=True,
-                            placeholder="Select countries to compare...",
-                            maxItems=5
+                            placeholder="Select additional countries to compare...",
+                            maxItems=4
                         ),
                         html.Br(),
                         html.Label("Comparison Metrics:"),

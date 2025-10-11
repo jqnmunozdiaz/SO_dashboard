@@ -23,9 +23,10 @@ def register_callbacks(app):
     @app.callback(
         Output('flood-risk-map', 'figure'),
         [Input('flood-risk-level', 'value'),
-         Input('flood-scenario', 'value')]
+         Input('flood-scenario', 'value'),
+         Input('main-country-filter', 'value')]
     )
-    def update_flood_risk_map(risk_levels, scenario):
+    def update_flood_risk_map(risk_levels, scenario, selected_country):
         """Update flood risk map"""
         try:
             # Load actual flood risk data
@@ -82,9 +83,10 @@ def register_callbacks(app):
     @app.callback(
         Output('flood-risk-stats', 'figure'),
         [Input('flood-risk-level', 'value'),
-         Input('flood-scenario', 'value')]
+         Input('flood-scenario', 'value'),
+         Input('main-country-filter', 'value')]
     )
-    def update_flood_risk_stats(risk_levels, scenario):
+    def update_flood_risk_stats(risk_levels, scenario, selected_country):
         """Update flood risk statistics"""
         # Sample statistics data
         risk_categories = ['Low Risk', 'Medium Risk', 'High Risk', 'Very High Risk']
@@ -113,9 +115,10 @@ def register_callbacks(app):
     @app.callback(
         Output('flood-vulnerability-chart', 'figure'),
         [Input('flood-risk-level', 'value'),
-         Input('flood-scenario', 'value')]
+         Input('flood-scenario', 'value'),
+         Input('main-country-filter', 'value')]
     )
-    def update_flood_vulnerability_chart(risk_levels, scenario):
+    def update_flood_vulnerability_chart(risk_levels, scenario, selected_country):
         """Update flood vulnerability analysis chart"""
         try:
             # Load actual flood risk data

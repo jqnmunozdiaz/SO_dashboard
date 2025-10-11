@@ -2,7 +2,7 @@
 Main callback controller that handles tab switching and content rendering
 """
 
-from dash import Input, Output, html
+from dash import Input, Output, html, clientside_callback, ClientsideFunction
 from src.layouts.main_layout import (
     create_disaster_tab_content,
     create_urbanization_tab_content,
@@ -12,6 +12,47 @@ from src.layouts.main_layout import (
 
 def register_main_callbacks(app):
     """Register main navigation callbacks"""
+    
+    # Theme toggle callback
+    @app.callback(
+        Output('theme-store', 'data'),
+        Input('theme-toggle', 'value')
+    )
+    def toggle_theme(dark_mode):
+        """Toggle between light and dark themes"""
+        return {'theme': 'dark' if dark_mode else 'light'}
+    
+    # Apply theme styles callback
+    @app.callback(
+        [
+            Output('main-container', 'className'),
+            Output('main-title', 'style'),
+            Output('header-hr', 'style'),
+            Output('footer-hr', 'style'),
+            Output('footer-text', 'className')
+        ],
+        Input('theme-store', 'data')
+    )
+    def apply_theme_styles(theme_data):
+        """Apply theme-specific styles to main elements"""
+        is_dark = theme_data.get('theme') == 'dark'
+        
+        if is_dark:
+            return (
+                'dark-theme',
+                {'color': '#f8f9fa', 'font-weight': 'bold'},
+                {'border-color': '#495057'},
+                {'border-color': '#495057'},
+                'text-center text-light small'
+            )
+        else:
+            return (
+                '',
+                {'color': '#2c3e50', 'font-weight': 'bold'},
+                {},
+                {},
+                'text-center text-muted small'
+            )
     
     @app.callback(
         Output('tab-content', 'children'),

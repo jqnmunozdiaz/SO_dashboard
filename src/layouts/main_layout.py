@@ -10,15 +10,32 @@ def create_main_layout():
     """Create the main dashboard layout"""
     
     return dbc.Container([
+        # Theme store
+        dcc.Store(id='theme-store', data={'theme': 'light'}),
+        
         # Header
         dbc.Row([
             dbc.Col([
-                html.H1(
-                    "Sub-Saharan Africa Disaster Risk Management Dashboard",
-                    className="text-center mb-4",
-                    style={'color': '#2c3e50', 'font-weight': 'bold'}
-                ),
-                html.Hr(),
+                dbc.Row([
+                    dbc.Col([
+                        html.H1(
+                            "Sub-Saharan Africa Disaster Risk Management Dashboard",
+                            className="text-center mb-4",
+                            id="main-title",
+                            style={'color': '#2c3e50', 'font-weight': 'bold'}
+                        ),
+                    ], width=10),
+                    dbc.Col([
+                        dbc.Switch(
+                            id="theme-toggle",
+                            label="🌙 Dark Mode",
+                            value=False,
+                            className="mt-3",
+                            style={'font-size': '0.9rem'}
+                        )
+                    ], width=2, className="text-end")
+                ]),
+                html.Hr(id="header-hr"),
             ], width=12)
         ]),
         
@@ -44,15 +61,16 @@ def create_main_layout():
         # Footer
         dbc.Row([
             dbc.Col([
-                html.Hr(),
+                html.Hr(id="footer-hr"),
                 html.P(
                     "World Bank Disaster Risk Management - Sub-Saharan Africa Dashboard",
-                    className="text-center text-muted small"
+                    className="text-center text-muted small",
+                    id="footer-text"
                 )
             ], width=12)
         ], className="mt-5")
         
-    ], fluid=True)
+    ], fluid=True, id="main-container")
 
 
 def create_disaster_tab_content():

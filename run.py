@@ -13,7 +13,7 @@ sys.path.insert(0, str(project_root))
 
 # Set environment variables
 os.environ.setdefault('DASH_DEBUG', 'True')
-os.environ.setdefault('DASH_HOST', '0.0.0.0')
+os.environ.setdefault('DASH_HOST', '127.0.0.1')
 os.environ.setdefault('DASH_PORT', '8050')
 
 if __name__ == '__main__':
@@ -25,7 +25,7 @@ if __name__ == '__main__':
         from app import app
         app.run(
             debug=os.environ.get('DASH_DEBUG', 'True').lower() == 'true',
-            host=os.environ.get('DASH_HOST', '0.0.0.0'),
+            host=os.environ.get('DASH_HOST', '127.0.0.1'),
             port=int(os.environ.get('DASH_PORT', 8050))
         )
     except ImportError as e:

@@ -229,7 +229,7 @@ def get_ssa_country_list():
         'Zimbabwe', 'Botswana', 'Namibia', 'South Africa', 'Lesotho',
         'Eswatini', 'Malawi', 'Angola', 'Democratic Republic of Congo',
         'Republic of Congo', 'Gabon', 'Equatorial Guinea', 
-        'São Tomé and Príncipe', 'Cape Verde', 'Comoros', 'Mauritius',
+        'São Tomé and Príncipe', 'Cabo Verde', 'Comoros', 'Mauritius',
         'Seychelles', 'Djibouti', 'Eritrea', 'Somalia', 'South Sudan', 'Sudan'
     ]
 
@@ -251,7 +251,7 @@ def get_country_code(country_name):
         'Angola': 'AGO', 'Democratic Republic of Congo': 'COD',
         'Republic of Congo': 'COG', 'Gabon': 'GAB', 
         'Equatorial Guinea': 'GNQ', 'São Tomé and Príncipe': 'STP',
-        'Cape Verde': 'CPV', 'Comoros': 'COM', 'Mauritius': 'MUS',
+        'Cabo Verde': 'CPV', 'Comoros': 'COM', 'Mauritius': 'MUS',
         'Seychelles': 'SYC', 'Djibouti': 'DJI', 'Eritrea': 'ERI',
         'Somalia': 'SOM', 'South Sudan': 'SSD', 'Sudan': 'SDN'
     }

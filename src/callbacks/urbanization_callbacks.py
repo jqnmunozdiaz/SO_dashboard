@@ -46,27 +46,9 @@ def register_callbacks(app):
                 sample_data = sample_data[sample_data['country'] == selected_country_name]
                 
         except Exception as e:
-            # Fallback data
-            years = list(range(2000, 2024))
-            sample_data = pd.DataFrame({
-                'year': years * 3,
-                'country': ['Nigeria'] * len(years) + ['Kenya'] * len(years) + ['Ethiopia'] * len(years),
-                'urban_population_pct': (
-                    [35 + i * 0.8 for i in range(len(years))] +
-                    [25 + i * 1.2 for i in range(len(years))] +
-                    [15 + i * 0.9 for i in range(len(years))]
-                ),
-                'urban_growth_rate': (
-                    [3.5 + 0.1 * (i % 5) for i in range(len(years))] +
-                    [4.2 + 0.15 * (i % 4) for i in range(len(years))] +
-                    [5.1 + 0.12 * (i % 6) for i in range(len(years))]
-                ),
-                'population_density': (
-                    [120 + i * 2.5 for i in range(len(years))] +
-                    [85 + i * 1.8 for i in range(len(years))] +
-                    [65 + i * 1.2 for i in range(len(years))]
-                )
-            })
+            # Return empty data for error handling
+            sample_data = pd.DataFrame(columns=['year', 'country', 'urban_population_pct', 
+                                              'urban_growth_rate', 'population_density'])
         
         y_column = indicator or 'urban_population_pct'
         title_map = {

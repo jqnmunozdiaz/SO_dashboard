@@ -188,7 +188,8 @@ def create_urbanization_trend_chart(data: pd.DataFrame,
         paper_bgcolor='white',
         font={'color': '#2c3e50'},
         title_font_size=16,
-        hovermode='x unified'
+        hovermode='x unified',
+        yaxis=dict(rangemode='tozero')
     )
     
     return fig

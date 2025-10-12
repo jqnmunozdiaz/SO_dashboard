@@ -13,24 +13,17 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Sub-Saharan African countries list (ISO3 codes) - Excludes North African countries
-SUB_SAHARAN_COUNTRIES = {
-    'AGO': 'Angola', 'BEN': 'Benin', 'BWA': 'Botswana', 'BFA': 'Burkina Faso',
-    'BDI': 'Burundi', 'CMR': 'Cameroon', 'CPV': 'Cape Verde', 'CAF': 'Central African Republic',
-    'TCD': 'Chad', 'COM': 'Comoros', 'COG': 'Congo', 'COD': 'Democratic Republic of Congo',
-    'DJI': 'Djibouti', 'GNQ': 'Equatorial Guinea', 'ERI': 'Eritrea', 'SWZ': 'Eswatini',
-    'ETH': 'Ethiopia', 'GAB': 'Gabon', 'GMB': 'Gambia', 'GHA': 'Ghana', 'GIN': 'Guinea',
-    'GNB': 'Guinea-Bissau', 'CIV': 'Ivory Coast', 'KEN': 'Kenya', 'LSO': 'Lesotho', 'LBR': 'Liberia',
-    'MDG': 'Madagascar', 'MWI': 'Malawi', 'MLI': 'Mali', 'MRT': 'Mauritania',
-    'MUS': 'Mauritius', 'MOZ': 'Mozambique', 'NAM': 'Namibia', 'NER': 'Niger',
-    'NGA': 'Nigeria', 'RWA': 'Rwanda', 'STP': 'São Tomé and Príncipe', 'SEN': 'Senegal',
-    'SYC': 'Seychelles', 'SLE': 'Sierra Leone', 'SOM': 'Somalia', 'ZAF': 'South Africa',
-    'SSD': 'South Sudan', 'SDN': 'Sudan', 'TZA': 'Tanzania', 'TGO': 'Togo',
-    'UGA': 'Uganda', 'ZMB': 'Zambia', 'ZWE': 'Zimbabwe'
-}
+# Import centralized country utilities
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from src.utils.country_utils import load_subsaharan_countries_dict, load_non_sub_saharan_countries_dict
 
-# North African countries to exclude
-NORTH_AFRICAN_COUNTRIES = {'DZA', 'EGY', 'LBY', 'MAR', 'TUN'}
+# Load countries from centralized CSV
+SUB_SAHARAN_COUNTRIES = load_subsaharan_countries_dict()
+
+# Non-Sub-Saharan African countries to exclude
+NON_SUB_SAHARAN_COUNTRIES = set(load_non_sub_saharan_countries_dict().keys())
 
 
 def clean_emdat_data(input_file, output_file):
@@ -89,8 +82,8 @@ def clean_emdat_data(input_file, output_file):
             if any(code in str(unique_countries) for code in ssa_iso_codes):
                 # Filtering by ISO codes
                 df_africa = df[df[country_col].isin(ssa_iso_codes)]
-                # Also exclude North African countries explicitly if they exist
-                df_africa = df_africa[~df_africa[country_col].isin(NORTH_AFRICAN_COUNTRIES)]
+                # Also exclude non-Sub-Saharan countries explicitly if they exist
+                df_africa = df_africa[~df_africa[country_col].isin(NON_SUB_SAHARAN_COUNTRIES)]
             else:
                 # Try filtering by country names
                 ssa_names = list(SUB_SAHARAN_COUNTRIES.values())

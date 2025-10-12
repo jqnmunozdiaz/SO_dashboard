@@ -90,7 +90,7 @@ def create_main_layout():
             dbc.Col([
                 dbc.Tabs([
                     dbc.Tab(
-                        label="📊 Historical Disasters",
+                        label="Historical Disasters",
                         tab_id="disasters",
                         tab_style={
                             'border-radius': '12px 12px 0 0',

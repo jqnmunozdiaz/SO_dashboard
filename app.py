@@ -7,14 +7,14 @@ import dash
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 
-from src.layouts.main_layout import create_main_layout
+from src.layouts.world_bank_layout import create_world_bank_layout
 from src.callbacks import disaster_callbacks, urbanization_callbacks, flood_risk_callbacks, comparison_callbacks
 from src.callbacks.main_callbacks import register_main_callbacks
 
 # Initialize the Dash app
 app = dash.Dash(
     __name__,
-    external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.themes.CYBORG],
+    external_stylesheets=[dbc.themes.BOOTSTRAP],
     assets_folder='assets',
     suppress_callback_exceptions=True
 )
@@ -22,8 +22,8 @@ app = dash.Dash(
 # Set the title
 app.title = "Sub-Saharan Africa DRM Dashboard"
 
-# Create the main layout
-app.layout = create_main_layout()
+# Create the World Bank-styled layout
+app.layout = create_world_bank_layout()
 
 # Register all callbacks
 register_main_callbacks(app)

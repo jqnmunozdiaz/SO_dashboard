@@ -137,17 +137,8 @@ def register_callbacks(app):
                     raise ValueError("Cannot create timeline without year data")
             
         except Exception as e:
-            # Fallback to simple data if error
-            agg_data = pd.DataFrame({
-                'year': [2020, 2021, 2022, 2023] * 3,
-                'country': ['Nigeria', 'Nigeria', 'Nigeria', 'Nigeria',
-                           'Kenya', 'Kenya', 'Kenya', 'Kenya',
-                           'Ethiopia', 'Ethiopia', 'Ethiopia', 'Ethiopia'],
-                'disaster_count': [15, 12, 18, 20, 8, 10, 12, 14, 10, 8, 15, 17],
-                'affected_population': [1000000, 800000, 1200000, 1500000,
-                                      500000, 600000, 700000, 800000,
-                                      600000, 400000, 900000, 1100000]
-            })
+            # Return empty data and show error message
+            agg_data = pd.DataFrame(columns=['year', 'country', 'disaster_count'])
         
         # Handle empty data case
         if agg_data.empty:
@@ -159,7 +150,11 @@ def register_callbacks(app):
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': '#2c3e50'},
-                title_font_size=16
+                title_font_size=16,
+                yaxis=dict(
+                    dtick=1,
+                    rangemode='tozero'
+                )
             )
             return fig
         
@@ -189,7 +184,11 @@ def register_callbacks(app):
             paper_bgcolor='white',
             font={'color': '#2c3e50'},
             title_font_size=16,
-            hovermode='x unified'
+            hovermode='x unified',
+            yaxis=dict(
+                dtick=1,  # Integer tick intervals
+                rangemode='tozero'  # Start from 0
+            )
         )
         
         return fig
@@ -227,9 +226,9 @@ def register_callbacks(app):
                 sample_values = country_data['disaster_count'].tolist()
             
         except Exception as e:
-            # Fallback data
-            sample_countries = ['NGA', 'KEN', 'ETH', 'GHA', 'TZA']
-            sample_values = [25, 18, 22, 12, 16]
+            # Return empty data and show error
+            sample_countries = []
+            sample_values = []
         
         # Handle empty data case
         if not sample_countries or not sample_values:
@@ -299,12 +298,8 @@ def register_callbacks(app):
                 }).reset_index()
                 
         except Exception as e:
-            # Fallback data
-            impact_data = pd.DataFrame({
-                'disaster_type': ['Flood', 'Drought', 'Storm', 'Earthquake'],
-                'affected_population': [5000000, 3500000, 2000000, 800000],
-                'economic_damage_usd': [2500000000, 1800000000, 1200000000, 900000000]
-            })
+            # Return empty data to show error message
+            impact_data = pd.DataFrame(columns=['disaster_type', 'affected_population', 'economic_damage_usd'])
         
         fig = px.bar(
             impact_data,

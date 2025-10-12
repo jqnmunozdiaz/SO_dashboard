@@ -38,18 +38,10 @@ def register_callbacks(app):
             risk_values = scenario_data['flood_risk_level'].tolist()
             
         except Exception as e:
-            # Fallback data
-            country_codes = ['NGA', 'KEN', 'ETH', 'GHA', 'TZA', 'UGA', 'MOZ', 'MDG', 'CMR', 'MLI']
-            country_names = ['Nigeria', 'Kenya', 'Ethiopia', 'Ghana', 'Tanzania', 
-                            'Uganda', 'Mozambique', 'Madagascar', 'Cameroon', 'Mali']
-            
-            # Risk values based on scenario
-            if scenario == 'current':
-                risk_values = [7.2, 5.8, 4.3, 6.9, 6.1, 5.2, 8.1, 7.8, 5.9, 3.4]
-            elif scenario == '2030':
-                risk_values = [7.8, 6.2, 4.9, 7.3, 6.7, 5.8, 8.6, 8.3, 6.4, 3.9]
-            else:  # 2050
-                risk_values = [8.5, 6.8, 5.6, 7.9, 7.4, 6.5, 9.2, 8.9, 7.1, 4.5]
+            # Return empty data for error handling
+            country_codes = []
+            country_names = []
+            risk_values = []
         
         fig = go.Figure(data=go.Choropleth(
             locations=country_codes,
@@ -88,21 +80,15 @@ def register_callbacks(app):
     )
     def update_flood_risk_stats(risk_levels, scenario, selected_country):
         """Update flood risk statistics"""
-        # Sample statistics data
-        risk_categories = ['Low Risk', 'Medium Risk', 'High Risk', 'Very High Risk']
-        
-        if scenario == 'current':
-            country_counts = [12, 18, 15, 8]
-        elif scenario == '2030':
-            country_counts = [10, 16, 18, 9]
-        else:  # 2050
-            country_counts = [8, 14, 20, 11]
-        
-        fig = px.pie(
-            values=country_counts,
-            names=risk_categories,
-            title=f'Flood Risk Distribution - {scenario.title()}',
-            color_discrete_sequence=['#2ecc71', '#f39c12', '#e74c3c', '#8b0000']
+        # Return empty pie chart for no data
+        fig = go.Figure()
+        fig.update_layout(
+            title=f"No flood risk data available for {scenario.title()} scenario",
+            annotations=[{
+                'text': 'No data available',
+                'showarrow': False,
+                'font': {'size': 16, 'color': '#666'}
+            }]
         )
         
         fig.update_layout(
@@ -129,22 +115,8 @@ def register_callbacks(app):
             vuln_data = scenario_data[['country', 'exposure', 'sensitivity', 'adaptive_capacity']].copy()
             
         except Exception as e:
-            # Fallback vulnerability data
-            countries = ['Nigeria', 'Mozambique', 'Madagascar', 'Ghana', 'Tanzania', 
-                        'Kenya', 'Uganda', 'Cameroon', 'Ethiopia', 'Mali']
-            
-            # Vulnerability factors
-            exposure = [8.5, 9.2, 8.8, 7.3, 6.9, 6.2, 5.8, 6.4, 5.1, 4.2]
-            sensitivity = [7.8, 8.5, 8.1, 6.9, 6.5, 5.9, 5.4, 6.1, 6.8, 5.2]
-            adaptive_capacity = [4.2, 3.8, 4.1, 5.8, 5.2, 6.1, 5.9, 5.3, 4.6, 4.9]
-            
-            # Create DataFrame
-            vuln_data = pd.DataFrame({
-                'country': countries,
-                'exposure': exposure,
-                'sensitivity': sensitivity,
-                'adaptive_capacity': adaptive_capacity
-            })
+            # Return empty data for error handling
+            vuln_data = pd.DataFrame(columns=['country', 'exposure', 'sensitivity', 'adaptive_capacity'])
         
         # Sort by exposure (as a proxy for vulnerability)
         vuln_data = vuln_data.sort_values('exposure', ascending=True)

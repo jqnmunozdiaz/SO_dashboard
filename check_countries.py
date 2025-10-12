@@ -4,30 +4,12 @@ Check countries in the disaster data and identify non-Sub-Saharan African countr
 
 import pandas as pd
 
-# Define Sub-Saharan African countries (excluding North African countries)
-SUB_SAHARAN_COUNTRIES = {
-    'AGO': 'Angola', 'BEN': 'Benin', 'BWA': 'Botswana', 'BFA': 'Burkina Faso',
-    'BDI': 'Burundi', 'CMR': 'Cameroon', 'CPV': 'Cape Verde', 'CAF': 'Central African Republic',
-    'TCD': 'Chad', 'COM': 'Comoros', 'COG': 'Congo', 'COD': 'Democratic Republic of Congo',
-    'DJI': 'Djibouti', 'GNQ': 'Equatorial Guinea', 'ERI': 'Eritrea', 'SWZ': 'Eswatini',
-    'ETH': 'Ethiopia', 'GAB': 'Gabon', 'GMB': 'Gambia', 'GHA': 'Ghana', 'GIN': 'Guinea',
-    'GNB': 'Guinea-Bissau', 'CIV': 'Ivory Coast', 'KEN': 'Kenya', 'LSO': 'Lesotho', 
-    'LBR': 'Liberia', 'MDG': 'Madagascar', 'MWI': 'Malawi', 'MLI': 'Mali', 'MRT': 'Mauritania',
-    'MUS': 'Mauritius', 'MOZ': 'Mozambique', 'NAM': 'Namibia', 'NER': 'Niger',
-    'NGA': 'Nigeria', 'RWA': 'Rwanda', 'STP': 'São Tomé and Príncipe', 'SEN': 'Senegal',
-    'SYC': 'Seychelles', 'SLE': 'Sierra Leone', 'SOM': 'Somalia', 'ZAF': 'South Africa',
-    'SSD': 'South Sudan', 'SDN': 'Sudan', 'TZA': 'Tanzania', 'TGO': 'Togo',
-    'UGA': 'Uganda', 'ZMB': 'Zambia', 'ZWE': 'Zimbabwe'
-}
+# Import centralized country utilities
+from src.utils.country_utils import load_subsaharan_countries_dict, load_non_sub_saharan_countries_dict
 
-# Countries that are in Africa but NOT Sub-Saharan (North Africa)
-NORTH_AFRICAN_COUNTRIES = {
-    'DZA': 'Algeria',
-    'EGY': 'Egypt', 
-    'LBY': 'Libya',
-    'MAR': 'Morocco',
-    'TUN': 'Tunisia'
-}
+# Load countries from centralized CSV
+SUB_SAHARAN_COUNTRIES = load_subsaharan_countries_dict()
+NON_SUB_SAHARAN_AFRICAN_COUNTRIES = load_non_sub_saharan_countries_dict()
 
 def check_countries():
     """Check which countries are in the data and identify non-Sub-Saharan ones"""
@@ -58,7 +40,7 @@ def check_countries():
             
             if code in SUB_SAHARAN_COUNTRIES:
                 sub_saharan_in_data.append((code, name))
-            elif code in NORTH_AFRICAN_COUNTRIES:
+            elif code in NON_SUB_SAHARAN_AFRICAN_COUNTRIES:
                 north_african_in_data.append((code, name))
             else:
                 other_countries_in_data.append((code, name))
@@ -82,13 +64,13 @@ def check_countries():
         # Summary statistics
         total_disasters = len(df)
         sub_saharan_disasters = len(df[df['country_code'].isin(SUB_SAHARAN_COUNTRIES.keys())])
-        north_african_disasters = len(df[df['country_code'].isin(NORTH_AFRICAN_COUNTRIES.keys())])
+        non_sub_saharan_disasters = len(df[df['country_code'].isin(NON_SUB_SAHARAN_AFRICAN_COUNTRIES.keys())])
         
         print(f"\n📊 DISASTER STATISTICS:")
         print(f"  Total disasters in data: {total_disasters:,}")
         print(f"  Sub-Saharan disasters: {sub_saharan_disasters:,} ({sub_saharan_disasters/total_disasters*100:.1f}%)")
-        print(f"  North African disasters: {north_african_disasters:,} ({north_african_disasters/total_disasters*100:.1f}%)")
-        print(f"  Other disasters: {total_disasters - sub_saharan_disasters - north_african_disasters:,}")
+        print(f"  Non-Sub-Saharan disasters: {non_sub_saharan_disasters:,} ({non_sub_saharan_disasters/total_disasters*100:.1f}%)")
+        print(f"  Other disasters: {total_disasters - sub_saharan_disasters - non_sub_saharan_disasters:,}")
         
         return north_african_in_data, other_countries_in_data
         

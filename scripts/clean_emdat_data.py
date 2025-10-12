@@ -46,7 +46,12 @@ def clean_emdat_data(input_file, output_file):
         logger.info(df.head().to_string())
 
         df = df[df['Disaster Group'] == 'Natural']
-        df = df[[ 'Disaster Type', 'ISO', 'Start Year', 'Total Deaths', 'Total Affected']]  # Example columns, adjust as needed 
+        # Only keep rows where Disaster Type is in a predefined list of relevant types defined in 'disaster_type_selection.txt'
+        with open('data/raw/disaster_type_selection.txt', 'r') as f:
+            relevant_disasters = [line.strip() for line in f.readlines()]
+        df = df[df['Disaster Type'].isin(relevant_disasters)]
+        
+        df = df[[ 'Disaster Type', 'ISO', 'Start Year', 'Total Deaths', 'Total Affected']]  # Example columns, adjust as needed        
         df = df.rename(columns={'Start Year': 'Year'})
             
         # Filter for Sub-Saharan African countries only
@@ -80,6 +85,10 @@ def clean_emdat_data(input_file, output_file):
         sort_columns = ['Year', 'ISO']
         df = df.sort_values(sort_columns)
         
+        # Filter recent years for better dashboard performance (last 50 years)
+        current_year = 2025
+        df = df[df['Year'] >= (current_year - 50)]
+        
         # Save processed data
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
         df.to_csv(output_file, index=False)
@@ -89,7 +98,6 @@ def clean_emdat_data(input_file, output_file):
     except Exception as e:
         logger.error(f"Error processing EM-DAT data: {str(e)}")
         raise
-
 
 if __name__ == "__main__":
     # File paths

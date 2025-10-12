@@ -33,41 +33,27 @@ def handle_callback_errors(default_title="No Data Available"):
     return decorator
 
 
-def safe_filter_data(data, countries=None, disaster_types=None, year_range=None):
+def safe_filter_data(data, countries=None, disaster_types=None):
     """
-    Safely filter data with None checks
+    Safely filter EM-DAT data using actual column names
+    
+    Args:
+        data: DataFrame with EM-DAT structure (ISO, Disaster Type, Year, Total Deaths, Total Affected)
+        countries: List of ISO country codes (e.g., ['NGA', 'KEN'])
+        disaster_types: List of disaster types (e.g., ['Flood', 'Storm'])
     """
     if data is None or data.empty:
         return pd.DataFrame()
     
     filtered_data = data.copy()
     
-    # Filter by countries
-    if countries and len(countries) > 0:
-        if 'country_code' in filtered_data.columns:
-            filtered_data = filtered_data[filtered_data['country_code'].isin(countries)]
-        elif 'country' in filtered_data.columns:
-            # Convert country codes to names if needed
-            country_code_to_name = {
-                'NGA': 'Nigeria', 'KEN': 'Kenya', 'ETH': 'Ethiopia',
-                'GHA': 'Ghana', 'TZA': 'Tanzania', 'UGA': 'Uganda',
-                'MOZ': 'Mozambique', 'MDG': 'Madagascar', 'CMR': 'Cameroon',
-                'MLI': 'Mali', 'RWA': 'Rwanda', 'SEN': 'Senegal',
-                'BFA': 'Burkina Faso', 'CIV': 'Ivory Coast'
-            }
-            country_names = [country_code_to_name.get(code, code) for code in countries]
-            filtered_data = filtered_data[filtered_data['country'].isin(country_names)]
+    # Filter by countries using actual ISO column
+    if countries and len(countries) > 0 and 'ISO' in filtered_data.columns:
+        filtered_data = filtered_data[filtered_data['ISO'].isin(countries)]
     
-    # Filter by disaster types
-    if disaster_types and len(disaster_types) > 0 and 'disaster_type' in filtered_data.columns:
-        filtered_data = filtered_data[filtered_data['disaster_type'].isin(disaster_types)]
-    
-    # Filter by year range
-    if year_range and len(year_range) == 2 and 'year' in filtered_data.columns:
-        filtered_data = filtered_data[
-            (filtered_data['year'] >= year_range[0]) & 
-            (filtered_data['year'] <= year_range[1])
-        ]
+    # Filter by disaster types using actual Disaster Type column
+    if disaster_types and len(disaster_types) > 0 and 'Disaster Type' in filtered_data.columns:
+        filtered_data = filtered_data[filtered_data['Disaster Type'].isin(disaster_types)]
     
     return filtered_data
 
@@ -92,18 +78,23 @@ def create_empty_figure(title="No Data Available", subtitle=""):
 
 def safe_aggregate_data(data, group_by, agg_dict):
     """
-    Safely aggregate data with error handling
+    Safely aggregate EM-DAT data with error handling
+    
+    Args:
+        data: DataFrame with EM-DAT structure
+        group_by: List of columns to group by (e.g., ['Disaster Type'], ['ISO', 'Year'])
+        agg_dict: Dict of aggregations (e.g., {'Total Deaths': 'sum', 'Total Affected': 'sum'})
     """
     try:
         if data.empty:
             return pd.DataFrame()
         
-        # Check if all group_by columns exist
+        # Check if all group_by columns exist in EM-DAT data
         missing_cols = [col for col in group_by if col not in data.columns]
         if missing_cols:
             return pd.DataFrame()
         
-        # Check if all aggregation columns exist
+        # Check if all aggregation columns exist in EM-DAT data
         missing_agg_cols = [col for col in agg_dict.keys() if col not in data.columns]
         if missing_agg_cols:
             # Remove missing columns from aggregation

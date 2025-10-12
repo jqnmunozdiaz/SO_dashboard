@@ -8,85 +8,48 @@ import sys
 import os
 
 # Add src to path for imports
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from utils.data_loader import (
-    create_sample_disaster_data,
-    create_sample_urbanization_data,
-    create_sample_flood_risk_data,
-    get_subsaharan_countries
-)
+from src.utils.data_loader import load_emdat_data
+from src.utils.country_utils import get_subsaharan_countries, load_subsaharan_countries_dict
+from src.utils.callback_helpers import safe_filter_data, safe_aggregate_data
 
 
 class TestDataLoader(unittest.TestCase):
     """Test data loading utilities"""
     
-    def test_create_sample_disaster_data(self):
-        """Test sample disaster data creation"""
-        df = create_sample_disaster_data()
-        
-        # Check if DataFrame is not empty
-        self.assertGreater(len(df), 0)
-        
-        # Check required columns exist
-        required_columns = [
-            'year', 'country', 'country_code', 'disaster_type',
-            'affected_population', 'economic_damage_usd'
-        ]
-        for col in required_columns:
-            self.assertIn(col, df.columns)
-        
-        # Check data types
-        self.assertTrue(df['year'].dtype in ['int64', 'int32'])
-        self.assertTrue(df['affected_population'].dtype in ['int64', 'int32'])
-        
-        # Check year range
-        self.assertTrue(df['year'].min() >= 2000)
-        self.assertTrue(df['year'].max() <= 2023)
-    
-    def test_create_sample_urbanization_data(self):
-        """Test sample urbanization data creation"""
-        df = create_sample_urbanization_data()
-        
-        # Check if DataFrame is not empty
-        self.assertGreater(len(df), 0)
-        
-        # Check required columns
-        required_columns = [
-            'year', 'country', 'country_code', 'urban_population_pct',
-            'urban_growth_rate', 'population_density'
-        ]
-        for col in required_columns:
-            self.assertIn(col, df.columns)
-        
-        # Check value ranges
-        self.assertTrue(df['urban_population_pct'].min() >= 0)
-        self.assertTrue(df['urban_population_pct'].max() <= 100)
-    
-    def test_create_sample_flood_risk_data(self):
-        """Test sample flood risk data creation"""
-        df = create_sample_flood_risk_data()
-        
-        # Check if DataFrame is not empty
-        self.assertGreater(len(df), 0)
-        
-        # Check required columns
-        required_columns = [
-            'country', 'country_code', 'scenario', 'flood_risk_level',
-            'exposure', 'sensitivity', 'adaptive_capacity'
-        ]
-        for col in required_columns:
-            self.assertIn(col, df.columns)
-        
-        # Check scenarios
-        scenarios = df['scenario'].unique()
-        expected_scenarios = ['current', '2030', '2050']
-        for scenario in expected_scenarios:
-            self.assertIn(scenario, scenarios)
-        
-        # Check risk level range
-        self.assertTrue(df['flood_risk_level'].min() >= 0)
-        self.assertTrue(df['flood_risk_level'].max() <= 10)
+    def test_load_emdat_data(self):
+        """Test EM-DAT data loading"""
+        try:
+            df = load_emdat_data()
+            
+            # Check if DataFrame is not empty
+            self.assertGreater(len(df), 0)
+            
+            # Check required columns exist (actual EM-DAT structure)
+            required_columns = [
+                'Disaster Type', 'ISO', 'Year', 'Total Deaths', 'Total Affected'
+            ]
+            for col in required_columns:
+                self.assertIn(col, df.columns)
+            
+            # Check data types
+            self.assertTrue(df['Year'].dtype in ['int64', 'int32'])
+            self.assertTrue(df['Total Deaths'].dtype in ['int64', 'int32', 'float64'])
+            self.assertTrue(df['Total Affected'].dtype in ['int64', 'int32', 'float64'])
+            
+            # Check year range (EM-DAT covers 1975-2025)
+            self.assertTrue(df['Year'].min() >= 1975)
+            self.assertTrue(df['Year'].max() <= 2025)
+            
+            # Check ISO codes are 3 characters
+            iso_codes = df['ISO'].dropna().unique()
+            for iso in iso_codes[:5]:  # Check first 5
+                self.assertEqual(len(iso), 3)
+                
+        except FileNotFoundError:
+            # Skip test if EM-DAT file not available
+            self.skipTest("EM-DAT data file not found")
     
     def test_get_subsaharan_countries(self):
         """Test Sub-Saharan countries list"""
@@ -104,31 +67,94 @@ class TestDataLoader(unittest.TestCase):
             self.assertIn('name', country)
             self.assertIn('code', country)
             self.assertEqual(len(country['code']), 3)  # ISO codes are 3 letters
+    
+    def test_load_subsaharan_countries_dict(self):
+        """Test Sub-Saharan countries dictionary loading"""
+        countries_dict = load_subsaharan_countries_dict()
+        
+        # Check if dict is not empty
+        self.assertGreater(len(countries_dict), 0)
+        
+        # Check structure
+        self.assertIsInstance(countries_dict, dict)
+        
+        # Check some known countries
+        self.assertIn('NGA', countries_dict)  # Nigeria
+        self.assertIn('KEN', countries_dict)  # Kenya
 
 
-class TestChartHelpers(unittest.TestCase):
-    """Test chart creation utilities"""
+class TestCallbackHelpers(unittest.TestCase):
+    """Test callback helper utilities"""
     
     def setUp(self):
         """Set up test data"""
-        self.sample_disaster_data = create_sample_disaster_data()
-        self.sample_urbanization_data = create_sample_urbanization_data()
+        # Create sample EM-DAT structure data for testing
+        self.sample_data = pd.DataFrame({
+            'Disaster Type': ['Flood', 'Storm', 'Flood', 'Drought'],
+            'ISO': ['NGA', 'KEN', 'ETH', 'NGA'],
+            'Year': [2020, 2021, 2020, 2022],
+            'Total Deaths': [10, 5, 0, 15],
+            'Total Affected': [1000, 500, 2000, 800]
+        })
     
-    def test_disaster_data_structure(self):
-        """Test disaster data has correct structure for charts"""
-        df = self.sample_disaster_data
+    def test_safe_filter_data_by_country(self):
+        """Test filtering data by country"""
+        filtered = safe_filter_data(
+            self.sample_data, 
+            countries=['NGA']
+        )
         
-        # Check groupable columns
-        grouped = df.groupby(['year', 'country']).size()
-        self.assertGreater(len(grouped), 0)
+        self.assertEqual(len(filtered), 2)  # 2 NGA records
+        self.assertTrue(all(filtered['ISO'] == 'NGA'))
     
-    def test_urbanization_data_structure(self):
-        """Test urbanization data structure"""
-        df = self.sample_urbanization_data
+    def test_safe_filter_data_by_disaster_type(self):
+        """Test filtering data by disaster type"""
+        filtered = safe_filter_data(
+            self.sample_data, 
+            disaster_types=['Flood']
+        )
         
-        # Check for time series data
-        country_data = df[df['country'] == df['country'].iloc[0]]
-        self.assertGreater(len(country_data), 1)  # Multiple years per country
+        self.assertEqual(len(filtered), 2)  # 2 Flood records
+        self.assertTrue(all(filtered['Disaster Type'] == 'Flood'))
+    
+    def test_safe_filter_data_combined(self):
+        """Test combined filtering"""
+        filtered = safe_filter_data(
+            self.sample_data,
+            countries=['NGA'],
+            disaster_types=['Flood']
+        )
+        
+        self.assertEqual(len(filtered), 1)  # 1 NGA Flood record
+        self.assertEqual(filtered.iloc[0]['ISO'], 'NGA')
+        self.assertEqual(filtered.iloc[0]['Disaster Type'], 'Flood')
+    
+    def test_safe_filter_data_empty(self):
+        """Test filtering with empty data"""
+        empty_df = pd.DataFrame()
+        filtered = safe_filter_data(empty_df, countries=['NGA'])
+        
+        self.assertTrue(filtered.empty)
+    
+    def test_safe_aggregate_data(self):
+        """Test safe data aggregation"""
+        agg_data = safe_aggregate_data(
+            self.sample_data,
+            group_by=['Disaster Type'],
+            agg_dict={'Total Deaths': 'sum', 'Total Affected': 'sum'}
+        )
+        
+        # Should have 3 disaster types: Flood, Storm, Drought
+        self.assertEqual(len(agg_data), 3)
+        self.assertIn('Disaster Type', agg_data.columns)
+        self.assertIn('Total Deaths', agg_data.columns)
+        self.assertIn('Total Affected', agg_data.columns)
+        
+        # Check Flood aggregation (2 records: 10+0=10 deaths, 1000+2000=3000 affected)
+        flood_data = agg_data[agg_data['Disaster Type'] == 'Flood']
+        self.assertEqual(len(flood_data), 1)
+        self.assertEqual(flood_data.iloc[0]['Total Deaths'], 10)
+        self.assertEqual(flood_data.iloc[0]['Total Affected'], 3000)
 
 
 if __name__ == '__main__':

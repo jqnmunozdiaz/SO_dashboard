@@ -226,9 +226,18 @@ def create_world_bank_disaster_tab_content():
                 'margin-bottom': '1.5rem'
             }),
             
-            # Charts container (empty for now - figures will be added later)
+            # Charts container
             html.Div([
-                # Charts will be added here later
+                # Disaster frequency bar chart
+                html.Div([
+                    dcc.Graph(id="disaster-frequency-chart")
+                ], style={
+                    'background': 'white',
+                    'padding': '1.5rem',
+                    'border-radius': '0.5rem',
+                    'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                    'border': '1px solid #e5e7eb'
+                })
             ], id="charts-container")
         ], style={
             'max-width': '80rem',

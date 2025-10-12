@@ -1,0 +1,1 @@
+export { StandaloneChart } from './StandaloneChart';

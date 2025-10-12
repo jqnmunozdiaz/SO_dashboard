@@ -1,1 +1,0 @@
-export { StandaloneChart } from './StandaloneChart';

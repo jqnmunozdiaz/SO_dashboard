@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Up arrow -->
-  <path stroke="#295e84" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 14V2m0 0L3 6m4-4l4 4" />
-  <!-- Down arrow -->
-  <path stroke="#295e84" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 10v12m0 0l4-4m-4 4l-4-4" />
-</svg>

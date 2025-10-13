@@ -131,15 +131,18 @@ dmypy.json
 # VS Code
 .vscode/
 
-# Data files (keep structure, ignore actual data)
-data/raw/*
-data/processed/*
+# Data files - exclude large raw Excel files but keep processed CSV files
+data/raw/*.xlsx
+data/raw/*.xls
 data/external/*
 data/uploads/*
 
-# Keep README files in data directories
+# Keep essential data files for deployment
 !data/raw/README.md
+!data/raw/*.txt
+!data/raw/*.csv
 !data/processed/README.md
+!data/processed/*.csv
 !data/external/README.md
 !data/uploads/README.md
 

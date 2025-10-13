@@ -1,0 +1,10 @@
+Drought
+Earthquake
+Epidemic
+Extreme temperature
+Flood
+Mass movement (dry)
+Mass movement (wet)
+Storm
+Volcanic activity
+Wildfire

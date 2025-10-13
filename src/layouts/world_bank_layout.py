@@ -114,7 +114,7 @@ def create_world_bank_layout():
                             }
                         ),
                         html.P(
-                            "An interactive platform for analyzing disaster risk patterns, vulnerability assessments, and resilience indicators across Sub-Saharan Africa. This tool enables evidence-based decision making for disaster preparedness, response planning, and long-term risk reduction strategies.",
+                            "An interactive platform for analyzing historical disaster patterns, urbanization trends, and resilience indicators across Sub-Saharan Africa. This tool enables evidence-based decision making for disaster preparedness, response planning, and long-term risk reduction strategies.",
                             style={
                                 'font-size': '1rem',
                                 'line-height': '1.75rem',
@@ -310,6 +310,26 @@ def create_world_bank_disaster_tab_content():
                     dbc.Tab(
                         label="Disasters by Year",
                         tab_id="disaster-timeline",
+                        tab_style={
+                            'border': '1px solid #e5e7eb',
+                            'background': 'transparent',
+                            'padding': '0.5rem 1rem',
+                            'margin-right': '0.25rem',
+                            'border-radius': '4px',
+                            'color': '#64748b',
+                            'font-weight': '500',
+                            'font-size': '0.8rem'
+                        },
+                        active_tab_style={
+                            'border': '1px solid #295e84',
+                            'background': 'transparent',
+                            'color': '#295e84',
+                            'font-weight': '600'
+                        }
+                    ),
+                    dbc.Tab(
+                        label="Total Affected Population",
+                        tab_id="disaster-affected",
                         tab_style={
                             'border': '1px solid #e5e7eb',
                             'background': 'transparent',

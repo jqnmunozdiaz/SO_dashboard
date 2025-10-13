@@ -57,6 +57,16 @@ def register_callbacks(app):
                 'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
                 'border': '1px solid #e5e7eb'
             })
+        elif active_subtab == 'disaster-affected':
+            return html.Div([
+                dcc.Graph(id="disaster-affected-chart")
+            ], style={
+                'background': 'white',
+                'padding': '1.5rem',
+                'border-radius': '0.5rem',
+                'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                'border': '1px solid #e5e7eb'
+            })
         else:
             return html.Div("Select a chart type above")
     
@@ -266,6 +276,121 @@ def register_callbacks(app):
             marker_line_color='white',
             marker_line_width=0.5,
             hovertemplate='<b>%{fullData.name}</b><br>Period: %{x}<br>Events: %{y}<extra></extra>'
+        )
+        
+        return fig
+    
+    @app.callback(
+        Output('disaster-affected-chart', 'figure'),
+        Input('main-country-filter', 'value'),
+        prevent_initial_call=False
+    )
+    def update_disaster_affected_chart(selected_country):
+        """Create stacked bar chart showing total affected population by 5-year intervals since configured start year"""
+        try:
+            # Load real EM-DAT data
+            emdat_data = load_emdat_data()
+            
+            # Load country mapping for ISO code to full name conversion
+            countries_dict = load_subsaharan_countries_dict()
+            
+            # Filter data based on country input only
+            if selected_country and 'ISO' in emdat_data.columns:
+                emdat_data = emdat_data[emdat_data['ISO'] == selected_country]
+            
+            # Create 5-year intervals starting from configured year
+            if emdat_data.empty:
+                # Create empty data structure
+                affected_data = pd.DataFrame({
+                    'Year_Interval': ['1975-1979'],
+                    'Disaster Type': ['No Data'],
+                    'Total Affected': [0]
+                })
+                title_suffix = "No data available for selected country"
+            else:
+                # Create 5-year interval bins starting from configured year
+                start_year = DATA_CONFIG['emdat_start_year']
+                emdat_data['Year_Interval'] = pd.cut(
+                    emdat_data['Year'],
+                    bins=range(start_year, 2030, 5),
+                    labels=[f"{year}-{year+4}" for year in range(start_year, 2025, 5)],
+                    include_lowest=True,
+                    right=False
+                )
+                
+                # Group by interval and disaster type, sum affected population
+                affected_data = emdat_data.groupby(['Year_Interval', 'Disaster Type'])['Total Affected'].sum().reset_index()
+                
+                # Convert interval to string for plotting
+                affected_data['Year_Interval'] = affected_data['Year_Interval'].astype(str)
+                
+                # Map ISO code to full country name
+                if selected_country:
+                    country_name = countries_dict.get(selected_country, selected_country)
+                    title_suffix = f"{country_name}"
+                else:
+                    raise ValueError("No country selected")
+                    
+        except Exception as e:
+            # Return empty data on error
+            affected_data = pd.DataFrame({
+                'Year_Interval': ['1975-1979'],
+                'Disaster Type': ['Error'],
+                'Total Affected': [0]
+            })
+            title_suffix = f"Error loading data"
+        
+        # Create stacked bar chart with disaster type colors
+        fig = px.bar(
+            affected_data,
+            x='Year_Interval',
+            y='Total Affected',
+            color='Disaster Type',
+            title=f'<b>{title_suffix}</b> | Total Affected Population by 5-Year Intervals ({DATA_CONFIG["analysis_period"]})<br><sub>Data Source: EM-DAT</sub>',
+            labels={'Total Affected': 'Total Affected Population', 'Year_Interval': '5-Year Interval'},
+            color_discrete_map=DISASTER_COLORS
+        )
+        
+        # Update layout styling
+        fig.update_layout(
+            plot_bgcolor='white',
+            paper_bgcolor='white',
+            font={'color': '#2c3e50'},
+            title_font_size=16,
+            showlegend=True,
+            legend=dict(
+                orientation="v",
+                yanchor="top",
+                y=1,
+                xanchor="left",
+                x=1.02
+            ),
+            xaxis=dict(
+                showgrid=False,
+                gridwidth=0,
+                gridcolor='#e5e7eb',
+                tickmode='array',
+                tickvals=affected_data['Year_Interval'].unique(),
+                ticktext=[interval.replace('-', ' -<br>') for interval in affected_data['Year_Interval'].unique()],
+                tickfont=dict(size=10)
+            ),
+            yaxis=dict(
+                rangemode='tozero',
+                showgrid=True,
+                gridwidth=1,
+                gridcolor='#e5e7eb',
+                zeroline=True,
+                zerolinewidth=1,
+                zerolinecolor='#e5e7eb'
+            ),
+            margin=dict(b=100, r=150)  # Extra margin for legend
+        )
+        
+        # Update bar styling
+        fig.update_traces(
+            marker_line_color='white',
+            marker_line_width=0.5,
+            hovertemplate='<b>%{fullData.name}</b><br>Period: %{x}<br>Affected: %{y:,.0f}<extra></extra>'
         )
         
         return fig

@@ -101,17 +101,6 @@ label {
     box-shadow: 0 6px 20px rgba(41, 94, 132, 0.25);
 }
 
-.main-nav-tabs .nav-link.active::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #60a5fa, #3b82f6, #1d4ed8);
-    border-radius: 12px 12px 0 0;
-}
-
 .main-nav-tabs .nav-link::after {
     content: '';
     position: absolute;
@@ -166,18 +155,6 @@ label {
     border-color: #295e84;
     font-weight: 500;
     box-shadow: 0 2px 8px rgba(41, 94, 132, 0.15);
-}
-
-.sub-nav-tabs .nav-link.active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 2px;
-    background: #295e84;
-    border-radius: 1px;
 }
 
 /* Dropdown Styling */

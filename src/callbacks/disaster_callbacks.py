@@ -40,33 +40,15 @@ def register_callbacks(app):
         if active_subtab == 'disaster-frequency':
             return html.Div([
                 dcc.Graph(id="disaster-frequency-chart")
-            ], style={
-                'background': 'white',
-                'padding': '1.5rem',
-                'border-radius': '0.5rem',
-                'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-                'border': '1px solid #e5e7eb'
-            })
+            ], className="chart-container")
         elif active_subtab == 'disaster-timeline':
             return html.Div([
                 dcc.Graph(id="disaster-timeline-chart")
-            ], style={
-                'background': 'white',
-                'padding': '1.5rem',
-                'border-radius': '0.5rem',
-                'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-                'border': '1px solid #e5e7eb'
-            })
+            ], className="chart-container")
         elif active_subtab == 'disaster-affected':
             return html.Div([
                 dcc.Graph(id="disaster-affected-chart")
-            ], style={
-                'background': 'white',
-                'padding': '1.5rem',
-                'border-radius': '0.5rem',
-                'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-                'border': '1px solid #e5e7eb'
-            })
+            ], className="chart-container")
         else:
             return html.Div("Select a chart type above")
     

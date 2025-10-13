@@ -8,40 +8,6 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 from src.utils.data_loader import get_subsaharan_countries
 
-# Main tab styles (primary navigation)
-MAIN_TAB_STYLE_INACTIVE = {
-    'border': 'none',
-    'background': 'transparent',
-    'color': '#6b7280',
-    'font-weight': '500',
-    'font-size': '1rem',
-    'cursor': 'pointer'
-}
-
-MAIN_TAB_STYLE_ACTIVE = {
-    'border': 'none',
-    'background': 'transparent',
-    'color': 'white',
-    'font-weight': '600'
-}
-
-# Sub tab styles (secondary navigation)
-SUB_TAB_STYLE_INACTIVE = {
-    'border': 'none',
-    'background': 'transparent',
-    'color': '#64748b',
-    'font-weight': '400',
-    'font-size': '0.875rem',
-    'cursor': 'pointer'
-}
-
-SUB_TAB_STYLE_ACTIVE = {
-    'border': 'none',
-    'background': 'transparent',
-    'color': '#295e84',
-    'font-weight': '500'
-}
-
 def create_world_bank_layout():
     """Create the World Bank-styled main dashboard layout matching Review_CatDDOs structure"""
     
@@ -55,60 +21,28 @@ def create_world_bank_layout():
                     html.H2(
                         id="dynamic-header-title",
                         children="Sub-Saharan Africa DRM Dashboard",
-                        style={
-                            'font-size': '1.25rem',
-                            'font-weight': '600',
-                            'color': '#295e84',
-                            'margin': '0'
-                        }
+                        className="header-title"
                     )
-                ], style={
-                    'display': 'flex',
-                    'align-items': 'center'
-                }),
+                ], className="header-title-container"),
                 
                 # Spacer div to push logos to the right
-                html.Div(style={'flex': '1'}),
+                html.Div(className="header-spacer"),
                 
                 # Logos container on the right
                 html.Div([
                     html.Img(
                         src="/assets/images/wb-full-logo.png",
-                        style={
-                            'height': '40px',
-                            'margin-right': '1rem',
-                            'filter': 'brightness(0.8)'
-                        },
+                        className="header-logo header-logo-wb",
                         alt="World Bank Logo"
                     ),
                     html.Img(
                         src="/assets/images/gfdrr-logo.png",
-                        style={
-                            'height': '40px',
-                            'filter': 'brightness(0.8)'
-                        },
+                        className="header-logo",
                         alt="GFDRR Logo"
                     )
-                ], style={
-                    'display': 'flex',
-                    'align-items': 'center'
-                })
-            ], style={
-                'display': 'flex',
-                'align-items': 'center',
-                'max-width': '80rem',
-                'margin': '0 auto',
-                'padding': '0 1.5rem'
-            })
-        ], style={
-            'background': 'white',
-            'padding': '1rem 0',
-            'border-bottom': '1px solid #e5e7eb',
-            'position': 'sticky',
-            'top': '0',
-            'z-index': '50',
-            'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-        }),
+                ], className="header-logos")
+            ], className="header-inner")
+        ], className="header-container"),
         
         # Main content area
         html.Div([
@@ -119,62 +53,24 @@ def create_world_bank_layout():
                     html.Div([
                         html.H1(
                             "Sub-Saharan Africa DRM Dashboard",
-                            style={
-                                'font-size': '2.25rem',
-                                'font-weight': '700',
-                                'line-height': '2.5rem',
-                                'color': '#295e84',
-                                'margin-bottom': '1.5rem'
-                            }
+                            className="hero-title"
                         ),
                         html.P(
                             "An interactive platform for analyzing historical disaster patterns, urbanization trends, and resilience indicators across Sub-Saharan Africa. This tool enables evidence-based decision making for disaster preparedness, response planning, and long-term risk reduction strategies.",
-                            style={
-                                'font-size': '1rem',
-                                'line-height': '1.75rem',
-                                'color': '#6b7280',
-                                'margin-bottom': '1.5rem'
-                            }
+                            className="hero-description"
                         ),
                         html.P(
                             "Select a country and interact with the dynamic figures.",
-                            style={
-                                'font-size': '1rem',
-                                'line-height': '1.75rem',
-                                'color': '#6b7280'
-                            }
+                            className="hero-subtitle"
                         )
-                    ], style={
-                        'flex': '1 1 0%',
-                        'padding-right': '3rem'
-                    }),
+                    ], className="hero-content"),
                     
                     # Right map section
                     html.Div([
-                        html.Div(
-                            style={
-                                'width': '100%',
-                                'height': '300px',
-                                'background-image': 'url("/assets/images/world-map-dashboard.png")',
-                                'background-size': 'contain',
-                                'background-repeat': 'no-repeat',
-                                'background-position': 'center',
-                                'opacity': '0.8'
-                            }
-                        )
-                    ], style={
-                        'flex': '1 1 0%'
-                    })
-                ], style={
-                    'display': 'flex',
-                    'align-items': 'center',
-                    'gap': '2rem'
-                })
-            ], style={
-                'padding': '4rem 1.5rem',
-                'max-width': '80rem',
-                'margin': '0 auto'
-            }),
+                        html.Div(className="hero-map-image")
+                    ], className="hero-map")
+                ], className="hero-inner")
+            ], className="hero-section"),
             
             # Filter section
             html.Div([
@@ -183,14 +79,7 @@ def create_world_bank_layout():
                         html.Div([
                             html.Label(
                                 "Select Country:",
-                                style={
-                                    'font-size': '0.875rem',
-                                    'font-weight': '500',
-                                    'color': '#374151',
-                                    'margin-right': '1rem',
-                                    'margin-bottom': '0',
-                                    'align-self': 'center'
-                                }
+                                className="filter-label"
                             ),
                             html.Div([
                                 dcc.Dropdown(
@@ -202,54 +91,22 @@ def create_world_bank_layout():
                                     value=get_subsaharan_countries()[0]['code'],
                                     placeholder="Select a country..."
                                 )
-                            ], style={
-                                'width': '300px'  # Reduced from 300px to half
-                            })
-                        ], style={
-                            'display': 'flex',
-                            'align-items': 'center',
-                            'gap': '1rem'
-                        }),
+                            ], className="filter-dropdown-container")
+                        ], className="filter-control-group"),
                         
                         # Methodological Note download button - moved to separate container
                         html.A([
                             html.Button(
                                 "📄 Methodological Note",
-                                style={
-                                    'background-color': '#295e84',
-                                    'color': 'white',
-                                    'border': 'none',
-                                    'padding': '0.5rem 1rem',
-                                    'border-radius': '0.375rem',
-                                    'font-size': '0.875rem',
-                                    'font-weight': '500',
-                                    'cursor': 'pointer',
-                                    'transition': 'all 0.2s ease'
-                                }
+                                className="methodological-note-btn"
                             )
                         ], 
                         href="/assets/documents/SSA DRM Dashboard - Methodological Note.docx",
                         download="SSA_DRM_Dashboard_Methodological_Note.docx"
                         )
-                    ], style={
-                        'background': 'white',
-                        'padding': '1.5rem',
-                        'border-radius': '0.5rem',
-                        'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-                        'border': '1px solid #e5e7eb',
-                        'display': 'flex',
-                        'justify-content': 'space-between',
-                        'align-items': 'center'
-                    })
-                ], style={
-                    'max-width': '80rem',
-                    'margin': '0 auto',
-                    'padding': '0 1.5rem'
-                })
-            ], style={
-                'background': '#f9fafb',
-                'padding': '2rem 0'
-            }),
+                    ], className="filter-card")
+                ], className="filter-inner")
+            ], className="filter-section"),
             
             # Navigation tabs
             html.Div([
@@ -257,67 +114,31 @@ def create_world_bank_layout():
                     dbc.Tabs([
                         dbc.Tab(
                             label="Historical Disasters",
-                            tab_id="disasters",
-                            tab_style=MAIN_TAB_STYLE_INACTIVE,
-                            active_tab_style=MAIN_TAB_STYLE_ACTIVE
+                            tab_id="disasters"
                         ),
                         dbc.Tab(
                             label="Historical Urbanization",
-                            tab_id="urbanization",
-                            tab_style=MAIN_TAB_STYLE_INACTIVE,
-                            active_tab_style=MAIN_TAB_STYLE_ACTIVE
+                            tab_id="urbanization"
                         ),
                         dbc.Tab(
                             label="Exposure to Flood Hazard",
-                            tab_id="flood-exposure",
-                            tab_style=MAIN_TAB_STYLE_INACTIVE,
-                            active_tab_style=MAIN_TAB_STYLE_ACTIVE
+                            tab_id="flood-exposure"
                         ),
                         dbc.Tab(
                             label="Projections of Flood Risk",
-                            tab_id="flood-projections",
-                            tab_style=MAIN_TAB_STYLE_INACTIVE,
-                            active_tab_style=MAIN_TAB_STYLE_ACTIVE
+                            tab_id="flood-projections"
                         )
                     ], id="main-tabs", active_tab="disasters", 
-                    className="main-nav-tabs",
-                    style={
-                        'border': 'none',
-                        'display': 'flex',
-                        'justify-content': 'center',
-                        'flex-wrap': 'wrap',
-                        'gap': '0.75rem',
-                        'padding': '0.75rem'
-                    })
-                ], style={
-                    'max-width': '80rem',
-                    'margin': '0 auto',
-                    'padding': '0 1.5rem',
-                    'width': '100%'
-                })
-            ], style={
-                'background': 'transparent',
-                'padding': '1.5rem 0',
-                'border-bottom': 'none'
-            }),
+                    className="main-nav-tabs main-tabs-container")
+                ], className="nav-inner")
+            ], className="nav-section"),
             
             # Content area
-            html.Div(id="tab-content", style={
-                'flex': '1 1 0%'
-            })
+            html.Div(id="tab-content", className="content-area")
             
-        ], style={
-            'flex': '1 1 0%',
-            'overflow-y': 'auto'
-        })
+        ], className="main-content")
         
-    ], style={
-        'display': 'flex',
-        'flex-direction': 'column',
-        'height': '100vh',
-        'background': '#f9fafb',
-        'overflow': 'hidden'
-    })
+    ], className="dashboard-container")
 
 
 def create_world_bank_disaster_tab_content():
@@ -329,43 +150,26 @@ def create_world_bank_disaster_tab_content():
                 dbc.Tabs([
                     dbc.Tab(
                         label="Frequency by Type",
-                        tab_id="disaster-frequency",
-                        tab_style=SUB_TAB_STYLE_INACTIVE,
-                        active_tab_style=SUB_TAB_STYLE_ACTIVE
+                        tab_id="disaster-frequency"
                     ),
                     dbc.Tab(
                         label="Disasters by Year",
-                        tab_id="disaster-timeline",
-                        tab_style=SUB_TAB_STYLE_INACTIVE,
-                        active_tab_style=SUB_TAB_STYLE_ACTIVE
+                        tab_id="disaster-timeline"
                     ),
                     dbc.Tab(
                         label="Total Affected Population",
-                        tab_id="disaster-affected",
-                        tab_style=SUB_TAB_STYLE_INACTIVE,
-                        active_tab_style=SUB_TAB_STYLE_ACTIVE
+                        tab_id="disaster-affected"
                     )
                 ], id="disaster-subtabs", active_tab="disaster-frequency", 
-                className="sub-nav-tabs",
-                style={
-                    'border': 'none',
-                    'margin-bottom': '1.5rem'
-                })
+                className="sub-nav-tabs subtabs-container")
             ]),
             
             # Charts container
             html.Div([
                 html.Div(id="disaster-chart-container")
             ])
-        ], style={
-            'max-width': '80rem',
-            'margin': '0 auto',
-            'padding': '1.5rem'
-        })
-    ], style={
-        'background': '#f9fafb',
-        'min-height': 'calc(100vh - 300px)'
-    })
+        ], className="tab-content-inner")
+    ], className="tab-content-container")
 
 
 def create_world_bank_urbanization_tab_content():
@@ -374,49 +178,20 @@ def create_world_bank_urbanization_tab_content():
         html.Div([
             html.H3(
                 "Historical Urbanization Analysis",
-                style={
-                    'font-size': '1.5rem',
-                    'font-weight': '600',
-                    'color': '#374151',
-                    'margin-bottom': '1rem'
-                }
+                className="tab-title"
             ),
             html.P(
                 "This section will contain historical urbanization trends, population growth data, and urban development indicators for Sub-Saharan African countries.",
-                style={
-                    'font-size': '1rem',
-                    'line-height': '1.75rem',
-                    'color': '#6b7280',
-                    'margin-bottom': '2rem'
-                }
+                className="tab-description"
             ),
             html.Div([
                 html.P(
                     "Historical urbanization content coming soon...",
-                    style={
-                        'font-size': '1.125rem',
-                        'color': '#9ca3af',
-                        'text-align': 'center',
-                        'padding': '2rem'
-                    }
+                    className="coming-soon-text"
                 )
-            ], style={
-                'background': 'white',
-                'padding': '2rem',
-                'border-radius': '0.5rem',
-                'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-                'border': '1px solid #e5e7eb',
-                'text-align': 'center'
-            })
-        ], style={
-            'max-width': '80rem',
-            'margin': '0 auto',
-            'padding': '1.5rem'
-        })
-    ], style={
-        'background': '#f9fafb',
-        'min-height': 'calc(100vh - 300px)'
-    })
+            ], className="coming-soon-card")
+        ], className="tab-content-inner")
+    ], className="tab-content-container")
 
 
 def create_world_bank_flood_exposure_tab_content():
@@ -425,49 +200,20 @@ def create_world_bank_flood_exposure_tab_content():
         html.Div([
             html.H3(
                 "Exposure to Flood Hazard",
-                style={
-                    'font-size': '1.5rem',
-                    'font-weight': '600',
-                    'color': '#374151',
-                    'margin-bottom': '1rem'
-                }
+                className="tab-title"
             ),
             html.P(
                 "This section will contain current flood hazard exposure data, vulnerable population mapping, and infrastructure at risk assessments for Sub-Saharan African countries.",
-                style={
-                    'font-size': '1rem',
-                    'line-height': '1.75rem',
-                    'color': '#6b7280',
-                    'margin-bottom': '2rem'
-                }
+                className="tab-description"
             ),
             html.Div([
                 html.P(
                     "Flood exposure analysis coming soon...",
-                    style={
-                        'font-size': '1.125rem',
-                        'color': '#9ca3af',
-                        'text-align': 'center',
-                        'padding': '2rem'
-                    }
+                    className="coming-soon-text"
                 )
-            ], style={
-                'background': 'white',
-                'padding': '2rem',
-                'border-radius': '0.5rem',
-                'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-                'border': '1px solid #e5e7eb',
-                'text-align': 'center'
-            })
-        ], style={
-            'max-width': '80rem',
-            'margin': '0 auto',
-            'padding': '1.5rem'
-        })
-    ], style={
-        'background': '#f9fafb',
-        'min-height': 'calc(100vh - 300px)'
-    })
+            ], className="coming-soon-card")
+        ], className="tab-content-inner")
+    ], className="tab-content-container")
 
 
 def create_world_bank_flood_projections_tab_content():
@@ -476,47 +222,18 @@ def create_world_bank_flood_projections_tab_content():
         html.Div([
             html.H3(
                 "Projections of Flood Risk",
-                style={
-                    'font-size': '1.5rem',
-                    'font-weight': '600',
-                    'color': '#374151',
-                    'margin-bottom': '1rem'
-                }
+                className="tab-title"
             ),
             html.P(
                 "This section will contain future flood risk projections, climate change impact scenarios, and long-term risk assessments for Sub-Saharan African countries.",
-                style={
-                    'font-size': '1rem',
-                    'line-height': '1.75rem',
-                    'color': '#6b7280',
-                    'margin-bottom': '2rem'
-                }
+                className="tab-description"
             ),
             html.Div([
                 html.P(
                     "Flood risk projections coming soon...",
-                    style={
-                        'font-size': '1.125rem',
-                        'color': '#9ca3af',
-                        'text-align': 'center',
-                        'padding': '2rem'
-                    }
+                    className="coming-soon-text"
                 )
-            ], style={
-                'background': 'white',
-                'padding': '2rem',
-                'border-radius': '0.5rem',
-                'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-                'border': '1px solid #e5e7eb',
-                'text-align': 'center'
-            })
-        ], style={
-            'max-width': '80rem',
-            'margin': '0 auto',
-            'padding': '1.5rem'
-        })
-    ], style={
-        'background': '#f9fafb',
-        'min-height': 'calc(100vh - 300px)'
-    })
+            ], className="coming-soon-card")
+        ], className="tab-content-inner")
+    ], className="tab-content-container")
 

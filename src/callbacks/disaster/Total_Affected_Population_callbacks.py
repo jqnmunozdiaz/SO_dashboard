@@ -1,5 +1,6 @@
 """
-Callbacks for disaster affected population visualization
+Callbacks for disaster affected population visualization - "Total Affected Population" subtab
+Shows stacked bar chart of total affected population by disaster type in 5-year intervals for selected country
 """
 
 from dash import Input, Output
@@ -11,31 +12,31 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 try:
-    from ..utils.data_loader import load_emdat_data
-    from ..utils.country_utils import load_subsaharan_countries_dict
-    from ..utils.color_utils import DISASTER_COLORS
+    from ...utils.data_loader import load_emdat_data
+    from ...utils.country_utils import load_subsaharan_countries_dict
+    from ...utils.color_utils import DISASTER_COLORS
     from config.settings import DATA_CONFIG
 except ImportError:
     # Fallback for direct execution
     import sys
     import os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_emdat_data
     from src.utils.country_utils import load_subsaharan_countries_dict
     from src.utils.color_utils import DISASTER_COLORS
     from config.settings import DATA_CONFIG
 
 
-def register_disaster_affected_callbacks(app):
-    """Register disaster affected population chart callbacks"""
+def setup_total_affected_population_callbacks(app):
+    """Setup callbacks for the 'Total Affected Population' disaster chart"""
     
     @app.callback(
         Output('disaster-affected-chart', 'figure'),
         Input('main-country-filter', 'value'),
         prevent_initial_call=False
     )
-    def update_disaster_affected_chart(selected_country):
-        """Create stacked bar chart showing total affected population by 5-year intervals since configured start year"""
+    def generate_total_affected_population_chart(selected_country):
+        """Generate stacked bar chart showing total affected population by 5-year intervals since configured start year"""
         try:
             # Load real EM-DAT data
             emdat_data = load_emdat_data()

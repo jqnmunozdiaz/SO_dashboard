@@ -1,5 +1,6 @@
 """
-Callbacks for disaster frequency visualization
+Callbacks for disaster frequency visualization - "Frequency by Type" subtab
+Shows bar chart of disaster event counts grouped by disaster type for selected country
 """
 
 from dash import Input, Output
@@ -11,31 +12,31 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 try:
-    from ..utils.data_loader import load_emdat_data
-    from ..utils.country_utils import load_subsaharan_countries_dict
-    from ..utils.color_utils import get_disaster_color, DISASTER_COLORS
+    from ...utils.data_loader import load_emdat_data
+    from ...utils.country_utils import load_subsaharan_countries_dict
+    from ...utils.color_utils import get_disaster_color, DISASTER_COLORS
     from config.settings import DATA_CONFIG
 except ImportError:
     # Fallback for direct execution
     import sys
     import os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_emdat_data
     from src.utils.country_utils import load_subsaharan_countries_dict
     from src.utils.color_utils import get_disaster_color, DISASTER_COLORS
     from config.settings import DATA_CONFIG
 
 
-def register_disaster_frequency_callbacks(app):
-    """Register disaster frequency chart callbacks"""
+def setup_frequency_by_type_callbacks(app):
+    """Setup callbacks for the 'Frequency by Type' disaster chart"""
     
     @app.callback(
         Output('disaster-frequency-chart', 'figure'),
         Input('main-country-filter', 'value'),
         prevent_initial_call=False
     )
-    def update_disaster_frequency_chart(selected_country):
-        """Create bar chart showing frequency of historical disasters by disaster type since configured start year"""
+    def generate_disaster_frequency_by_type_chart(selected_country):
+        """Generate bar chart showing frequency of historical disasters by disaster type since configured start year"""
         try:
             # Load real EM-DAT data
             emdat_data = load_emdat_data()

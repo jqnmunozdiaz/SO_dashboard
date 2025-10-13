@@ -95,7 +95,6 @@ def clean_wdi_data(input_file, output_dir, indicators_file):
             # Remove rows with missing essential data
             melted_df = melted_df.dropna(subset=['Year', 'Country Code', 'Value'])
                   
-            
             # Sort by year and country
             melted_df = melted_df.sort_values(['Year', 'Country Code'])
                   

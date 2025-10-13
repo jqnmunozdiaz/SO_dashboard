@@ -7,6 +7,7 @@ from dash import Input, Output
 import plotly.express as px
 import pandas as pd
 import warnings
+import textwrap
 
 # Suppress pandas future warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -25,6 +26,13 @@ except ImportError:
     from src.utils.country_utils import load_subsaharan_countries_dict
     from src.utils.color_utils import get_disaster_color, DISASTER_COLORS
     from config.settings import DATA_CONFIG
+
+
+def wrap_text(text, width=15):
+    """Wrap text to specified width with line breaks"""
+    if pd.isna(text) or text == '':
+        return text
+    return '<br>'.join(textwrap.wrap(str(text), width=width))
 
 
 def setup_frequency_by_type_callbacks(app):
@@ -59,6 +67,9 @@ def setup_frequency_by_type_callbacks(app):
                 frequency_data = emdat_data.groupby('Disaster Type').size().reset_index(name='Event Count')
                 frequency_data = frequency_data.sort_values('Event Count', ascending=False)
                 
+                # Add wrapped labels for display
+                frequency_data['Disaster Type Wrapped'] = frequency_data['Disaster Type'].apply(wrap_text)
+                
                 # Add colors for each disaster type
                 frequency_data['Color'] = frequency_data['Disaster Type'].apply(
                     lambda x: get_disaster_color(x, DISASTER_COLORS)
@@ -75,6 +86,7 @@ def setup_frequency_by_type_callbacks(app):
             # Return empty data on error
             frequency_data = pd.DataFrame({
                 'Disaster Type': ['Error'],
+                'Disaster Type Wrapped': ['Error'],
                 'Event Count': [0],
                 'Color': ['#e74c3c']
             })
@@ -83,10 +95,10 @@ def setup_frequency_by_type_callbacks(app):
         # Create bar chart with custom colors
         fig = px.bar(
             frequency_data,
-            x='Disaster Type',
+            x='Disaster Type Wrapped',
             y='Event Count',
             title=f'<b>{title_suffix}</b> | Frequency of Historical Events by Disaster Type ({DATA_CONFIG["analysis_period"]})<br><sub>Data Source: EM-DAT</sub>',
-            labels={'Event Count': 'Number of Events', 'Disaster Type': 'Disaster Type'},
+            labels={'Event Count': 'Number of Events', 'Disaster Type Wrapped': 'Disaster Type'},
             color='Disaster Type',
             color_discrete_map={
             row['Disaster Type']: row['Color'] 
@@ -102,6 +114,11 @@ def setup_frequency_by_type_callbacks(app):
             title_font_size=16,
             xaxis_tickangle=0,
             showlegend=False,
+            xaxis=dict(
+                tickmode='array',
+                tickvals=list(range(len(frequency_data))),
+                ticktext=frequency_data['Disaster Type Wrapped'].tolist()
+            ),
             yaxis=dict(
                 dtick=1 if frequency_data['Event Count'].max() <= 10 else None,
                 rangemode='tozero',
@@ -112,14 +129,15 @@ def setup_frequency_by_type_callbacks(app):
                 zerolinewidth=1,
                 zerolinecolor='#e5e7eb'
             ),
-            margin=dict(b=80)
+            margin=dict(b=100)
         )
         
         # Update bar styling
         fig.update_traces(
             marker_line_color='white',
             marker_line_width=0.5,
-            hovertemplate='<b>%{x}</b><br>Events: %{y}<extra></extra>'
+            hovertemplate='<b>%{customdata}</b><br>Events: %{y}<extra></extra>',
+            customdata=frequency_data['Disaster Type']
         )
         
         return fig

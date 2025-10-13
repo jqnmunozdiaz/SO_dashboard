@@ -546,7 +546,7 @@ label {
     padding: 1rem;
     border-radius: 0.5rem;
     border: 1px solid #e2e8f0;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .checkbox-label {
@@ -579,6 +579,8 @@ label {
     margin-right: 0.5rem !important;
     border: 2px solid #d1d5db !important;
     border-radius: 0.25rem !important;
+    vertical-align: middle; /* ensures checkbox aligns with text baseline */
+    margin: 0.5rem; /* remove browser default offset */
     background: white !important;
 }
 

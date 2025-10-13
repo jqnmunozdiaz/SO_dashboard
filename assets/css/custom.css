@@ -1,9 +1,9 @@
-/* World Bank DRM Dashboard CSS - Exact styling from Review_CatDDOs */
+/* World Bank DRM Dashboard CSS */
 
-/* Import Inter font (matching Review_CatDDOs) */
+/* Import Inter font */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
-/* Global styling matching Review_CatDDOs globals.css */
+/* Global base styles */
 html,
 body {
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -13,14 +13,14 @@ body {
     height: 100%;
     color: #374151;
     -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
 }
 
-/* Reset and base styles */
 * {
     box-sizing: border-box;
 }
 
-/* Typography matching Tailwind defaults */
+/* Typography */
 h1 {
     font-size: 2.25rem;
     line-height: 2.5rem;
@@ -52,50 +52,13 @@ p {
     margin: 0;
 }
 
-/* Label styling */
 label {
     font-size: 0.875rem;
     font-weight: 500;
     color: #374151;
 }
 
-/* Main layout styling */
-.container-fluid {
-    padding: 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-/* Modern animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.fade-in {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-/* Enhanced gradient backgrounds */
-.gradient-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.gradient-secondary {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.gradient-success {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-/* Main Tab Styling (Primary Navigation) */
+/* Main Navigation Tabs */
 .main-nav-tabs {
     border-bottom: 2px solid #e5e7eb;
     margin-bottom: 0;
@@ -117,6 +80,7 @@ label {
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     position: relative;
     overflow: hidden;
+    text-decoration: none !important;
 }
 
 .main-nav-tabs .nav-link:hover {
@@ -148,7 +112,22 @@ label {
     border-radius: 12px 12px 0 0;
 }
 
-/* Sub Tab Styling (Secondary Navigation) */
+.main-nav-tabs .nav-link::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.main-nav-tabs .nav-link:hover::after {
+    left: 100%;
+}
+
+/* Sub Navigation Tabs */
 .sub-nav-tabs {
     border-bottom: 1px solid #e5e7eb;
     margin-bottom: 1.5rem;
@@ -168,6 +147,8 @@ label {
     transition: all 0.2s ease;
     background: white;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    position: relative;
+    text-decoration: none !important;
 }
 
 .sub-nav-tabs .nav-link:hover {
@@ -199,414 +180,8 @@ label {
     border-radius: 1px;
 }
 
-/* Enhanced Tab animations and interactions */
-.main-nav-tabs .nav-link {
-    position: relative;
-    overflow: hidden;
-    text-decoration: none !important;
-}
-
-.main-nav-tabs .nav-link::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.6s ease;
-}
-
-.main-nav-tabs .nav-link:hover::after {
-    left: 100%;
-}
-
-.sub-nav-tabs .nav-link {
-    position: relative;
-    text-decoration: none !important;
-}
-
-/* Tab content area styling */
-.tab-content {
-    background: transparent;
-    border: none;
-    padding: 0;
-}
-
-/* World Bank Card styling */
-.card {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    margin-bottom: 1.5rem;
-    background: white;
-    transition: all 0.2s ease;
-}
-
-.card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.card-header {
-    background: white;
-    border-bottom: 1px solid #e5e7eb;
-    font-weight: 600;
-    color: #295e84;
-    border-radius: 8px 8px 0 0;
-    padding: 1.5rem;
-    font-size: 1.1rem;
-}
-
-.card-body {
-    padding: 1.5rem;
-    color: #295e84;
-}
-
-/* Glass morphism effect */
-.glass-card {
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-/* Filter controls styling */
-.form-control, .form-select {
-    border: 1px solid #bdc3c7;
-    border-radius: 4px;
-    margin-bottom: 15px;
-}
-
-.form-control:focus, .form-select:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-}
-
-/* Dropdown styling */
-.Select-control {
-    border: 1px solid #bdc3c7;
-    border-radius: 4px;
-}
-
-.Select-control:hover {
-    border-color: #3498db;
-}
-
-.Select-control.is-focused {
-    border-color: #3498db;
-    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-}
-
-/* Button styling */
-.btn-primary {
-    background-color: #3498db;
-    border-color: #3498db;
-}
-
-.btn-primary:hover {
-    background-color: #2980b9;
-    border-color: #2980b9;
-}
-
-/* Modern Chart containers */
-.chart-container {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 16px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-}
-
-.chart-container:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 50px rgba(0,0,0,0.15);
-}
-
-/* Plotly chart styling */
-.js-plotly-plot .plotly {
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-.js-plotly-plot .plotly .main-svg {
-    border-radius: 12px;
-}
-
-/* Loading spinner */
-.loading-spinner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-}
-
-.spinner-border {
-    color: #3498db;
-}
-
-/* Statistics cards */
-.stat-card {
-    background: linear-gradient(135deg, #3498db, #2980b9);
-    color: white;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.stat-card h3 {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.stat-card p {
-    margin-bottom: 0;
-    opacity: 0.9;
-}
-
-/* Risk level indicators */
-.risk-low {
-    background-color: #2ecc71;
-    color: white;
-}
-
-.risk-medium {
-    background-color: #f39c12;
-    color: white;
-}
-
-.risk-high {
-    background-color: #e74c3c;
-    color: white;
-}
-
-.risk-very-high {
-    background-color: #8b0000;
-    color: white;
-}
-
-/* Footer styling */
-.footer {
-    margin-top: 50px;
-    padding: 20px 0;
-    border-top: 1px solid #bdc3c7;
-    color: #7f8c8d;
-    text-align: center;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .container-fluid {
-        padding: 10px;
-    }
-    
-    h1 {
-        font-size: 1.5rem;
-        text-align: center;
-    }
-    
-    .card-body {
-        padding: 15px;
-    }
-    
-    .stat-card h3 {
-        font-size: 2rem;
-    }
-}
-
-/* Custom plotly styling */
-.js-plotly-plot .plotly .main-svg {
-    border-radius: 8px;
-}
-
-/* Tooltip styling */
-.tooltip-inner {
-    background-color: #2c3e50;
-    color: white;
-    border-radius: 4px;
-}
-
-/* Legend styling for disaster types */
-.disaster-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.disaster-legend-item {
-    display: flex;
-    align-items: center;
-    padding: 5px 10px;
-    border-radius: 4px;
-    background-color: #ecf0f1;
-    font-size: 0.9rem;
-}
-
-.disaster-legend-color {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-right: 8px;
-}
-
-/* Country comparison table */
-.comparison-table {
-    margin-top: 20px;
-}
-
-.comparison-table th {
-    background-color: #2c3e50;
-    color: white;
-    text-align: center;
-}
-
-.comparison-table td {
-    text-align: center;
-    vertical-align: middle;
-}
-
-/* Alert messages */
-.alert {
-    border-radius: 4px;
-    margin-bottom: 20px;
-}
-
-.alert-info {
-    background-color: #d1ecf1;
-    border-color: #bee5eb;
-    color: #0c5460;
-}
-
-.alert-warning {
-    background-color: #fff3cd;
-    border-color: #ffeaa7;
-    color: #856404;
-}
-
-/* Data source attribution */
-.data-source {
-    font-size: 0.8rem;
-    color: #7f8c8d;
-    font-style: italic;
-    margin-top: 10px;
-}
-
-/* Map controls */
-.map-controls {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 1000;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    padding: 1rem;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Modern Dropdown Styling */
-.Select__control {
-    border: 2px solid rgba(102, 126, 234, 0.1);
-    border-radius: 12px;
-    min-height: 45px;
-    transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-}
-
-.Select__control:hover {
-    border-color: rgba(102, 126, 234, 0.3);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
-}
-
-.Select__control--is-focused {
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-/* Loading animations */
-.loading-overlay {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border-radius: 16px;
-}
-
-.pulse {
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.05);
-        opacity: 0.7;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-/* Modern form controls */
-.form-control, .form-select {
-    border: 2px solid rgba(102, 126, 234, 0.1);
-    border-radius: 12px;
-    padding: 0.75rem 1rem;
-    transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.9);
-}
-
-.form-control:focus, .form-select:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    background: white;
-}
-
-/* Icon enhancements */
-.fas, .far, .fab {
-    transition: all 0.3s ease;
-}
-
-.icon-hover:hover .fas,
-.icon-hover:hover .far,
-.icon-hover:hover .fab {
-    transform: scale(1.1);
-    color: #667eea;
-}
-
-/* Smooth scrolling */
-html {
-    scroll-behavior: smooth;
-}
-
-/* World Bank Custom scrollbar */
-::-webkit-scrollbar {
-    width: 6px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f5f9;
-    border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #295e84;
-    border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #1e4a66;
-}
-
-/* Dropdown styling to match Tailwind defaults */
+/* Dropdown Styling */
+.custom-dropdown .Select__control,
 .Select__control {
     border: 1px solid #d1d5db !important;
     border-radius: 0.375rem !important;
@@ -616,24 +191,24 @@ html {
     font-size: 0.875rem !important;
 }
 
+.custom-dropdown .Select__control:hover,
 .Select__control:hover {
     border-color: #9ca3af !important;
 }
 
+.custom-dropdown .Select__control--is-focused,
 .Select__control--is-focused {
-    border-color: #3b82f6 !important;
-    box-shadow: 0 0 0 1px #3b82f6 !important;
-    outline: 2px solid transparent !important;
-    outline-offset: 2px !important;
+    border-color: #295e84 !important;
+    box-shadow: 0 0 0 1px #295e84 !important;
 }
 
 .Select__option--is-selected {
-    background-color: #3b82f6 !important;
+    background-color: #295e84 !important;
     color: white !important;
 }
 
 .Select__option--is-focused {
-    background-color: #0646c6 !important;
+    background-color: #f0f7ff !important;
     color: #374151 !important;
 }
 
@@ -647,7 +222,7 @@ html {
     font-size: 0.875rem !important;
 }
 
-/* Form control styling */
+/* Form Controls */
 .form-control, .form-select, input, select, textarea {
     border: 1px solid #d1d5db !important;
     border-radius: 0.375rem !important;
@@ -658,13 +233,13 @@ html {
 }
 
 .form-control:focus, .form-select:focus, input:focus, select:focus, textarea:focus {
-    border-color: #3b82f6 !important;
-    box-shadow: 0 0 0 1px #3b82f6 !important;
+    border-color: #295e84 !important;
+    box-shadow: 0 0 0 0.2rem rgba(41, 94, 132, 0.1) !important;
     outline: 2px solid transparent !important;
     outline-offset: 2px !important;
 }
 
-/* World Bank Button styling */
+/* Buttons */
 .btn-primary {
     background-color: #295e84 !important;
     border-color: #295e84 !important;
@@ -678,20 +253,14 @@ html {
     border-color: #1e4a66 !important;
 }
 
-/* World Bank Alert styling */
+/* Alert Styling */
 .alert-info {
     background-color: rgba(41, 94, 132, 0.1) !important;
     border-color: rgba(41, 94, 132, 0.2) !important;
     color: #295e84 !important;
 }
 
-/* World Bank Form control styling */
-.form-control:focus, .form-select:focus {
-    border-color: #295e84 !important;
-    box-shadow: 0 0 0 0.2rem rgba(41, 94, 132, 0.1) !important;
-}
-
-/* World Bank Range Slider styling */
+/* Range Slider Components */
 .rc-slider-track {
     background-color: #295e84 !important;
 }
@@ -714,37 +283,48 @@ html {
     box-shadow: 0 0 5px rgba(41, 94, 132, 0.3) !important;
 }
 
-/* World Bank Radio Items styling */
+/* Radio Inputs */
 .form-check-input:checked {
     background-color: #295e84 !important;
     border-color: #295e84 !important;
 }
 
-/* Responsive enhancements */
-@media (max-width: 992px) {
-    .container-fluid {
-        padding: 1rem;
-    }
-    
-    .card-body {
-        padding: 1.5rem;
-    }
+/* Plotly Charts */
+.js-plotly-plot .plotly {
+    border-radius: 12px;
+    overflow: hidden;
 }
 
-@media (max-width: 576px) {
-    .nav-tabs .nav-link {
-        padding: 0.75rem 1rem;
-        margin-right: 0.25rem;
-        font-size: 0.9rem;
-    }
-    
-    .card-body {
-        padding: 1rem;
-    }
+.js-plotly-plot .plotly .main-svg {
+    border-radius: 8px;
 }
 
-/* Responsive tab styling */
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #295e84;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #1e4a66;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
+    h1 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+    
     .main-nav-tabs .nav-link {
         padding: 0.75rem 1.25rem !important;
         font-size: 0.875rem !important;
@@ -788,25 +368,5 @@ html {
         margin-right: 0 !important;
         margin-bottom: 0.25rem !important;
     }
-}
-
-/* Methodological Note button styling */
-.methodological-note-btn {
-    background-color: #295e84 !important;
-    color: white !important;
-    border: none !important;
-    padding: 0.5rem 1rem !important;
-    border-radius: 0.375rem !important;
-    font-size: 0.875rem !important;
-    font-weight: 500 !important;
-    cursor: pointer !important;
-    transition: all 0.2s ease !important;
-    text-decoration: none !important;
-}
-
-.methodological-note-btn:hover {
-    background-color: #1e4a66 !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 2px 8px rgba(41, 94, 132, 0.3) !important;
 }
 

@@ -375,6 +375,7 @@ def register_callbacks(app):
                 tickfont=dict(size=10)
             ),
             yaxis=dict(
+                dtick=1 if affected_data['Total Affected'].max() <= 10 else None,
                 rangemode='tozero',
                 showgrid=True,
                 gridwidth=1,

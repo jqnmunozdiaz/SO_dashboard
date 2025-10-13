@@ -13,6 +13,68 @@ def create_world_bank_layout():
     
     # This matches the Review_CatDDOs layout: flex h-screen bg-gray-50 overflow-hidden
     return html.Div([
+        # Header with title and logos - always visible at top
+        html.Div([
+            html.Div([
+                # Title on the left
+                html.Div([
+                    html.H2(
+                        "Sub-Saharan Africa DRM Dashboard",
+                        style={
+                            'font-size': '1.25rem',
+                            'font-weight': '600',
+                            'color': '#295e84',
+                            'margin': '0'
+                        }
+                    )
+                ], style={
+                    'display': 'flex',
+                    'align-items': 'center'
+                }),
+                
+                # Spacer div to push logos to the right
+                html.Div(style={'flex': '1'}),
+                
+                # Logos container on the right
+                html.Div([
+                    html.Img(
+                        src="/assets/images/wb-full-logo.png",
+                        style={
+                            'height': '40px',
+                            'margin-right': '1rem',
+                            'filter': 'brightness(0.8)'
+                        },
+                        alt="World Bank Logo"
+                    ),
+                    html.Img(
+                        src="/assets/images/gfdrr-logo.png",
+                        style={
+                            'height': '40px',
+                            'filter': 'brightness(0.8)'
+                        },
+                        alt="GFDRR Logo"
+                    )
+                ], style={
+                    'display': 'flex',
+                    'align-items': 'center'
+                })
+            ], style={
+                'display': 'flex',
+                'align-items': 'center',
+                'max-width': '80rem',
+                'margin': '0 auto',
+                'padding': '0 1.5rem'
+            })
+        ], style={
+            'background': 'white',
+            'padding': '1rem 0',
+            'border-bottom': '1px solid #e5e7eb',
+            'position': 'sticky',
+            'top': '0',
+            'z-index': '50',
+            'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+        }),
+        
         # Main content area (equivalent to MainContent from Review_CatDDOs)
         html.Div([
             # Hero Section matching DashboardHero.tsx structure
@@ -138,19 +200,39 @@ def create_world_bank_layout():
                             label="Historical Disasters",
                             tab_id="disasters",
                             tab_style={
-                                'border': 'none',
-                                'background': 'transparent',
+                                'border': '1px solid #d1d5db',
+                                'background': 'white',
                                 'padding': '0.75rem 1.5rem',
                                 'margin-right': '0.5rem',
-                                'border-radius': '9999px',
+                                'border-radius': '0.5rem',
                                 'color': '#6b7280',
                                 'font-weight': '500',
                                 'font-size': '0.875rem'
                             },
                             active_tab_style={
-                                'background': '#f3f4f6',
-                                'color': '#374151',
-                                'border': 'none',
+                                'background': '#f0f9ff',
+                                'color': '#0284c7',
+                                'border': '1px solid #7dd3fc',
+                                'font-weight': '600'
+                            }
+                        ),
+                        dbc.Tab(
+                            label="Urbanization",
+                            tab_id="urbanization",
+                            tab_style={
+                                'border': '1px solid #d1d5db',
+                                'background': 'white',
+                                'padding': '0.75rem 1.5rem',
+                                'margin-right': '0.5rem',
+                                'border-radius': '0.5rem',
+                                'color': '#6b7280',
+                                'font-weight': '500',
+                                'font-size': '0.875rem'
+                            },
+                            active_tab_style={
+                                'background': '#f0f9ff',
+                                'color': '#0284c7',
+                                'border': '1px solid #7dd3fc',
                                 'font-weight': '600'
                             }
                         )
@@ -178,6 +260,7 @@ def create_world_bank_layout():
         
     ], style={
         'display': 'flex',
+        'flex-direction': 'column',
         'height': '100vh',
         'background': '#f9fafb',
         'overflow': 'hidden'
@@ -239,6 +322,57 @@ def create_world_bank_disaster_tab_content():
                     'border': '1px solid #e5e7eb'
                 })
             ], id="charts-container")
+        ], style={
+            'max-width': '80rem',
+            'margin': '0 auto',
+            'padding': '1.5rem'
+        })
+    ], style={
+        'background': '#f9fafb',
+        'min-height': 'calc(100vh - 300px)'
+    })
+
+
+def create_world_bank_urbanization_tab_content():
+    """Create World Bank-styled content for the Urbanization tab"""
+    return html.Div([
+        html.Div([
+            html.H3(
+                "Urbanization Analysis",
+                style={
+                    'font-size': '1.5rem',
+                    'font-weight': '600',
+                    'color': '#374151',
+                    'margin-bottom': '1rem'
+                }
+            ),
+            html.P(
+                "This section will contain urbanization trends, population growth data, and urban development indicators for Sub-Saharan African countries.",
+                style={
+                    'font-size': '1rem',
+                    'line-height': '1.75rem',
+                    'color': '#6b7280',
+                    'margin-bottom': '2rem'
+                }
+            ),
+            html.Div([
+                html.P(
+                    "Urbanization content coming soon...",
+                    style={
+                        'font-size': '1.125rem',
+                        'color': '#9ca3af',
+                        'text-align': 'center',
+                        'padding': '2rem'
+                    }
+                )
+            ], style={
+                'background': 'white',
+                'padding': '2rem',
+                'border-radius': '0.5rem',
+                'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                'border': '1px solid #e5e7eb',
+                'text-align': 'center'
+            })
         ], style={
             'max-width': '80rem',
             'margin': '0 auto',

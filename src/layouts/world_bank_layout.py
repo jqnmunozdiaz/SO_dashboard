@@ -8,24 +8,38 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 from src.utils.data_loader import get_subsaharan_countries
 
-# Shared tab styles - modify these to change all tabs at once
-TAB_STYLE_INACTIVE = {
-    'border': '0px solid #e5e7eb',
+# Main tab styles (primary navigation)
+MAIN_TAB_STYLE_INACTIVE = {
+    'border': 'none',
     'background': 'transparent',
-    'padding': '0.875rem 1.75rem',
-    'margin-right': '0.5rem',
-    'border-radius': '8px',
-    'color': "#08387b",
+    'color': '#6b7280',
     'font-weight': '500',
+    'font-size': '1rem',
+    'cursor': 'pointer'
+}
+
+MAIN_TAB_STYLE_ACTIVE = {
+    'border': 'none',
+    'background': 'transparent',
+    'color': 'white',
+    'font-weight': '600'
+}
+
+# Sub tab styles (secondary navigation)
+SUB_TAB_STYLE_INACTIVE = {
+    'border': 'none',
+    'background': 'transparent',
+    'color': '#64748b',
+    'font-weight': '400',
     'font-size': '0.875rem',
     'cursor': 'pointer'
 }
 
-TAB_STYLE_ACTIVE = {
-    'border': '0px solid #295e84',
+SUB_TAB_STYLE_ACTIVE = {
+    'border': 'none',
     'background': 'transparent',
     'color': '#295e84',
-    'font-weight': '600'
+    'font-weight': '500'
 }
 
 def create_world_bank_layout():
@@ -189,40 +203,43 @@ def create_world_bank_layout():
                                     placeholder="Select a country..."
                                 )
                             ], style={
-                                'width': '150px'  # Reduced from 300px to half
-                            }),
-                            # Methodological Note download button
-                            html.A([
-                                html.Button(
-                                    "📄 Methodological Note",
-                                    style={
-                                        'background-color': '#295e84',
-                                        'color': 'white',
-                                        'border': 'none',
-                                        'padding': '0.5rem 1rem',
-                                        'border-radius': '0.375rem',
-                                        'font-size': '0.875rem',
-                                        'font-weight': '500',
-                                        'cursor': 'pointer',
-                                        'transition': 'all 0.2s ease'
-                                    }
-                                )
-                            ], 
-                            href="/assets/documents/SSA DRM Dashboard - Methodological Note.docx",
-                            download="SSA_DRM_Dashboard_Methodological_Note.docx",
-                            style={'margin-left': '1rem'}
-                            )
+                                'width': '300px'  # Reduced from 300px to half
+                            })
                         ], style={
                             'display': 'flex',
                             'align-items': 'center',
                             'gap': '1rem'
-                        })
+                        }),
+                        
+                        # Methodological Note download button - moved to separate container
+                        html.A([
+                            html.Button(
+                                "📄 Methodological Note",
+                                style={
+                                    'background-color': '#295e84',
+                                    'color': 'white',
+                                    'border': 'none',
+                                    'padding': '0.5rem 1rem',
+                                    'border-radius': '0.375rem',
+                                    'font-size': '0.875rem',
+                                    'font-weight': '500',
+                                    'cursor': 'pointer',
+                                    'transition': 'all 0.2s ease'
+                                }
+                            )
+                        ], 
+                        href="/assets/documents/SSA DRM Dashboard - Methodological Note.docx",
+                        download="SSA_DRM_Dashboard_Methodological_Note.docx"
+                        )
                     ], style={
                         'background': 'white',
                         'padding': '1.5rem',
                         'border-radius': '0.5rem',
                         'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-                        'border': '1px solid #e5e7eb'
+                        'border': '1px solid #e5e7eb',
+                        'display': 'flex',
+                        'justify-content': 'space-between',
+                        'align-items': 'center'
                     })
                 ], style={
                     'max-width': '80rem',
@@ -241,33 +258,35 @@ def create_world_bank_layout():
                         dbc.Tab(
                             label="Historical Disasters",
                             tab_id="disasters",
-                            tab_style=TAB_STYLE_INACTIVE,
-                            active_tab_style=TAB_STYLE_ACTIVE
+                            tab_style=MAIN_TAB_STYLE_INACTIVE,
+                            active_tab_style=MAIN_TAB_STYLE_ACTIVE
                         ),
                         dbc.Tab(
                             label="Historical Urbanization",
                             tab_id="urbanization",
-                            tab_style=TAB_STYLE_INACTIVE,
-                            active_tab_style=TAB_STYLE_ACTIVE
+                            tab_style=MAIN_TAB_STYLE_INACTIVE,
+                            active_tab_style=MAIN_TAB_STYLE_ACTIVE
                         ),
                         dbc.Tab(
                             label="Exposure to Flood Hazard",
                             tab_id="flood-exposure",
-                            tab_style=TAB_STYLE_INACTIVE,
-                            active_tab_style=TAB_STYLE_ACTIVE
+                            tab_style=MAIN_TAB_STYLE_INACTIVE,
+                            active_tab_style=MAIN_TAB_STYLE_ACTIVE
                         ),
                         dbc.Tab(
                             label="Projections of Flood Risk",
                             tab_id="flood-projections",
-                            tab_style=TAB_STYLE_INACTIVE,
-                            active_tab_style=TAB_STYLE_ACTIVE
+                            tab_style=MAIN_TAB_STYLE_INACTIVE,
+                            active_tab_style=MAIN_TAB_STYLE_ACTIVE
                         )
-                    ], id="main-tabs", active_tab="disasters", style={
+                    ], id="main-tabs", active_tab="disasters", 
+                    className="main-nav-tabs",
+                    style={
                         'border': 'none',
                         'display': 'flex',
                         'justify-content': 'center',
                         'flex-wrap': 'wrap',
-                        'gap': '0.5rem',
+                        'gap': '0.75rem',
                         'padding': '0.75rem'
                     })
                 ], style={
@@ -311,64 +330,24 @@ def create_world_bank_disaster_tab_content():
                     dbc.Tab(
                         label="Frequency by Type",
                         tab_id="disaster-frequency",
-                        tab_style={
-                            'border': '1px solid #e5e7eb',
-                            'background': 'transparent',
-                            'padding': '0.5rem 1rem',
-                            'margin-right': '0.25rem',
-                            'border-radius': '4px',
-                            'color': '#64748b',
-                            'font-weight': '500',
-                            'font-size': '0.8rem'
-                        },
-                        active_tab_style={
-                            'border': '1px solid #295e84',
-                            'background': 'transparent',
-                            'color': '#295e84',
-                            'font-weight': '600'
-                        }
+                        tab_style=SUB_TAB_STYLE_INACTIVE,
+                        active_tab_style=SUB_TAB_STYLE_ACTIVE
                     ),
                     dbc.Tab(
                         label="Disasters by Year",
                         tab_id="disaster-timeline",
-                        tab_style={
-                            'border': '1px solid #e5e7eb',
-                            'background': 'transparent',
-                            'padding': '0.5rem 1rem',
-                            'margin-right': '0.25rem',
-                            'border-radius': '4px',
-                            'color': '#64748b',
-                            'font-weight': '500',
-                            'font-size': '0.8rem'
-                        },
-                        active_tab_style={
-                            'border': '1px solid #295e84',
-                            'background': 'transparent',
-                            'color': '#295e84',
-                            'font-weight': '600'
-                        }
+                        tab_style=SUB_TAB_STYLE_INACTIVE,
+                        active_tab_style=SUB_TAB_STYLE_ACTIVE
                     ),
                     dbc.Tab(
                         label="Total Affected Population",
                         tab_id="disaster-affected",
-                        tab_style={
-                            'border': '1px solid #e5e7eb',
-                            'background': 'transparent',
-                            'padding': '0.5rem 1rem',
-                            'margin-right': '0.25rem',
-                            'border-radius': '4px',
-                            'color': '#64748b',
-                            'font-weight': '500',
-                            'font-size': '0.8rem'
-                        },
-                        active_tab_style={
-                            'border': '1px solid #295e84',
-                            'background': 'transparent',
-                            'color': '#295e84',
-                            'font-weight': '600'
-                        }
+                        tab_style=SUB_TAB_STYLE_INACTIVE,
+                        active_tab_style=SUB_TAB_STYLE_ACTIVE
                     )
-                ], id="disaster-subtabs", active_tab="disaster-frequency", style={
+                ], id="disaster-subtabs", active_tab="disaster-frequency", 
+                className="sub-nav-tabs",
+                style={
                     'border': 'none',
                     'margin-bottom': '1.5rem'
                 })

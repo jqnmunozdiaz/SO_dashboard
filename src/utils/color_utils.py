@@ -16,7 +16,7 @@ DISASTER_COLORS = {
     'Mass movement (wet)': '#8E44AD', # Deeper purple (wet landslides)
     'Storm': '#5D6D7E',             # Storm gray-blue (stormy skies)
     'Volcanic activity': '#C0392B',  # Deep crimson red (lava, volcanic)
-    'Wildfire': '#E67E22',          # Vibrant orange (flames, fire)
+    'Wildfire': "#340000",          # Vibrant orange (flames, fire)
     
     # Default color
     'default': '#000000'

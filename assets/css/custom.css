@@ -95,72 +95,142 @@ label {
     background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
 }
 
-/* Tab styling matching Review_CatDDOs */
-.nav-tabs {
-    border-bottom: 1px solid #e5e7eb;
+/* Main Tab Styling (Primary Navigation) */
+.main-nav-tabs {
+    border-bottom: 2px solid #e5e7eb;
     margin-bottom: 0;
     background: white;
-    padding: 0;
+    padding: 0.5rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.nav-tabs .nav-link {
+.main-nav-tabs .nav-link {
     color: #6b7280;
-    border: none;
-    border-radius: 9999px;
+    border: 2px solid transparent;
+    border-radius: 12px;
     font-weight: 500;
-    font-size: 0.875rem;
-    padding: 0.75rem 1.5rem;
-    margin-right: 0.5rem;
-    transition: all 0.15s ease-in-out;
-    background: transparent;
+    font-size: 1rem;
+    padding: 1rem 2rem;
+    margin-right: 0.75rem;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
 }
 
-.nav-tabs .nav-link:hover {
-    color: #374151;
-    background: #f9fafb;
+.main-nav-tabs .nav-link:hover {
+    color: #295e84;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(41, 94, 132, 0.15);
+    border-color: #cbd5e1;
     text-decoration: none;
 }
 
-.nav-tabs .nav-link.active {
-    color: #374151;
-    background: #f3f4f6;
+.main-nav-tabs .nav-link.active {
+    color: white;
+    background: linear-gradient(135deg, #295e84 0%, #1e4a66 100%);
     font-weight: 600;
-    border: none;
+    border-color: #295e84;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(41, 94, 132, 0.25);
 }
 
-/* Enhanced Tab styling with modern effects */
-.tab-content .nav-tabs .nav-link {
+.main-nav-tabs .nav-link.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #60a5fa, #3b82f6, #1d4ed8);
+    border-radius: 12px 12px 0 0;
+}
+
+/* Sub Tab Styling (Secondary Navigation) */
+.sub-nav-tabs {
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 1.5rem;
+    background: transparent;
+    padding: 0;
+}
+
+.sub-nav-tabs .nav-link {
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-weight: 400;
+    font-size: 0.875rem;
+    padding: 0.625rem 1.25rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s ease;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.sub-nav-tabs .nav-link:hover {
+    color: #475569;
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    text-decoration: none;
+}
+
+.sub-nav-tabs .nav-link.active {
+    color: #295e84;
+    background: #f0f7ff;
+    border-color: #295e84;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(41, 94, 132, 0.15);
+}
+
+.sub-nav-tabs .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background: #295e84;
+    border-radius: 1px;
+}
+
+/* Enhanced Tab animations and interactions */
+.main-nav-tabs .nav-link {
     position: relative;
     overflow: hidden;
     text-decoration: none !important;
 }
 
-.tab-content .nav-tabs .nav-link::before {
+.main-nav-tabs .nav-link::after {
     content: '';
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    transition: left 0.5s;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s ease;
 }
 
-.tab-content .nav-tabs .nav-link:hover::before {
+.main-nav-tabs .nav-link:hover::after {
     left: 100%;
 }
 
-.tab-content .nav-tabs .nav-link:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15) !important;
-    background: linear-gradient(145deg, #ffffff, #f1f5f9) !important;
-    color: #475569 !important;
+.sub-nav-tabs .nav-link {
+    position: relative;
+    text-decoration: none !important;
 }
 
-.tab-content .nav-tabs .nav-link.active:hover {
-    background: linear-gradient(145deg, #295e84, #1e4a66) !important;
-    color: white !important;
-    box-shadow: 0 6px 24px rgba(41, 94, 132, 0.35) !important;
+/* Tab content area styling */
+.tab-content {
+    background: transparent;
+    border: none;
+    padding: 0;
 }
 
 /* World Bank Card styling */
@@ -563,7 +633,7 @@ html {
 }
 
 .Select__option--is-focused {
-    background-color: #f3f4f6 !important;
+    background-color: #0646c6 !important;
     color: #374151 !important;
 }
 
@@ -675,29 +745,48 @@ html {
 
 /* Responsive tab styling */
 @media (max-width: 768px) {
-    .tab-content .nav-tabs .nav-link {
+    .main-nav-tabs .nav-link {
         padding: 0.75rem 1.25rem !important;
-        font-size: 0.8rem !important;
-        margin-right: 0.125rem !important;
+        font-size: 0.875rem !important;
+        margin-right: 0.5rem !important;
         margin-bottom: 0.5rem;
     }
     
-    .tab-content .nav-tabs {
-        gap: 0.25rem !important;
+    .main-nav-tabs {
+        gap: 0.5rem !important;
         padding: 0.5rem !important;
+    }
+    
+    .sub-nav-tabs .nav-link {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.8rem !important;
+        margin-right: 0.25rem !important;
     }
 }
 
 @media (max-width: 576px) {
-    .tab-content .nav-tabs {
+    .main-nav-tabs {
         flex-direction: column !important;
         align-items: center !important;
     }
     
-    .tab-content .nav-tabs .nav-link {
+    .main-nav-tabs .nav-link {
         width: auto !important;
+        min-width: 200px !important;
         text-align: center !important;
         margin-right: 0 !important;
+    }
+    
+    .sub-nav-tabs {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    
+    .sub-nav-tabs .nav-link {
+        width: 100% !important;
+        text-align: left !important;
+        margin-right: 0 !important;
+        margin-bottom: 0.25rem !important;
     }
 }
 

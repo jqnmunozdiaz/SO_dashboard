@@ -7,6 +7,10 @@ import pandas as pd
 import numpy as np
 import os
 import logging
+import warnings
+
+# Suppress pandas future warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -17,6 +21,7 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from src.utils.country_utils import load_subsaharan_countries_dict, load_non_sub_saharan_countries_dict
+from config.settings import DATA_CONFIG
 
 # Load countries from centralized CSV
 SUB_SAHARAN_COUNTRIES = load_subsaharan_countries_dict()
@@ -85,9 +90,11 @@ def clean_emdat_data(input_file, output_file):
         sort_columns = ['Year', 'ISO']
         df = df.sort_values(sort_columns)
         
-        # Filter data from 1975 onwards for consistent historical analysis
-        start_year = 1975
+        # Filter data from configured starting year onwards for consistent historical analysis
+        start_year = DATA_CONFIG['emdat_start_year']
         df = df[df['Year'] >= start_year]
+        
+        logger.info(f"Data filtered from {start_year} onwards. Final shape: {df.shape}")
 
         # Save processed data
         os.makedirs(os.path.dirname(output_file), exist_ok=True)

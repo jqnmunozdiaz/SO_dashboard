@@ -4,6 +4,11 @@ Data loading utilities for the DRM dashboard
 
 import pandas as pd
 import os
+import warnings
+
+# Suppress pandas future warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 from typing import Dict, List, Optional
 
 def load_emdat_data(file_path: Optional[str] = None) -> pd.DataFrame:

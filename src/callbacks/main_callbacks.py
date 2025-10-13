@@ -10,9 +10,34 @@ from src.layouts.world_bank_layout import (
     create_world_bank_flood_projections_tab_content
 )
 
+try:
+    from ..utils.country_utils import load_subsaharan_countries_dict
+except ImportError:
+    import sys
+    import os
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+    from src.utils.country_utils import load_subsaharan_countries_dict
+
 
 def register_main_callbacks(app):
     """Register main navigation callbacks"""
+    
+    @app.callback(
+        Output('dynamic-header-title', 'children'),
+        Input('main-country-filter', 'value')
+    )
+    def update_header_title(selected_country):
+        """Update header title based on selected country"""
+        try:
+            if selected_country:
+                # Load country mapping
+                countries_dict = load_subsaharan_countries_dict()
+                country_name = countries_dict.get(selected_country, selected_country)
+                return f"Sub-Saharan Africa DRM Dashboard | {country_name}"
+            else:
+                return "Sub-Saharan Africa DRM Dashboard"
+        except Exception:
+            return "Sub-Saharan Africa DRM Dashboard"
     
     @app.callback(
         Output('tab-content', 'children'),

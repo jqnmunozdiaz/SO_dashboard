@@ -128,6 +128,41 @@ label {
     border: none;
 }
 
+/* Enhanced Tab styling with modern effects */
+.tab-content .nav-tabs .nav-link {
+    position: relative;
+    overflow: hidden;
+    text-decoration: none !important;
+}
+
+.tab-content .nav-tabs .nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.5s;
+}
+
+.tab-content .nav-tabs .nav-link:hover::before {
+    left: 100%;
+}
+
+.tab-content .nav-tabs .nav-link:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15) !important;
+    background: linear-gradient(145deg, #ffffff, #f1f5f9) !important;
+    color: #475569 !important;
+}
+
+.tab-content .nav-tabs .nav-link.active:hover {
+    background: linear-gradient(145deg, #295e84, #1e4a66) !important;
+    color: white !important;
+    box-shadow: 0 6px 24px rgba(41, 94, 132, 0.35) !important;
+}
+
 /* World Bank Card styling */
 .card {
     border: 1px solid #e5e7eb;
@@ -635,6 +670,34 @@ html {
     
     .card-body {
         padding: 1rem;
+    }
+}
+
+/* Responsive tab styling */
+@media (max-width: 768px) {
+    .tab-content .nav-tabs .nav-link {
+        padding: 0.75rem 1.25rem !important;
+        font-size: 0.8rem !important;
+        margin-right: 0.125rem !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    .tab-content .nav-tabs {
+        gap: 0.25rem !important;
+        padding: 0.5rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .tab-content .nav-tabs {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    
+    .tab-content .nav-tabs .nav-link {
+        width: auto !important;
+        text-align: center !important;
+        margin-right: 0 !important;
     }
 }
 

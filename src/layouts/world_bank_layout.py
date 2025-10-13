@@ -8,6 +8,26 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 from src.utils.data_loader import get_subsaharan_countries
 
+# Shared tab styles - modify these to change all tabs at once
+TAB_STYLE_INACTIVE = {
+    'border': '0px solid #e5e7eb',
+    'background': 'transparent',
+    'padding': '0.875rem 1.75rem',
+    'margin-right': '0.5rem',
+    'border-radius': '8px',
+    'color': "#08387b",
+    'font-weight': '500',
+    'font-size': '0.875rem',
+    'cursor': 'pointer'
+}
+
+TAB_STYLE_ACTIVE = {
+    'border': '0px solid #295e84',
+    'background': 'transparent',
+    'color': '#295e84',
+    'font-weight': '600'
+}
+
 def create_world_bank_layout():
     """Create the World Bank-styled main dashboard layout matching Review_CatDDOs structure"""
     
@@ -16,10 +36,11 @@ def create_world_bank_layout():
         # Header with title and logos - always visible at top
         html.Div([
             html.Div([
-                # Title on the left
+                # Title on the left - now dynamic based on country selection
                 html.Div([
                     html.H2(
-                        "Sub-Saharan Africa DRM Dashboard",
+                        id="dynamic-header-title",
+                        children="Sub-Saharan Africa DRM Dashboard",
                         style={
                             'font-size': '1.25rem',
                             'font-weight': '600',
@@ -75,9 +96,9 @@ def create_world_bank_layout():
             'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
         }),
         
-        # Main content area (equivalent to MainContent from Review_CatDDOs)
+        # Main content area
         html.Div([
-            # Hero Section matching DashboardHero.tsx structure
+            # Hero Section
             html.Div([
                 html.Div([
                     # Left content section
@@ -199,88 +220,34 @@ def create_world_bank_layout():
                         dbc.Tab(
                             label="Historical Disasters",
                             tab_id="disasters",
-                            tab_style={
-                                'border': '1px solid #d1d5db',
-                                'background': 'white',
-                                'padding': '0.75rem 1.5rem',
-                                'margin-right': '0.5rem',
-                                'border-radius': '0.5rem',
-                                'color': '#6b7280',
-                                'font-weight': '500',
-                                'font-size': '0.875rem'
-                            },
-                            active_tab_style={
-                                'background': '#f0f9ff',
-                                'color': '#0284c7',
-                                'border': '1px solid #7dd3fc',
-                                'font-weight': '600'
-                            }
+                            tab_style=TAB_STYLE_INACTIVE,
+                            active_tab_style=TAB_STYLE_ACTIVE
                         ),
                         dbc.Tab(
                             label="Historical Urbanization",
                             tab_id="urbanization",
-                            tab_style={
-                                'border': '1px solid #d1d5db',
-                                'background': 'white',
-                                'padding': '0.75rem 1.5rem',
-                                'margin-right': '0.5rem',
-                                'border-radius': '0.5rem',
-                                'color': '#6b7280',
-                                'font-weight': '500',
-                                'font-size': '0.875rem'
-                            },
-                            active_tab_style={
-                                'background': '#f0f9ff',
-                                'color': '#0284c7',
-                                'border': '1px solid #7dd3fc',
-                                'font-weight': '600'
-                            }
+                            tab_style=TAB_STYLE_INACTIVE,
+                            active_tab_style=TAB_STYLE_ACTIVE
                         ),
                         dbc.Tab(
                             label="Exposure to Flood Hazard",
                             tab_id="flood-exposure",
-                            tab_style={
-                                'border': '1px solid #d1d5db',
-                                'background': 'white',
-                                'padding': '0.75rem 1.5rem',
-                                'margin-right': '0.5rem',
-                                'border-radius': '0.5rem',
-                                'color': '#6b7280',
-                                'font-weight': '500',
-                                'font-size': '0.875rem'
-                            },
-                            active_tab_style={
-                                'background': '#f0f9ff',
-                                'color': '#0284c7',
-                                'border': '1px solid #7dd3fc',
-                                'font-weight': '600'
-                            }
+                            tab_style=TAB_STYLE_INACTIVE,
+                            active_tab_style=TAB_STYLE_ACTIVE
                         ),
                         dbc.Tab(
                             label="Projections of Flood Risk",
                             tab_id="flood-projections",
-                            tab_style={
-                                'border': '1px solid #d1d5db',
-                                'background': 'white',
-                                'padding': '0.75rem 1.5rem',
-                                'margin-right': '0.5rem',
-                                'border-radius': '0.5rem',
-                                'color': '#6b7280',
-                                'font-weight': '500',
-                                'font-size': '0.875rem'
-                            },
-                            active_tab_style={
-                                'background': '#f0f9ff',
-                                'color': '#0284c7',
-                                'border': '1px solid #7dd3fc',
-                                'font-weight': '600'
-                            }
+                            tab_style=TAB_STYLE_INACTIVE,
+                            active_tab_style=TAB_STYLE_ACTIVE
                         )
                     ], id="main-tabs", active_tab="disasters", style={
                         'border': 'none',
                         'display': 'flex',
                         'justify-content': 'center',
-                        'flex-wrap': 'wrap'
+                        'flex-wrap': 'wrap',
+                        'gap': '0.5rem',
+                        'padding': '0.75rem'
                     })
                 ], style={
                     'max-width': '80rem',
@@ -289,9 +256,9 @@ def create_world_bank_layout():
                     'width': '100%'
                 })
             ], style={
-                'background': 'white',
-                'padding': '1rem 0',
-                'border-bottom': '1px solid #e5e7eb'
+                'background': 'transparent',
+                'padding': '1.5rem 0',
+                'border-bottom': 'none'
             }),
             
             # Content area
@@ -314,22 +281,62 @@ def create_world_bank_layout():
 
 
 def create_world_bank_disaster_tab_content():
-    """Create World Bank-styled content for the Historical Disasters tab matching Review_CatDDOs"""
+    """Create World Bank-styled content for the Historical Disasters tab with subtabs"""
     return html.Div([
         html.Div([
-            # Charts container (removed filter controls section)
+            # Subtabs for different disaster visualizations
             html.Div([
-                # Disaster frequency bar chart
-                html.Div([
-                    dcc.Graph(id="disaster-frequency-chart")
-                ], style={
-                    'background': 'white',
-                    'padding': '1.5rem',
-                    'border-radius': '0.5rem',
-                    'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-                    'border': '1px solid #e5e7eb'
+                dbc.Tabs([
+                    dbc.Tab(
+                        label="Frequency by Type",
+                        tab_id="disaster-frequency",
+                        tab_style={
+                            'border': '1px solid #e5e7eb',
+                            'background': 'transparent',
+                            'padding': '0.5rem 1rem',
+                            'margin-right': '0.25rem',
+                            'border-radius': '4px',
+                            'color': '#64748b',
+                            'font-weight': '500',
+                            'font-size': '0.8rem'
+                        },
+                        active_tab_style={
+                            'border': '1px solid #295e84',
+                            'background': 'transparent',
+                            'color': '#295e84',
+                            'font-weight': '600'
+                        }
+                    ),
+                    dbc.Tab(
+                        label="Disasters by Year",
+                        tab_id="disaster-timeline",
+                        tab_style={
+                            'border': '1px solid #e5e7eb',
+                            'background': 'transparent',
+                            'padding': '0.5rem 1rem',
+                            'margin-right': '0.25rem',
+                            'border-radius': '4px',
+                            'color': '#64748b',
+                            'font-weight': '500',
+                            'font-size': '0.8rem'
+                        },
+                        active_tab_style={
+                            'border': '1px solid #295e84',
+                            'background': 'transparent',
+                            'color': '#295e84',
+                            'font-weight': '600'
+                        }
+                    )
+                ], id="disaster-subtabs", active_tab="disaster-frequency", style={
+                    'border': 'none',
+                    'margin-bottom': '1.5rem'
                 })
-            ], id="charts-container")
+            ]),
+            
+            # Charts container
+            html.Div([
+                html.Div(id="disaster-chart-container")
+            ])
         ], style={
             'max-width': '80rem',
             'margin': '0 auto',

@@ -123,7 +123,7 @@ def create_world_bank_layout():
                             }
                         ),
                         html.P(
-                            "Explore comprehensive datasets on historical disasters, urban development patterns, flood risk projections, and comparative country profiles to strengthen disaster risk management initiatives and inform policy development.",
+                            "Select a country and interact with the dynamic figures.",
                             style={
                                 'font-size': '1rem',
                                 'line-height': '1.75rem',
@@ -189,8 +189,29 @@ def create_world_bank_layout():
                                     placeholder="Select a country..."
                                 )
                             ], style={
-                                'width': '300px'
-                            })
+                                'width': '150px'  # Reduced from 300px to half
+                            }),
+                            # Methodological Note download button
+                            html.A([
+                                html.Button(
+                                    "📄 Methodological Note",
+                                    style={
+                                        'background-color': '#295e84',
+                                        'color': 'white',
+                                        'border': 'none',
+                                        'padding': '0.5rem 1rem',
+                                        'border-radius': '0.375rem',
+                                        'font-size': '0.875rem',
+                                        'font-weight': '500',
+                                        'cursor': 'pointer',
+                                        'transition': 'all 0.2s ease'
+                                    }
+                                )
+                            ], 
+                            href="/assets/documents/SSA DRM Dashboard - Methodological Note.docx",
+                            download="SSA_DRM_Dashboard_Methodological_Note.docx",
+                            style={'margin-left': '1rem'}
+                            )
                         ], style={
                             'display': 'flex',
                             'align-items': 'center',

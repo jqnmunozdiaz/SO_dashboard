@@ -85,10 +85,10 @@ def clean_emdat_data(input_file, output_file):
         sort_columns = ['Year', 'ISO']
         df = df.sort_values(sort_columns)
         
-        # Filter recent years for better dashboard performance (last 50 years)
-        current_year = 2025
-        df = df[df['Year'] >= (current_year - 50)]
-        
+        # Filter data from 1975 onwards for consistent historical analysis
+        start_year = 1975
+        df = df[df['Year'] >= start_year]
+
         # Save processed data
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
         df.to_csv(output_file, index=False)

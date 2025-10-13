@@ -317,45 +317,7 @@ def create_world_bank_disaster_tab_content():
     """Create World Bank-styled content for the Historical Disasters tab matching Review_CatDDOs"""
     return html.Div([
         html.Div([
-            # Filter controls section
-            html.Div([
-                html.H3(
-                    "Filters",
-                    style={
-                        'font-size': '1.125rem',
-                        'font-weight': '600',
-                        'color': '#374151',
-                        'margin-bottom': '1rem'
-                    }
-                ),
-                html.Div([
-                    html.Label(
-                        "Disaster Type:",
-                        style={
-                            'display': 'block',
-                            'font-size': '0.875rem',
-                            'font-weight': '500',
-                            'color': '#374151',
-                            'margin-bottom': '0.5rem'
-                        }
-                    ),
-                    dcc.Dropdown(
-                        id="disaster-type-dropdown",
-                        multi=True,
-                        placeholder="Select disaster types...",
-                        style={'margin-bottom': '1.5rem'}
-                    )
-                ])
-            ], style={
-                'background': 'white',
-                'padding': '1.5rem',
-                'border-radius': '0.5rem',
-                'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-                'border': '1px solid #e5e7eb',
-                'margin-bottom': '1.5rem'
-            }),
-            
-            # Charts container
+            # Charts container (removed filter controls section)
             html.Div([
                 # Disaster frequency bar chart
                 html.Div([

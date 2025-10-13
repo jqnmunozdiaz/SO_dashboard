@@ -217,7 +217,7 @@ def create_world_bank_layout():
                             }
                         ),
                         dbc.Tab(
-                            label="Urbanization",
+                            label="Historical Urbanization",
                             tab_id="urbanization",
                             tab_style={
                                 'border': '1px solid #d1d5db',
@@ -235,12 +235,58 @@ def create_world_bank_layout():
                                 'border': '1px solid #7dd3fc',
                                 'font-weight': '600'
                             }
+                        ),
+                        dbc.Tab(
+                            label="Exposure to Flood Hazard",
+                            tab_id="flood-exposure",
+                            tab_style={
+                                'border': '1px solid #d1d5db',
+                                'background': 'white',
+                                'padding': '0.75rem 1.5rem',
+                                'margin-right': '0.5rem',
+                                'border-radius': '0.5rem',
+                                'color': '#6b7280',
+                                'font-weight': '500',
+                                'font-size': '0.875rem'
+                            },
+                            active_tab_style={
+                                'background': '#f0f9ff',
+                                'color': '#0284c7',
+                                'border': '1px solid #7dd3fc',
+                                'font-weight': '600'
+                            }
+                        ),
+                        dbc.Tab(
+                            label="Projections of Flood Risk",
+                            tab_id="flood-projections",
+                            tab_style={
+                                'border': '1px solid #d1d5db',
+                                'background': 'white',
+                                'padding': '0.75rem 1.5rem',
+                                'margin-right': '0.5rem',
+                                'border-radius': '0.5rem',
+                                'color': '#6b7280',
+                                'font-weight': '500',
+                                'font-size': '0.875rem'
+                            },
+                            active_tab_style={
+                                'background': '#f0f9ff',
+                                'color': '#0284c7',
+                                'border': '1px solid #7dd3fc',
+                                'font-weight': '600'
+                            }
                         )
-                    ], id="main-tabs", active_tab="disasters", style={'border': 'none'})
+                    ], id="main-tabs", active_tab="disasters", style={
+                        'border': 'none',
+                        'display': 'flex',
+                        'justify-content': 'center',
+                        'flex-wrap': 'wrap'
+                    })
                 ], style={
                     'max-width': '80rem',
                     'margin': '0 auto',
-                    'padding': '0 1.5rem'
+                    'padding': '0 1.5rem',
+                    'width': '100%'
                 })
             ], style={
                 'background': 'white',
@@ -334,11 +380,11 @@ def create_world_bank_disaster_tab_content():
 
 
 def create_world_bank_urbanization_tab_content():
-    """Create World Bank-styled content for the Urbanization tab"""
+    """Create World Bank-styled content for the Historical Urbanization tab"""
     return html.Div([
         html.Div([
             html.H3(
-                "Urbanization Analysis",
+                "Historical Urbanization Analysis",
                 style={
                     'font-size': '1.5rem',
                     'font-weight': '600',
@@ -347,7 +393,7 @@ def create_world_bank_urbanization_tab_content():
                 }
             ),
             html.P(
-                "This section will contain urbanization trends, population growth data, and urban development indicators for Sub-Saharan African countries.",
+                "This section will contain historical urbanization trends, population growth data, and urban development indicators for Sub-Saharan African countries.",
                 style={
                     'font-size': '1rem',
                     'line-height': '1.75rem',
@@ -357,7 +403,109 @@ def create_world_bank_urbanization_tab_content():
             ),
             html.Div([
                 html.P(
-                    "Urbanization content coming soon...",
+                    "Historical urbanization content coming soon...",
+                    style={
+                        'font-size': '1.125rem',
+                        'color': '#9ca3af',
+                        'text-align': 'center',
+                        'padding': '2rem'
+                    }
+                )
+            ], style={
+                'background': 'white',
+                'padding': '2rem',
+                'border-radius': '0.5rem',
+                'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                'border': '1px solid #e5e7eb',
+                'text-align': 'center'
+            })
+        ], style={
+            'max-width': '80rem',
+            'margin': '0 auto',
+            'padding': '1.5rem'
+        })
+    ], style={
+        'background': '#f9fafb',
+        'min-height': 'calc(100vh - 300px)'
+    })
+
+
+def create_world_bank_flood_exposure_tab_content():
+    """Create World Bank-styled content for the Exposure to Flood Hazard tab"""
+    return html.Div([
+        html.Div([
+            html.H3(
+                "Exposure to Flood Hazard",
+                style={
+                    'font-size': '1.5rem',
+                    'font-weight': '600',
+                    'color': '#374151',
+                    'margin-bottom': '1rem'
+                }
+            ),
+            html.P(
+                "This section will contain current flood hazard exposure data, vulnerable population mapping, and infrastructure at risk assessments for Sub-Saharan African countries.",
+                style={
+                    'font-size': '1rem',
+                    'line-height': '1.75rem',
+                    'color': '#6b7280',
+                    'margin-bottom': '2rem'
+                }
+            ),
+            html.Div([
+                html.P(
+                    "Flood exposure analysis coming soon...",
+                    style={
+                        'font-size': '1.125rem',
+                        'color': '#9ca3af',
+                        'text-align': 'center',
+                        'padding': '2rem'
+                    }
+                )
+            ], style={
+                'background': 'white',
+                'padding': '2rem',
+                'border-radius': '0.5rem',
+                'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                'border': '1px solid #e5e7eb',
+                'text-align': 'center'
+            })
+        ], style={
+            'max-width': '80rem',
+            'margin': '0 auto',
+            'padding': '1.5rem'
+        })
+    ], style={
+        'background': '#f9fafb',
+        'min-height': 'calc(100vh - 300px)'
+    })
+
+
+def create_world_bank_flood_projections_tab_content():
+    """Create World Bank-styled content for the Projections of Flood Risk tab"""
+    return html.Div([
+        html.Div([
+            html.H3(
+                "Projections of Flood Risk",
+                style={
+                    'font-size': '1.5rem',
+                    'font-weight': '600',
+                    'color': '#374151',
+                    'margin-bottom': '1rem'
+                }
+            ),
+            html.P(
+                "This section will contain future flood risk projections, climate change impact scenarios, and long-term risk assessments for Sub-Saharan African countries.",
+                style={
+                    'font-size': '1rem',
+                    'line-height': '1.75rem',
+                    'color': '#6b7280',
+                    'margin-bottom': '2rem'
+                }
+            ),
+            html.Div([
+                html.P(
+                    "Flood risk projections coming soon...",
                     style={
                         'font-size': '1.125rem',
                         'color': '#9ca3af',

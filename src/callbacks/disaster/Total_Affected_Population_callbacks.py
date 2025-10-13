@@ -145,3 +145,6 @@ def setup_total_affected_population_callbacks(app):
         )
         
         return fig
+    
+    
+    

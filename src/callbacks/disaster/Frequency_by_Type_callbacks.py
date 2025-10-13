@@ -117,8 +117,8 @@ def setup_frequency_by_type_callbacks(app):
         
         # Update bar styling
         fig.update_traces(
-            marker_line_color='#295e84',
-            marker_line_width=1,
+            marker_line_color='white',
+            marker_line_width=0.5,
             hovertemplate='<b>%{x}</b><br>Events: %{y}<extra></extra>'
         )
         

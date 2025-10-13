@@ -136,6 +136,7 @@ data/raw/*.xlsx
 data/raw/*.xls
 data/external/*
 data/uploads/*
+data/raw/WDI_CSV/*
 
 # Keep essential data files for deployment
 !data/raw/README.md

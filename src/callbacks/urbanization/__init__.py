@@ -1,0 +1,3 @@
+"""
+Urbanization visualization callbacks
+"""

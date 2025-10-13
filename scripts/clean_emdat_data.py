@@ -108,7 +108,7 @@ def clean_emdat_data(input_file, output_file):
 
 if __name__ == "__main__":
     # File paths
-    input_file = "data/raw/public_emdat_custom_request_2025-10-10_34470450-8ec8-4c41-97f9-eb266c759d8b.xlsx"
+    input_file = "data/raw/public_emdat_custom_request_2025-10-13_3908a057-51e5-4e3b-9c0a-3724c3e8dcf3.xlsx"
     output_file = "data/processed/african_disasters_emdat.csv"
     
     print("Starting EM-DAT data cleaning for African countries...")

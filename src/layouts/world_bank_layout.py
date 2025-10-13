@@ -173,10 +173,24 @@ def create_world_bank_disaster_tab_content():
 
 
 def create_world_bank_urbanization_tab_content():
-    """Create World Bank-styled content for the Historical Urbanization tab"""
+    """Create World Bank-styled content for the Historical Urbanization tab with subtabs"""
     return html.Div([
         html.Div([
-            html.Div([], className="coming-soon-card")
+            # Subtabs for different urbanization visualizations
+            html.Div([
+                dbc.Tabs([
+                    dbc.Tab(
+                        label="Urban Population Living in Slums",
+                        tab_id="urban-population-slums"
+                    )
+                ], id="urbanization-subtabs", active_tab="urban-population-slums", 
+                className="sub-nav-tabs subtabs-container")
+            ]),
+            
+            # Charts container
+            html.Div([
+                html.Div(id="urbanization-chart-container")
+            ])
         ], className="tab-content-inner")
     ], className="tab-content-container")
 

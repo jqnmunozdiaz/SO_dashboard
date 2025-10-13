@@ -540,6 +540,65 @@ label {
     border: 1px solid #e5e7eb;
 }
 
+/* Benchmark Selector Styles */
+.benchmark-selector-container {
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 1.5rem;
+}
+
+.checkbox-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.checkbox-group {
+    margin-top: 0.5rem;
+}
+
+.benchmark-checkboxes {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.benchmark-checkboxes .form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.benchmark-checkboxes input[type="checkbox"] {
+    width: 1rem !important;
+    height: 1rem !important;
+    margin-right: 0.5rem !important;
+    border: 2px solid #d1d5db !important;
+    border-radius: 0.25rem !important;
+    background: white !important;
+}
+
+.benchmark-checkboxes input[type="checkbox"]:checked {
+    background-color: #295e84 !important;
+    border-color: #295e84 !important;
+}
+
+.benchmark-checkboxes input[type="checkbox"]:focus {
+    box-shadow: 0 0 0 2px rgba(41, 94, 132, 0.2) !important;
+}
+
+.benchmark-checkboxes label {
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    margin-bottom: 0 !important;
+    cursor: pointer;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     h1 {

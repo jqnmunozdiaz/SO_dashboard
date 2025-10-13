@@ -176,20 +176,7 @@ def create_world_bank_urbanization_tab_content():
     """Create World Bank-styled content for the Historical Urbanization tab"""
     return html.Div([
         html.Div([
-            html.H3(
-                "Historical Urbanization Analysis",
-                className="tab-title"
-            ),
-            html.P(
-                "This section will contain historical urbanization trends, population growth data, and urban development indicators for Sub-Saharan African countries.",
-                className="tab-description"
-            ),
-            html.Div([
-                html.P(
-                    "Historical urbanization content coming soon...",
-                    className="coming-soon-text"
-                )
-            ], className="coming-soon-card")
+            html.Div([], className="coming-soon-card")
         ], className="tab-content-inner")
     ], className="tab-content-container")
 

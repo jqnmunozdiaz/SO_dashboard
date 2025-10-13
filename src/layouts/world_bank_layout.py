@@ -182,6 +182,10 @@ def create_world_bank_urbanization_tab_content():
                     dbc.Tab(
                         label="Urban Population Living in Slums",
                         tab_id="urban-population-slums"
+                    ),
+                    dbc.Tab(
+                        label="Access to Electricity, Urban",
+                        tab_id="access-to-electricity-urban"
                     )
                 ], id="urbanization-subtabs", active_tab="urban-population-slums", 
                 className="sub-nav-tabs subtabs-container")

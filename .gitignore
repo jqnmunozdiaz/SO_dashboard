@@ -142,7 +142,7 @@ data/uploads/*
 !data/raw/*.txt
 !data/raw/*.csv
 !data/processed/README.md
-!data/processed/*.csv
+!data/processed/*
 !data/external/README.md
 !data/uploads/README.md
 

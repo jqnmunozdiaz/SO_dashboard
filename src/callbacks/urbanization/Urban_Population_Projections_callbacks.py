@@ -192,16 +192,37 @@ def register_urban_population_projections_callbacks(app):
                     x=1
                 ),
                 template='plotly_white',
-                font=dict(family=CHART_STYLES['font']['family'], size=12),
+                font={'color': CHART_STYLES['colors']['primary']},
                 title_font=dict(size=16, color=CHART_STYLES['font']['color']),
                 margin=dict(l=60, r=20, t=80, b=60),
                 height=500
             )
             
             # Add vertical line at 2025 to separate historical from projections
-            fig.add_vline(x=2025, line_dash="dash", line_color="gray", opacity=0.5,
-                         annotation_text="Historical | Projections", annotation_position="top right")
+            fig.add_vline(x=2025, line_dash="dash", line_color="gray", opacity=0.5)
             
+            # Add annotations on either side of the line
+            fig.add_annotation(
+                x=2024,  # Midpoint of historical period (1950-2025)
+                y=1,
+                yref="paper",
+                text="Historical",
+                showarrow=False,
+                font=dict(size=12, color="gray"),
+                yanchor="top",
+                xanchor="right"
+            )
+            
+            fig.add_annotation(
+                x=2026,  # Midpoint of projection period (2025-2055)
+                y=1,
+                yref="paper", 
+                text="Projections",
+                showarrow=False,
+                font=dict(size=12, color="gray"),
+                yanchor="top",
+                xanchor="left"
+            )
             return fig
             
         except Exception as e:

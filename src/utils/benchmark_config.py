@@ -9,11 +9,11 @@ BENCHMARK_CONFIG = {
         'color': '#e74c3c'  # Red
     },
     'AFE': {
-        'name': 'Africa Eastern and Southern', 
+        'name': 'Eastern and Southern Africa', 
         'color': '#f39c12'  # Orange
     },
     'AFW': {
-        'name': 'Africa Western and Central',
+        'name': 'Western and Central Africa',
         'color': '#27ae60'  # Green
     }
 }

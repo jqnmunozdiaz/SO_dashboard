@@ -48,3 +48,29 @@ def get_subsaharan_countries() -> list:
     """
     countries_dict = load_subsaharan_countries_dict()
     return [{'name': name, 'code': code} for code, name in countries_dict.items()]
+
+
+def load_wb_regional_classifications():
+    """
+    Load World Bank regional classifications and create regional mappings
+    
+    Returns:
+        Tuple of (afe_countries, afw_countries, ssa_countries) as lists of ISO3 codes
+    """
+    wb_classification_file = 'data/Definitions/WB_Classification.csv'
+    try:
+        wb_df = pd.read_csv(wb_classification_file)
+        
+        # Create regional mappings
+        afe_countries = wb_df[wb_df['Subregion Code'] == 'AFE']['ISO3'].tolist()
+        afw_countries = wb_df[wb_df['Subregion Code'] == 'AFW']['ISO3'].tolist()
+        ssa_countries = afe_countries + afw_countries  # SSA is AFE + AFW
+        
+        return afe_countries, afw_countries, ssa_countries
+        
+    except FileNotFoundError:
+        print(f"Warning: World Bank classification file not found at {wb_classification_file}")
+        return [], [], []
+    except Exception as e:
+        print(f"Error loading World Bank classifications: {str(e)}")
+        return [], [], []

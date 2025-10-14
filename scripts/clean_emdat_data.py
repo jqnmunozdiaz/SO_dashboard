@@ -6,29 +6,20 @@ Processes the raw EM-DAT Excel file and creates a cleaned CSV for the dashboard
 import pandas as pd
 import numpy as np
 import os
-import logging
 import warnings
 
 # Suppress pandas future warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 # Import centralized country utilities
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from src.utils.country_utils import load_subsaharan_countries_dict, load_non_sub_saharan_countries_dict
+from src.utils.country_utils import load_subsaharan_countries_dict, load_wb_regional_classifications
 from config.settings import DATA_CONFIG
 
-# Load countries from centralized CSV
-SUB_SAHARAN_COUNTRIES = load_subsaharan_countries_dict()
-
-# Non-Sub-Saharan African countries to exclude
-NON_SUB_SAHARAN_COUNTRIES = set(load_non_sub_saharan_countries_dict().keys())
-
+# Load World Bank regional classifications from centralized utilities
+afe_countries, afw_countries, ssa_countries = load_wb_regional_classifications()
 
 def clean_emdat_data(input_file, output_file):
     """
@@ -38,33 +29,21 @@ def clean_emdat_data(input_file, output_file):
         input_file: Path to raw EM-DAT Excel file
         output_file: Path to save cleaned CSV file
     """
-    logger.info(f"Processing EM-DAT data from {input_file}")
     
     try:
         # Read the Excel file
         df = pd.read_excel(input_file)
-        logger.info(f"Original data shape: {df.shape}")
-        logger.info(f"Columns: {list(df.columns)}")
-        
-        # Display first few rows to understand structure
-        logger.info("First 5 rows:")
-        logger.info(df.head().to_string())
-
-        df = df[df['Disaster Group'] == 'Natural']
+                
         # Only keep rows where Disaster Type is in a predefined list of relevant types defined in 'disaster_type_selection.txt'
         with open('data/Definitions/disaster_type_selection.txt', 'r') as f:
             relevant_disasters = [line.strip() for line in f.readlines()]
         df = df[df['Disaster Type'].isin(relevant_disasters)]
         
-        df = df[[ 'Disaster Type', 'ISO', 'Start Year', 'Total Deaths', 'Total Affected']]  # Example columns, adjust as needed        
+        df = df[[ 'Disaster Type', 'ISO', 'Start Year', 'Total Deaths', 'Total Affected']]  # Columns, adjust as needed        
         df = df.rename(columns={'Start Year': 'Year'})
-            
-        # Filter for Sub-Saharan African countries only
-        ssa_iso_codes = list(SUB_SAHARAN_COUNTRIES.keys())
-               
+                           
         # Filter for Sub-Saharan African countries only by ISO codes
-        df = df[df['ISO'].isin(ssa_iso_codes)]
-        logger.info(f"African data shape: {df.shape}")
+        df = df[df['ISO'].isin(ssa_countries)]
         
         # Process year column
         df['Year'] = pd.to_numeric(df['Year'], errors='coerce')
@@ -94,16 +73,52 @@ def clean_emdat_data(input_file, output_file):
         start_year = DATA_CONFIG['emdat_start_year']
         df = df[df['Year'] >= start_year]
         
-        logger.info(f"Data filtered from {start_year} onwards. Final shape: {df.shape}")
-
+        # Compute regional aggregates
+        regional_data = []
+        
+        # Define regional mappings
+        region_mappings = {
+            'AFE': afe_countries,
+            'AFW': afw_countries,
+            'SSA': ssa_countries
+        }
+        
+        # Group by disaster type and year for aggregation
+        for disaster_type in df['Disaster Type'].unique():
+            for year in df['Year'].unique():
+         
+                # Filter data for this disaster type and year
+                disaster_year_data = df[(df['Disaster Type'] == disaster_type) & (df['Year'] == year)]
+                
+                # Calculate aggregates for each region
+                for region_code, country_list in region_mappings.items():
+                    region_data = disaster_year_data[disaster_year_data['ISO'].isin(country_list)]
+                    if not region_data.empty:
+                        region_row = {
+                            'Disaster Type': disaster_type,
+                            'ISO': region_code,
+                            'Year': year,
+                            'Total Deaths': region_data['Total Deaths'].sum(),
+                            'Total Affected': region_data['Total Affected'].sum()
+                        }
+                        regional_data.append(region_row)
+        
+        # Convert regional data to DataFrame and append to main data
+        if regional_data:
+            regional_df = pd.DataFrame(regional_data)
+            df = pd.concat([df, regional_df], ignore_index=True)
+        
+        # Sort by year, ISO, and disaster type
+        df = df.sort_values(['Year', 'ISO', 'Disaster Type'])
+        
         # Save processed data
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
         df.to_csv(output_file, index=False)
-                        
+                                
         return df
         
     except Exception as e:
-        logger.error(f"Error processing EM-DAT data: {str(e)}")
+        print(f"Error processing EM-DAT data: {str(e)}")
         raise
 
 if __name__ == "__main__":
@@ -117,4 +132,3 @@ if __name__ == "__main__":
     cleaned_data = clean_emdat_data(input_file, output_file)
     
     print(f"\nData cleaning complete! Clean data saved to: {output_file}")
-    print("You can now use this data in the dashboard callbacks.")

@@ -16,12 +16,13 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from src.utils.country_utils import load_subsaharan_countries_dict, load_non_sub_saharan_countries_dict
+from src.utils.benchmark_config import get_benchmark_names
 from config.settings import DATA_CONFIG
 
 # Load countries from centralized CSV + regional aggregates
 SUB_SAHARAN_COUNTRIES = load_subsaharan_countries_dict()
-# Add regional codes for benchmarking
-REGIONAL_CODES = {'SSA': 'Sub-Saharan Africa', 'AFE': 'Eastern and Southern Africa', 'AFW': 'Western and Central Africa'}
+# Add regional codes for benchmarking from centralized configuration
+REGIONAL_CODES = get_benchmark_names()
 ALL_COUNTRY_CODES = {**SUB_SAHARAN_COUNTRIES, **REGIONAL_CODES}
 
 

@@ -1,49 +1,49 @@
 ﻿Country,ISO3,Region Code,Subregion Code,Income group,Lending category
 Angola,AGO,SSA,AFE,Lower middle income,IBRD
-Botswana,BWA,SSA,AFE,Upper middle income,IBRD
 Burundi,BDI,SSA,AFE,Low income,IDA
-Comoros,COM,SSA,AFE,Lower middle income,IDA
-"Congo, Dem. Rep.",COD,SSA,AFE,Low income,IDA
-Eritrea,ERI,SSA,AFE,Low income,IDA
-Eswatini,SWZ,SSA,AFE,Lower middle income,Blend
-Ethiopia,ETH,SSA,AFE,Low income,IDA
-Kenya,KEN,SSA,AFE,Lower middle income,Blend
-Lesotho,LSO,SSA,AFE,Lower middle income,IDA
-Madagascar,MDG,SSA,AFE,Low income,IDA
-Malawi,MWI,SSA,AFE,Low income,IDA
-Mauritius,MUS,SSA,AFE,Upper middle income,IBRD
-Mozambique,MOZ,SSA,AFE,Low income,IDA
-Namibia,NAM,SSA,AFE,Upper middle income,IBRD
-Rwanda,RWA,SSA,AFE,Low income,IDA
-São Tomé and Príncipe,STP,SSA,AFE,Lower middle income,IDA
-Seychelles,SYC,SSA,AFE,High income,IBRD
-Somalia,SOM,SSA,AFE,Low income,IDA
-South Africa,ZAF,SSA,AFE,Upper middle income,IBRD
-South Sudan,SSD,SSA,AFE,Low income,IDA
-Sudan,SDN,SSA,AFE,Low income,IDA
-Tanzania,TZA,SSA,AFE,Lower middle income,IDA
-Uganda,UGA,SSA,AFE,Low income,IDA
-Zambia,ZMB,SSA,AFE,Lower middle income,IDA
-Zimbabwe,ZWE,SSA,AFE,Lower middle income,Blend
 Benin,BEN,SSA,AFW,Lower middle income,IDA
 Burkina Faso,BFA,SSA,AFW,Low income,IDA
-Cabo Verde,CPV,SSA,AFW,Lower middle income,Blend
-Cameroon,CMR,SSA,AFW,Lower middle income,Blend
+Botswana,BWA,SSA,AFE,Upper middle income,IBRD
 Central African Republic,CAF,SSA,AFW,Low income,IDA
-Chad,TCD,SSA,AFW,Low income,IDA
-"Congo, Rep.",COG,SSA,AFW,Lower middle income,Blend
 Côte d’Ivoire,CIV,SSA,AFW,Lower middle income,IDA
-Equatorial Guinea,GNQ,SSA,AFW,Upper middle income,IBRD
+Cameroon,CMR,SSA,AFW,Lower middle income,Blend
+Democratic Republic of Congo,COD,SSA,AFE,Low income,IDA
+Congo,COG,SSA,AFW,Lower middle income,Blend
+Comoros,COM,SSA,AFE,Lower middle income,IDA
+Cabo Verde,CPV,SSA,AFW,Lower middle income,Blend
+Eritrea,ERI,SSA,AFE,Low income,IDA
+Ethiopia,ETH,SSA,AFE,Low income,IDA
 Gabon,GAB,SSA,AFW,Upper middle income,IBRD
-"Gambia, The",GMB,SSA,AFW,Low income,IDA
 Ghana,GHA,SSA,AFW,Lower middle income,IDA
 Guinea,GIN,SSA,AFW,Lower middle income,IDA
+Gambia,GMB,SSA,AFW,Low income,IDA
 Guinea-Bissau,GNB,SSA,AFW,Low income,IDA
+Equatorial Guinea,GNQ,SSA,AFW,Upper middle income,IBRD
+Kenya,KEN,SSA,AFE,Lower middle income,Blend
 Liberia,LBR,SSA,AFW,Low income,IDA
+Lesotho,LSO,SSA,AFE,Lower middle income,IDA
+Madagascar,MDG,SSA,AFE,Low income,IDA
 Mali,MLI,SSA,AFW,Low income,IDA
+Mozambique,MOZ,SSA,AFE,Low income,IDA
 Mauritania,MRT,SSA,AFW,Lower middle income,IDA
+Mauritius,MUS,SSA,AFE,Upper middle income,IBRD
+Malawi,MWI,SSA,AFE,Low income,IDA
+Namibia,NAM,SSA,AFE,Upper middle income,IBRD
 Niger,NER,SSA,AFW,Low income,IDA
 Nigeria,NGA,SSA,AFW,Lower middle income,Blend
+Rwanda,RWA,SSA,AFE,Low income,IDA
+Sudan,SDN,SSA,AFE,Low income,IDA
 Senegal,SEN,SSA,AFW,Lower middle income,IDA
 Sierra Leone,SLE,SSA,AFW,Low income,IDA
+Somalia,SOM,SSA,AFE,Low income,IDA
+South Sudan,SSD,SSA,AFE,Low income,IDA
+São Tomé and Príncipe,STP,SSA,AFE,Lower middle income,IDA
+Eswatini,SWZ,SSA,AFE,Lower middle income,Blend
+Seychelles,SYC,SSA,AFE,High income,IBRD
+Chad,TCD,SSA,AFW,Low income,IDA
 Togo,TGO,SSA,AFW,Low income,IDA
+Tanzania,TZA,SSA,AFE,Lower middle income,IDA
+Uganda,UGA,SSA,AFE,Low income,IDA
+South Africa,ZAF,SSA,AFE,Upper middle income,IBRD
+Zambia,ZMB,SSA,AFE,Lower middle income,IDA
+Zimbabwe,ZWE,SSA,AFE,Lower middle income,Blend

@@ -15,7 +15,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from src.utils.country_utils import load_subsaharan_countries_dict, load_non_sub_saharan_countries_dict
+from src.utils.country_utils import load_subsaharan_countries_dict
 from src.utils.benchmark_config import get_benchmark_names
 from config.settings import DATA_CONFIG
 

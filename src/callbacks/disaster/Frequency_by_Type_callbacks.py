@@ -56,7 +56,7 @@ def setup_frequency_by_type_callbacks(app):
             if selected_country and 'ISO' in emdat_data.columns:
                 emdat_data = emdat_data[emdat_data['ISO'] == selected_country]
             
-            # Count frequency by disaster type
+            # Count frequency by disaster type using the 'Number of Events' column
             if emdat_data.empty:
                 frequency_data = pd.DataFrame({
                     'Disaster Type': ['No Data'],
@@ -64,7 +64,7 @@ def setup_frequency_by_type_callbacks(app):
                 })
                 title_suffix = "No data available for selected country"
             else:
-                frequency_data = emdat_data.groupby('Disaster Type').size().reset_index(name='Event Count')
+                frequency_data = emdat_data.groupby('Disaster Type')['Number of Events'].sum().reset_index(name='Event Count')
                 frequency_data = frequency_data.sort_values('Event Count', ascending=False)
                 
                 # Add wrapped labels for display
@@ -97,7 +97,7 @@ def setup_frequency_by_type_callbacks(app):
             frequency_data,
             x='Disaster Type Wrapped',
             y='Event Count',
-            title=f'<b>{title_suffix}</b> | Frequency of Historical Events by Disaster Type ({DATA_CONFIG["analysis_period"]})<br><sub>Data Source: EM-DAT</sub>',
+            title=f'<b>{title_suffix}</b> | Frequency of Disasters by Type ({DATA_CONFIG["analysis_period"]})<br><sub>Data Source: EM-DAT</sub>',
             labels={'Event Count': 'Number of Events', 'Disaster Type Wrapped': 'Disaster Type'},
             color='Disaster Type',
             color_discrete_map={

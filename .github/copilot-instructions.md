@@ -92,9 +92,7 @@ UI follows World Bank design system with specific color palette and styling:
 4. **Indicators**: `data/Definitions/urbanization_indicators_selection.csv` - selected WDI indicators
 
 **Country Definitions:**
-- `data/Definitions/sub_saharan_countries.csv` - 48 Sub-Saharan African countries (ISO codes + names)
-- `data/Definitions/non_sub_saharan_african_countries.csv` - country mapping for exclusions
-- `data/Definitions/WB_Classification.csv` - World Bank country classifications
+- `data/Definitions/WB_Classification.csv` - World Bank country classifications (authoritative source for all Sub-Saharan African countries and regional mappings)
 
 ## Development Workflow
 
@@ -118,8 +116,8 @@ python app.py  # Starts on localhost:8050
 4. Restart dashboard to pick up new data
 
 **Updating Country Lists:**
-1. Modify `data/Definitions/sub_saharan_countries.csv` for country additions/removals
-2. Update `data/Definitions/non_sub_saharan_african_countries.csv` for exclusions
+1. Modify `data/Definitions/WB_Classification.csv` for country additions/removals or regional changes
+2. Update Region Code (SSA), Subregion Code (AFE/AFW), and country classifications as needed
 3. No processing script needed - changes take effect on restart
 
 ### Adding New Visualizations
@@ -185,11 +183,9 @@ Optional packages commented out for deployment compatibility - install separatel
 - **Chart Styling**: `config/settings.py` constants and `src/utils/benchmark_config.py`
 
 ### Definition Files (data/Definitions/)
-- `sub_saharan_countries.csv` - 48 countries with ISO codes and names
-- `non_sub_saharan_african_countries.csv` - exclusion mapping
+- `WB_Classification.csv` - World Bank country classifications (authoritative source for countries and regions)
 - `disaster_type_selection.txt` - 10 approved disaster types
 - `urbanization_indicators_selection.csv` - 2 WDI indicators (slums, electricity)
-- `WB_Classification.csv` - World Bank country classifications
 
 ### Folder Structure
 ```

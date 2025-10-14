@@ -7,6 +7,7 @@ import dash
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 from src.utils.data_loader import get_subsaharan_countries
+from src.utils.country_utils import get_countries_with_regions
 
 def create_world_bank_layout():
     """Create the World Bank-styled main dashboard layout matching Review_CatDDOs structure"""
@@ -78,7 +79,7 @@ def create_world_bank_layout():
                     html.Div([
                         html.Div([
                             html.Label(
-                                "Select Country:",
+                                "Select Country or Region:",
                                 className="filter-label"
                             ),
                             html.Div([
@@ -86,7 +87,7 @@ def create_world_bank_layout():
                                     id="main-country-filter",
                                     options=[
                                         {'label': country['name'], 'value': country['code']}
-                                        for country in get_subsaharan_countries()
+                                        for country in get_countries_with_regions()
                                     ],
                                     value=get_subsaharan_countries()[0]['code'],
                                     placeholder="Select a country..."

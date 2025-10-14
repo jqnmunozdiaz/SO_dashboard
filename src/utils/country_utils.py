@@ -9,33 +9,22 @@ from typing import Dict
 
 def load_subsaharan_countries_dict() -> Dict[str, str]:
     """
-    Load Sub-Saharan African countries from CSV file
+    Load Sub-Saharan African countries from World Bank Classification file
     
     Returns:
         Dictionary mapping ISO codes to country names
     """
-    csv_path = os.path.join('data', 'Definitions', 'sub_saharan_countries.csv')
+    wb_classification_file = 'data/Definitions/WB_Classification.csv'
     try:
-        df = pd.read_csv(csv_path, names=['code', 'name'])
-        return dict(zip(df['code'], df['name']))
+        wb_df = pd.read_csv(wb_classification_file)
+        # Filter for Sub-Saharan Africa region (Region Code == 'SSA')
+        ssa_df = wb_df[wb_df['Region Code'] == 'SSA']
+        return dict(zip(ssa_df['ISO3'], ssa_df['Country']))
     except FileNotFoundError:
-        print(f"Warning: Sub-Saharan country list file not found at {csv_path}")
+        print(f"Warning: World Bank classification file not found at {wb_classification_file}")
         return {}
-
-
-def load_non_sub_saharan_countries_dict() -> Dict[str, str]:
-    """
-    Load non-Sub-Saharan African countries from CSV file
-    
-    Returns:
-        Dictionary mapping ISO codes to country names
-    """
-    csv_path = os.path.join('data', 'Definitions', 'non_sub_saharan_african_countries.csv')
-    try:
-        df = pd.read_csv(csv_path, names=['code', 'name'])
-        return dict(zip(df['code'], df['name']))
-    except FileNotFoundError:
-        print(f"Warning: Non-Sub-Saharan country list file not found at {csv_path}")
+    except Exception as e:
+        print(f"Error loading Sub-Saharan countries from WB classification: {str(e)}")
         return {}
 
 
@@ -74,3 +63,26 @@ def load_wb_regional_classifications():
     except Exception as e:
         print(f"Error loading World Bank classifications: {str(e)}")
         return [], [], []
+
+
+def get_countries_with_regions() -> list:
+    """
+    Get list of Sub-Saharan African countries with regional aggregates at the end
+    
+    Returns:
+        List of dictionaries with country names and codes, followed by regional options
+    """
+    # Get individual countries first
+    countries = get_subsaharan_countries()
+    
+    # Sort countries alphabetically by name
+    countries = sorted(countries, key=lambda x: x['name'])
+    
+    # Add regional aggregates at the end
+    regional_options = [
+        {'name': 'Sub-Saharan Africa (SSA)', 'code': 'SSA'},
+        {'name': 'Eastern & Southern Africa (AFE)', 'code': 'AFE'},
+        {'name': 'Western & Central Africa (AFW)', 'code': 'AFW'}
+    ]
+    
+    return countries + regional_options

@@ -65,6 +65,9 @@ def clean_emdat_data(input_file, output_file):
         # Remove rows with missing essential data
         df = df.dropna(subset=['Year', 'ISO', 'Disaster Type'])
         
+        # Add Number of Events column - each row represents one disaster event
+        df['Number of Events'] = 1
+        
         # Sort by year and country
         sort_columns = ['Year', 'ISO']
         df = df.sort_values(sort_columns)
@@ -99,7 +102,8 @@ def clean_emdat_data(input_file, output_file):
                             'ISO': region_code,
                             'Year': year,
                             'Total Deaths': region_data['Total Deaths'].sum(),
-                            'Total Affected': region_data['Total Affected'].sum()
+                            'Total Affected': region_data['Total Affected'].sum(),
+                            'Number of Events': region_data['Number of Events'].sum()
                         }
                         regional_data.append(region_row)
         

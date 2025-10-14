@@ -1,0 +1,225 @@
+"""
+Callbacks for Urban Population Projections visualization
+Shows urban and rural population trends with uncertainty bands for selected country
+Based on UN DESA World Population Prospects and World Urbanization Prospects data
+"""
+
+from dash import Input, Output
+import plotly.graph_objects as go
+import pandas as pd
+import warnings
+
+# Suppress pandas future warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
+try:
+    from ...utils.data_loader import load_undesa_urban_projections
+    from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
+    from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
+    from config.settings import CHART_STYLES
+except ImportError:
+    # Fallback for direct execution
+    import sys
+    import os
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+    from src.utils.data_loader import load_undesa_urban_projections
+    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
+    from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
+    from config.settings import CHART_STYLES
+
+
+def register_urban_population_projections_callbacks(app):
+    """Register callbacks for Urban Population Projections chart"""
+    
+    @app.callback(
+        Output('urban-population-projections-chart', 'figure'),
+        [Input('main-country-filter', 'value')],
+        prevent_initial_call=False
+    )
+    def generate_urban_population_projections_chart(selected_country):
+        """Generate urban and rural population projections chart with uncertainty bands"""
+        try:
+            # Load UNDESA urban projections data
+            undesa_data = load_undesa_urban_projections()
+            
+            # Load country and region mapping for ISO code to full name conversion
+            countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
+            
+            # Handle missing country selection
+            if not selected_country:
+                selected_country = 'AGO'  # Default to Angola
+            
+            # Filter data for selected country
+            country_data = undesa_data[undesa_data['ISO3'] == selected_country].copy()
+            
+            if country_data.empty:
+                return {
+                    'data': [],
+                    'layout': {
+                        'title': f'No urban population data available for {countries_and_regions_dict.get(selected_country, selected_country)}',
+                        'xaxis': {'title': 'Year'},
+                        'yaxis': {'title': 'Population (millions)'}
+                    }
+                }
+            
+            # Pivot data for easier access
+            country_pivot = country_data.pivot(index='year', columns='indicator', values='value')
+            
+            # Define year ranges
+            past_years = list(range(1950, 2030, 5))
+            future_years = list(range(2025, 2055, 5))
+            
+            # Create figure
+            fig = go.Figure()
+            
+            # Get colors from CHART_STYLES
+            colors = {'urban': CHART_STYLES['colors']['urban'], 'rural': CHART_STYLES['colors']['rural']}
+            
+            # Add data for both urban and rural
+            for aoi in ['urban', 'rural']:
+                # Add uncertainty bands for future projections (95% confidence interval)
+                if f'{aoi}_pop_lower95' in country_pivot.columns and f'{aoi}_pop_upper95' in country_pivot.columns:
+                    # Get data for uncertainty bands
+                    years_with_data = [year for year in future_years if year in country_pivot.index 
+                                     and pd.notna(country_pivot.loc[year, f'{aoi}_pop_lower95']) 
+                                     and pd.notna(country_pivot.loc[year, f'{aoi}_pop_upper95'])]
+                    
+                    if years_with_data:
+                        lower95_values = [country_pivot.loc[year, f'{aoi}_pop_lower95'] for year in years_with_data]
+                        upper95_values = [country_pivot.loc[year, f'{aoi}_pop_upper95'] for year in years_with_data]
+                        
+                        # Add 95% confidence interval
+                        # Convert hex to rgba with 20% opacity
+                        if aoi == 'urban':
+                            fill_color = 'rgba(31, 119, 180, 0.2)'  # Blue with 20% opacity
+                        else:
+                            fill_color = 'rgba(44, 160, 44, 0.2)'   # Green with 20% opacity
+                        
+                        fig.add_trace(go.Scatter(
+                            x=years_with_data + years_with_data[::-1],
+                            y=upper95_values + lower95_values[::-1],
+                            fill='toself',
+                            fillcolor=fill_color,
+                            line=dict(color='rgba(255,255,255,0)'),
+                            hoverinfo="skip",
+                            showlegend=False,
+                            name=f'{aoi.title()} 95% CI'
+                        ))
+                
+                # Add uncertainty bands for future projections (80% confidence interval)
+                if f'{aoi}_pop_lower80' in country_pivot.columns and f'{aoi}_pop_upper80' in country_pivot.columns:
+                    # Get data for uncertainty bands
+                    years_with_data = [year for year in future_years if year in country_pivot.index 
+                                     and pd.notna(country_pivot.loc[year, f'{aoi}_pop_lower80']) 
+                                     and pd.notna(country_pivot.loc[year, f'{aoi}_pop_upper80'])]
+                    
+                    if years_with_data:
+                        lower80_values = [country_pivot.loc[year, f'{aoi}_pop_lower80'] for year in years_with_data]
+                        upper80_values = [country_pivot.loc[year, f'{aoi}_pop_upper80'] for year in years_with_data]
+                        
+                        # Add 80% confidence interval
+                        # Convert hex to rgba with 40% opacity
+                        if aoi == 'urban':
+                            fill_color = 'rgba(31, 119, 180, 0.4)'  # Blue with 40% opacity
+                        else:
+                            fill_color = 'rgba(44, 160, 44, 0.4)'   # Green with 40% opacity
+                        
+                        fig.add_trace(go.Scatter(
+                            x=years_with_data + years_with_data[::-1],
+                            y=upper80_values + lower80_values[::-1],
+                            fill='toself',
+                            fillcolor=fill_color,
+                            line=dict(color='rgba(255,255,255,0)'),
+                            hoverinfo="skip",
+                            showlegend=False,
+                            name=f'{aoi.title()} 80% CI'
+                        ))
+                
+                # Add historical data (solid line)
+                if f'wup_{aoi}_pop' in country_pivot.columns:
+                    past_years_with_data = [year for year in past_years if year in country_pivot.index 
+                                          and pd.notna(country_pivot.loc[year, f'wup_{aoi}_pop'])]
+                    if past_years_with_data:
+                        past_values = [country_pivot.loc[year, f'wup_{aoi}_pop'] for year in past_years_with_data]
+                        
+                        fig.add_trace(go.Scatter(
+                            x=past_years_with_data,
+                            y=past_values,
+                            mode='lines+markers',
+                            name=f'{aoi.title()} (Historical)',
+                            line=dict(color=colors[aoi], width=3),
+                            marker=dict(size=6),
+                            hovertemplate=f'<b>{aoi.title()} Population</b><br>' +
+                                        'Year: %{x}<br>' +
+                                        'Population: %{y:.1f} million<br>' +
+                                        '<extra></extra>'
+                        ))
+                
+                # Add future projections (dashed line)
+                if f'{aoi}_pop_median' in country_pivot.columns:
+                    future_years_with_data = [year for year in future_years if year in country_pivot.index 
+                                            and pd.notna(country_pivot.loc[year, f'{aoi}_pop_median'])]
+                    if future_years_with_data:
+                        future_values = [country_pivot.loc[year, f'{aoi}_pop_median'] for year in future_years_with_data]
+                        
+                        fig.add_trace(go.Scatter(
+                            x=future_years_with_data,
+                            y=future_values,
+                            mode='lines+markers',
+                            name=f'{aoi.title()} (Projected)',
+                            line=dict(color=colors[aoi], width=3, dash='dash'),
+                            marker=dict(size=6),
+                            hovertemplate=f'<b>{aoi.title()} Population (Projected)</b><br>' +
+                                        'Year: %{x}<br>' +
+                                        'Population: %{y:.1f} million<br>' +
+                                        '<extra></extra>'
+                        ))
+            
+
+            # Update layout
+            country_name = countries_and_regions_dict.get(selected_country, selected_country)
+            
+            fig.update_layout(
+                title=f'<b>{country_name}</b> | Urban and Rural Population Projections<br><sub>Data Source: UN DESA (World Population Prospects & World Urbanization Prospects)</sub>',
+                xaxis_title='Year',
+                yaxis_title='Population (millions)',
+                hovermode='x unified',
+                legend=dict(
+                    orientation="h",
+                    yanchor="bottom",
+                    y=1.02,
+                    xanchor="right",
+                    x=1
+                ),
+                template='plotly_white',
+                font=dict(family=CHART_STYLES['font']['family'], size=12),
+                title_font=dict(size=16, color=CHART_STYLES['font']['color']),
+                margin=dict(l=60, r=20, t=80, b=60),
+                height=500
+            )
+            
+            # Add vertical line at 2025 to separate historical from projections
+            fig.add_vline(x=2025, line_dash="dash", line_color="gray", opacity=0.5,
+                         annotation_text="Historical | Projections", annotation_position="top right")
+            
+            return fig
+            
+        except Exception as e:
+            # Return error chart
+            return {
+                'data': [],
+                'layout': {
+                    'title': f'Error loading urban population projections data: {str(e)}',
+                    'xaxis': {'title': 'Year'},
+                    'yaxis': {'title': 'Population (millions)'},
+                    'annotations': [{
+                        'text': f'Error: {str(e)}',
+                        'x': 0.5,
+                        'y': 0.5,
+                        'xref': 'paper',
+                        'yref': 'paper',
+                        'showarrow': False,
+                        'font': {'size': 10, 'color': 'red'}
+                    }]
+                }
+            }

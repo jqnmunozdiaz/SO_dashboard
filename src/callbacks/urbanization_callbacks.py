@@ -8,6 +8,7 @@ from dash import Input, Output, dcc, html
 # Import individual callback modules
 from .urbanization.Urban_Population_Living_in_Slums_callbacks import register_urban_population_living_in_slums_callbacks
 from .urbanization.Access_to_Electricity_Urban_callbacks import register_access_to_electricity_urban_callbacks
+from .urbanization.Urban_Population_Projections_callbacks import register_urban_population_projections_callbacks
 
 try:
     from ..utils.benchmark_config import get_benchmark_options
@@ -27,6 +28,7 @@ def register_callbacks(app):
     # Register individual callback modules
     register_urban_population_living_in_slums_callbacks(app)
     register_access_to_electricity_urban_callbacks(app)
+    register_urban_population_projections_callbacks(app)
     
     # Main chart container callback (orchestrates which chart to show)
     @app.callback(
@@ -40,7 +42,16 @@ def register_callbacks(app):
         # Load indicator notes
         notes_dict = load_urbanization_indicators_notes_dict()
         
-        if active_subtab == 'urban-population-slums':
+        if active_subtab == 'urban-population-projections':
+            return html.Div([
+                # Chart
+                dcc.Graph(id="urban-population-projections-chart"),
+                # Indicator note
+                html.Div([
+                    html.P("Urban and rural population projections from UN DESA World Population Prospects and World Urbanization Prospects. Uncertainty bands show 95% and 80% confidence intervals for future projections.", className="indicator-note")
+                ], className="indicator-note-container")
+            ], className="chart-container")
+        elif active_subtab == 'urban-population-slums':
             slums_note = notes_dict.get('EN.POP.SLUM.UR.ZS', '')
             return html.Div([
                 # Benchmark selection checkboxes

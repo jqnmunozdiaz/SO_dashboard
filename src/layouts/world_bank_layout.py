@@ -187,6 +187,10 @@ def create_world_bank_urbanization_tab_content():
             html.Div([
                 dbc.Tabs([
                     dbc.Tab(
+                        label="Urban Population",
+                        tab_id="urban-population-projections"
+                    ),
+                    dbc.Tab(
                         label="Population Living in Slums",
                         tab_id="urban-population-slums"
                     ),
@@ -194,7 +198,7 @@ def create_world_bank_urbanization_tab_content():
                         label="Access to Electricity",
                         tab_id="access-to-electricity-urban"
                     )
-                ], id="urbanization-subtabs", active_tab="urban-population-slums", 
+                ], id="urbanization-subtabs", active_tab="urban-population-projections", 
                 className="sub-nav-tabs subtabs-container")
             ]),
             

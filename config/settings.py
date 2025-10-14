@@ -28,7 +28,9 @@ CHART_STYLES = {
         'success': '#2ecc71',
         'warning': '#f39c12',
         'danger': '#e74c3c',
-        'info': '#3498db'
+        'info': '#3498db',
+        'urban': '#1f77b4',
+        'rural': '#2ca02c'
     },
     'background': {
         'plot': 'white',

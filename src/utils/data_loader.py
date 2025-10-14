@@ -96,8 +96,27 @@ def load_urbanization_indicators_notes_dict() -> Dict[str, str]:
         return {}
 
 
+def load_undesa_urban_projections() -> pd.DataFrame:
+    """
+    Load UNDESA urban population projections consolidated data
+    
+    Returns:
+        DataFrame with columns: ISO3, indicator, year, value
+    """
+    file_path = os.path.join('data', 'processed', 'UNDESA_Country', 'UNDESA_urban_projections_consolidated.csv')
+    
+    try:
+        df = pd.read_csv(file_path)
+        return df
+        
+    except FileNotFoundError:
+        raise FileNotFoundError(f"UNDESA urban projections data file not found: {file_path}")
+    except Exception as e:
+        raise Exception(f"Error loading UNDESA urban projections data: {str(e)}")
+
+
 # Import centralized country utilities
 from .country_utils import get_subsaharan_countries, load_subsaharan_countries_dict, load_subsaharan_countries_and_regions_dict
 
 # Re-export for backward compatibility
-__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict']
+__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections']

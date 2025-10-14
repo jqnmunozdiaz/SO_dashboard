@@ -78,6 +78,12 @@ UI follows World Bank design system with specific color palette and styling:
 - Colors and styles defined in `config/settings.py` under `CHART_STYLES`
 - Regional benchmarks centralized in `src/utils/benchmark_config.py`
 
+**CRITICAL STYLING RULE**: All styling must be defined in `assets/css/custom.css` using CSS classes. Never use inline styles in Python components. When adding new UI elements:
+1. Define CSS classes in `assets/css/custom.css`
+2. Apply classes using `className` attribute in Dash components
+3. Follow existing naming patterns (e.g., `.indicator-note`, `.benchmark-selector-container`)
+4. Maintain consistent World Bank color scheme and spacing
+
 ### Data Processing Pipeline
 
 **EM-DAT Disaster Data Flow:**

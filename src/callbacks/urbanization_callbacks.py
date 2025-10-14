@@ -11,12 +11,14 @@ from .urbanization.Access_to_Electricity_Urban_callbacks import register_access_
 
 try:
     from ..utils.benchmark_config import get_benchmark_options
+    from ..utils.data_loader import load_urbanization_indicators_notes_dict
 except ImportError:
     # Fallback for direct execution
     import sys
     import os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
     from src.utils.benchmark_config import get_benchmark_options
+    from src.utils.data_loader import load_urbanization_indicators_notes_dict
 
 
 def register_callbacks(app):
@@ -34,7 +36,12 @@ def register_callbacks(app):
     )
     def render_urbanization_chart(active_subtab, selected_country):
         """Render different urbanization charts based on selected subtab"""
+        
+        # Load indicator notes
+        notes_dict = load_urbanization_indicators_notes_dict()
+        
         if active_subtab == 'urban-population-slums':
+            slums_note = notes_dict.get('EN.POP.SLUM.UR.ZS', '')
             return html.Div([
                 # Benchmark selection checkboxes
                 html.Div([
@@ -50,9 +57,14 @@ def register_callbacks(app):
                     ], className="checkbox-group")
                 ], className="benchmark-selector-container"),
                 # Chart
-                dcc.Graph(id="urban-population-slums-chart")
+                dcc.Graph(id="urban-population-slums-chart"),
+                # Indicator note
+                html.Div([
+                    html.P(slums_note, className="indicator-note")
+                ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'access-to-electricity-urban':
+            electricity_note = notes_dict.get('EG.ELC.ACCS.UR.ZS', '')
             return html.Div([
                 # Benchmark selection checkboxes
                 html.Div([
@@ -68,7 +80,11 @@ def register_callbacks(app):
                     ], className="checkbox-group")
                 ], className="benchmark-selector-container"),
                 # Chart
-                dcc.Graph(id="access-to-electricity-urban-chart")
+                dcc.Graph(id="access-to-electricity-urban-chart"),
+                # Indicator note
+                html.Div([
+                    html.P(electricity_note, className="indicator-note")
+                ], className="indicator-note-container")
             ], className="chart-container")
         else:
             return html.Div("Select a chart type above")

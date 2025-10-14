@@ -627,6 +627,23 @@ label {
     }
 }
 
+/* Indicator Notes */
+.indicator-note-container {
+    margin-top: 20px;
+}
+
+.indicator-note {
+    font-style: italic;
+    font-size: 12px;
+    color: #666666;
+    margin: 20px 0 10px 0;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-left: 4px solid #007bff;
+    border-radius: 4px;
+    line-height: 1.4;
+}
+
 @media (max-width: 576px) {
     .main-nav-tabs {
         flex-direction: column !important;

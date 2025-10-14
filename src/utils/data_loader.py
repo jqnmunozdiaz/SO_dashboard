@@ -77,8 +77,27 @@ def load_urbanization_indicators_dict() -> Dict[str, str]:
         return {}
 
 
+def load_urbanization_indicators_notes_dict() -> Dict[str, str]:
+    """
+    Load urbanization indicators notes from CSV file
+    
+    Returns:
+        Dictionary mapping indicator codes to their notes/descriptions
+    """
+    csv_path = os.path.join('data', 'Definitions', 'urbanization_indicators_selection.csv')
+    try:
+        df = pd.read_csv(csv_path)
+        return dict(zip(df['Indicator_Code'], df['Note']))
+    except FileNotFoundError:
+        print(f"Warning: Urbanization indicators file not found at {csv_path}")
+        return {}
+    except Exception as e:
+        print(f"Warning: Error loading urbanization indicators notes: {str(e)}")
+        return {}
+
+
 # Import centralized country utilities
 from .country_utils import get_subsaharan_countries, load_subsaharan_countries_dict, load_subsaharan_countries_and_regions_dict
 
 # Re-export for backward compatibility
-__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict']
+__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict']

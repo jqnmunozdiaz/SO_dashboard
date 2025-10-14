@@ -14,7 +14,7 @@ def load_subsaharan_countries_dict() -> Dict[str, str]:
     Returns:
         Dictionary mapping ISO codes to country names
     """
-    csv_path = os.path.join('data', 'sub_saharan_countries.csv')
+    csv_path = os.path.join('data', 'Definitions', 'sub_saharan_countries.csv')
     try:
         df = pd.read_csv(csv_path, names=['code', 'name'])
         return dict(zip(df['code'], df['name']))
@@ -30,7 +30,7 @@ def load_non_sub_saharan_countries_dict() -> Dict[str, str]:
     Returns:
         Dictionary mapping ISO codes to country names
     """
-    csv_path = os.path.join('data', 'non_sub_saharan_african_countries.csv')
+    csv_path = os.path.join('data', 'Definitions', 'non_sub_saharan_african_countries.csv')
     try:
         df = pd.read_csv(csv_path, names=['code', 'name'])
         return dict(zip(df['code'], df['name']))

@@ -21,7 +21,7 @@ from config.settings import DATA_CONFIG
 # Load countries from centralized CSV + regional aggregates
 SUB_SAHARAN_COUNTRIES = load_subsaharan_countries_dict()
 # Add regional codes for benchmarking
-REGIONAL_CODES = {'SSA': 'Sub-Saharan Africa', 'AFE': 'Africa Eastern and Southern', 'AFW': 'Africa Western and Central'}
+REGIONAL_CODES = {'SSA': 'Sub-Saharan Africa', 'AFE': 'Eastern and Southern Africa', 'AFW': 'Western and Central Africa'}
 ALL_COUNTRY_CODES = {**SUB_SAHARAN_COUNTRIES, **REGIONAL_CODES}
 
 
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     # File paths
     input_file = "data/raw/WDI_CSV/WDICSV.csv"
     output_dir = "data/processed/wdi"
-    indicators_file = "data/urbanization_indicators_selection.csv"
+    indicators_file = "data/Definitions/urbanization_indicators_selection.csv"
     
     # Clean the data
     success = clean_wdi_data(input_file, output_dir, indicators_file)

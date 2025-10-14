@@ -52,7 +52,7 @@ def clean_emdat_data(input_file, output_file):
 
         df = df[df['Disaster Group'] == 'Natural']
         # Only keep rows where Disaster Type is in a predefined list of relevant types defined in 'disaster_type_selection.txt'
-        with open('data/disaster_type_selection.txt', 'r') as f:
+        with open('data/Definitions/disaster_type_selection.txt', 'r') as f:
             relevant_disasters = [line.strip() for line in f.readlines()]
         df = df[df['Disaster Type'].isin(relevant_disasters)]
         

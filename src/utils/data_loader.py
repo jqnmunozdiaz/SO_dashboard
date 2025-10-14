@@ -60,12 +60,12 @@ def load_wdi_data(indicator_code: str, file_path: Optional[str] = None) -> pd.Da
 
 def load_urbanization_indicators_dict() -> Dict[str, str]:
     """
-    Load urbanization indicators mapping from CSV file
+    Load urbanization indicators dictionary from CSV file
     
     Returns:
         Dictionary mapping indicator codes to indicator names
     """
-    csv_path = os.path.join('data', 'urbanization_indicators_selection.csv')
+    csv_path = os.path.join('data', 'Definitions', 'urbanization_indicators_selection.csv')
     try:
         df = pd.read_csv(csv_path)
         return dict(zip(df['Indicator_Code'], df['Indicator_Name']))

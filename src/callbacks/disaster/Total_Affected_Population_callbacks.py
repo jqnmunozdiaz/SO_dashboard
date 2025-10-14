@@ -88,7 +88,7 @@ def setup_total_affected_population_callbacks(app):
                 'Disaster Type': ['Error'],
                 'Total Affected': [0]
             })
-            title_suffix = f"Error loading data"
+            title_suffix = f"Error loading data: {str(e)}"
         
         # Create stacked bar chart with disaster type colors
         fig = px.bar(

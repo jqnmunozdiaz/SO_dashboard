@@ -143,7 +143,7 @@ def register_urban_population_living_in_slums_callbacks(app):
             
         except Exception as e:
             # Return error chart
-            return create_empty_chart(f"Error loading data: {str(e)[:50]}")
+            return create_empty_chart(f"Error loading data: {str(e)}")
 
 
 def create_empty_chart(message):

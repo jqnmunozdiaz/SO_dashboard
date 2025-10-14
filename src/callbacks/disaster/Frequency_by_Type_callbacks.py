@@ -80,7 +80,7 @@ def setup_frequency_by_type_callbacks(app):
                     country_name = countries_and_regions_dict.get(selected_country, selected_country)
                     title_suffix = f"{country_name}"
                 else:
-                    raise ValueError("No country selected for disaster frequency analysis")
+                    raise ValueError("No country selected")
                 
         except Exception as e:
             # Return empty data on error
@@ -90,7 +90,7 @@ def setup_frequency_by_type_callbacks(app):
                 'Event Count': [0],
                 'Color': ['#e74c3c']
             })
-            title_suffix = f"Error loading data: {str(e)[:50]}"
+            title_suffix = f"Error loading data: {str(e)}"
         
         # Create bar chart with custom colors
         fig = px.bar(

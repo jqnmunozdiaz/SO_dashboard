@@ -88,7 +88,7 @@ def setup_disasters_by_year_callbacks(app):
                 'Disaster Type': ['Error'],
                 'Event Count': [0]
             })
-            title_suffix = f"Error loading data"
+            title_suffix = f"Error loading data: {str(e)}"
         
         # Create stacked bar chart with disaster type colors
         fig = px.bar(

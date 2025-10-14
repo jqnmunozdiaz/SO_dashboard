@@ -52,9 +52,12 @@ def create_world_bank_layout():
                 html.Div([
                     # Left content section
                     html.Div([
-                        html.H1(
-                            "Sub-Saharan Africa DRM Dashboard",
-                            className="hero-title"
+                        html.H1([
+                            "Disaster Risk & Urbanization Analytics Dashboard"
+                        ], className="hero-title"),
+                        html.P(
+                            "Sub-Saharan Africa",
+                            className="hero-subtitle"
                         ),
                         html.P(
                             "An interactive platform for analyzing historical disaster patterns, urbanization trends, and resilience indicators across Sub-Saharan Africa. This tool enables evidence-based decision making for disaster preparedness, response planning, and long-term risk reduction strategies.",
@@ -62,10 +65,9 @@ def create_world_bank_layout():
                         ),
                         html.P(
                             "Select a country and interact with the dynamic figures.",
-                            className="hero-subtitle"
+                            className="hero-description"
                         )
                     ], className="hero-content"),
-                    
                     # Right map section
                     html.Div([
                         html.Div(className="hero-map-image")

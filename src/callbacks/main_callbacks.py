@@ -33,12 +33,12 @@ def register_main_callbacks(app):
                 # Load country and region mapping
                 countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
                 country_name = countries_and_regions_dict.get(selected_country, selected_country)
-                return f"Sub-Saharan Africa DRM Dashboard | {country_name}"
+                return f"SSA Risk & Urbanization Dashboard | {country_name}"
             else:
-                return "Sub-Saharan Africa DRM Dashboard"
+                return "SSA Risk & Urbanization Dashboard"
         except Exception:
-            return "Sub-Saharan Africa DRM Dashboard"
-    
+            return "SSA Risk & Urbanization Dashboard"
+
     @app.callback(
         Output('tab-content', 'children'),
         Input('main-tabs', 'active_tab')
@@ -56,7 +56,7 @@ def register_main_callbacks(app):
             return create_world_bank_flood_projections_tab_content()
         else:
             return html.Div([
-                html.H3("Welcome to the Sub-Saharan Africa DRM Dashboard"),
+                html.H3("Welcome to the Sub-Saharan Africa Disaster Risk & Urbanization Analytics Dashboard"),
                 html.P("Select a tab above to begin exploring the data.")
             ])
 

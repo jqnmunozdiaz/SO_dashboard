@@ -78,7 +78,7 @@ def load_urbanization_indicators_dict() -> Dict[str, str]:
 
 
 # Import centralized country utilities
-from .country_utils import get_subsaharan_countries, load_subsaharan_countries_dict
+from .country_utils import get_subsaharan_countries, load_subsaharan_countries_dict, load_subsaharan_countries_and_regions_dict
 
 # Re-export for backward compatibility
-__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_wdi_data', 'load_urbanization_indicators_dict']
+__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict']

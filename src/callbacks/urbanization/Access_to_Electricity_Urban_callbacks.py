@@ -14,7 +14,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 try:
     from ...utils.data_loader import load_wdi_data, load_urbanization_indicators_dict
-    from ...utils.country_utils import load_subsaharan_countries_dict
+    from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
     from config.settings import CHART_STYLES
 except ImportError:
@@ -23,7 +23,7 @@ except ImportError:
     import os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_wdi_data, load_urbanization_indicators_dict
-    from src.utils.country_utils import load_subsaharan_countries_dict
+    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
     from config.settings import CHART_STYLES
 
@@ -47,8 +47,8 @@ def register_access_to_electricity_urban_callbacks(app):
             indicators_dict = load_urbanization_indicators_dict()
             chart_title = indicators_dict.get('EG.ELC.ACCS.UR.ZS', 'Access to Electricity, Urban')
             
-            # Load country mapping for ISO code to full name conversion
-            countries_dict = load_subsaharan_countries_dict()
+            # Load country and region mapping for ISO code to full name conversion
+            countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
             
             if electricity_data.empty:
                 # Return empty chart if no data
@@ -64,7 +64,7 @@ def register_access_to_electricity_urban_callbacks(app):
                 country_data = country_data.sort_values('Year')
                 
                 if not country_data.empty:
-                    country_name = countries_dict.get(selected_country, selected_country)
+                    country_name = countries_and_regions_dict.get(selected_country, selected_country)
                     
                     # Add country line
                     fig.add_trace(go.Scatter(
@@ -79,7 +79,7 @@ def register_access_to_electricity_urban_callbacks(app):
                     
                     title_suffix = f"{country_name}"
                 else:
-                    title_suffix = f"{countries_dict.get(selected_country, selected_country)} - No data available"
+                    title_suffix = f"{countries_and_regions_dict.get(selected_country, selected_country)} - No data available"
             else:
                 title_suffix = "No country selected"
             

@@ -14,7 +14,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 try:
     from ...utils.data_loader import load_emdat_data
-    from ...utils.country_utils import load_subsaharan_countries_dict
+    from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.color_utils import get_disaster_color, DISASTER_COLORS
     from config.settings import DATA_CONFIG
 except ImportError:
@@ -23,7 +23,7 @@ except ImportError:
     import os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_emdat_data
-    from src.utils.country_utils import load_subsaharan_countries_dict
+    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.color_utils import get_disaster_color, DISASTER_COLORS
     from config.settings import DATA_CONFIG
 
@@ -49,8 +49,8 @@ def setup_frequency_by_type_callbacks(app):
             # Load real EM-DAT data
             emdat_data = load_emdat_data()
             
-            # Load country mapping for ISO code to full name conversion
-            countries_dict = load_subsaharan_countries_dict()
+            # Load country and region mapping for ISO code to full name conversion
+            countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
             
             # Filter data based on country input only
             if selected_country and 'ISO' in emdat_data.columns:
@@ -75,9 +75,9 @@ def setup_frequency_by_type_callbacks(app):
                     lambda x: get_disaster_color(x, DISASTER_COLORS)
                 )
                 
-                # Create title with country info - map ISO code to full country name
+                # Create title with country/region info - map ISO code to full name
                 if selected_country:
-                    country_name = countries_dict.get(selected_country, selected_country)
+                    country_name = countries_and_regions_dict.get(selected_country, selected_country)
                     title_suffix = f"{country_name}"
                 else:
                     raise ValueError("No country selected for disaster frequency analysis")

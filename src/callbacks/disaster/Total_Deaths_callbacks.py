@@ -1,6 +1,6 @@
 """
-Callbacks for disaster timeline visualization - "Disasters by Year" subtab
-Shows stacked bar chart of disaster events grouped by 5-year intervals for selected country
+Callbacks for disaster deaths visualization - "Total Deaths" subtab
+Shows stacked bar chart of total deaths by disaster type in 5-year intervals for selected country
 """
 
 from dash import Input, Output
@@ -27,16 +27,16 @@ except ImportError:
     from config.settings import DATA_CONFIG
 
 
-def setup_disasters_by_year_callbacks(app):
-    """Setup callbacks for the 'Disasters by Year' timeline chart"""
+def setup_total_deaths_callbacks(app):
+    """Setup callbacks for the 'Total Deaths' disaster chart"""
     
     @app.callback(
-        Output('disaster-timeline-chart', 'figure'),
+        Output('disaster-deaths-chart', 'figure'),
         Input('main-country-filter', 'value'),
         prevent_initial_call=False
     )
-    def generate_disasters_by_year_timeline_chart(selected_country):
-        """Generate stacked bar chart showing disasters by 5-year intervals since configured start year"""
+    def generate_total_deaths_chart(selected_country):
+        """Generate stacked bar chart showing total deaths by 5-year intervals since configured start year"""
         try:
             # Load real EM-DAT data
             emdat_data = load_emdat_data()
@@ -48,13 +48,13 @@ def setup_disasters_by_year_callbacks(app):
             if selected_country and 'ISO' in emdat_data.columns:
                 emdat_data = emdat_data[emdat_data['ISO'] == selected_country]
             
-            # Create 5-year intervals starting from 1975
+            # Create 5-year intervals starting from configured year
             if emdat_data.empty:
                 # Create empty data structure
-                timeline_data = pd.DataFrame({
+                deaths_data = pd.DataFrame({
                     'Year_Interval': ['1975-1979'],
                     'Disaster Type': ['No Data'],
-                    'Event Count': [0]
+                    'Total Deaths': [0]
                 })
                 title_suffix = "No data available for selected country"
             else:
@@ -68,11 +68,11 @@ def setup_disasters_by_year_callbacks(app):
                     right=False
                 )
                 
-                # Group by interval and disaster type using the 'Number of Events' column
-                timeline_data = emdat_data.groupby(['Year_Interval', 'Disaster Type'])['Number of Events'].sum().reset_index(name='Event Count')
+                # Group by interval and disaster type, sum deaths
+                deaths_data = emdat_data.groupby(['Year_Interval', 'Disaster Type'])['Total Deaths'].sum().reset_index()
                 
                 # Convert interval to string for plotting
-                timeline_data['Year_Interval'] = timeline_data['Year_Interval'].astype(str)
+                deaths_data['Year_Interval'] = deaths_data['Year_Interval'].astype(str)
                 
                 # Map ISO code to full country/region name
                 if selected_country:
@@ -83,21 +83,21 @@ def setup_disasters_by_year_callbacks(app):
                     
         except Exception as e:
             # Return empty data on error
-            timeline_data = pd.DataFrame({
+            deaths_data = pd.DataFrame({
                 'Year_Interval': ['1975-1979'],
                 'Disaster Type': ['Error'],
-                'Event Count': [0]
+                'Total Deaths': [0]
             })
             title_suffix = f"Error loading data"
         
         # Create stacked bar chart with disaster type colors
         fig = px.bar(
-            timeline_data,
+            deaths_data,
             x='Year_Interval',
-            y='Event Count',
+            y='Total Deaths',
             color='Disaster Type',
-            title=f'<b>{title_suffix}</b> | Number of Disasters by 5-Year Intervals ({DATA_CONFIG["analysis_period"]})<br><sub>Data Source: EM-DAT</sub>',
-            labels={'Event Count': 'Number of Events', 'Year_Interval': '5-Year Interval'},
+            title=f'<b>{title_suffix}</b> | Total Deaths by 5-Year Intervals ({DATA_CONFIG["analysis_period"]})<br><sub>Data Source: EM-DAT</sub>',
+            labels={'Total Deaths': 'Total Deaths', 'Year_Interval': '5-Year Interval'},
             color_discrete_map=DISASTER_COLORS
         )
         
@@ -120,12 +120,12 @@ def setup_disasters_by_year_callbacks(app):
                 gridwidth=0,
                 gridcolor='#e5e7eb',
                 tickmode='array',
-                tickvals=timeline_data['Year_Interval'].unique(),
-                ticktext=[interval.replace('-', ' -<br>') for interval in timeline_data['Year_Interval'].unique()],
+                tickvals=deaths_data['Year_Interval'].unique(),
+                ticktext=[interval.replace('-', ' -<br>') for interval in deaths_data['Year_Interval'].unique()],
                 tickfont=dict(size=10)
             ),
             yaxis=dict(
-                dtick=1 if timeline_data['Event Count'].max() <= 10 else None,
+                dtick=1 if deaths_data['Total Deaths'].max() <= 10 else None,
                 rangemode='tozero',
                 showgrid=True,
                 gridwidth=1,
@@ -141,7 +141,7 @@ def setup_disasters_by_year_callbacks(app):
         fig.update_traces(
             marker_line_color='white',
             marker_line_width=0.5,
-            hovertemplate='<b>%{fullData.name}</b><br>Period: %{x}<br>Events: %{y}<extra></extra>'
+            hovertemplate='<b>%{fullData.name}</b><br>Period: %{x}<br>Deaths: %{y:,.0f}<extra></extra>'
         )
         
         return fig

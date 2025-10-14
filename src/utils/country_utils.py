@@ -65,6 +65,27 @@ def load_wb_regional_classifications():
         return [], [], []
 
 
+def load_subsaharan_countries_and_regions_dict() -> Dict[str, str]:
+    """
+    Load Sub-Saharan African countries and regions with their full names
+    
+    Returns:
+        Dictionary mapping ISO codes to country/region names (includes SSA, AFE, AFW regions)
+    """
+    # Get individual countries first
+    countries_dict = load_subsaharan_countries_dict()
+    
+    # Add regional aggregates with full names
+    regions_dict = {
+        'SSA': 'Sub-Saharan Africa',
+        'AFE': 'Eastern & Southern Africa',
+        'AFW': 'Western & Central Africa'
+    }
+    
+    # Combine countries and regions
+    return {**countries_dict, **regions_dict}
+
+
 def get_countries_with_regions() -> list:
     """
     Get list of Sub-Saharan African countries with regional aggregates at the end
@@ -80,9 +101,9 @@ def get_countries_with_regions() -> list:
     
     # Add regional aggregates at the end
     regional_options = [
-        {'name': 'Sub-Saharan Africa (SSA)', 'code': 'SSA'},
-        {'name': 'Eastern & Southern Africa (AFE)', 'code': 'AFE'},
-        {'name': 'Western & Central Africa (AFW)', 'code': 'AFW'}
+        {'name': 'Sub-Saharan Africa', 'code': 'SSA'},
+        {'name': 'Eastern & Southern Africa', 'code': 'AFE'},
+        {'name': 'Western & Central Africa', 'code': 'AFW'}
     ]
     
     return countries + regional_options

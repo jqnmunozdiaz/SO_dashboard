@@ -21,6 +21,9 @@ from config.settings import DATA_CONFIG
 # Load World Bank regional classifications from centralized utilities
 afe_countries, afw_countries, ssa_countries = load_wb_regional_classifications()
 
+# Load Sub-Saharan countries from centralized utilities
+SUB_SAHARAN_COUNTRIES = load_subsaharan_countries_dict()
+
 def clean_emdat_data(input_file, output_file):
     """
     Clean and process EM-DAT data for African countries

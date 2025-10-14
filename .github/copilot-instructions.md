@@ -14,10 +14,11 @@ This is a **Dash-based dashboard** for analyzing disaster risk management (DRM) 
 ## Current Dashboard Structure
 
 ### Main Tabs
-1. **Historical Disasters** - EM-DAT disaster analysis with three subtabs:
+1. **Historical Disasters** - EM-DAT disaster analysis with four subtabs:
    - Frequency by Type - disaster type distribution charts
    - Disasters by Year - temporal trend analysis
    - Total Affected Population - population impact analysis
+   - Total Deaths - mortality impact analysis
 
 2. **Historical Urbanization** - WDI urbanization indicators with two subtabs:
    - Urban Population Living in Slums - slums population trends with regional benchmarks
@@ -206,7 +207,7 @@ src/
 ```
 
 ### Current Visualization Capabilities
-1. **Disaster Analysis** (3 charts): Frequency by type, timeline trends, affected population
+1. **Disaster Analysis** (4 charts): Frequency by type, timeline trends, affected population, deaths analysis
 2. **Urbanization Analysis** (2 charts): Slums population trends, electricity access trends
 3. **Regional Benchmarks**: SSA, Eastern/Southern Africa, Western/Central Africa comparisons
 4. **Interactive Features**: Country selection, benchmark toggling, responsive design

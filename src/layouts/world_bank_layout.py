@@ -160,6 +160,10 @@ def create_world_bank_disaster_tab_content():
                     dbc.Tab(
                         label="Total Affected Population",
                         tab_id="disaster-affected"
+                    ),
+                    dbc.Tab(
+                        label="Total Deaths",
+                        tab_id="disaster-deaths"
                     )
                 ], id="disaster-subtabs", active_tab="disaster-frequency", 
                 className="sub-nav-tabs subtabs-container")

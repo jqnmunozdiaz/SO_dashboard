@@ -11,12 +11,12 @@ from src.layouts.world_bank_layout import (
 )
 
 try:
-    from ..utils.country_utils import load_subsaharan_countries_dict
+    from ..utils.country_utils import load_subsaharan_countries_and_regions_dict
 except ImportError:
     import sys
     import os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-    from src.utils.country_utils import load_subsaharan_countries_dict
+    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
 
 
 def register_main_callbacks(app):
@@ -30,9 +30,9 @@ def register_main_callbacks(app):
         """Update header title based on selected country"""
         try:
             if selected_country:
-                # Load country mapping
-                countries_dict = load_subsaharan_countries_dict()
-                country_name = countries_dict.get(selected_country, selected_country)
+                # Load country and region mapping
+                countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
+                country_name = countries_and_regions_dict.get(selected_country, selected_country)
                 return f"Sub-Saharan Africa DRM Dashboard | {country_name}"
             else:
                 return "Sub-Saharan Africa DRM Dashboard"

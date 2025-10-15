@@ -34,4 +34,8 @@ if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 8050))
     debug = os.environ.get('ENVIRONMENT', 'development') == 'development'
-    app.run(debug=debug, host='0.0.0.0', port=port)
+    
+    # Use localhost for local development, 0.0.0.0 for production
+    host = '127.0.0.1' if debug else '0.0.0.0'
+    
+    app.run(debug=debug, host=host, port=port)

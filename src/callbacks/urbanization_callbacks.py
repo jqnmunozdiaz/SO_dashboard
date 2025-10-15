@@ -144,6 +144,20 @@ def register_callbacks(app):
                         )
                     ], className="checkbox-group")
                 ], className="benchmark-selector-container"),
+                # Country benchmark selection dropdown
+                html.Div([
+                    html.Label("Country Benchmarks:", className="dropdown-label"),
+                    html.Div([
+                        dcc.Dropdown(
+                            id='electricity-country-benchmark-selector',
+                            options=[],  # Will be populated by callback
+                            value=[],
+                            multi=True,
+                            placeholder="Select countries to compare...",
+                            className="country-benchmark-dropdown"
+                        )
+                    ], className="dropdown-group")
+                ], className="country-benchmark-selector-container"),
                 # Chart
                 dcc.Graph(id="access-to-electricity-urban-chart"),
                 # Indicator note

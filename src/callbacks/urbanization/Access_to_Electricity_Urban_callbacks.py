@@ -34,10 +34,11 @@ def register_access_to_electricity_urban_callbacks(app):
     @app.callback(
         Output('access-to-electricity-urban-chart', 'figure'),
         [Input('main-country-filter', 'value'),
-         Input('electricity-benchmark-selector', 'value')],
+         Input('electricity-benchmark-selector', 'value'),
+         Input('electricity-country-benchmark-selector', 'value')],
         prevent_initial_call=False
     )
-    def generate_access_to_electricity_urban_chart(selected_country, benchmark_regions):
+    def generate_access_to_electricity_urban_chart(selected_country, benchmark_regions, country_benchmarks):
         """Generate line chart showing access to electricity in urban areas over time"""
         try:
             # Load electricity access data
@@ -58,15 +59,12 @@ def register_access_to_electricity_urban_callbacks(app):
             # Create the figure
             fig = go.Figure()
             
-            # Get country data
+            # Get country data for selected country
             if selected_country and selected_country in electricity_data['Country Code'].values:
                 country_data = electricity_data[electricity_data['Country Code'] == selected_country].copy()
                 country_data = country_data.sort_values('Year')
-                
                 if not country_data.empty:
                     country_name = countries_and_regions_dict.get(selected_country, selected_country)
-                    
-                    # Add country line
                     fig.add_trace(go.Scatter(
                         x=country_data['Year'],
                         y=country_data['Value'],
@@ -76,12 +74,28 @@ def register_access_to_electricity_urban_callbacks(app):
                         marker=dict(size=6, color='#295e84'),
                         hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Electricity Access: %{{y:.1f}}%<extra></extra>'
                     ))
-                    
                     title_suffix = f"{country_name}"
                 else:
                     title_suffix = f"{countries_and_regions_dict.get(selected_country, selected_country)} - No data available"
             else:
                 title_suffix = "No country selected"
+
+            # Add country benchmarks if selected
+            if country_benchmarks:
+                for iso in country_benchmarks:
+                    if iso in electricity_data['Country Code'].values:
+                        bench_data = electricity_data[electricity_data['Country Code'] == iso].copy()
+                        bench_data = bench_data.sort_values('Year')
+                        if not bench_data.empty:
+                            bench_name = countries_and_regions_dict.get(iso, iso)
+                            fig.add_trace(go.Scatter(
+                                x=bench_data['Year'],
+                                y=bench_data['Value'],
+                                mode='lines',
+                                name=bench_name,
+                                line=dict(width=2, dash='dot'),
+                                hovertemplate=f'<b>{bench_name}</b><br>Year: %{{x}}<br>Electricity Access: %{{y:.1f}}%<extra></extra>'
+                            ))
             
             # Add benchmark regions if selected
             benchmark_colors = get_benchmark_colors()
@@ -144,6 +158,20 @@ def register_access_to_electricity_urban_callbacks(app):
         except Exception as e:
             # Return error chart
             return create_empty_chart(f"Error loading data: {str(e)}")
+
+    # Country benchmark dropdown options callback
+    @app.callback(
+        Output('electricity-country-benchmark-selector', 'options'),
+        [Input('main-country-filter', 'value')]
+    )
+    def update_electricity_country_benchmark_options(selected_country):
+        countries_dict = load_subsaharan_countries_and_regions_dict()
+        # Exclude the currently selected country from the dropdown
+        options = [
+            {'label': name, 'value': iso}
+            for iso, name in countries_dict.items() if iso != selected_country
+        ]
+        return options
 
 
 def create_empty_chart(message):

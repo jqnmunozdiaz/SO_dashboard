@@ -153,7 +153,7 @@ def register_urbanization_rate_callbacks(app):
             
             # Update layout
             fig.update_layout(
-                title=f'<b>{title_suffix}</b> | Urbanization Rate<br><sub>Data Source: UN DESA World Urbanization Prospects</sub>',
+                title=f'<b>{title_suffix}</b> | Urbanization Rate',
                 xaxis_title='Year',
                 yaxis_title='Urban Population (% of Total Population)',
                 plot_bgcolor='white',

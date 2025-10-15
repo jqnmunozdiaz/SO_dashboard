@@ -93,7 +93,7 @@ def setup_disasters_by_year_callbacks(app):
             x='Year_Interval',
             y='Event Count',
             color='Disaster Type',
-            title=f'<b>{title_suffix}</b> | Number of Disasters by 5-Year Intervals ({DATA_CONFIG["analysis_period"]})<br><sub>Data Source: EM-DAT</sub>',
+            title=f'<b>{title_suffix}</b> | Number of Disasters by 5-Year Intervals ({DATA_CONFIG["analysis_period"]})',
             labels={'Event Count': 'Number of Events', 'Year_Interval': '5-Year Interval'},
             color_discrete_map=DISASTER_COLORS
         )

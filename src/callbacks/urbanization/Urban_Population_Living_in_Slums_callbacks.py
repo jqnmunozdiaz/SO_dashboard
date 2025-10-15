@@ -128,7 +128,7 @@ def register_urban_population_living_in_slums_callbacks(app):
             
             # Update layout
             fig.update_layout(
-                title=f'<b>{title_suffix}</b> | {chart_title}<br><sub>Data Source: World Development Indicators (World Bank)</sub>',
+                title=f'<b>{title_suffix}</b> | {chart_title}',
                 xaxis_title='Year',
                 yaxis_title='Population Living in Slums (% of Urban Population)',
                 plot_bgcolor='white',

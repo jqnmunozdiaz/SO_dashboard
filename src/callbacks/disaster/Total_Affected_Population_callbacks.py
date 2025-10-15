@@ -93,7 +93,7 @@ def setup_total_affected_population_callbacks(app):
             x='Year_Interval',
             y='Total Affected',
             color='Disaster Type',
-            title=f'<b>{title_suffix}</b> | Total Affected Population by 5-Year Intervals ({DATA_CONFIG["analysis_period"]})<br><sub>Data Source: EM-DAT</sub>',
+            title=f'<b>{title_suffix}</b> | Total Affected Population by 5-Year Intervals ({DATA_CONFIG["analysis_period"]})',
             labels={'Total Affected': 'Total Affected Population', 'Year_Interval': '5-Year Interval'},
             color_discrete_map=DISASTER_COLORS
         )

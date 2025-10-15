@@ -118,7 +118,7 @@ def register_access_to_electricity_urban_callbacks(app):
             
             # Update layout
             fig.update_layout(
-                title=f'<b>{title_suffix}</b> | {chart_title}<br><sub>Data Source: World Development Indicators (World Bank)</sub>',
+                title=f'<b>{title_suffix}</b> | {chart_title}<br>',
                 xaxis_title='Year',
                 yaxis_title='Access to Electricity (% of Urban Population)',
                 plot_bgcolor='white',

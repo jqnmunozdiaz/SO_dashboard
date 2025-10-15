@@ -16,6 +16,7 @@ from .country_benchmark_callbacks import register_country_benchmark_options_call
 try:
     from ..utils.benchmark_config import get_benchmark_options
     from ..utils.data_loader import load_urbanization_indicators_notes_dict
+    from ..utils.ui_helpers import create_benchmark_selectors
 except ImportError:
     # Fallback for direct execution
     import sys
@@ -23,6 +24,7 @@ except ImportError:
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
     from src.utils.benchmark_config import get_benchmark_options
     from src.utils.data_loader import load_urbanization_indicators_notes_dict
+    from src.utils.ui_helpers import create_benchmark_selectors
 
 
 def register_callbacks(app):
@@ -59,140 +61,73 @@ def register_callbacks(app):
                 dcc.Graph(id="urban-population-projections-chart"),
                 # Indicator note
                 html.Div([
-                    html.P("Urban and rural population projections from UN DESA World Population Prospects and World Urbanization Prospects. Uncertainty bands show 95% and 80% confidence intervals for future projections.", className="indicator-note")
+                    html.P([html.B("Data Source: "), "UN DESA (World Population Prospects & World Urbanization Prospects).", html.Br(), html.B("Note:"), " Uncertainty bands show 95% and 80% confidence intervals for future projections."], className="indicator-note")
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'urbanization-rate':
             return html.Div([
-                # Benchmark selection checkboxes
-                html.Div([
-                    html.Label("Regional Benchmarks:", className="checkbox-label"),
-                    html.Div([
-                        dcc.Checklist(
-                            id='urbanization-rate-benchmark-selector',
-                            options=get_benchmark_options(),
-                            value=[],  # No benchmarks selected by default
-                            className="benchmark-checkboxes",
-                            inline=True
-                        )
-                    ], className="checkbox-group")
-                ], className="benchmark-selector-container"),
-                # Country benchmark selection dropdown
-                html.Div([
-                    html.Label("Country Benchmarks:", className="dropdown-label"),
-                    html.Div([
-                        dcc.Dropdown(
-                            id='urbanization-rate-country-benchmark-selector',
-                            options=[],  # Will be populated by callback
-                            value=[],
-                            multi=True,
-                            placeholder="Select countries to compare...",
-                            className="country-benchmark-dropdown"
-                        )
-                    ], className="dropdown-group")
-                ], className="country-benchmark-selector-container"),
+                # Benchmark selectors
+                *create_benchmark_selectors(
+                    regional_id='urbanization-rate-benchmark-selector',
+                    country_id='urbanization-rate-country-benchmark-selector',
+                    include_regional=True,
+                    include_country=True
+                ),
                 # Chart
                 dcc.Graph(id="urbanization-rate-chart"),
                 # Indicator note
                 html.Div([
-                    html.P("Percentage of population living in urban areas from UN DESA World Urbanization Prospects. Shows historical trends and future projections of urbanization levels.", className="indicator-note")
+                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects.", html.Br(), html.B("Note:"), " Percentage of population living in urban areas. Shows historical trends and future projections of urbanization levels."], className="indicator-note")
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'urban-population-slums':
             slums_note = notes_dict.get('EN.POP.SLUM.UR.ZS', '')
             return html.Div([
-                # Benchmark selection checkboxes
-                html.Div([
-                    html.Label("Regional Benchmarks:", className="checkbox-label"),
-                    html.Div([
-                        dcc.Checklist(
-                            id='slums-benchmark-selector',
-                            options=get_benchmark_options(),
-                            value=[],  # No benchmarks selected by default
-                            className="benchmark-checkboxes",
-                            inline=True
-                        )
-                    ], className="checkbox-group")
-                ], className="benchmark-selector-container"),
-                # Country benchmark selection dropdown
-                html.Div([
-                    html.Label("Country Benchmarks:", className="dropdown-label"),
-                    html.Div([
-                        dcc.Dropdown(
-                            id='slums-country-benchmark-selector',
-                            options=[],  # Will be populated by callback
-                            value=[],
-                            multi=True,
-                            placeholder="Select countries to compare...",
-                            className="country-benchmark-dropdown"
-                        )
-                    ], className="dropdown-group")
-                ], className="country-benchmark-selector-container"),
+                # Benchmark selectors
+                *create_benchmark_selectors(
+                    regional_id='slums-benchmark-selector',
+                    country_id='slums-country-benchmark-selector',
+                    include_regional=True,
+                    include_country=True
+                ),
                 # Chart
                 dcc.Graph(id="urban-population-slums-chart"),
                 # Indicator note
                 html.Div([
-                    html.P(slums_note, className="indicator-note")
+                    html.P([html.B("Data Source: "), "World Bank World Development Indicators (EN.POP.SLUM.UR.ZS).", html.Br(), html.B("Note:"), f" {slums_note}"], className="indicator-note")
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'access-to-electricity-urban':
             electricity_note = notes_dict.get('EG.ELC.ACCS.UR.ZS', '')
             return html.Div([
-                # Benchmark selection checkboxes
-                html.Div([
-                    html.Label("Regional Benchmarks:", className="checkbox-label"),
-                    html.Div([
-                        dcc.Checklist(
-                            id='electricity-benchmark-selector',
-                            options=get_benchmark_options(),
-                            value=[],  # No benchmarks selected by default
-                            className="benchmark-checkboxes",
-                            inline=True
-                        )
-                    ], className="checkbox-group")
-                ], className="benchmark-selector-container"),
-                # Country benchmark selection dropdown
-                html.Div([
-                    html.Label("Country Benchmarks:", className="dropdown-label"),
-                    html.Div([
-                        dcc.Dropdown(
-                            id='electricity-country-benchmark-selector',
-                            options=[],  # Will be populated by callback
-                            value=[],
-                            multi=True,
-                            placeholder="Select countries to compare...",
-                            className="country-benchmark-dropdown"
-                        )
-                    ], className="dropdown-group")
-                ], className="country-benchmark-selector-container"),
+                # Benchmark selectors
+                *create_benchmark_selectors(
+                    regional_id='electricity-benchmark-selector',
+                    country_id='electricity-country-benchmark-selector',
+                    include_regional=True,
+                    include_country=True
+                ),
                 # Chart
                 dcc.Graph(id="access-to-electricity-urban-chart"),
                 # Indicator note
                 html.Div([
-                    html.P(electricity_note, className="indicator-note")
+                    html.P([html.B("Data Source: "), "World Bank World Development Indicators (EG.ELC.ACCS.UR.ZS).", html.Br(), html.B("Note:"), f" {electricity_note}"], className="indicator-note")
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'gdp-vs-urbanization':
             return html.Div([
-                # Country benchmark selection dropdown
-                html.Div([
-                    html.Label("Country Benchmarks:", className="dropdown-label"),
-                    html.Div([
-                        dcc.Dropdown(
-                            id='gdp-vs-urbanization-country-benchmark-selector',
-                            options=[],  # Will be populated by callback
-                            value=[],
-                            multi=True,
-                            placeholder="Select countries to compare...",
-                            className="country-benchmark-dropdown"
-                        )
-                    ], className="dropdown-group")
-                ], className="country-benchmark-selector-container"),
+                # Benchmark selectors (only country benchmarks for this chart)
+                *create_benchmark_selectors(
+                    regional_id='gdp-vs-urbanization-benchmark-selector',
+                    country_id='gdp-vs-urbanization-country-benchmark-selector',
+                    include_regional=False,  # This chart doesn't have regional benchmarks
+                    include_country=True
+                ),
                 # Chart
                 dcc.Graph(id="gdp-vs-urbanization-chart"),
                 # Indicator note
                 html.Div([
-                    html.P("Urban population refers to people living in urban areas as defined by national statistical offices. The data are collected by the UN Population Division. Aggregation of urban and rural population may not add up to total population because of different country coverage. There is no consistent and universally accepted standard for distinguishing urban from rural areas. Therefore, cross-country comparisons should be made with caution. Gross domestic product (GDP) is expressed in constant international dollars, converted by purchasing power parities (PPPs). PPPs account for the different price levels across countries and thus PPP-based comparisons of economic output are more appropriate for comparing the output of economies and the average material well-being of their inhabitants than exchange-rate based comparisons.", className="indicator-note")
+                    html.P([html.B("Data Source: "), "World Bank World Development Indicators.", html.Br(), html.B("Note:"), " Urban population refers to people living in urban areas as defined by national statistical offices. The data are collected by the UN Population Division. Aggregation of urban and rural population may not add up to total population because of different country coverage. There is no consistent and universally accepted standard for distinguishing urban from rural areas. Therefore, cross-country comparisons should be made with caution. Gross domestic product (GDP) is expressed in constant international dollars, converted by purchasing power parities (PPPs). PPPs account for the different price levels across countries and thus PPP-based comparisons of economic output are more appropriate for comparing the output of economies and the average material well-being of their inhabitants than exchange-rate based comparisons."], className="indicator-note")
                 ], className="indicator-note-container")
             ], className="chart-container")
         else:

@@ -170,7 +170,7 @@ def register_urban_population_projections_callbacks(app):
             
             # Update layout
             fig.update_layout(
-                title=f'<b>{country_name}</b> | Urban and Rural Population Projections<br><sub>Data Source: UN DESA (World Population Prospects & World Urbanization Prospects)</sub>',
+                title=f'<b>{country_name}</b> | Urban and Rural Population Projections',
                 xaxis_title='Year',
                 yaxis_title='Population (millions)',
                 hovermode='x unified',

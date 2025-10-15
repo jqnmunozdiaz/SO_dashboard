@@ -79,7 +79,7 @@ def register_gdp_vs_urbanization_callbacks(app):
                     if iso in countries_dict:
                         plot_country(iso, countries_dict[iso], palette[i % len(palette)], dash='dot')
             fig.update_layout(
-                title=f'<b>{title_suffix}</b> | GDP per Capita vs Urbanization Rate<br><sub>Data Source: World Bank WDI</sub>',
+                title=f'<b>{title_suffix}</b> | GDP per Capita vs Urbanization Rate',
                 xaxis_title='Urbanization Rate (% of Population)',
                 yaxis_title='GDP per Capita (PPP, constant 2017 international $)',
                 plot_bgcolor='white',

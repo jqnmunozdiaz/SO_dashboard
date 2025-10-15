@@ -31,19 +31,39 @@ def register_callbacks(app):
         """Render different disaster charts based on selected subtab with clear chart mapping"""
         if active_subtab == 'disaster-frequency':
             return html.Div([
-                dcc.Graph(id="disaster-frequency-chart")
+                # Chart
+                dcc.Graph(id="disaster-frequency-chart"),
+                # Indicator note
+                html.Div([
+                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note")
+                ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'disaster-timeline':
             return html.Div([
-                dcc.Graph(id="disaster-timeline-chart")
+                # Chart
+                dcc.Graph(id="disaster-timeline-chart"),
+                # Indicator note
+                html.Div([
+                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note")
+                ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'disaster-affected':
             return html.Div([
-                dcc.Graph(id="disaster-affected-chart")
+                # Chart
+                dcc.Graph(id="disaster-affected-chart"),
+                # Indicator note
+                html.Div([
+                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note")
+                ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'disaster-deaths':
             return html.Div([
-                dcc.Graph(id="disaster-deaths-chart")
+                # Chart
+                dcc.Graph(id="disaster-deaths-chart"),
+                # Indicator note
+                html.Div([
+                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note")
+                ], className="indicator-note-container")
             ], className="chart-container")
         else:
             return html.Div("Select a chart type above")

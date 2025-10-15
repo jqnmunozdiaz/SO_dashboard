@@ -92,7 +92,7 @@ def setup_total_deaths_callbacks(app):
             x='Year_Interval',
             y='Total Deaths',
             color='Disaster Type',
-            title=f'<b>{title_suffix}</b> | Total Deaths by 5-Year Intervals ({DATA_CONFIG["analysis_period"]})<br><sub>Data Source: EM-DAT</sub>',
+            title=f'<b>{title_suffix}</b> | Total Deaths by 5-Year Intervals ({DATA_CONFIG["analysis_period"]})',
             labels={'Total Deaths': 'Total Deaths', 'Year_Interval': '5-Year Interval'},
             color_discrete_map=DISASTER_COLORS
         )

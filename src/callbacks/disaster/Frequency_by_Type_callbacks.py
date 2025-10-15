@@ -95,7 +95,7 @@ def setup_frequency_by_type_callbacks(app):
             frequency_data,
             x='Disaster Type Wrapped',
             y='Event Count',
-            title=f'<b>{title_suffix}</b> | Frequency of Disasters by Type ({DATA_CONFIG["analysis_period"]})<br><sub>Data Source: EM-DAT</sub>',
+            title=f'<b>{title_suffix}</b> | Frequency of Disasters by Type ({DATA_CONFIG["analysis_period"]})',
             labels={'Event Count': 'Number of Events', 'Disaster Type Wrapped': 'Disaster Type'},
             color='Disaster Type',
             color_discrete_map={

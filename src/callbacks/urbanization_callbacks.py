@@ -192,7 +192,7 @@ def register_callbacks(app):
                 dcc.Graph(id="gdp-vs-urbanization-chart"),
                 # Indicator note
                 html.Div([
-                    html.P("GDP per capita (PPP, constant 2017 international $) vs urbanization rate (% of population). Shows the relationship between economic development and urban population growth over time.", className="indicator-note")
+                    html.P("Urban population refers to people living in urban areas as defined by national statistical offices. The data are collected by the UN Population Division. Aggregation of urban and rural population may not add up to total population because of different country coverage. There is no consistent and universally accepted standard for distinguishing urban from rural areas. Therefore, cross-country comparisons should be made with caution. Gross domestic product (GDP) is expressed in constant international dollars, converted by purchasing power parities (PPPs). PPPs account for the different price levels across countries and thus PPP-based comparisons of economic output are more appropriate for comparing the output of economies and the average material well-being of their inhabitants than exchange-rate based comparisons.", className="indicator-note")
                 ], className="indicator-note-container")
             ], className="chart-container")
         else:

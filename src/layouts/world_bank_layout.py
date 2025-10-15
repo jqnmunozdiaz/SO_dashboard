@@ -201,6 +201,10 @@ def create_world_bank_urbanization_tab_content():
                     dbc.Tab(
                         label="Access to Electricity",
                         tab_id="access-to-electricity-urban"
+                    ),
+                    dbc.Tab(
+                        label="GDP vs Urbanization",
+                        tab_id="gdp-vs-urbanization"
                     )
                 ], id="urbanization-subtabs", active_tab="urban-population-projections", 
                 className="sub-nav-tabs subtabs-container")

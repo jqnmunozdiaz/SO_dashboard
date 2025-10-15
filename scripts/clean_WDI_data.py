@@ -4,7 +4,6 @@ Processes the raw WDI CSV file and creates cleaned CSV files for each urbanizati
 """
 
 import pandas as pd
-import numpy as np
 import os
 import warnings
 

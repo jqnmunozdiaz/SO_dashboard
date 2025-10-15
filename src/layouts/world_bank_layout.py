@@ -191,6 +191,10 @@ def create_world_bank_urbanization_tab_content():
                         tab_id="urban-population-projections"
                     ),
                     dbc.Tab(
+                        label="Urbanization Rate",
+                        tab_id="urbanization-rate"
+                    ),
+                    dbc.Tab(
                         label="Population Living in Slums",
                         tab_id="urban-population-slums"
                     ),

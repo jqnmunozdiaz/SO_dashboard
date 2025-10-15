@@ -20,6 +20,12 @@ ALL_COUNTRY_CODES = SUB_SAHARAN_COUNTRIES + REGIONAL_CODES
 locations_df = pd.read_csv('data/raw/Urban/WUP2018-F00-LOCATIONS_clean.csv')
 country_code_to_iso3 = dict(zip(locations_df['Country Code'].astype(int), locations_df['ISO3']))
 
+def load_wup_excel(file_path, sheet_name='Data', skiprows=16):
+    """Load WUP Excel file and map country codes to ISO3."""
+    df = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=skiprows, header=0)
+    df['ISO3'] = df['Country code'].astype(int).map(country_code_to_iso3)
+    return df.set_index('ISO3')
+
 def CountryFile(ISO3):
     df = pd.DataFrame()
     
@@ -32,22 +38,13 @@ def CountryFile(ISO3):
         for year in range(2022, 2101):
             df.at[f'wpp_{prob.lower().replace(" ", "")}', year] = wpp.at[ISO3, year]/1000
         # Fill 2021 values with 2022 values interpolaitng between 2022 and 2023
-        df.at[f'wpp_{prob.lower().replace(" ", "")}', 2021] = (
-            df.at[f'wpp_{prob.lower().replace(" ", "")}', 2022] - 
-            (df.at[f'wpp_{prob.lower().replace(" ", "")}', 2023] - df.at[f'wpp_{prob.lower().replace(" ", "")}', 2022]))
+        delta = df.at[f'wpp_{prob.lower().replace(" ", "")}', 2023] - df.at[f'wpp_{prob.lower().replace(" ", "")}', 2022]
+        df.at[f'wpp_{prob.lower().replace(" ", "")}', 2021] = (df.at[f'wpp_{prob.lower().replace(" ", "")}', 2022] - delta)
     
     # Retrieve WUP 2018 estimates
-    wup_urban_prop = pd.read_excel('data/raw/Urban/WUP2018-F02-Proportion_Urban.xlsx', sheet_name = 'Data', skiprows = 16, header = 0)
-    wup_urban_prop['ISO3'] = wup_urban_prop['Country code'].astype(int).map(country_code_to_iso3)
-    wup_urban_prop = wup_urban_prop.set_index('ISO3')
-
-    wup_urban_pop = pd.read_excel('data/raw/Urban/WUP2018-F03-Urban_Population.xlsx', sheet_name = 'Data', skiprows = 16, header = 0)
-    wup_urban_pop['ISO3'] = wup_urban_pop['Country code'].astype(int).map(country_code_to_iso3)
-    wup_urban_pop = wup_urban_pop.set_index('ISO3')
-    
-    wup_rural_pop = pd.read_excel('data/raw/Urban/WUP2018-F04-Rural_Population.xlsx', sheet_name = 'Data', skiprows = 16, header = 0)
-    wup_rural_pop['ISO3'] = wup_rural_pop['Country code'].astype(int).map(country_code_to_iso3)
-    wup_rural_pop = wup_rural_pop.set_index('ISO3')
+    wup_urban_prop = load_wup_excel('data/raw/Urban/WUP2018-F02-Proportion_Urban.xlsx')
+    wup_urban_pop = load_wup_excel('data/raw/Urban/WUP2018-F03-Urban_Population.xlsx')
+    wup_rural_pop = load_wup_excel('data/raw/Urban/WUP2018-F04-Rural_Population.xlsx')
 
     for year in range(1950, 2055, 5):
         df.at['wup_urban_prop', year] = wup_urban_prop.at[ISO3, year]/100
@@ -73,8 +70,7 @@ def CountryFile(ISO3):
 
     # Reorder columns by year in ascending order
     year_columns = [col for col in df.columns if isinstance(col, int)]
-    df = df[sorted(year_columns)]
-    return df
+    return df[sorted(year_columns)]
 
 # Process all Sub-Saharan African countries
 

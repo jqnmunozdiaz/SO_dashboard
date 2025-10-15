@@ -9,6 +9,7 @@ from dash import Input, Output, dcc, html
 from .urbanization.Urban_Population_Living_in_Slums_callbacks import register_urban_population_living_in_slums_callbacks
 from .urbanization.Access_to_Electricity_Urban_callbacks import register_access_to_electricity_urban_callbacks
 from .urbanization.Urban_Population_Projections_callbacks import register_urban_population_projections_callbacks
+from .urbanization.Urbanization_Rate_callbacks import register_urbanization_rate_callbacks
 
 try:
     from ..utils.benchmark_config import get_benchmark_options
@@ -29,6 +30,7 @@ def register_callbacks(app):
     register_urban_population_living_in_slums_callbacks(app)
     register_access_to_electricity_urban_callbacks(app)
     register_urban_population_projections_callbacks(app)
+    register_urbanization_rate_callbacks(app)
     
     # Main chart container callback (orchestrates which chart to show)
     @app.callback(
@@ -49,6 +51,28 @@ def register_callbacks(app):
                 # Indicator note
                 html.Div([
                     html.P("Urban and rural population projections from UN DESA World Population Prospects and World Urbanization Prospects. Uncertainty bands show 95% and 80% confidence intervals for future projections.", className="indicator-note")
+                ], className="indicator-note-container")
+            ], className="chart-container")
+        elif active_subtab == 'urbanization-rate':
+            return html.Div([
+                # Benchmark selection checkboxes
+                html.Div([
+                    html.Label("Regional Benchmarks:", className="checkbox-label"),
+                    html.Div([
+                        dcc.Checklist(
+                            id='urbanization-rate-benchmark-selector',
+                            options=get_benchmark_options(),
+                            value=[],  # No benchmarks selected by default
+                            className="benchmark-checkboxes",
+                            inline=True
+                        )
+                    ], className="checkbox-group")
+                ], className="benchmark-selector-container"),
+                # Chart
+                dcc.Graph(id="urbanization-rate-chart"),
+                # Indicator note
+                html.Div([
+                    html.P("Percentage of population living in urban areas from UN DESA World Urbanization Prospects. Shows historical trends and future projections of urbanization levels.", className="indicator-note")
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'urban-population-slums':

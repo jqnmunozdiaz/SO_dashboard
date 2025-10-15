@@ -120,8 +120,10 @@ def register_callbacks(app):
                 *create_benchmark_selectors(
                     regional_id='gdp-vs-urbanization-benchmark-selector',
                     country_id='gdp-vs-urbanization-country-benchmark-selector',
+                    global_id='gdp-vs-urbanization-global-benchmark-selector',
                     include_regional=False,  # This chart doesn't have regional benchmarks
-                    include_country=True
+                    include_country=True,
+                    include_global=True
                 ),
                 # Chart
                 dcc.Graph(id="gdp-vs-urbanization-chart"),

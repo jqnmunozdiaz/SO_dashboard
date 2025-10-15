@@ -47,3 +47,14 @@ def get_global_benchmark_options():
         {'label': config['name'], 'value': code}
         for code, config in GLOBAL_BENCHMARK_CONFIG.items()
     ]
+
+def get_global_benchmark_dropdown_options():
+    """Get list of options for Dash dropdown components (global benchmarks)"""
+    return [
+        {'label': config['name'], 'value': code}
+        for code, config in GLOBAL_BENCHMARK_CONFIG.items()
+    ]
+
+def get_all_global_benchmark_codes():
+    """Get list of all global benchmark region codes for default selection"""
+    return list(GLOBAL_BENCHMARK_CONFIG.keys())

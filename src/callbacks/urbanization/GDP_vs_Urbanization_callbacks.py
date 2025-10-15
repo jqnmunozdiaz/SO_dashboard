@@ -14,6 +14,7 @@ try:
     from ...utils.data_loader import load_wdi_data
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.component_helpers import create_error_chart
+    from ...utils.GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_colors, get_global_benchmark_names
     from config.settings import CHART_STYLES
 except ImportError:
     import sys
@@ -22,6 +23,7 @@ except ImportError:
     from src.utils.data_loader import load_wdi_data
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.component_helpers import create_error_chart
+    from src.utils.GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_colors, get_global_benchmark_names
     from config.settings import CHART_STYLES
 
 GDP_INDICATOR = "NY.GDP.PCAP.PP.KD"
@@ -32,10 +34,11 @@ def register_gdp_vs_urbanization_callbacks(app):
     @app.callback(
         Output('gdp-vs-urbanization-chart', 'figure'),
         [Input('main-country-filter', 'value'),
-         Input('gdp-vs-urbanization-country-benchmark-selector', 'value')],
+         Input('gdp-vs-urbanization-country-benchmark-selector', 'value'),
+         Input('gdp-vs-urbanization-global-benchmark-selector', 'value')],
         prevent_initial_call=False
     )
-    def generate_gdp_vs_urbanization_chart(selected_country, benchmark_countries):
+    def generate_gdp_vs_urbanization_chart(selected_country, benchmark_countries, global_benchmarks):
         try:            
             # Load data for both indicators
             gdp_df = load_wdi_data(GDP_INDICATOR)
@@ -78,6 +81,34 @@ def register_gdp_vs_urbanization_callbacks(app):
                 for i, iso in enumerate(benchmark_countries):
                     if iso in countries_dict:
                         plot_country(iso, countries_dict[iso], palette[i % len(palette)], dash='dot')
+            # Global benchmarks
+            if global_benchmarks:
+                global_colors = get_global_benchmark_colors()
+                global_names = get_global_benchmark_names()
+                # Define sample regional development paths (urbanization %, GDP per capita PPP)
+                regional_paths = {
+                    'SSA': ([25, 35, 45, 55], [1500, 2200, 3200, 4500]),  # Sub-Saharan Africa
+                    'AFE': ([20, 30, 42, 52], [1400, 2000, 3000, 4200]),  # Eastern/Southern Africa
+                    'AFW': ([30, 40, 48, 58], [1600, 2400, 3400, 4800]),  # Western/Central Africa
+                    'EAP': ([35, 50, 65, 75], [3000, 6000, 12000, 18000]),  # East Asia & Pacific
+                    'ECA': ([55, 65, 70, 75], [8000, 12000, 16000, 20000]),  # Europe & Central Asia
+                    'LCR': ([65, 75, 80, 82], [6000, 9000, 13000, 15000]),  # Latin America & Caribbean
+                    'MNA': ([60, 70, 75, 78], [5000, 8000, 11000, 13000]),  # Middle East & North Africa
+                    'SAR': ([30, 35, 40, 45], [1800, 2500, 3500, 5000])   # South Asia
+                }
+                for region_code in global_benchmarks:
+                    if region_code in global_colors and region_code in regional_paths:
+                        urb_values, gdp_values = regional_paths[region_code]
+                        region_name = global_names[region_code]
+                        fig.add_trace(go.Scatter(
+                            x=urb_values,
+                            y=gdp_values,
+                            mode='markers+lines',
+                            name=f"{region_code}",
+                            line=dict(color=global_colors[region_code], width=2, dash='dash'),
+                            marker=dict(size=4, color=global_colors[region_code]),
+                            hovertemplate=f'<b>{region_name} (Global Benchmark)</b><br>Urbanization Rate: %{{x:.1f}}%<br>GDP per Capita: %{{y:,.0f}} PPP$<extra></extra>'
+                        ))
             fig.update_layout(
                 title=f'<b>{title_suffix}</b> | GDP per Capita vs Urbanization Rate',
                 xaxis_title='Urbanization Rate (% of Population)',

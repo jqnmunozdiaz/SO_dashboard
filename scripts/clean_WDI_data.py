@@ -15,13 +15,13 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from src.utils.country_utils import load_subsaharan_countries_dict
-from src.utils.benchmark_config import get_benchmark_names
+from src.utils.GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_names
 from config.settings import DATA_CONFIG
 
 # Load countries from centralized CSV + regional aggregates
 SUB_SAHARAN_COUNTRIES = load_subsaharan_countries_dict()
 # Add regional codes for benchmarking from centralized configuration
-REGIONAL_CODES = get_benchmark_names()
+REGIONAL_CODES = get_global_benchmark_names()
 ALL_COUNTRY_CODES = {**SUB_SAHARAN_COUNTRIES, **REGIONAL_CODES}
 
 
@@ -45,6 +45,11 @@ def clean_wdi_data(input_file, output_dir, indicators_file):
         
         # Filter for our target countries and regions
         target_codes = list(ALL_COUNTRY_CODES.keys())
+        # Ensure all regional codes from benchmark file are included
+        for code in REGIONAL_CODES.keys():
+            if code not in target_codes:
+                target_codes.append(code)
+        
         df = df[df['Country Code'].isin(target_codes)]
         
         # Filter for our target indicators

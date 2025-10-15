@@ -5,25 +5,25 @@ Global benchmark configuration for all regions, expanding benchmark_config.py wi
 
 from .benchmark_config import BENCHMARK_CONFIG
 
-# Additional global regions
-_ADDITIONAL_REGIONS = {
-    'EAP': {
+# Additional global regions. These acronyms are strange but used to match WDI region codes.
+_ADDITIONAL_REGIONS = { 
+    'EAS': {
         'name': 'East Asia & Pacific',
         'color': '#2980b9'
     },
-    'ECA': {
+    'ECS': {
         'name': 'Europe & Central Asia',
         'color': '#8e44ad'
     },
-    'LCR': {
+    'LCN': {
         'name': 'Latin America & Caribbean',
         'color': '#d35400'
     },
-    'MNA': {
+    'MEA': {
         'name': 'Middle East & North Africa',
         'color': '#16a085'
     },
-    'SAR': {
+    'TSA': {
         'name': 'South Asia',
         'color': '#c0392b'
     }

@@ -63,7 +63,7 @@ def register_gdp_vs_urbanization_callbacks(app):
                     fig.add_trace(go.Scatter(
                         x=merged['Value_urb'],
                         y=merged['Value_gdp'],
-                        mode='markers+lines',
+                        mode='lines',
                         name=name,
                         line=dict(color=color, width=3, dash=dash) if dash else dict(color=color, width=3),
                         marker=dict(size=6, color=color),
@@ -85,30 +85,24 @@ def register_gdp_vs_urbanization_callbacks(app):
             if global_benchmarks:
                 global_colors = get_global_benchmark_colors()
                 global_names = get_global_benchmark_names()
-                # Define sample regional development paths (urbanization %, GDP per capita PPP)
-                regional_paths = {
-                    'SSA': ([25, 35, 45, 55], [1500, 2200, 3200, 4500]),  # Sub-Saharan Africa
-                    'AFE': ([20, 30, 42, 52], [1400, 2000, 3000, 4200]),  # Eastern/Southern Africa
-                    'AFW': ([30, 40, 48, 58], [1600, 2400, 3400, 4800]),  # Western/Central Africa
-                    'EAP': ([35, 50, 65, 75], [3000, 6000, 12000, 18000]),  # East Asia & Pacific
-                    'ECA': ([55, 65, 70, 75], [8000, 12000, 16000, 20000]),  # Europe & Central Asia
-                    'LCR': ([65, 75, 80, 82], [6000, 9000, 13000, 15000]),  # Latin America & Caribbean
-                    'MNA': ([60, 70, 75, 78], [5000, 8000, 11000, 13000]),  # Middle East & North Africa
-                    'SAR': ([30, 35, 40, 45], [1800, 2500, 3500, 5000])   # South Asia
-                }
+                # Use actual data from processed WDI files for global regions
                 for region_code in global_benchmarks:
-                    if region_code in global_colors and region_code in regional_paths:
-                        urb_values, gdp_values = regional_paths[region_code]
-                        region_name = global_names[region_code]
-                        fig.add_trace(go.Scatter(
-                            x=urb_values,
-                            y=gdp_values,
-                            mode='markers+lines',
-                            name=f"{region_code}",
-                            line=dict(color=global_colors[region_code], width=2, dash='dash'),
-                            marker=dict(size=4, color=global_colors[region_code]),
-                            hovertemplate=f'<b>{region_name} (Global Benchmark)</b><br>Urbanization Rate: %{{x:.1f}}%<br>GDP per Capita: %{{y:,.0f}} PPP$<extra></extra>'
-                        ))
+                    if region_code in global_colors:
+                        # Get urbanization and GDP data for the region
+                        urb_region = urb_df[urb_df['Country Code'] == region_code].sort_values('Year')
+                        gdp_region = gdp_df[gdp_df['Country Code'] == region_code].sort_values('Year')
+                        merged_region = pd.merge(urb_region, gdp_region, on=['Country Code', 'Year'], suffixes=('_urb', '_gdp'))
+                        if not merged_region.empty:
+                            fig.add_trace(go.Scatter(
+                                x=merged_region['Value_urb'],
+                                y=merged_region['Value_gdp'],
+                                mode='lines',
+                                name=f"{global_names[region_code]}",
+                                line=dict(color=global_colors[region_code], width=2, dash='dash'),
+                                marker=dict(size=4, color=global_colors[region_code]),
+                                hovertemplate=f'<b>{global_names[region_code]}</b><br>Year: %{{text}}<br>Urbanization Rate: %{{x:.1f}}%<br>GDP per Capita: %{{y:,.0f}} PPP$<extra></extra>',
+                                text=merged_region['Year']
+                            ))
             fig.update_layout(
                 title=f'<b>{title_suffix}</b> | GDP per Capita vs Urbanization Rate',
                 xaxis_title='Urbanization Rate (% of Population)',
@@ -121,7 +115,7 @@ def register_gdp_vs_urbanization_callbacks(app):
                 legend=dict(
                     orientation="h",
                     yanchor="bottom",
-                    y=1.02,
+                    y=0.98,
                     xanchor="right",
                     x=1
                 ),
@@ -135,7 +129,7 @@ def register_gdp_vs_urbanization_callbacks(app):
                     zerolinecolor='#e5e7eb'
                 ),
                 xaxis=dict(
-                    range=[0, None],
+                    range=[0, 100],
                     showgrid=True,
                     gridwidth=1,
                     gridcolor='#e5e7eb',

@@ -35,19 +35,22 @@ def create_benchmark_selectors(regional_id, country_id, include_regional=True, i
 
     if include_global:
         # Global benchmark selection dropdown
+        # Exclude AFE and AFW from default selection
+        all_codes = get_all_global_benchmark_codes()
+        default_codes = [code for code in all_codes if code not in ('AFE', 'AFW')]
         components.append(html.Div([
             html.Label("Regional Benchmarks:", className="dropdown-label"),
             html.Div([
                 dcc.Dropdown(
                     id=global_id,
                     options=get_global_benchmark_dropdown_options(),
-                    value=get_all_global_benchmark_codes(),  # All global benchmarks selected by default
+                    value=default_codes,  # All except AFE and AFW selected by default
                     multi=True,
                     placeholder="Select regions to compare...",
-                    className="global-benchmark-dropdown"
+                    className="country-benchmark-dropdown"
                 )
             ], className="dropdown-group")
-        ], className="global-benchmark-selector-container"))
+        ], className="country-benchmark-selector-container"))
 
     if include_regional:
         # Regional benchmark selection checkboxes

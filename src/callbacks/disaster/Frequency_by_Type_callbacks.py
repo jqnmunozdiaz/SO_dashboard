@@ -80,7 +80,7 @@ def setup_frequency_by_type_callbacks(app):
                     country_name = countries_and_regions_dict.get(selected_country, selected_country)
                     title_suffix = f"{country_name}"
                 else:
-                    raise ValueError("No country selected")
+                    title_suffix = "No country selected"
                 
         except Exception as e:
             # Return empty data on error

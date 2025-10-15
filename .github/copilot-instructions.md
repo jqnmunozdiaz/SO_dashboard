@@ -20,9 +20,10 @@ This is a **Dash-based dashboard** for analyzing disaster risk management (DRM) 
    - Total Affected Population - population impact analysis
    - Total Deaths - mortality impact analysis
 
-2. **Historical Urbanization** - WDI urbanization indicators with two subtabs:
+2. **Historical Urbanization** - WDI urbanization indicators with three subtabs:
    - Urban Population Living in Slums - slums population trends with regional benchmarks
    - Access to Electricity, Urban - electricity access trends with regional benchmarks
+   - Urbanization Rate - urban population growth projections with regional benchmarks
 
 3. **Exposure to Flood Hazard** - (placeholder for future flood risk data)
 4. **Projections of Flood Risk** - (placeholder for future flood projections)
@@ -43,6 +44,9 @@ from src.utils.data_loader import load_wdi_data, load_urbanization_indicators_di
 
 # Regional benchmarks - centralized configuration
 from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names, get_benchmark_options
+
+# Error handling - use shared chart utilities
+from src.utils.component_helpers import create_error_chart
 ```
 
 ### Callback Registration
@@ -57,8 +61,10 @@ src/callbacks/main_callbacks.py         # Handles main navigation and header upd
 src/callbacks/disaster/Frequency_by_Type_callbacks.py
 src/callbacks/disaster/Disasters_by_Year_callbacks.py
 src/callbacks/disaster/Total_Affected_Population_callbacks.py
+src/callbacks/disaster/Total_Deaths_callbacks.py
 src/callbacks/urbanization/Urban_Population_Living_in_Slums_callbacks.py
 src/callbacks/urbanization/Access_to_Electricity_Urban_callbacks.py
+src/callbacks/urbanization/Urbanization_Rate_callbacks.py
 
 # Registration in app.py
 from src.callbacks import disaster_callbacks, urbanization_callbacks
@@ -69,20 +75,16 @@ disaster_callbacks.register_callbacks(app)
 urbanization_callbacks.register_callbacks(app)
 ```
 
-### World Bank Styling System
-UI follows World Bank design system with specific color palette and styling:
-- Primary blue: `#295e84` (country data lines)
-- Regional benchmark colors: Red `#e74c3c` (SSA), Orange `#f39c12` (AFE), Green `#27ae60` (AFW)
-- Layout uses flexbox with `height: 100vh` and `overflow: hidden`
-- Cards use consistent shadow and World Bank branding
-- Colors and styles defined in `config/settings.py` under `CHART_STYLES`
-- Regional benchmarks centralized in `src/utils/benchmark_config.py`
+### Error Handling Pattern
+All error states use centralized utilities in `src/utils/component_helpers.py`:
+```python
+# For error charts with annotations
+from src.utils.component_helpers import create_error_chart
 
-**CRITICAL STYLING RULE**: All styling must be defined in `assets/css/custom.css` using CSS classes. Never use inline styles in Python components. When adding new UI elements:
-1. Define CSS classes in `assets/css/custom.css`
-2. Apply classes using `className` attribute in Dash components
-3. Follow existing naming patterns (e.g., `.indicator-note`, `.benchmark-selector-container`)
-4. Maintain consistent World Bank color scheme and spacing
+# Handle data loading errors - use create_error_chart with appropriate parameters
+# Handle empty data gracefully - use create_error_chart with appropriate parameters
+# Handle "no country selected" consistently - use title_suffix = "No country selected"
+```
 
 ### Data Processing Pipeline
 
@@ -107,6 +109,17 @@ UI follows World Bank design system with specific color palette and styling:
 ```bash
 python app.py  # Starts on localhost:8050
 ```
+
+### Documentation Updates
+**IMPORTANT**: Always update `.github/copilot-instructions.md` when making significant changes to:
+- Architecture patterns and conventions
+- New utility functions or shared components
+- Error handling patterns
+- File structure changes
+- New visualization capabilities
+- Data processing pipelines
+
+This ensures the AI assistant has current knowledge of the codebase for future development tasks.
 
 ### Data Updates
 
@@ -177,9 +190,10 @@ Optional packages commented out for deployment compatibility - install separatel
    - EM-DAT processed data: `['Disaster Type', 'ISO', 'Year', 'Total Deaths', 'Total Affected']`
    - WDI processed data: `['Country Code', 'Year', 'Value']`
 5. **Regional benchmarks**: Use `src/utils/benchmark_config.py` for colors, names, and options - never hardcode
-6. **Error handling**: Callbacks should gracefully handle missing data and return empty charts with error messages
-7. **File paths**: All definition files moved to `data/Definitions/` - update imports accordingly
-8. **Chart IDs**: Each visualization has unique IDs (e.g., `urban-population-slums-chart`, `access-to-electricity-urban-chart`)
+6. **Error handling**: Always use `create_error_chart()` from `component_helpers.py` for consistent error states - never create local `create_empty_chart` functions
+7. **No country selected**: Always use `title_suffix = "No country selected"` instead of raising `ValueError` - this allows benchmark data to still be displayed
+8. **File paths**: All definition files moved to `data/Definitions/` - update imports accordingly
+9. **Chart IDs**: Each visualization has unique IDs (e.g., `urban-population-slums-chart`, `access-to-electricity-urban-chart`)
 
 ## File Dependencies & Data Structure
 
@@ -207,6 +221,7 @@ src/
 │   └── world_bank_layout.py       # Complete UI layout
 └── utils/
     ├── benchmark_config.py         # Regional benchmark settings
+    ├── component_helpers.py        # Shared chart utilities and error handling
     ├── data_loader.py             # Data loading utilities
     ├── country_utils.py           # Country filtering utilities
     └── [other utilities]
@@ -214,7 +229,7 @@ src/
 
 ### Current Visualization Capabilities
 1. **Disaster Analysis** (4 charts): Frequency by type, timeline trends, affected population, deaths analysis
-2. **Urbanization Analysis** (2 charts): Slums population trends, electricity access trends
+2. **Urbanization Analysis** (4 charts): Slums population trends, electricity access trends, urbanization rate projections, GDP vs urbanization scatterplot
 3. **Regional Benchmarks**: SSA, Eastern/Southern Africa, Western/Central Africa comparisons
 4. **Interactive Features**: Country selection, benchmark toggling, responsive design
 

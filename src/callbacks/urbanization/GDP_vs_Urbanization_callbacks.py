@@ -13,6 +13,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 try:
     from ...utils.data_loader import load_wdi_data
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
+    from ...utils.component_helpers import create_error_chart
     from config.settings import CHART_STYLES
 except ImportError:
     import sys
@@ -20,6 +21,7 @@ except ImportError:
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_wdi_data
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
+    from src.utils.component_helpers import create_error_chart
     from config.settings import CHART_STYLES
 
 GDP_INDICATOR = "NY.GDP.PCAP.PP.KD"
@@ -34,12 +36,14 @@ def register_gdp_vs_urbanization_callbacks(app):
         prevent_initial_call=False
     )
     def generate_gdp_vs_urbanization_chart(selected_country, benchmark_countries):
-        try:
+        try:            
             # Load data for both indicators
             gdp_df = load_wdi_data(GDP_INDICATOR)
             urb_df = load_wdi_data(URBAN_INDICATOR)
             
+            # Handle no country selected case
             countries_dict = load_subsaharan_countries_and_regions_dict()
+            title_suffix = countries_dict.get(selected_country, "No country selected") if selected_country else "No country selected"
 
             fig = go.Figure()
             # Helper to merge and plot for a country
@@ -69,7 +73,7 @@ def register_gdp_vs_urbanization_callbacks(app):
                     if iso in countries_dict:
                         plot_country(iso, countries_dict[iso], palette[i % len(palette)], dash='dot')
             fig.update_layout(
-                title='<b>GDP per Capita vs Urbanization Rate</b><br><sub>Data Source: World Bank WDI</sub>',
+                title=f'<b>{title_suffix}</b> | GDP per Capita vs Urbanization Rate<br><sub>Data Source: World Bank WDI</sub>',
                 xaxis_title='Urbanization Rate (% of Population)',
                 yaxis_title='GDP per Capita (PPP, constant 2017 international $)',
                 plot_bgcolor='white',
@@ -84,17 +88,29 @@ def register_gdp_vs_urbanization_callbacks(app):
                     xanchor="right",
                     x=1
                 ),
+                yaxis=dict(
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#e5e7eb',
+                    zeroline=True,
+                    zerolinewidth=1,
+                    zerolinecolor='#e5e7eb'
+                ),
+                xaxis=dict(
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#e5e7eb',
+                    zeroline=False
+                ),
                 margin=dict(b=80, t=100)
             )
             return fig
         except Exception as e:
-            fig = go.Figure()
-            fig.add_annotation(
-                text=f"Error loading data: {str(e)}",
-                xref="paper", yref="paper",
-                x=0.5, y=0.5,
-                xanchor='center', yanchor='middle',
-                showarrow=False,
-                font=dict(size=16, color="gray")
+            # Return error chart
+            return create_error_chart(
+                error_message=f"Error loading data: {str(e)}",
+                chart_type='scatter',
+                xaxis_title='Urbanization Rate (% of Population)',
+                yaxis_title='GDP per Capita (PPP, constant 2017 international $)',
+                title='GDP per Capita vs Urbanization Rate'
             )
-            return fig

@@ -16,6 +16,7 @@ try:
     from ...utils.data_loader import load_undesa_urban_projections
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
+    from ...utils.component_helpers import create_error_chart
     from config.settings import CHART_STYLES
 except ImportError:
     # Fallback for direct execution
@@ -25,6 +26,7 @@ except ImportError:
     from src.utils.data_loader import load_undesa_urban_projections
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
+    from src.utils.component_helpers import create_error_chart
     from config.settings import CHART_STYLES
 
 
@@ -49,8 +51,14 @@ def register_urbanization_rate_callbacks(app):
             
             if undesa_data.empty:
                 # Return empty chart if no data
-                fig = create_empty_chart("No data available")
-                return fig
+                return create_error_chart(
+                    error_message="No data available",
+                    chart_type='line',
+                    xaxis_title='Year',
+                    yaxis_title='Urban Population (% of Total Population)',
+                    yaxis_range=[0, 100],
+                    title='Urbanization Rate'
+                )
             
             # Filter for urban proportion data only
             urban_prop_data = undesa_data[undesa_data['indicator'] == 'wup_urban_prop'].copy()
@@ -207,27 +215,11 @@ def register_urbanization_rate_callbacks(app):
             
         except Exception as e:
             # Return error chart
-            return create_empty_chart(f"Error loading data: {str(e)}")
-
-
-def create_empty_chart(message):
-    """Create an empty chart with error message"""
-    fig = go.Figure()
-    fig.add_annotation(
-        text=message,
-        xref="paper", yref="paper",
-        x=0.5, y=0.5,
-        xanchor='center', yanchor='middle',
-        showarrow=False,
-        font=dict(size=16, color="gray")
-    )
-    fig.update_layout(
-        title='Urbanization Rate',
-        xaxis_title='Year',
-        yaxis_title='Urban Population (% of Total Population)',
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        yaxis=dict(range=[0, 100]),
-        showlegend=False
-    )
-    return fig
+            return create_error_chart(
+                error_message=f"Error loading data: {str(e)}",
+                chart_type='line',
+                xaxis_title='Year',
+                yaxis_title='Urban Population (% of Total Population)',
+                yaxis_range=[0, 100],
+                title='Urbanization Rate'
+            )

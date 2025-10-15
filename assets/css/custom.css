@@ -616,7 +616,7 @@ label {
     border: 1px solid #e2e8f0;
     margin-bottom: 1rem;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 1rem;
 }
 
@@ -627,7 +627,6 @@ label {
     margin-bottom: 0;
     white-space: nowrap;
     min-width: fit-content;
-    padding-top: 0.25rem;
 }
 
 .dropdown-group {
@@ -713,25 +712,25 @@ label {
         font-size: 1.5rem;
         text-align: center;
     }
-    
-    .main-nav-tabs .nav-link {.main-nav-tabs .nav-link {
-        padding: 0.75rem 1.25rem !important;5rem 1.25rem !important;
-        font-size: 0.875rem !important;portant;
-        margin-right: 0.5rem !important;tant;
-        margin-bottom: 0.5rem;   margin-bottom: 0.5rem;
-    }}
-    
+
+    .main-nav-tabs .nav-link {
+        padding: 0.75rem 1.25rem !important;
+        font-size: 0.875rem !important;
+        margin-right: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
     .main-nav-tabs {
         gap: 0.5rem !important;
         padding: 0.5rem !important;
     }
-       
-    .sub-nav-tabs .nav-link {    .sub-nav-tabs .nav-link {
-        padding: 0.5rem 1rem !important;em 1rem !important;
-        font-size: 0.8rem !important;important;
-        margin-right: 0.25rem !important; 0.25rem !important;
-    }   }
-}}
+
+    .sub-nav-tabs .nav-link {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.8rem !important;
+        margin-right: 0.25rem !important;
+    }
+}
 
 /* Indicator Notes */
 .indicator-note-container {
@@ -752,32 +751,26 @@ label {
 
 @media (max-width: 576px) {
     .main-nav-tabs {
-        flex-direction: column !important;rtant;
-        align-items: center !important;;
+        flex-direction: column !important;
+        align-items: center !important;
     }
-    
-    .main-nav-tabs .nav-link {.main-nav-tabs .nav-link {
-        width: auto !important; !important;
+
+    .main-nav-tabs .nav-link {
+        width: auto !important;
         min-width: 200px !important;
         text-align: center !important;
-        margin-right: 0 !important;   margin-right: 0 !important;
-    }}
-    
-    .sub-nav-tabs {
-        flex-direction: column !important;rtant;
-        align-items: flex-start !important;portant;
+        margin-right: 0 !important;
     }
-    
-    .sub-nav-tabs .nav-link {   .sub-nav-tabs .nav-link {
-        width: 100% !important;        width: 100% !important;
-        text-align: left !important;        text-align: left !important;
 
+    .sub-nav-tabs {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
 
-
-
-
-
-}    }        margin-bottom: 0.25rem !important;        margin-right: 0 !important;        margin-right: 0 !important;
+    .sub-nav-tabs .nav-link {
+        width: 100% !important;
+        text-align: left !important;
+        margin-right: 0 !important;
         margin-bottom: 0.25rem !important;
     }
 }

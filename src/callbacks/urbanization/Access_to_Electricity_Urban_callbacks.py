@@ -54,15 +54,7 @@ def register_access_to_electricity_urban_callbacks(app):
             countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
             
             if electricity_data.empty:
-                # Return empty chart if no data
-                return create_error_chart(
-                    error_message="No data available",
-                    chart_type='line',
-                    xaxis_title='Year',
-                    yaxis_title='Access to Electricity (% of Urban Population)',
-                    yaxis_range=[0, 100],
-                    title='Access to Electricity, Urban'
-                )
+                raise Exception("No data available for selected country")
             
             # Create the figure
             fig = go.Figure()
@@ -84,10 +76,9 @@ def register_access_to_electricity_urban_callbacks(app):
                     ))
                     title_suffix = f"{country_name}"
                 else:
-                    title_suffix = f"{countries_and_regions_dict.get(selected_country, selected_country)} - No data available"
+                    raise Exception("No country selected")
             else:
-                title_suffix = "No country selected"
-
+                raise Exception("No country selected")
             # Add country benchmarks if selected
             if country_benchmarks:
                 for iso in country_benchmarks:
@@ -172,17 +163,3 @@ def register_access_to_electricity_urban_callbacks(app):
                 yaxis_range=[0, 100],
                 title='Access to Electricity, Urban'
             )
-
-    # Country benchmark dropdown options callback
-    @app.callback(
-        Output('electricity-country-benchmark-selector', 'options'),
-        [Input('main-country-filter', 'value')]
-    )
-    def update_electricity_country_benchmark_options(selected_country):
-        countries_dict = load_subsaharan_countries_and_regions_dict()
-        # Exclude the currently selected country from the dropdown
-        options = [
-            {'label': name, 'value': iso}
-            for iso, name in countries_dict.items() if iso != selected_country
-        ]
-        return options

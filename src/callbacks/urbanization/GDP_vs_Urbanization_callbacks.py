@@ -43,7 +43,11 @@ def register_gdp_vs_urbanization_callbacks(app):
             
             # Handle no country selected case
             countries_dict = load_subsaharan_countries_and_regions_dict()
-            title_suffix = countries_dict.get(selected_country, "No country selected") if selected_country else "No country selected"
+            
+            if selected_country:
+                title_suffix = countries_dict.get(selected_country)
+            else:
+                raise Exception("No country selected")
 
             fig = go.Figure()
             # Helper to merge and plot for a country
@@ -66,6 +70,8 @@ def register_gdp_vs_urbanization_callbacks(app):
             # Main country
             if selected_country and selected_country in countries_dict:
                 plot_country(selected_country, countries_dict[selected_country], '#295e84')
+            else:
+                raise Exception("No country selected")
             # Country benchmarks
             if benchmark_countries:
                 palette = ['#e74c3c', '#f39c12', '#27ae60', '#3498db', '#9b59b6', '#1abc9c', '#34495e', '#e67e22']
@@ -89,6 +95,7 @@ def register_gdp_vs_urbanization_callbacks(app):
                     x=1
                 ),
                 yaxis=dict(
+                    range=[0, None],
                     showgrid=True,
                     gridwidth=1,
                     gridcolor='#e5e7eb',
@@ -97,6 +104,7 @@ def register_gdp_vs_urbanization_callbacks(app):
                     zerolinecolor='#e5e7eb'
                 ),
                 xaxis=dict(
+                    range=[0, None],
                     showgrid=True,
                     gridwidth=1,
                     gridcolor='#e5e7eb',
@@ -112,5 +120,6 @@ def register_gdp_vs_urbanization_callbacks(app):
                 chart_type='scatter',
                 xaxis_title='Urbanization Rate (% of Population)',
                 yaxis_title='GDP per Capita (PPP, constant 2017 international $)',
+                yaxis_range=[0, None],
                 title='GDP per Capita vs Urbanization Rate'
             )

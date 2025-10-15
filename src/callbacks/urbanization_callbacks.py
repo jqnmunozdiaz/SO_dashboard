@@ -15,15 +15,14 @@ from .country_benchmark_callbacks import register_country_benchmark_options_call
 
 try:
     from ..utils.benchmark_config import get_benchmark_options
-    from ..utils.data_loader import load_urbanization_indicators_notes_dict, get_subsaharan_countries
+    from ..utils.data_loader import load_urbanization_indicators_notes_dict
 except ImportError:
     # Fallback for direct execution
     import sys
     import os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
     from src.utils.benchmark_config import get_benchmark_options
-    from src.utils.data_loader import load_urbanization_indicators_notes_dict, get_subsaharan_countries
-    from src.utils.country_utils import load_subsaharan_countries_dict
+    from src.utils.data_loader import load_urbanization_indicators_notes_dict
 
 
 def register_callbacks(app):
@@ -39,6 +38,7 @@ def register_callbacks(app):
     # Register country benchmark dropdown callbacks
     register_country_benchmark_options_callback(app, 'slums-country-benchmark-selector')
     register_country_benchmark_options_callback(app, 'urbanization-rate-country-benchmark-selector')
+    register_country_benchmark_options_callback(app, 'electricity-country-benchmark-selector')
     register_country_benchmark_options_callback(app, 'gdp-vs-urbanization-country-benchmark-selector')
     
     # Main chart container callback (orchestrates which chart to show)
@@ -190,6 +190,10 @@ def register_callbacks(app):
                 ], className="country-benchmark-selector-container"),
                 # Chart
                 dcc.Graph(id="gdp-vs-urbanization-chart"),
+                # Indicator note
+                html.Div([
+                    html.P("GDP per capita (PPP, constant 2017 international $) vs urbanization rate (% of population). Shows the relationship between economic development and urban population growth over time.", className="indicator-note")
+                ], className="indicator-note-container")
             ], className="chart-container")
         else:
             return html.Div("Select a chart type above")

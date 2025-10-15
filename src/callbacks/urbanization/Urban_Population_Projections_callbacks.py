@@ -15,7 +15,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 try:
     from ...utils.data_loader import load_undesa_urban_projections
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
+    from ...utils.component_helpers import create_error_chart
     from config.settings import CHART_STYLES
 except ImportError:
     # Fallback for direct execution
@@ -24,7 +24,7 @@ except ImportError:
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_undesa_urban_projections
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
+    from src.utils.component_helpers import create_error_chart
     from config.settings import CHART_STYLES
 
 
@@ -39,28 +39,21 @@ def register_urban_population_projections_callbacks(app):
     def generate_urban_population_projections_chart(selected_country):
         """Generate urban and rural population projections chart with uncertainty bands"""
         try:
-            # Load UNDESA urban projections data
-            undesa_data = load_undesa_urban_projections()
-            
             # Load country and region mapping for ISO code to full name conversion
             countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
             
-            # Handle missing country selection
-            if not selected_country:
-                selected_country = 'AGO'  # Default to Angola
+            if selected_country:
+                country_name = countries_and_regions_dict.get(selected_country, selected_country)
+            else:
+                raise Exception("No country selected")
+
+            # Load UNDESA urban projections data
+            undesa_data = load_undesa_urban_projections()
+            
+
             
             # Filter data for selected country
             country_data = undesa_data[undesa_data['ISO3'] == selected_country].copy()
-            
-            if country_data.empty:
-                return {
-                    'data': [],
-                    'layout': {
-                        'title': f'No urban population data available for {countries_and_regions_dict.get(selected_country, selected_country)}',
-                        'xaxis': {'title': 'Year'},
-                        'yaxis': {'title': 'Population (millions)'}
-                    }
-                }
             
             # Pivot data for easier access
             country_pivot = country_data.pivot(index='year', columns='indicator', values='value')
@@ -175,10 +168,7 @@ def register_urban_population_projections_callbacks(app):
                                         '<extra></extra>'
                         ))
             
-
             # Update layout
-            country_name = countries_and_regions_dict.get(selected_country, selected_country)
-            
             fig.update_layout(
                 title=f'<b>{country_name}</b> | Urban and Rural Population Projections<br><sub>Data Source: UN DESA (World Population Prospects & World Urbanization Prospects)</sub>',
                 xaxis_title='Year',
@@ -226,21 +216,11 @@ def register_urban_population_projections_callbacks(app):
             return fig
             
         except Exception as e:
-            # Return error chart
-            return {
-                'data': [],
-                'layout': {
-                    'title': f'Error loading urban population projections data: {str(e)}',
-                    'xaxis': {'title': 'Year'},
-                    'yaxis': {'title': 'Population (millions)'},
-                    'annotations': [{
-                        'text': f'Error: {str(e)}',
-                        'x': 0.5,
-                        'y': 0.5,
-                        'xref': 'paper',
-                        'yref': 'paper',
-                        'showarrow': False,
-                        'font': {'size': 10, 'color': 'red'}
-                    }]
-                }
-            }
+            # Return error chart using shared utility
+            return create_error_chart(
+                error_message=f"Error loading data: {str(e)}",
+                chart_type='scatter',
+                xaxis_title='Year',
+                yaxis_title='Population (millions)',
+                title='Urban and Rural Population Projections'
+            )

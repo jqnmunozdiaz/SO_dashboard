@@ -16,6 +16,7 @@ try:
     from ...utils.data_loader import load_emdat_data
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.color_utils import get_disaster_color, DISASTER_COLORS
+    from ...utils.component_helpers import create_error_chart
     from config.settings import DATA_CONFIG
 except ImportError:
     # Fallback for direct execution
@@ -25,6 +26,7 @@ except ImportError:
     from src.utils.data_loader import load_emdat_data
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.color_utils import get_disaster_color, DISASTER_COLORS
+    from src.utils.component_helpers import create_error_chart
     from config.settings import DATA_CONFIG
 
 
@@ -58,11 +60,7 @@ def setup_frequency_by_type_callbacks(app):
             
             # Count frequency by disaster type using the 'Number of Events' column
             if emdat_data.empty:
-                frequency_data = pd.DataFrame({
-                    'Disaster Type': ['No Data'],
-                    'Event Count': [0]
-                })
-                title_suffix = "No data available for selected country"
+                raise Exception("No data available for selected country")
             else:
                 frequency_data = emdat_data.groupby('Disaster Type')['Number of Events'].sum().reset_index(name='Event Count')
                 frequency_data = frequency_data.sort_values('Event Count', ascending=False)
@@ -80,17 +78,17 @@ def setup_frequency_by_type_callbacks(app):
                     country_name = countries_and_regions_dict.get(selected_country, selected_country)
                     title_suffix = f"{country_name}"
                 else:
-                    title_suffix = "No country selected"
+                    raise Exception("No country selected")
                 
         except Exception as e:
-            # Return empty data on error
-            frequency_data = pd.DataFrame({
-                'Disaster Type': ['Error'],
-                'Disaster Type Wrapped': ['Error'],
-                'Event Count': [0],
-                'Color': ['#e74c3c']
-            })
-            title_suffix = f"Error loading data: {str(e)}"
+            # Return error chart using shared utility
+            return create_error_chart(
+                error_message=f"Error loading data: {str(e)}",
+                chart_type='bar',
+                xaxis_title='Disaster Type',
+                yaxis_title='Number of Events',
+                title='Frequency of Disasters by Type'
+            )
         
         # Create bar chart with custom colors
         fig = px.bar(

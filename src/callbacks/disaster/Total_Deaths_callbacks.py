@@ -52,13 +52,7 @@ def setup_total_deaths_callbacks(app):
             
             # Create 5-year intervals starting from configured year
             if emdat_data.empty:
-                # Return empty chart for no data case
-                return create_error_chart(
-                    error_message="No disaster data available for selected country",
-                    chart_type='bar',
-                    xaxis_title='5-Year Interval',
-                    yaxis_title='Total Deaths'
-                )
+                raise Exception("No data available for selected country")
             else:
                 # Create 5-year interval bins starting from configured year
                 start_year = DATA_CONFIG['emdat_start_year']
@@ -81,7 +75,7 @@ def setup_total_deaths_callbacks(app):
                     country_name = countries_and_regions_dict.get(selected_country, selected_country)
                     title_suffix = f"{country_name}"
                 else:
-                    title_suffix = "No country selected"
+                    raise Exception("No country selected")
                     
         except Exception as e:
             # Return error chart using shared utility

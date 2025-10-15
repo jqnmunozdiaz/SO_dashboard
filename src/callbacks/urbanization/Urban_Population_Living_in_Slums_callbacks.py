@@ -53,17 +53,6 @@ def register_urban_population_living_in_slums_callbacks(app):
             # Load country and region mapping for ISO code to full name conversion
             countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
             
-            if slums_data.empty:
-                # Return empty chart if no data
-                return create_error_chart(
-                    error_message="No data available",
-                    chart_type='line',
-                    xaxis_title='Year',
-                    yaxis_title='Population Living in Slums (% of Urban Population)',
-                    yaxis_range=[0, 100],
-                    title='Urban Population Living in Slums'
-                )
-            
             # Create the figure
             fig = go.Figure()
             
@@ -88,9 +77,9 @@ def register_urban_population_living_in_slums_callbacks(app):
                     
                     title_suffix = f"{country_name}"
                 else:
-                    title_suffix = f"{countries_and_regions_dict.get(selected_country, selected_country)} - No data available"
+                    raise Exception("No country selected")
             else:
-                title_suffix = "No country selected"
+                raise Exception("No country selected")
             
             # Add benchmark regions if selected
             benchmark_colors = get_benchmark_colors()
@@ -176,7 +165,6 @@ def register_urban_population_living_in_slums_callbacks(app):
             return fig
             
         except Exception as e:
-            # Return error chart
             return create_error_chart(
                 error_message=f"Error loading data: {str(e)}",
                 chart_type='line',

@@ -15,6 +15,7 @@ try:
     from ...utils.data_loader import load_emdat_data
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.color_utils import DISASTER_COLORS
+    from ...utils.component_helpers import create_error_chart
     from config.settings import DATA_CONFIG
 except ImportError:
     # Fallback for direct execution
@@ -24,6 +25,7 @@ except ImportError:
     from src.utils.data_loader import load_emdat_data
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.color_utils import DISASTER_COLORS
+    from src.utils.component_helpers import create_error_chart
     from config.settings import DATA_CONFIG
 
 
@@ -50,13 +52,7 @@ def setup_disasters_by_year_callbacks(app):
             
             # Create 5-year intervals starting from 1975
             if emdat_data.empty:
-                # Create empty data structure
-                timeline_data = pd.DataFrame({
-                    'Year_Interval': ['1975-1979'],
-                    'Disaster Type': ['No Data'],
-                    'Event Count': [0]
-                })
-                title_suffix = "No data available for selected country"
+                raise Exception("No data available for selected country")
             else:
                 # Create 5-year interval bins starting from configured year
                 start_year = DATA_CONFIG['emdat_start_year']
@@ -79,16 +75,17 @@ def setup_disasters_by_year_callbacks(app):
                     country_name = countries_and_regions_dict.get(selected_country, selected_country)
                     title_suffix = f"{country_name}"
                 else:
-                    title_suffix = "No country selected"
+                    raise Exception("No country selected")
                     
         except Exception as e:
-            # Return empty data on error
-            timeline_data = pd.DataFrame({
-                'Year_Interval': ['1975-1979'],
-                'Disaster Type': ['Error'],
-                'Event Count': [0]
-            })
-            title_suffix = f"Error loading data: {str(e)}"
+            # Return error chart
+            return create_error_chart(
+                error_message=f"Error loading data: {str(e)}",
+                chart_type='bar',
+                xaxis_title='5-Year Interval',
+                yaxis_title='Number of Events',
+                title='Disasters by Year'
+            )
         
         # Create stacked bar chart with disaster type colors
         fig = px.bar(

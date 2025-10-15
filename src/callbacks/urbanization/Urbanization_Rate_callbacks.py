@@ -102,9 +102,9 @@ def register_urbanization_rate_callbacks(app):
 
                     title_suffix = f"{country_name}"
                 else:
-                    title_suffix = f"{countries_and_regions_dict.get(selected_country, selected_country)} - No data available"
+                    raise Exception("No country selected")
             else:
-                title_suffix = "No country selected"
+                raise Exception("No country selected")
             
             # Add benchmark regions if selected
             benchmark_colors = get_benchmark_colors()

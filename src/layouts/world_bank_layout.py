@@ -152,7 +152,7 @@ def create_world_bank_disaster_tab_content():
             html.Div([
                 dbc.Tabs([
                     dbc.Tab(
-                        label="Frequency by Type",
+                        label="Overview of Disasters",
                         tab_id="disaster-frequency"
                     ),
                     dbc.Tab(

@@ -40,8 +40,6 @@ def clean_wdi_data(input_file, output_dir, indicators_file):
         # Load indicator codes and names from CSV file
         indicators_df = pd.read_csv(indicators_file)
         indicator_codes = indicators_df['Indicator_Code'].tolist()
-        # Create mapping of codes to names for consistent naming
-        indicator_names_map = dict(zip(indicators_df['Indicator_Code'], indicators_df['Indicator_Name']))
         
         # Read the main WDI CSV file
         df = pd.read_csv(input_file)

@@ -1,5 +1,4 @@
 #%%
-#%%
 '''  Get urban projection data from UN DESA '''
 
 import pandas as pd
@@ -147,14 +146,9 @@ for region_code, country_list in regional_mappings.items():
             regional_df.loc[indicator, year] = total_value if countries_with_data > 0 else pd.NA
     
     # Process proportion indicators (proportion_indicators = 'wup_urban_prop', 'wup_rural_prop')
-    indicator = 'wup_urban_prop'
     for year in all_years:
-        regional_df.loc[indicator, year] = regional_df.loc['wup_urban_pop', year] / (regional_df.loc['wup_urban_pop', year] + regional_df.loc['wup_rural_pop', year]) if pd.notna(regional_df.loc['wup_urban_pop', year]) else pd.NA
-
-    indicator == 'wup_rural_prop' # Calculate rural_prop as 1 - urban_prop (if urban_prop already calculated)
-    for year in all_years:
-        if 'wup_urban_prop' in regional_df.index and pd.notna(regional_df.loc['wup_urban_prop', year]):
-            regional_df.loc[indicator, year] = 1 - regional_df.loc['wup_urban_prop', year]
+        regional_df.loc['wup_urban_prop', year] = regional_df.loc['wup_urban_pop', year] / (regional_df.loc['wup_urban_pop', year] + regional_df.loc['wup_rural_pop', year]) if pd.notna(regional_df.loc['wup_urban_pop', year]) else pd.NA
+        regional_df.loc['wup_rural_prop', year] = 1 - regional_df.loc['wup_urban_prop', year]
 
     # Save regional data
     output_path = f'data/processed/UNDESA_Country/{region_code}_urban_population_projections.csv'
@@ -207,3 +201,5 @@ final_df = final_df.sort_values(['ISO3', 'indicator', 'year']).reset_index(drop=
 
 # Save consolidated DataFrame
 final_df.to_csv('data/processed/UNDESA_Country/UNDESA_urban_projections_consolidated.csv', index=False)
+
+# %%

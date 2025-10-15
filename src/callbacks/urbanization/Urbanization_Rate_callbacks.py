@@ -34,10 +34,11 @@ def register_urbanization_rate_callbacks(app):
     @app.callback(
         Output('urbanization-rate-chart', 'figure'),
         [Input('main-country-filter', 'value'),
-         Input('urbanization-rate-benchmark-selector', 'value')],
+         Input('urbanization-rate-benchmark-selector', 'value'),
+         Input('urbanization-rate-country-benchmark-selector', 'value')],
         prevent_initial_call=False
     )
-    def generate_urbanization_rate_chart(selected_country, benchmark_regions):
+    def generate_urbanization_rate_chart(selected_country, benchmark_regions, benchmark_countries):
         """Generate line chart showing urbanization rate over time"""
         try:
             # Load UNDESA urban projections data
@@ -99,6 +100,31 @@ def register_urbanization_rate_callbacks(app):
                                 name=benchmark_names.get(region, region),
                                 line=dict(color=benchmark_colors.get(region, '#95a5a6'), width=2, dash='dash'),
                                 hovertemplate=f'<b>{benchmark_names.get(region, region)}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>'
+                            ))
+            
+            # Add country benchmarks if selected
+            if benchmark_countries:
+                # Define colors for benchmark countries (using a color palette)
+                country_colors = ['#e74c3c', '#f39c12', '#27ae60', '#3498db', '#9b59b6', '#1abc9c', '#34495e', '#e67e22']
+                
+                for i, country_iso in enumerate(benchmark_countries):
+                    if country_iso in urban_prop_data['ISO3'].values:
+                        country_benchmark_data = urban_prop_data[urban_prop_data['ISO3'] == country_iso].copy()
+                        country_benchmark_data = country_benchmark_data.sort_values('year')
+                        
+                        if not country_benchmark_data.empty:
+                            country_name = countries_and_regions_dict.get(country_iso, country_iso)
+                            # Cycle through colors
+                            color = country_colors[i % len(country_colors)]
+                            
+                            fig.add_trace(go.Scatter(
+                                x=country_benchmark_data['year'],
+                                y=country_benchmark_data['value'] * 100,  # Convert to percentage
+                                mode='lines+markers',
+                                name=country_name,
+                                line=dict(color=color, width=2, dash='dot'),
+                                marker=dict(size=4, color=color),
+                                hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>'
                             ))
             
             # Update layout

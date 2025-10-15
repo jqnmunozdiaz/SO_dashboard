@@ -70,6 +70,20 @@ def register_callbacks(app):
                         )
                     ], className="checkbox-group")
                 ], className="benchmark-selector-container"),
+                # Country benchmark selection dropdown
+                html.Div([
+                    html.Label("Country Benchmarks:", className="dropdown-label"),
+                    html.Div([
+                        dcc.Dropdown(
+                            id='urbanization-rate-country-benchmark-selector',
+                            options=[],  # Will be populated by callback
+                            value=[],
+                            multi=True,
+                            placeholder="Select countries to compare...",
+                            className="country-benchmark-dropdown"
+                        )
+                    ], className="dropdown-group")
+                ], className="country-benchmark-selector-container"),
                 # Chart
                 dcc.Graph(id="urbanization-rate-chart"),
                 # Indicator note
@@ -162,4 +176,28 @@ def register_callbacks(app):
         
         except Exception as e:
             print(f"Error populating country benchmark options: {str(e)}")
+            return []
+
+    # Country benchmark dropdown options callback for urbanization rate
+    @app.callback(
+        Output('urbanization-rate-country-benchmark-selector', 'options'),
+        [Input('main-country-filter', 'value')]
+    )
+    def populate_urbanization_rate_country_benchmark_options(selected_country):
+        """Populate country benchmark dropdown with all SSA countries except the selected one"""
+        try:
+            countries_dict = load_subsaharan_countries_dict()
+            
+            # Create options list excluding the selected country
+            options = []
+            for iso_code, country_name in countries_dict.items():
+                if iso_code != selected_country:  # Exclude selected country
+                    options.append({'label': country_name, 'value': iso_code})
+            
+            # Sort by country name
+            options.sort(key=lambda x: x['label'])
+            return options
+        
+        except Exception as e:
+            print(f"Error populating urbanization rate country benchmark options: {str(e)}")
             return []

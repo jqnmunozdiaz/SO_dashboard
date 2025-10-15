@@ -14,7 +14,11 @@ def load_subsaharan_countries_dict() -> Dict[str, str]:
     Returns:
         Dictionary mapping ISO codes to country names
     """
-    wb_classification_file = 'data/Definitions/WB_Classification.csv'
+    # Get the absolute path to the project root directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.join(current_dir, '..', '..')
+    wb_classification_file = os.path.join(project_root, 'data', 'Definitions', 'WB_Classification.csv')
+    
     try:
         wb_df = pd.read_csv(wb_classification_file)
         # Filter for Sub-Saharan Africa region (Region Code == 'SSA')
@@ -46,7 +50,11 @@ def load_wb_regional_classifications():
     Returns:
         Tuple of (afe_countries, afw_countries, ssa_countries) as lists of ISO3 codes
     """
-    wb_classification_file = 'data/Definitions/WB_Classification.csv'
+    # Get the absolute path to the project root directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.join(current_dir, '..', '..')
+    wb_classification_file = os.path.join(project_root, 'data', 'Definitions', 'WB_Classification.csv')
+    
     try:
         wb_df = pd.read_csv(wb_classification_file)
         

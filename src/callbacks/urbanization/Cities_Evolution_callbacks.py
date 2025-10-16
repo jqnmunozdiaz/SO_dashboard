@@ -34,7 +34,6 @@ def register_cities_evolution_callbacks(app):
         try:
             # Load data
             data = load_city_size_distribution()
-            agglom_counts = load_city_agglomeration_counts()
             countries_dict = load_subsaharan_countries_and_regions_dict()
             
             # Handle no country selected
@@ -43,13 +42,24 @@ def register_cities_evolution_callbacks(app):
             
             # Filter for selected country
             filtered_data = data[data['Country Code'] == selected_country]
-            filtered_agglom = agglom_counts[agglom_counts['Country Code'] == selected_country]
             
             if filtered_data.empty:
                 raise Exception(f"No data available for {countries_dict.get(selected_country, selected_country)}")
+
+            # Get unique years and sort them
+            years = sorted(filtered_data['Year'].unique())
             
-            # Group by year and size category, sum populations
-            grouped = filtered_data.groupby(['Year', 'Size Category'])['Population'].sum().reset_index()
+            # Calculate total max population to determine if we should use millions
+            max_population = 0
+            for year in years:
+                year_total = filtered_data[filtered_data['Year'] == year]['Population'].sum() * 1000
+                if year_total > max_population:
+                    max_population = year_total
+            
+            # Determine if we should display in millions
+            use_millions = max_population >= 1000000
+            population_divisor = 1000000 if use_millions else 1
+            yaxis_title = 'Urban Population (Millions)' if use_millions else 'Urban Population'
             
             # Define size categories in order (smallest to largest for bottom-to-top stacking)
             size_categories_ordered = [
@@ -61,96 +71,74 @@ def register_cities_evolution_callbacks(app):
                 '10 million or more'
             ]
             
-            # Get unique years and sort them
-            years = sorted(grouped['Year'].unique())
-            
-            # Calculate total max population to determine if we should use millions
-            max_population = 0
-            for year in years:
-                year_total = grouped[grouped['Year'] == year]['Population'].sum() * 1000
-                if year_total > max_population:
-                    max_population = year_total
-            
-            # Determine if we should display in millions
-            use_millions = max_population >= 1000000
-            population_divisor = 1000000 if use_millions else 1
-            yaxis_title = 'Urban Population (Millions)' if use_millions else 'Urban Population'
-            yaxis_suffix = 'M' if use_millions else ''
-            
-            # Create stacked bar chart
+            # Create stacked bar chart - bars ordered by size category for each year
             fig = go.Figure()
             
-            # Add a bar for each size category (smallest first for bottom of stack)
-            for category in size_categories_ordered:
-                category_data = grouped[grouped['Size Category'] == category]
+            # Get all unique cities and years
+            all_cities = filtered_data['City Name'].unique()
+            
+            # For each year, we need to add cities in order by size category
+            for year in years:
+                year_data = filtered_data[filtered_data['Year'] == year]
                 
-                # Create a list of populations for each year, 0 if no data
-                populations = []
-                for year in years:
-                    year_data = category_data[category_data['Year'] == year]
-                    if not year_data.empty:
-                        # Convert from thousands to actual population, then to millions if needed
-                        pop_value = year_data['Population'].values[0] * 1000 / population_divisor
-                        populations.append(pop_value)
-                    else:
-                        populations.append(0)
+                # Sort cities by size category for this year, then by population within category
+                cities_by_category_this_year = {}
+                for category in size_categories_ordered:
+                    category_data = year_data[year_data['Size Category'] == category]
+                    # Sort by population (ascending) within this category so largest cities are on top
+                    category_data_sorted = category_data.sort_values('Population', ascending=True)
+                    cities_in_category = category_data_sorted['City Name'].tolist()
+                    cities_by_category_this_year[category] = cities_in_category
                 
-                # Format hover template based on whether we're using millions
-                if use_millions:
-                    hover_format = 'Population: %{y:.2f}M<br>'
-                else:
-                    hover_format = 'Population: %{y:,.0f}<br>'
-                
+                # Add bars for this year, ordered by size category (then by population within category)
+                for size_category in size_categories_ordered:
+                    for city_name in cities_by_category_this_year[size_category]:
+                        city_data = year_data[year_data['City Name'] == city_name]
+                        
+                        if not city_data.empty:
+                            pop_value = city_data.iloc[0]['Population'] * 1000 / population_divisor
+                            year_size_category = city_data.iloc[0]['Size Category']
+                            color = CITY_SIZE_COLORS.get(year_size_category, '#95a5a6')
+                            
+                            # Format hover text
+                            if use_millions:
+                                pop_text = f'{pop_value:.2f}M'
+                            else:
+                                pop_text = f'{pop_value:,.0f}'
+                            
+                            hover_text = (
+                                f'<b>{city_name}</b><br>' +
+                                f'Size: {year_size_category}<br>' +
+                                f'Year: {year}<br>' +
+                                f'Population: {pop_text}<br>' +
+                                '<extra></extra>'
+                            )
+                            
+                            fig.add_trace(go.Bar(
+                                name=city_name,
+                                x=[year],
+                                y=[pop_value],
+                                marker_color=color,
+                                hovertemplate=hover_text,
+                                legendgroup=year_size_category,
+                                showlegend=False
+                            ))
+            
+            # Add invisible traces for legend (one for each size category in order)
+            for category in reversed(size_categories_ordered):
                 fig.add_trace(go.Bar(
                     name=category,
-                    x=years,
-                    y=populations,
+                    x=[None],
+                    y=[None],
                     marker_color=CITY_SIZE_COLORS.get(category, '#95a5a6'),
-                    hovertemplate='<b>%{fullData.name}</b><br>' +
-                                  hover_format +
-                                  '<extra></extra>'
+                    showlegend=True,
+                    legendgroup=category
                 ))
             
             country_name = countries_dict.get(selected_country, selected_country)
             
-            # Add text annotations showing number of agglomerations
-            for year in years:
-                cumulative_height = 0
-                for category in size_categories_ordered:
-                    # Get population for this category and year
-                    category_data = grouped[(grouped['Size Category'] == category) & (grouped['Year'] == year)]
-                    if not category_data.empty:
-                        pop_value = category_data['Population'].values[0] * 1000 / population_divisor
-                        
-                        # Get agglomeration count for this category and year
-                        agglom_data = filtered_agglom[
-                            (filtered_agglom['Size Category'] == category) & 
-                            (filtered_agglom['Year'] == year)
-                        ]
-                        
-                        if not agglom_data.empty:
-                            count = int(agglom_data['Number of Agglomerations'].values[0])
-                            
-                            # Only show annotation if count > 0
-                            if count > 0:
-                                # Position text in the middle of this bar segment
-                                text_y = cumulative_height + (pop_value / 2)
-                                
-                                # Format text: "1 city" or "N cities"
-                                count_text = f"{count} city" if count == 1 else f"{count} cities"
-                                
-                                fig.add_annotation(
-                                    x=year,
-                                    y=text_y,
-                                    text=count_text,
-                                    showarrow=False,
-                                    font=dict(size=10, color='white', family='Arial Black')
-                                )
-                        
-                        cumulative_height += pop_value
-            
             fig.update_layout(
-                title=f'<b>{country_name}</b> | Urban Population Evolution by City Size',
+                title=f'<b>{country_name}</b> | Urban Population by Individual Cities',
                 xaxis_title='Year',
                 yaxis_title=yaxis_title,
                 barmode='stack',
@@ -186,8 +174,7 @@ def register_cities_evolution_callbacks(app):
                     showline=True,
                     linewidth=1,
                     linecolor='#e2e8f0',
-                    tickformat=',.1f' if use_millions else ',',
-                    ticksuffix=yaxis_suffix
+                    tickformat=',.1f' if use_millions else ','
                 )
             )
             
@@ -197,7 +184,7 @@ def register_cities_evolution_callbacks(app):
             return create_error_chart(
                 error_message=f"Error loading data: {str(e)}",
                 chart_type='bar',
-                title='Urban Population Evolution by City Size',
+                title='Urban Population by Individual Cities',
                 xaxis_title='Year',
                 yaxis_title='Urban Population'
             )

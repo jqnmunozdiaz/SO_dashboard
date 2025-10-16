@@ -19,6 +19,7 @@ try:
     from ..utils.benchmark_config import get_benchmark_options
     from ..utils.data_loader import load_urbanization_indicators_notes_dict
     from ..utils.ui_helpers import create_benchmark_selectors
+    from ..utils.country_utils import get_subsaharan_countries
 except ImportError:
     # Fallback for direct execution
     import sys
@@ -27,6 +28,7 @@ except ImportError:
     from src.utils.benchmark_config import get_benchmark_options
     from src.utils.data_loader import load_urbanization_indicators_notes_dict
     from src.utils.ui_helpers import create_benchmark_selectors
+    from src.utils.country_utils import get_subsaharan_countries
 
 
 def register_callbacks(app):
@@ -46,6 +48,41 @@ def register_callbacks(app):
     register_country_benchmark_options_callback(app, 'urbanization-rate-country-benchmark-selector')
     register_country_benchmark_options_callback(app, 'electricity-country-benchmark-selector')
     register_country_benchmark_options_callback(app, 'gdp-vs-urbanization-country-benchmark-selector')
+    
+    # Callback to filter country dropdown options based on active subtab
+    @app.callback(
+        Output('main-country-filter', 'options'),
+        Input('urbanization-subtabs', 'active_tab')
+    )
+    def update_country_filter_options(active_subtab):
+        """Update country filter options - hide regional aggregates for Cities Distribution/Evolution"""
+        try:
+            # Get individual countries (without regional aggregates)
+            countries = get_subsaharan_countries()
+            
+            # Sort countries alphabetically by name
+            countries = sorted(countries, key=lambda x: x['name'])
+            
+            # For Cities Distribution and Cities Evolution, only show individual countries
+            if active_subtab in ['cities-distribution', 'cities-evolution']:
+                return [{'label': country['name'], 'value': country['code']} for country in countries]
+            else:
+                # For other subtabs, include regional aggregates
+                regional_options = [
+                    {'label': 'Sub-Saharan Africa', 'value': 'SSA'},
+                    {'label': 'Eastern & Southern Africa', 'value': 'AFE'},
+                    {'label': 'Western & Central Africa', 'value': 'AFW'}
+                ]
+                all_options = [{'label': country['name'], 'value': country['code']} for country in countries]
+                all_options.extend(regional_options)
+                return all_options
+                
+        except Exception as e:
+            print(f"Error updating country filter options: {str(e)}")
+            # Fallback to individual countries only
+            countries = get_subsaharan_countries()
+            countries = sorted(countries, key=lambda x: x['name'])
+            return [{'label': country['name'], 'value': country['code']} for country in countries]
     
     # Main chart container callback (orchestrates which chart to show)
     @app.callback(
@@ -168,7 +205,7 @@ def register_callbacks(app):
                 dcc.Graph(id="cities-evolution-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Evolution of urban population across city size categories over time."], className="indicator-note")
+                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Urban population evolution showing individual cities stacked and colored by size category."], className="indicator-note")
                 ], className="indicator-note-container")
             ], className="chart-container")
         else:

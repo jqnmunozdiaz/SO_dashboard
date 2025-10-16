@@ -2,9 +2,11 @@
 Utility functions for error handling in callbacks
 """
 
-import plotly.graph_objects as go
 import pandas as pd
 from functools import wraps
+
+# Use the shared error/chart helper to keep UI consistent
+from .component_helpers import create_error_chart
 
 
 def handle_callback_errors(default_title="No Data Available"):
@@ -17,18 +19,10 @@ def handle_callback_errors(default_title="No Data Available"):
             try:
                 return func(*args, **kwargs)
             except Exception as e:
-                # Return empty figure with error message
-                fig = go.Figure()
-                fig.update_layout(
-                    title=f"{default_title} - Error: {str(e)[:100]}",
-                    xaxis_title="",
-                    yaxis_title="",
-                    showlegend=False,
-                    plot_bgcolor='white',
-                    paper_bgcolor='white',
-                    font={'color': '#2c3e50'}
-                )
-                return fig
+                # Use the centralized create_error_chart so all callbacks show
+                # errors with the same look-and-feel.
+                err_msg = f"{default_title} - {str(e)[:200]}"
+                return create_error_chart(error_message=err_msg, chart_type='line', title=default_title)
         return wrapper
     return decorator
 

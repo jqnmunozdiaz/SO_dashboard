@@ -130,8 +130,52 @@ def load_undesa_urban_projections() -> pd.DataFrame:
         raise Exception(f"Error loading UNDESA urban projections data: {str(e)}")
 
 
+def load_city_size_distribution() -> pd.DataFrame:
+    """
+    Load individual cities data for Sub-Saharan African countries
+    
+    Returns:
+        DataFrame with columns: Country Code, Country Name, City Name, Year, Population, Size Category
+    """
+    # Get the absolute path to the project root directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.join(current_dir, '..', '..')
+    file_path = os.path.join(project_root, 'data', 'processed', 'cities_individual.csv')
+    
+    try:
+        df = pd.read_csv(file_path)
+        return df
+        
+    except FileNotFoundError:
+        raise FileNotFoundError(f"City size distribution data file not found: {file_path}")
+    except Exception as e:
+        raise Exception(f"Error loading city size distribution data: {str(e)}")
+
+
+def load_city_agglomeration_counts() -> pd.DataFrame:
+    """
+    Load number of agglomerations by city size category for Sub-Saharan African countries
+    
+    Returns:
+        DataFrame with columns: Country Code, Country Name, Size Category, Year, Number of Agglomerations
+    """
+    # Get the absolute path to the project root directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.join(current_dir, '..', '..')
+    file_path = os.path.join(project_root, 'data', 'processed', 'city_agglomeration_counts.csv')
+    
+    try:
+        df = pd.read_csv(file_path)
+        return df
+        
+    except FileNotFoundError:
+        raise FileNotFoundError(f"City agglomeration counts data file not found: {file_path}")
+    except Exception as e:
+        raise Exception(f"Error loading city agglomeration counts data: {str(e)}")
+
+
 # Import centralized country utilities
 from .country_utils import get_subsaharan_countries, load_subsaharan_countries_dict, load_subsaharan_countries_and_regions_dict
 
 # Re-export for backward compatibility
-__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections']
+__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections', 'load_city_size_distribution', 'load_city_agglomeration_counts']

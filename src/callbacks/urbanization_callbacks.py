@@ -11,6 +11,8 @@ from .urbanization.Access_to_Electricity_Urban_callbacks import register_access_
 from .urbanization.Urban_Population_Projections_callbacks import register_urban_population_projections_callbacks
 from .urbanization.Urbanization_Rate_callbacks import register_urbanization_rate_callbacks
 from .urbanization.GDP_vs_Urbanization_callbacks import register_gdp_vs_urbanization_callbacks
+from .urbanization.Cities_Distribution_callbacks import register_cities_distribution_callbacks
+from .urbanization.Cities_Evolution_callbacks import register_cities_evolution_callbacks
 from .country_benchmark_callbacks import register_country_benchmark_options_callback
 
 try:
@@ -36,6 +38,8 @@ def register_callbacks(app):
     register_urban_population_projections_callbacks(app)
     register_urbanization_rate_callbacks(app)
     register_gdp_vs_urbanization_callbacks(app)
+    register_cities_distribution_callbacks(app)
+    register_cities_evolution_callbacks(app)
     
     # Register country benchmark dropdown callbacks
     register_country_benchmark_options_callback(app, 'slums-country-benchmark-selector')
@@ -131,6 +135,40 @@ def register_callbacks(app):
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "World Bank World Development Indicators.", html.Br(), html.B("Note:"), " Urban population refers to people living in urban areas as defined by national statistical offices. The data are collected by the UN Population Division. Aggregation of urban and rural population may not add up to total population because of different country coverage. There is no consistent and universally accepted standard for distinguishing urban from rural areas. Therefore, cross-country comparisons should be made with caution. Gross domestic product (GDP) is expressed in constant international dollars, converted by purchasing power parities (PPPs). PPPs account for the different price levels across countries and thus PPP-based comparisons of economic output are more appropriate for comparing the output of economies and the average material well-being of their inhabitants than exchange-rate based comparisons."], className="indicator-note")
+                ], className="indicator-note-container")
+            ], className="chart-container")
+        elif active_subtab == 'cities-distribution':
+            return html.Div([
+                # Year filter (radio buttons)
+                html.Div([
+                    html.Label("Select Year:", className="filter-label"),
+                    dcc.RadioItems(
+                        id='cities-distribution-year-filter',
+                        options=[
+                            {'label': '2020', 'value': 2020},
+                            {'label': '2025', 'value': 2025},
+                            {'label': '2030', 'value': 2030},
+                            {'label': '2035', 'value': 2035}
+                        ],
+                        value=2025,
+                        inline=True,
+                        className="year-radio-buttons"
+                    )
+                ], className="year-filter-container"),
+                # Chart
+                dcc.Graph(id="cities-distribution-chart"),
+                # Indicator note
+                html.Div([
+                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Population distribution across city size categories."], className="indicator-note")
+                ], className="indicator-note-container")
+            ], className="chart-container")
+        elif active_subtab == 'cities-evolution':
+            return html.Div([
+                # Chart
+                dcc.Graph(id="cities-evolution-chart"),
+                # Indicator note
+                html.Div([
+                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Evolution of urban population across city size categories over time."], className="indicator-note")
                 ], className="indicator-note-container")
             ], className="chart-container")
         else:

@@ -205,6 +205,14 @@ def create_world_bank_urbanization_tab_content():
                     dbc.Tab(
                         label="GDP vs Urbanization",
                         tab_id="gdp-vs-urbanization"
+                    ),
+                    dbc.Tab(
+                        label="Cities Distribution",
+                        tab_id="cities-distribution"
+                    ),
+                    dbc.Tab(
+                        label="Cities Evolution",
+                        tab_id="cities-evolution"
                     )
                 ], id="urbanization-subtabs", active_tab="urban-population-projections", 
                 className="sub-nav-tabs subtabs-container")

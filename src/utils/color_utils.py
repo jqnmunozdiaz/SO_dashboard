@@ -22,6 +22,16 @@ DISASTER_COLORS = {
     'default': '#000000'
 }
 
+# City size category colors for urbanization charts
+CITY_SIZE_COLORS = {
+    '10 million or more': '#e74c3c',      # Red
+    '5 to 10 million': '#e67e22',          # Orange
+    '1 to 5 million': '#f39c12',           # Yellow-Orange
+    '500 000 to 1 million': '#3498db',     # Blue
+    '300 000 to 500 000': '#2ecc71',       # Green
+    'Fewer than 300 000': '#95a5a6'        # Gray
+}
+
 def get_disaster_color(disaster_type: str, colors_dict: Dict[str, str] = None) -> str:
     """
     Get color for a specific disaster type
@@ -37,4 +47,21 @@ def get_disaster_color(disaster_type: str, colors_dict: Dict[str, str] = None) -
         colors_dict = DISASTER_COLORS
     
     return colors_dict.get(disaster_type, colors_dict.get('default', '#000000'))
+
+
+def get_city_size_color(size_category: str, colors_dict: Dict[str, str] = None) -> str:
+    """
+    Get color for a specific city size category
+    
+    Args:
+        size_category: Name of the city size category
+        colors_dict: Optional pre-loaded colors dictionary
+        
+    Returns:
+        Hex color code for the city size category
+    """
+    if colors_dict is None:
+        colors_dict = CITY_SIZE_COLORS
+    
+    return colors_dict.get(size_category, '#95a5a6')  # Default gray
 

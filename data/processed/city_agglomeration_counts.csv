@@ -1,0 +1,961 @@
+Country Code,Country Name,Size Category,Year,Number of Agglomerations
+AGO,Angola,1 to 5 million,2020,0
+AGO,Angola,10 million or more,2020,0
+AGO,Angola,300 000 to 500 000,2020,2
+AGO,Angola,5 to 10 million,2020,1
+AGO,Angola,500 000 to 1 million,2020,7
+AGO,Angola,1 to 5 million,2025,1
+AGO,Angola,10 million or more,2025,1
+AGO,Angola,300 000 to 500 000,2025,1
+AGO,Angola,5 to 10 million,2025,0
+AGO,Angola,500 000 to 1 million,2025,7
+AGO,Angola,1 to 5 million,2030,4
+AGO,Angola,10 million or more,2030,1
+AGO,Angola,300 000 to 500 000,2030,1
+AGO,Angola,5 to 10 million,2030,0
+AGO,Angola,500 000 to 1 million,2030,4
+AGO,Angola,1 to 5 million,2035,7
+AGO,Angola,10 million or more,2035,1
+AGO,Angola,300 000 to 500 000,2035,0
+AGO,Angola,5 to 10 million,2035,0
+AGO,Angola,500 000 to 1 million,2035,2
+BDI,Burundi,1 to 5 million,2020,1
+BDI,Burundi,10 million or more,2020,0
+BDI,Burundi,300 000 to 500 000,2020,0
+BDI,Burundi,5 to 10 million,2020,0
+BDI,Burundi,500 000 to 1 million,2020,0
+BDI,Burundi,1 to 5 million,2025,1
+BDI,Burundi,10 million or more,2025,0
+BDI,Burundi,300 000 to 500 000,2025,0
+BDI,Burundi,5 to 10 million,2025,0
+BDI,Burundi,500 000 to 1 million,2025,0
+BDI,Burundi,1 to 5 million,2030,1
+BDI,Burundi,10 million or more,2030,0
+BDI,Burundi,300 000 to 500 000,2030,0
+BDI,Burundi,5 to 10 million,2030,0
+BDI,Burundi,500 000 to 1 million,2030,0
+BDI,Burundi,1 to 5 million,2035,1
+BDI,Burundi,10 million or more,2035,0
+BDI,Burundi,300 000 to 500 000,2035,0
+BDI,Burundi,5 to 10 million,2035,0
+BDI,Burundi,500 000 to 1 million,2035,0
+BEN,Benin,1 to 5 million,2020,1
+BEN,Benin,10 million or more,2020,0
+BEN,Benin,300 000 to 500 000,2020,2
+BEN,Benin,5 to 10 million,2020,0
+BEN,Benin,500 000 to 1 million,2020,1
+BEN,Benin,1 to 5 million,2025,1
+BEN,Benin,10 million or more,2025,0
+BEN,Benin,300 000 to 500 000,2025,3
+BEN,Benin,5 to 10 million,2025,0
+BEN,Benin,500 000 to 1 million,2025,1
+BEN,Benin,1 to 5 million,2030,1
+BEN,Benin,10 million or more,2030,0
+BEN,Benin,300 000 to 500 000,2030,2
+BEN,Benin,5 to 10 million,2030,0
+BEN,Benin,500 000 to 1 million,2030,2
+BEN,Benin,1 to 5 million,2035,2
+BEN,Benin,10 million or more,2035,0
+BEN,Benin,300 000 to 500 000,2035,1
+BEN,Benin,5 to 10 million,2035,0
+BEN,Benin,500 000 to 1 million,2035,2
+BFA,Burkina Faso,1 to 5 million,2020,1
+BFA,Burkina Faso,10 million or more,2020,0
+BFA,Burkina Faso,300 000 to 500 000,2020,0
+BFA,Burkina Faso,5 to 10 million,2020,0
+BFA,Burkina Faso,500 000 to 1 million,2020,1
+BFA,Burkina Faso,1 to 5 million,2025,2
+BFA,Burkina Faso,10 million or more,2025,0
+BFA,Burkina Faso,300 000 to 500 000,2025,0
+BFA,Burkina Faso,5 to 10 million,2025,0
+BFA,Burkina Faso,500 000 to 1 million,2025,0
+BFA,Burkina Faso,1 to 5 million,2030,2
+BFA,Burkina Faso,10 million or more,2030,0
+BFA,Burkina Faso,300 000 to 500 000,2030,1
+BFA,Burkina Faso,5 to 10 million,2030,0
+BFA,Burkina Faso,500 000 to 1 million,2030,0
+BFA,Burkina Faso,1 to 5 million,2035,1
+BFA,Burkina Faso,10 million or more,2035,0
+BFA,Burkina Faso,300 000 to 500 000,2035,2
+BFA,Burkina Faso,5 to 10 million,2035,1
+BFA,Burkina Faso,500 000 to 1 million,2035,0
+BWA,Botswana,1 to 5 million,2020,0
+BWA,Botswana,10 million or more,2020,0
+BWA,Botswana,300 000 to 500 000,2020,0
+BWA,Botswana,5 to 10 million,2020,0
+BWA,Botswana,500 000 to 1 million,2020,0
+BWA,Botswana,1 to 5 million,2025,0
+BWA,Botswana,10 million or more,2025,0
+BWA,Botswana,300 000 to 500 000,2025,1
+BWA,Botswana,5 to 10 million,2025,0
+BWA,Botswana,500 000 to 1 million,2025,0
+BWA,Botswana,1 to 5 million,2030,0
+BWA,Botswana,10 million or more,2030,0
+BWA,Botswana,300 000 to 500 000,2030,1
+BWA,Botswana,5 to 10 million,2030,0
+BWA,Botswana,500 000 to 1 million,2030,0
+BWA,Botswana,1 to 5 million,2035,0
+BWA,Botswana,10 million or more,2035,0
+BWA,Botswana,300 000 to 500 000,2035,1
+BWA,Botswana,5 to 10 million,2035,0
+BWA,Botswana,500 000 to 1 million,2035,0
+CAF,Central African Republic,1 to 5 million,2020,0
+CAF,Central African Republic,10 million or more,2020,0
+CAF,Central African Republic,300 000 to 500 000,2020,0
+CAF,Central African Republic,5 to 10 million,2020,0
+CAF,Central African Republic,500 000 to 1 million,2020,1
+CAF,Central African Republic,1 to 5 million,2025,1
+CAF,Central African Republic,10 million or more,2025,0
+CAF,Central African Republic,300 000 to 500 000,2025,1
+CAF,Central African Republic,5 to 10 million,2025,0
+CAF,Central African Republic,500 000 to 1 million,2025,0
+CAF,Central African Republic,1 to 5 million,2030,1
+CAF,Central African Republic,10 million or more,2030,0
+CAF,Central African Republic,300 000 to 500 000,2030,1
+CAF,Central African Republic,5 to 10 million,2030,0
+CAF,Central African Republic,500 000 to 1 million,2030,0
+CAF,Central African Republic,1 to 5 million,2035,1
+CAF,Central African Republic,10 million or more,2035,0
+CAF,Central African Republic,300 000 to 500 000,2035,1
+CAF,Central African Republic,5 to 10 million,2035,0
+CAF,Central African Republic,500 000 to 1 million,2035,0
+CIV,Côte d’Ivoire,1 to 5 million,2020,0
+CIV,Côte d’Ivoire,10 million or more,2020,0
+CIV,Côte d’Ivoire,300 000 to 500 000,2020,1
+CIV,Côte d’Ivoire,5 to 10 million,2020,1
+CIV,Côte d’Ivoire,500 000 to 1 million,2020,1
+CIV,Côte d’Ivoire,1 to 5 million,2025,0
+CIV,Côte d’Ivoire,10 million or more,2025,0
+CIV,Côte d’Ivoire,300 000 to 500 000,2025,2
+CIV,Côte d’Ivoire,5 to 10 million,2025,1
+CIV,Côte d’Ivoire,500 000 to 1 million,2025,1
+CIV,Côte d’Ivoire,1 to 5 million,2030,0
+CIV,Côte d’Ivoire,10 million or more,2030,0
+CIV,Côte d’Ivoire,300 000 to 500 000,2030,3
+CIV,Côte d’Ivoire,5 to 10 million,2030,1
+CIV,Côte d’Ivoire,500 000 to 1 million,2030,1
+CIV,Côte d’Ivoire,1 to 5 million,2035,0
+CIV,Côte d’Ivoire,10 million or more,2035,0
+CIV,Côte d’Ivoire,300 000 to 500 000,2035,4
+CIV,Côte d’Ivoire,5 to 10 million,2035,1
+CIV,Côte d’Ivoire,500 000 to 1 million,2035,1
+CMR,Cameroon,1 to 5 million,2020,2
+CMR,Cameroon,10 million or more,2020,0
+CMR,Cameroon,300 000 to 500 000,2020,4
+CMR,Cameroon,5 to 10 million,2020,0
+CMR,Cameroon,500 000 to 1 million,2020,1
+CMR,Cameroon,1 to 5 million,2025,2
+CMR,Cameroon,10 million or more,2025,0
+CMR,Cameroon,300 000 to 500 000,2025,3
+CMR,Cameroon,5 to 10 million,2025,0
+CMR,Cameroon,500 000 to 1 million,2025,3
+CMR,Cameroon,1 to 5 million,2030,0
+CMR,Cameroon,10 million or more,2030,0
+CMR,Cameroon,300 000 to 500 000,2030,5
+CMR,Cameroon,5 to 10 million,2030,2
+CMR,Cameroon,500 000 to 1 million,2030,4
+CMR,Cameroon,1 to 5 million,2035,0
+CMR,Cameroon,10 million or more,2035,0
+CMR,Cameroon,300 000 to 500 000,2035,5
+CMR,Cameroon,5 to 10 million,2035,2
+CMR,Cameroon,500 000 to 1 million,2035,5
+COD,Democratic Republic of Congo,1 to 5 million,2020,5
+COD,Democratic Republic of Congo,10 million or more,2020,1
+COD,Democratic Republic of Congo,300 000 to 500 000,2020,5
+COD,Democratic Republic of Congo,5 to 10 million,2020,0
+COD,Democratic Republic of Congo,500 000 to 1 million,2020,6
+COD,Democratic Republic of Congo,1 to 5 million,2025,6
+COD,Democratic Republic of Congo,10 million or more,2025,1
+COD,Democratic Republic of Congo,300 000 to 500 000,2025,3
+COD,Democratic Republic of Congo,5 to 10 million,2025,0
+COD,Democratic Republic of Congo,500 000 to 1 million,2025,8
+COD,Democratic Republic of Congo,1 to 5 million,2030,8
+COD,Democratic Republic of Congo,10 million or more,2030,1
+COD,Democratic Republic of Congo,300 000 to 500 000,2030,4
+COD,Democratic Republic of Congo,5 to 10 million,2030,0
+COD,Democratic Republic of Congo,500 000 to 1 million,2030,7
+COD,Democratic Republic of Congo,1 to 5 million,2035,10
+COD,Democratic Republic of Congo,10 million or more,2035,1
+COD,Democratic Republic of Congo,300 000 to 500 000,2035,7
+COD,Democratic Republic of Congo,5 to 10 million,2035,0
+COD,Democratic Republic of Congo,500 000 to 1 million,2035,6
+COG,Congo,1 to 5 million,2020,2
+COG,Congo,10 million or more,2020,0
+COG,Congo,300 000 to 500 000,2020,0
+COG,Congo,5 to 10 million,2020,0
+COG,Congo,500 000 to 1 million,2020,0
+COG,Congo,1 to 5 million,2025,2
+COG,Congo,10 million or more,2025,0
+COG,Congo,300 000 to 500 000,2025,0
+COG,Congo,5 to 10 million,2025,0
+COG,Congo,500 000 to 1 million,2025,0
+COG,Congo,1 to 5 million,2030,2
+COG,Congo,10 million or more,2030,0
+COG,Congo,300 000 to 500 000,2030,0
+COG,Congo,5 to 10 million,2030,0
+COG,Congo,500 000 to 1 million,2030,0
+COG,Congo,1 to 5 million,2035,2
+COG,Congo,10 million or more,2035,0
+COG,Congo,300 000 to 500 000,2035,0
+COG,Congo,5 to 10 million,2035,0
+COG,Congo,500 000 to 1 million,2035,0
+COM,Comoros,1 to 5 million,2020,0
+COM,Comoros,10 million or more,2020,0
+COM,Comoros,300 000 to 500 000,2020,0
+COM,Comoros,5 to 10 million,2020,0
+COM,Comoros,500 000 to 1 million,2020,0
+COM,Comoros,1 to 5 million,2025,0
+COM,Comoros,10 million or more,2025,0
+COM,Comoros,300 000 to 500 000,2025,0
+COM,Comoros,5 to 10 million,2025,0
+COM,Comoros,500 000 to 1 million,2025,0
+COM,Comoros,1 to 5 million,2030,0
+COM,Comoros,10 million or more,2030,0
+COM,Comoros,300 000 to 500 000,2030,0
+COM,Comoros,5 to 10 million,2030,0
+COM,Comoros,500 000 to 1 million,2030,0
+COM,Comoros,1 to 5 million,2035,0
+COM,Comoros,10 million or more,2035,0
+COM,Comoros,300 000 to 500 000,2035,0
+COM,Comoros,5 to 10 million,2035,0
+COM,Comoros,500 000 to 1 million,2035,0
+CPV,Cabo Verde,1 to 5 million,2020,0
+CPV,Cabo Verde,10 million or more,2020,0
+CPV,Cabo Verde,300 000 to 500 000,2020,0
+CPV,Cabo Verde,5 to 10 million,2020,0
+CPV,Cabo Verde,500 000 to 1 million,2020,0
+CPV,Cabo Verde,1 to 5 million,2025,0
+CPV,Cabo Verde,10 million or more,2025,0
+CPV,Cabo Verde,300 000 to 500 000,2025,0
+CPV,Cabo Verde,5 to 10 million,2025,0
+CPV,Cabo Verde,500 000 to 1 million,2025,0
+CPV,Cabo Verde,1 to 5 million,2030,0
+CPV,Cabo Verde,10 million or more,2030,0
+CPV,Cabo Verde,300 000 to 500 000,2030,0
+CPV,Cabo Verde,5 to 10 million,2030,0
+CPV,Cabo Verde,500 000 to 1 million,2030,0
+CPV,Cabo Verde,1 to 5 million,2035,0
+CPV,Cabo Verde,10 million or more,2035,0
+CPV,Cabo Verde,300 000 to 500 000,2035,0
+CPV,Cabo Verde,5 to 10 million,2035,0
+CPV,Cabo Verde,500 000 to 1 million,2035,0
+ERI,Eritrea,1 to 5 million,2020,0
+ERI,Eritrea,10 million or more,2020,0
+ERI,Eritrea,300 000 to 500 000,2020,0
+ERI,Eritrea,5 to 10 million,2020,0
+ERI,Eritrea,500 000 to 1 million,2020,1
+ERI,Eritrea,1 to 5 million,2025,1
+ERI,Eritrea,10 million or more,2025,0
+ERI,Eritrea,300 000 to 500 000,2025,0
+ERI,Eritrea,5 to 10 million,2025,0
+ERI,Eritrea,500 000 to 1 million,2025,0
+ERI,Eritrea,1 to 5 million,2030,1
+ERI,Eritrea,10 million or more,2030,0
+ERI,Eritrea,300 000 to 500 000,2030,1
+ERI,Eritrea,5 to 10 million,2030,0
+ERI,Eritrea,500 000 to 1 million,2030,0
+ERI,Eritrea,1 to 5 million,2035,1
+ERI,Eritrea,10 million or more,2035,0
+ERI,Eritrea,300 000 to 500 000,2035,1
+ERI,Eritrea,5 to 10 million,2035,0
+ERI,Eritrea,500 000 to 1 million,2035,0
+ETH,Ethiopia,1 to 5 million,2020,1
+ETH,Ethiopia,10 million or more,2020,0
+ETH,Ethiopia,300 000 to 500 000,2020,3
+ETH,Ethiopia,5 to 10 million,2020,0
+ETH,Ethiopia,500 000 to 1 million,2020,1
+ETH,Ethiopia,1 to 5 million,2025,0
+ETH,Ethiopia,10 million or more,2025,0
+ETH,Ethiopia,300 000 to 500 000,2025,4
+ETH,Ethiopia,5 to 10 million,2025,1
+ETH,Ethiopia,500 000 to 1 million,2025,2
+ETH,Ethiopia,1 to 5 million,2030,0
+ETH,Ethiopia,10 million or more,2030,0
+ETH,Ethiopia,300 000 to 500 000,2030,4
+ETH,Ethiopia,5 to 10 million,2030,1
+ETH,Ethiopia,500 000 to 1 million,2030,4
+ETH,Ethiopia,1 to 5 million,2035,0
+ETH,Ethiopia,10 million or more,2035,0
+ETH,Ethiopia,300 000 to 500 000,2035,6
+ETH,Ethiopia,5 to 10 million,2035,1
+ETH,Ethiopia,500 000 to 1 million,2035,6
+GAB,Gabon,1 to 5 million,2020,0
+GAB,Gabon,10 million or more,2020,0
+GAB,Gabon,300 000 to 500 000,2020,0
+GAB,Gabon,5 to 10 million,2020,0
+GAB,Gabon,500 000 to 1 million,2020,1
+GAB,Gabon,1 to 5 million,2025,0
+GAB,Gabon,10 million or more,2025,0
+GAB,Gabon,300 000 to 500 000,2025,0
+GAB,Gabon,5 to 10 million,2025,0
+GAB,Gabon,500 000 to 1 million,2025,1
+GAB,Gabon,1 to 5 million,2030,0
+GAB,Gabon,10 million or more,2030,0
+GAB,Gabon,300 000 to 500 000,2030,0
+GAB,Gabon,5 to 10 million,2030,0
+GAB,Gabon,500 000 to 1 million,2030,1
+GAB,Gabon,1 to 5 million,2035,1
+GAB,Gabon,10 million or more,2035,0
+GAB,Gabon,300 000 to 500 000,2035,0
+GAB,Gabon,5 to 10 million,2035,0
+GAB,Gabon,500 000 to 1 million,2035,0
+GHA,Ghana,1 to 5 million,2020,2
+GHA,Ghana,10 million or more,2020,0
+GHA,Ghana,300 000 to 500 000,2020,2
+GHA,Ghana,5 to 10 million,2020,0
+GHA,Ghana,500 000 to 1 million,2020,2
+GHA,Ghana,1 to 5 million,2025,3
+GHA,Ghana,10 million or more,2025,0
+GHA,Ghana,300 000 to 500 000,2025,2
+GHA,Ghana,5 to 10 million,2025,0
+GHA,Ghana,500 000 to 1 million,2025,1
+GHA,Ghana,1 to 5 million,2030,3
+GHA,Ghana,10 million or more,2030,0
+GHA,Ghana,300 000 to 500 000,2030,2
+GHA,Ghana,5 to 10 million,2030,0
+GHA,Ghana,500 000 to 1 million,2030,2
+GHA,Ghana,1 to 5 million,2035,3
+GHA,Ghana,10 million or more,2035,0
+GHA,Ghana,300 000 to 500 000,2035,2
+GHA,Ghana,5 to 10 million,2035,1
+GHA,Ghana,500 000 to 1 million,2035,2
+GIN,Guinea,1 to 5 million,2020,1
+GIN,Guinea,10 million or more,2020,0
+GIN,Guinea,300 000 to 500 000,2020,0
+GIN,Guinea,5 to 10 million,2020,0
+GIN,Guinea,500 000 to 1 million,2020,0
+GIN,Guinea,1 to 5 million,2025,1
+GIN,Guinea,10 million or more,2025,0
+GIN,Guinea,300 000 to 500 000,2025,1
+GIN,Guinea,5 to 10 million,2025,0
+GIN,Guinea,500 000 to 1 million,2025,0
+GIN,Guinea,1 to 5 million,2030,1
+GIN,Guinea,10 million or more,2030,0
+GIN,Guinea,300 000 to 500 000,2030,4
+GIN,Guinea,5 to 10 million,2030,0
+GIN,Guinea,500 000 to 1 million,2030,0
+GIN,Guinea,1 to 5 million,2035,1
+GIN,Guinea,10 million or more,2035,0
+GIN,Guinea,300 000 to 500 000,2035,5
+GIN,Guinea,5 to 10 million,2035,0
+GIN,Guinea,500 000 to 1 million,2035,0
+GMB,Gambia,1 to 5 million,2020,0
+GMB,Gambia,10 million or more,2020,0
+GMB,Gambia,300 000 to 500 000,2020,1
+GMB,Gambia,5 to 10 million,2020,0
+GMB,Gambia,500 000 to 1 million,2020,0
+GMB,Gambia,1 to 5 million,2025,0
+GMB,Gambia,10 million or more,2025,0
+GMB,Gambia,300 000 to 500 000,2025,0
+GMB,Gambia,5 to 10 million,2025,0
+GMB,Gambia,500 000 to 1 million,2025,1
+GMB,Gambia,1 to 5 million,2030,0
+GMB,Gambia,10 million or more,2030,0
+GMB,Gambia,300 000 to 500 000,2030,0
+GMB,Gambia,5 to 10 million,2030,0
+GMB,Gambia,500 000 to 1 million,2030,1
+GMB,Gambia,1 to 5 million,2035,0
+GMB,Gambia,10 million or more,2035,0
+GMB,Gambia,300 000 to 500 000,2035,0
+GMB,Gambia,5 to 10 million,2035,0
+GMB,Gambia,500 000 to 1 million,2035,1
+GNB,Guinea-Bissau,1 to 5 million,2020,0
+GNB,Guinea-Bissau,10 million or more,2020,0
+GNB,Guinea-Bissau,300 000 to 500 000,2020,0
+GNB,Guinea-Bissau,5 to 10 million,2020,0
+GNB,Guinea-Bissau,500 000 to 1 million,2020,1
+GNB,Guinea-Bissau,1 to 5 million,2025,0
+GNB,Guinea-Bissau,10 million or more,2025,0
+GNB,Guinea-Bissau,300 000 to 500 000,2025,0
+GNB,Guinea-Bissau,5 to 10 million,2025,0
+GNB,Guinea-Bissau,500 000 to 1 million,2025,1
+GNB,Guinea-Bissau,1 to 5 million,2030,0
+GNB,Guinea-Bissau,10 million or more,2030,0
+GNB,Guinea-Bissau,300 000 to 500 000,2030,0
+GNB,Guinea-Bissau,5 to 10 million,2030,0
+GNB,Guinea-Bissau,500 000 to 1 million,2030,1
+GNB,Guinea-Bissau,1 to 5 million,2035,0
+GNB,Guinea-Bissau,10 million or more,2035,0
+GNB,Guinea-Bissau,300 000 to 500 000,2035,0
+GNB,Guinea-Bissau,5 to 10 million,2035,0
+GNB,Guinea-Bissau,500 000 to 1 million,2035,1
+GNQ,Equatorial Guinea,1 to 5 million,2020,0
+GNQ,Equatorial Guinea,10 million or more,2020,0
+GNQ,Equatorial Guinea,300 000 to 500 000,2020,2
+GNQ,Equatorial Guinea,5 to 10 million,2020,0
+GNQ,Equatorial Guinea,500 000 to 1 million,2020,0
+GNQ,Equatorial Guinea,1 to 5 million,2025,0
+GNQ,Equatorial Guinea,10 million or more,2025,0
+GNQ,Equatorial Guinea,300 000 to 500 000,2025,1
+GNQ,Equatorial Guinea,5 to 10 million,2025,0
+GNQ,Equatorial Guinea,500 000 to 1 million,2025,1
+GNQ,Equatorial Guinea,1 to 5 million,2030,0
+GNQ,Equatorial Guinea,10 million or more,2030,0
+GNQ,Equatorial Guinea,300 000 to 500 000,2030,1
+GNQ,Equatorial Guinea,5 to 10 million,2030,0
+GNQ,Equatorial Guinea,500 000 to 1 million,2030,1
+GNQ,Equatorial Guinea,1 to 5 million,2035,0
+GNQ,Equatorial Guinea,10 million or more,2035,0
+GNQ,Equatorial Guinea,300 000 to 500 000,2035,0
+GNQ,Equatorial Guinea,5 to 10 million,2035,0
+GNQ,Equatorial Guinea,500 000 to 1 million,2035,2
+KEN,Kenya,1 to 5 million,2020,2
+KEN,Kenya,10 million or more,2020,0
+KEN,Kenya,300 000 to 500 000,2020,4
+KEN,Kenya,5 to 10 million,2020,0
+KEN,Kenya,500 000 to 1 million,2020,0
+KEN,Kenya,1 to 5 million,2025,1
+KEN,Kenya,10 million or more,2025,0
+KEN,Kenya,300 000 to 500 000,2025,7
+KEN,Kenya,5 to 10 million,2025,1
+KEN,Kenya,500 000 to 1 million,2025,0
+KEN,Kenya,1 to 5 million,2030,1
+KEN,Kenya,10 million or more,2030,0
+KEN,Kenya,300 000 to 500 000,2030,3
+KEN,Kenya,5 to 10 million,2030,1
+KEN,Kenya,500 000 to 1 million,2030,5
+KEN,Kenya,1 to 5 million,2035,1
+KEN,Kenya,10 million or more,2035,0
+KEN,Kenya,300 000 to 500 000,2035,1
+KEN,Kenya,5 to 10 million,2035,1
+KEN,Kenya,500 000 to 1 million,2035,7
+LBR,Liberia,1 to 5 million,2020,1
+LBR,Liberia,10 million or more,2020,0
+LBR,Liberia,300 000 to 500 000,2020,0
+LBR,Liberia,5 to 10 million,2020,0
+LBR,Liberia,500 000 to 1 million,2020,0
+LBR,Liberia,1 to 5 million,2025,1
+LBR,Liberia,10 million or more,2025,0
+LBR,Liberia,300 000 to 500 000,2025,0
+LBR,Liberia,5 to 10 million,2025,0
+LBR,Liberia,500 000 to 1 million,2025,0
+LBR,Liberia,1 to 5 million,2030,1
+LBR,Liberia,10 million or more,2030,0
+LBR,Liberia,300 000 to 500 000,2030,0
+LBR,Liberia,5 to 10 million,2030,0
+LBR,Liberia,500 000 to 1 million,2030,0
+LBR,Liberia,1 to 5 million,2035,1
+LBR,Liberia,10 million or more,2035,0
+LBR,Liberia,300 000 to 500 000,2035,0
+LBR,Liberia,5 to 10 million,2035,0
+LBR,Liberia,500 000 to 1 million,2035,0
+LSO,Lesotho,1 to 5 million,2020,0
+LSO,Lesotho,10 million or more,2020,0
+LSO,Lesotho,300 000 to 500 000,2020,0
+LSO,Lesotho,5 to 10 million,2020,0
+LSO,Lesotho,500 000 to 1 million,2020,0
+LSO,Lesotho,1 to 5 million,2025,0
+LSO,Lesotho,10 million or more,2025,0
+LSO,Lesotho,300 000 to 500 000,2025,0
+LSO,Lesotho,5 to 10 million,2025,0
+LSO,Lesotho,500 000 to 1 million,2025,0
+LSO,Lesotho,1 to 5 million,2030,0
+LSO,Lesotho,10 million or more,2030,0
+LSO,Lesotho,300 000 to 500 000,2030,0
+LSO,Lesotho,5 to 10 million,2030,0
+LSO,Lesotho,500 000 to 1 million,2030,0
+LSO,Lesotho,1 to 5 million,2035,0
+LSO,Lesotho,10 million or more,2035,0
+LSO,Lesotho,300 000 to 500 000,2035,0
+LSO,Lesotho,5 to 10 million,2035,0
+LSO,Lesotho,500 000 to 1 million,2035,0
+MDG,Madagascar,1 to 5 million,2020,1
+MDG,Madagascar,10 million or more,2020,0
+MDG,Madagascar,300 000 to 500 000,2020,2
+MDG,Madagascar,5 to 10 million,2020,0
+MDG,Madagascar,500 000 to 1 million,2020,0
+MDG,Madagascar,1 to 5 million,2025,1
+MDG,Madagascar,10 million or more,2025,0
+MDG,Madagascar,300 000 to 500 000,2025,3
+MDG,Madagascar,5 to 10 million,2025,0
+MDG,Madagascar,500 000 to 1 million,2025,1
+MDG,Madagascar,1 to 5 million,2030,0
+MDG,Madagascar,10 million or more,2030,0
+MDG,Madagascar,300 000 to 500 000,2030,3
+MDG,Madagascar,5 to 10 million,2030,1
+MDG,Madagascar,500 000 to 1 million,2030,2
+MDG,Madagascar,1 to 5 million,2035,0
+MDG,Madagascar,10 million or more,2035,0
+MDG,Madagascar,300 000 to 500 000,2035,3
+MDG,Madagascar,5 to 10 million,2035,1
+MDG,Madagascar,500 000 to 1 million,2035,4
+MLI,Mali,1 to 5 million,2020,1
+MLI,Mali,10 million or more,2020,0
+MLI,Mali,300 000 to 500 000,2020,1
+MLI,Mali,5 to 10 million,2020,0
+MLI,Mali,500 000 to 1 million,2020,0
+MLI,Mali,1 to 5 million,2025,1
+MLI,Mali,10 million or more,2025,0
+MLI,Mali,300 000 to 500 000,2025,3
+MLI,Mali,5 to 10 million,2025,0
+MLI,Mali,500 000 to 1 million,2025,0
+MLI,Mali,1 to 5 million,2030,1
+MLI,Mali,10 million or more,2030,0
+MLI,Mali,300 000 to 500 000,2030,2
+MLI,Mali,5 to 10 million,2030,0
+MLI,Mali,500 000 to 1 million,2030,1
+MLI,Mali,1 to 5 million,2035,1
+MLI,Mali,10 million or more,2035,0
+MLI,Mali,300 000 to 500 000,2035,3
+MLI,Mali,5 to 10 million,2035,0
+MLI,Mali,500 000 to 1 million,2035,2
+MOZ,Mozambique,1 to 5 million,2020,2
+MOZ,Mozambique,10 million or more,2020,0
+MOZ,Mozambique,300 000 to 500 000,2020,3
+MOZ,Mozambique,5 to 10 million,2020,0
+MOZ,Mozambique,500 000 to 1 million,2020,2
+MOZ,Mozambique,1 to 5 million,2025,3
+MOZ,Mozambique,10 million or more,2025,0
+MOZ,Mozambique,300 000 to 500 000,2025,1
+MOZ,Mozambique,5 to 10 million,2025,0
+MOZ,Mozambique,500 000 to 1 million,2025,3
+MOZ,Mozambique,1 to 5 million,2030,3
+MOZ,Mozambique,10 million or more,2030,0
+MOZ,Mozambique,300 000 to 500 000,2030,4
+MOZ,Mozambique,5 to 10 million,2030,0
+MOZ,Mozambique,500 000 to 1 million,2030,4
+MOZ,Mozambique,1 to 5 million,2035,3
+MOZ,Mozambique,10 million or more,2035,0
+MOZ,Mozambique,300 000 to 500 000,2035,4
+MOZ,Mozambique,5 to 10 million,2035,0
+MOZ,Mozambique,500 000 to 1 million,2035,4
+MRT,Mauritania,1 to 5 million,2020,1
+MRT,Mauritania,10 million or more,2020,0
+MRT,Mauritania,300 000 to 500 000,2020,0
+MRT,Mauritania,5 to 10 million,2020,0
+MRT,Mauritania,500 000 to 1 million,2020,0
+MRT,Mauritania,1 to 5 million,2025,1
+MRT,Mauritania,10 million or more,2025,0
+MRT,Mauritania,300 000 to 500 000,2025,0
+MRT,Mauritania,5 to 10 million,2025,0
+MRT,Mauritania,500 000 to 1 million,2025,0
+MRT,Mauritania,1 to 5 million,2030,1
+MRT,Mauritania,10 million or more,2030,0
+MRT,Mauritania,300 000 to 500 000,2030,0
+MRT,Mauritania,5 to 10 million,2030,0
+MRT,Mauritania,500 000 to 1 million,2030,0
+MRT,Mauritania,1 to 5 million,2035,1
+MRT,Mauritania,10 million or more,2035,0
+MRT,Mauritania,300 000 to 500 000,2035,0
+MRT,Mauritania,5 to 10 million,2035,0
+MRT,Mauritania,500 000 to 1 million,2035,0
+MUS,Mauritius,1 to 5 million,2020,0
+MUS,Mauritius,10 million or more,2020,0
+MUS,Mauritius,300 000 to 500 000,2020,0
+MUS,Mauritius,5 to 10 million,2020,0
+MUS,Mauritius,500 000 to 1 million,2020,0
+MUS,Mauritius,1 to 5 million,2025,0
+MUS,Mauritius,10 million or more,2025,0
+MUS,Mauritius,300 000 to 500 000,2025,0
+MUS,Mauritius,5 to 10 million,2025,0
+MUS,Mauritius,500 000 to 1 million,2025,0
+MUS,Mauritius,1 to 5 million,2030,0
+MUS,Mauritius,10 million or more,2030,0
+MUS,Mauritius,300 000 to 500 000,2030,0
+MUS,Mauritius,5 to 10 million,2030,0
+MUS,Mauritius,500 000 to 1 million,2030,0
+MUS,Mauritius,1 to 5 million,2035,0
+MUS,Mauritius,10 million or more,2035,0
+MUS,Mauritius,300 000 to 500 000,2035,0
+MUS,Mauritius,5 to 10 million,2035,0
+MUS,Mauritius,500 000 to 1 million,2035,0
+MWI,Malawi,1 to 5 million,2020,1
+MWI,Malawi,10 million or more,2020,0
+MWI,Malawi,300 000 to 500 000,2020,0
+MWI,Malawi,5 to 10 million,2020,0
+MWI,Malawi,500 000 to 1 million,2020,1
+MWI,Malawi,1 to 5 million,2025,2
+MWI,Malawi,10 million or more,2025,0
+MWI,Malawi,300 000 to 500 000,2025,0
+MWI,Malawi,5 to 10 million,2025,0
+MWI,Malawi,500 000 to 1 million,2025,0
+MWI,Malawi,1 to 5 million,2030,2
+MWI,Malawi,10 million or more,2030,0
+MWI,Malawi,300 000 to 500 000,2030,1
+MWI,Malawi,5 to 10 million,2030,0
+MWI,Malawi,500 000 to 1 million,2030,0
+MWI,Malawi,1 to 5 million,2035,2
+MWI,Malawi,10 million or more,2035,0
+MWI,Malawi,300 000 to 500 000,2035,1
+MWI,Malawi,5 to 10 million,2035,0
+MWI,Malawi,500 000 to 1 million,2035,0
+NAM,Namibia,1 to 5 million,2020,0
+NAM,Namibia,10 million or more,2020,0
+NAM,Namibia,300 000 to 500 000,2020,1
+NAM,Namibia,5 to 10 million,2020,0
+NAM,Namibia,500 000 to 1 million,2020,0
+NAM,Namibia,1 to 5 million,2025,0
+NAM,Namibia,10 million or more,2025,0
+NAM,Namibia,300 000 to 500 000,2025,0
+NAM,Namibia,5 to 10 million,2025,0
+NAM,Namibia,500 000 to 1 million,2025,1
+NAM,Namibia,1 to 5 million,2030,0
+NAM,Namibia,10 million or more,2030,0
+NAM,Namibia,300 000 to 500 000,2030,0
+NAM,Namibia,5 to 10 million,2030,0
+NAM,Namibia,500 000 to 1 million,2030,1
+NAM,Namibia,1 to 5 million,2035,0
+NAM,Namibia,10 million or more,2035,0
+NAM,Namibia,300 000 to 500 000,2035,0
+NAM,Namibia,5 to 10 million,2035,0
+NAM,Namibia,500 000 to 1 million,2035,1
+NER,Niger,1 to 5 million,2020,1
+NER,Niger,10 million or more,2020,0
+NER,Niger,300 000 to 500 000,2020,1
+NER,Niger,5 to 10 million,2020,0
+NER,Niger,500 000 to 1 million,2020,0
+NER,Niger,1 to 5 million,2025,1
+NER,Niger,10 million or more,2025,0
+NER,Niger,300 000 to 500 000,2025,2
+NER,Niger,5 to 10 million,2025,0
+NER,Niger,500 000 to 1 million,2025,1
+NER,Niger,1 to 5 million,2030,1
+NER,Niger,10 million or more,2030,0
+NER,Niger,300 000 to 500 000,2030,2
+NER,Niger,5 to 10 million,2030,0
+NER,Niger,500 000 to 1 million,2030,1
+NER,Niger,1 to 5 million,2035,2
+NER,Niger,10 million or more,2035,0
+NER,Niger,300 000 to 500 000,2035,1
+NER,Niger,5 to 10 million,2035,0
+NER,Niger,500 000 to 1 million,2035,2
+NGA,Nigeria,1 to 5 million,2020,10
+NGA,Nigeria,10 million or more,2020,1
+NGA,Nigeria,300 000 to 500 000,2020,24
+NGA,Nigeria,5 to 10 million,2020,0
+NGA,Nigeria,500 000 to 1 million,2020,19
+NGA,Nigeria,1 to 5 million,2025,15
+NGA,Nigeria,10 million or more,2025,1
+NGA,Nigeria,300 000 to 500 000,2025,19
+NGA,Nigeria,5 to 10 million,2025,0
+NGA,Nigeria,500 000 to 1 million,2025,25
+NGA,Nigeria,1 to 5 million,2030,17
+NGA,Nigeria,10 million or more,2030,1
+NGA,Nigeria,300 000 to 500 000,2030,19
+NGA,Nigeria,5 to 10 million,2030,2
+NGA,Nigeria,500 000 to 1 million,2030,28
+NGA,Nigeria,1 to 5 million,2035,22
+NGA,Nigeria,10 million or more,2035,1
+NGA,Nigeria,300 000 to 500 000,2035,17
+NGA,Nigeria,5 to 10 million,2035,4
+NGA,Nigeria,500 000 to 1 million,2035,30
+RWA,Rwanda,1 to 5 million,2020,1
+RWA,Rwanda,10 million or more,2020,0
+RWA,Rwanda,300 000 to 500 000,2020,0
+RWA,Rwanda,5 to 10 million,2020,0
+RWA,Rwanda,500 000 to 1 million,2020,0
+RWA,Rwanda,1 to 5 million,2025,1
+RWA,Rwanda,10 million or more,2025,0
+RWA,Rwanda,300 000 to 500 000,2025,1
+RWA,Rwanda,5 to 10 million,2025,0
+RWA,Rwanda,500 000 to 1 million,2025,0
+RWA,Rwanda,1 to 5 million,2030,1
+RWA,Rwanda,10 million or more,2030,0
+RWA,Rwanda,300 000 to 500 000,2030,1
+RWA,Rwanda,5 to 10 million,2030,0
+RWA,Rwanda,500 000 to 1 million,2030,0
+RWA,Rwanda,1 to 5 million,2035,1
+RWA,Rwanda,10 million or more,2035,0
+RWA,Rwanda,300 000 to 500 000,2035,1
+RWA,Rwanda,5 to 10 million,2035,0
+RWA,Rwanda,500 000 to 1 million,2035,0
+SDN,Sudan,1 to 5 million,2020,0
+SDN,Sudan,10 million or more,2020,0
+SDN,Sudan,300 000 to 500 000,2020,6
+SDN,Sudan,5 to 10 million,2020,1
+SDN,Sudan,500 000 to 1 million,2020,1
+SDN,Sudan,1 to 5 million,2025,1
+SDN,Sudan,10 million or more,2025,0
+SDN,Sudan,300 000 to 500 000,2025,4
+SDN,Sudan,5 to 10 million,2025,1
+SDN,Sudan,500 000 to 1 million,2025,2
+SDN,Sudan,1 to 5 million,2030,1
+SDN,Sudan,10 million or more,2030,0
+SDN,Sudan,300 000 to 500 000,2030,4
+SDN,Sudan,5 to 10 million,2030,1
+SDN,Sudan,500 000 to 1 million,2030,3
+SDN,Sudan,1 to 5 million,2035,1
+SDN,Sudan,10 million or more,2035,0
+SDN,Sudan,300 000 to 500 000,2035,2
+SDN,Sudan,5 to 10 million,2035,1
+SDN,Sudan,500 000 to 1 million,2035,6
+SEN,Senegal,1 to 5 million,2020,1
+SEN,Senegal,10 million or more,2020,0
+SEN,Senegal,300 000 to 500 000,2020,2
+SEN,Senegal,5 to 10 million,2020,0
+SEN,Senegal,500 000 to 1 million,2020,0
+SEN,Senegal,1 to 5 million,2025,1
+SEN,Senegal,10 million or more,2025,0
+SEN,Senegal,300 000 to 500 000,2025,4
+SEN,Senegal,5 to 10 million,2025,0
+SEN,Senegal,500 000 to 1 million,2025,0
+SEN,Senegal,1 to 5 million,2030,1
+SEN,Senegal,10 million or more,2030,0
+SEN,Senegal,300 000 to 500 000,2030,5
+SEN,Senegal,5 to 10 million,2030,0
+SEN,Senegal,500 000 to 1 million,2030,1
+SEN,Senegal,1 to 5 million,2035,0
+SEN,Senegal,10 million or more,2035,0
+SEN,Senegal,300 000 to 500 000,2035,3
+SEN,Senegal,5 to 10 million,2035,1
+SEN,Senegal,500 000 to 1 million,2035,3
+SLE,Sierra Leone,1 to 5 million,2020,1
+SLE,Sierra Leone,10 million or more,2020,0
+SLE,Sierra Leone,300 000 to 500 000,2020,0
+SLE,Sierra Leone,5 to 10 million,2020,0
+SLE,Sierra Leone,500 000 to 1 million,2020,0
+SLE,Sierra Leone,1 to 5 million,2025,1
+SLE,Sierra Leone,10 million or more,2025,0
+SLE,Sierra Leone,300 000 to 500 000,2025,0
+SLE,Sierra Leone,5 to 10 million,2025,0
+SLE,Sierra Leone,500 000 to 1 million,2025,0
+SLE,Sierra Leone,1 to 5 million,2030,1
+SLE,Sierra Leone,10 million or more,2030,0
+SLE,Sierra Leone,300 000 to 500 000,2030,1
+SLE,Sierra Leone,5 to 10 million,2030,0
+SLE,Sierra Leone,500 000 to 1 million,2030,0
+SLE,Sierra Leone,1 to 5 million,2035,1
+SLE,Sierra Leone,10 million or more,2035,0
+SLE,Sierra Leone,300 000 to 500 000,2035,1
+SLE,Sierra Leone,5 to 10 million,2035,0
+SLE,Sierra Leone,500 000 to 1 million,2035,0
+SOM,Somalia,1 to 5 million,2020,1
+SOM,Somalia,10 million or more,2020,0
+SOM,Somalia,300 000 to 500 000,2020,2
+SOM,Somalia,5 to 10 million,2020,0
+SOM,Somalia,500 000 to 1 million,2020,2
+SOM,Somalia,1 to 5 million,2025,2
+SOM,Somalia,10 million or more,2025,0
+SOM,Somalia,300 000 to 500 000,2025,0
+SOM,Somalia,5 to 10 million,2025,0
+SOM,Somalia,500 000 to 1 million,2025,3
+SOM,Somalia,1 to 5 million,2030,3
+SOM,Somalia,10 million or more,2030,0
+SOM,Somalia,300 000 to 500 000,2030,0
+SOM,Somalia,5 to 10 million,2030,0
+SOM,Somalia,500 000 to 1 million,2030,2
+SOM,Somalia,1 to 5 million,2035,3
+SOM,Somalia,10 million or more,2035,0
+SOM,Somalia,300 000 to 500 000,2035,0
+SOM,Somalia,5 to 10 million,2035,0
+SOM,Somalia,500 000 to 1 million,2035,2
+SSD,South Sudan,1 to 5 million,2020,0
+SSD,South Sudan,10 million or more,2020,0
+SSD,South Sudan,300 000 to 500 000,2020,1
+SSD,South Sudan,5 to 10 million,2020,0
+SSD,South Sudan,500 000 to 1 million,2020,0
+SSD,South Sudan,1 to 5 million,2025,0
+SSD,South Sudan,10 million or more,2025,0
+SSD,South Sudan,300 000 to 500 000,2025,0
+SSD,South Sudan,5 to 10 million,2025,0
+SSD,South Sudan,500 000 to 1 million,2025,1
+SSD,South Sudan,1 to 5 million,2030,0
+SSD,South Sudan,10 million or more,2030,0
+SSD,South Sudan,300 000 to 500 000,2030,1
+SSD,South Sudan,5 to 10 million,2030,0
+SSD,South Sudan,500 000 to 1 million,2030,1
+SSD,South Sudan,1 to 5 million,2035,0
+SSD,South Sudan,10 million or more,2035,0
+SSD,South Sudan,300 000 to 500 000,2035,2
+SSD,South Sudan,5 to 10 million,2035,0
+SSD,South Sudan,500 000 to 1 million,2035,1
+STP,São Tomé and Príncipe,1 to 5 million,2020,0
+STP,São Tomé and Príncipe,10 million or more,2020,0
+STP,São Tomé and Príncipe,300 000 to 500 000,2020,0
+STP,São Tomé and Príncipe,5 to 10 million,2020,0
+STP,São Tomé and Príncipe,500 000 to 1 million,2020,0
+STP,São Tomé and Príncipe,1 to 5 million,2025,0
+STP,São Tomé and Príncipe,10 million or more,2025,0
+STP,São Tomé and Príncipe,300 000 to 500 000,2025,0
+STP,São Tomé and Príncipe,5 to 10 million,2025,0
+STP,São Tomé and Príncipe,500 000 to 1 million,2025,0
+STP,São Tomé and Príncipe,1 to 5 million,2030,0
+STP,São Tomé and Príncipe,10 million or more,2030,0
+STP,São Tomé and Príncipe,300 000 to 500 000,2030,0
+STP,São Tomé and Príncipe,5 to 10 million,2030,0
+STP,São Tomé and Príncipe,500 000 to 1 million,2030,0
+STP,São Tomé and Príncipe,1 to 5 million,2035,0
+STP,São Tomé and Príncipe,10 million or more,2035,0
+STP,São Tomé and Príncipe,300 000 to 500 000,2035,0
+STP,São Tomé and Príncipe,5 to 10 million,2035,0
+STP,São Tomé and Príncipe,500 000 to 1 million,2035,0
+SWZ,Eswatini,1 to 5 million,2020,0
+SWZ,Eswatini,10 million or more,2020,0
+SWZ,Eswatini,300 000 to 500 000,2020,0
+SWZ,Eswatini,5 to 10 million,2020,0
+SWZ,Eswatini,500 000 to 1 million,2020,0
+SWZ,Eswatini,1 to 5 million,2025,0
+SWZ,Eswatini,10 million or more,2025,0
+SWZ,Eswatini,300 000 to 500 000,2025,0
+SWZ,Eswatini,5 to 10 million,2025,0
+SWZ,Eswatini,500 000 to 1 million,2025,0
+SWZ,Eswatini,1 to 5 million,2030,0
+SWZ,Eswatini,10 million or more,2030,0
+SWZ,Eswatini,300 000 to 500 000,2030,0
+SWZ,Eswatini,5 to 10 million,2030,0
+SWZ,Eswatini,500 000 to 1 million,2030,0
+SWZ,Eswatini,1 to 5 million,2035,0
+SWZ,Eswatini,10 million or more,2035,0
+SWZ,Eswatini,300 000 to 500 000,2035,0
+SWZ,Eswatini,5 to 10 million,2035,0
+SWZ,Eswatini,500 000 to 1 million,2035,0
+SYC,Seychelles,1 to 5 million,2020,0
+SYC,Seychelles,10 million or more,2020,0
+SYC,Seychelles,300 000 to 500 000,2020,0
+SYC,Seychelles,5 to 10 million,2020,0
+SYC,Seychelles,500 000 to 1 million,2020,0
+SYC,Seychelles,1 to 5 million,2025,0
+SYC,Seychelles,10 million or more,2025,0
+SYC,Seychelles,300 000 to 500 000,2025,0
+SYC,Seychelles,5 to 10 million,2025,0
+SYC,Seychelles,500 000 to 1 million,2025,0
+SYC,Seychelles,1 to 5 million,2030,0
+SYC,Seychelles,10 million or more,2030,0
+SYC,Seychelles,300 000 to 500 000,2030,0
+SYC,Seychelles,5 to 10 million,2030,0
+SYC,Seychelles,500 000 to 1 million,2030,0
+SYC,Seychelles,1 to 5 million,2035,0
+SYC,Seychelles,10 million or more,2035,0
+SYC,Seychelles,300 000 to 500 000,2035,0
+SYC,Seychelles,5 to 10 million,2035,0
+SYC,Seychelles,500 000 to 1 million,2035,0
+TCD,Chad,1 to 5 million,2020,1
+TCD,Chad,10 million or more,2020,0
+TCD,Chad,300 000 to 500 000,2020,0
+TCD,Chad,5 to 10 million,2020,0
+TCD,Chad,500 000 to 1 million,2020,0
+TCD,Chad,1 to 5 million,2025,1
+TCD,Chad,10 million or more,2025,0
+TCD,Chad,300 000 to 500 000,2025,0
+TCD,Chad,5 to 10 million,2025,0
+TCD,Chad,500 000 to 1 million,2025,0
+TCD,Chad,1 to 5 million,2030,1
+TCD,Chad,10 million or more,2030,0
+TCD,Chad,300 000 to 500 000,2030,0
+TCD,Chad,5 to 10 million,2030,0
+TCD,Chad,500 000 to 1 million,2030,0
+TCD,Chad,1 to 5 million,2035,1
+TCD,Chad,10 million or more,2035,0
+TCD,Chad,300 000 to 500 000,2035,1
+TCD,Chad,5 to 10 million,2035,0
+TCD,Chad,500 000 to 1 million,2035,0
+TGO,Togo,1 to 5 million,2020,1
+TGO,Togo,10 million or more,2020,0
+TGO,Togo,300 000 to 500 000,2020,0
+TGO,Togo,5 to 10 million,2020,0
+TGO,Togo,500 000 to 1 million,2020,0
+TGO,Togo,1 to 5 million,2025,1
+TGO,Togo,10 million or more,2025,0
+TGO,Togo,300 000 to 500 000,2025,0
+TGO,Togo,5 to 10 million,2025,0
+TGO,Togo,500 000 to 1 million,2025,0
+TGO,Togo,1 to 5 million,2030,1
+TGO,Togo,10 million or more,2030,0
+TGO,Togo,300 000 to 500 000,2030,0
+TGO,Togo,5 to 10 million,2030,0
+TGO,Togo,500 000 to 1 million,2030,0
+TGO,Togo,1 to 5 million,2035,1
+TGO,Togo,10 million or more,2035,0
+TGO,Togo,300 000 to 500 000,2035,0
+TGO,Togo,5 to 10 million,2035,0
+TGO,Togo,500 000 to 1 million,2035,0
+TZA,Tanzania,1 to 5 million,2020,1
+TZA,Tanzania,10 million or more,2020,0
+TZA,Tanzania,300 000 to 500 000,2020,4
+TZA,Tanzania,5 to 10 million,2020,1
+TZA,Tanzania,500 000 to 1 million,2020,2
+TZA,Tanzania,1 to 5 million,2025,1
+TZA,Tanzania,10 million or more,2025,0
+TZA,Tanzania,300 000 to 500 000,2025,9
+TZA,Tanzania,5 to 10 million,2025,1
+TZA,Tanzania,500 000 to 1 million,2025,4
+TZA,Tanzania,1 to 5 million,2030,2
+TZA,Tanzania,10 million or more,2030,1
+TZA,Tanzania,300 000 to 500 000,2030,10
+TZA,Tanzania,5 to 10 million,2030,0
+TZA,Tanzania,500 000 to 1 million,2030,6
+TZA,Tanzania,1 to 5 million,2035,3
+TZA,Tanzania,10 million or more,2035,1
+TZA,Tanzania,300 000 to 500 000,2035,9
+TZA,Tanzania,5 to 10 million,2035,0
+TZA,Tanzania,500 000 to 1 million,2035,8
+UGA,Uganda,1 to 5 million,2020,1
+UGA,Uganda,10 million or more,2020,0
+UGA,Uganda,300 000 to 500 000,2020,1
+UGA,Uganda,5 to 10 million,2020,0
+UGA,Uganda,500 000 to 1 million,2020,0
+UGA,Uganda,1 to 5 million,2025,1
+UGA,Uganda,10 million or more,2025,0
+UGA,Uganda,300 000 to 500 000,2025,4
+UGA,Uganda,5 to 10 million,2025,0
+UGA,Uganda,500 000 to 1 million,2025,0
+UGA,Uganda,1 to 5 million,2030,0
+UGA,Uganda,10 million or more,2030,0
+UGA,Uganda,300 000 to 500 000,2030,2
+UGA,Uganda,5 to 10 million,2030,1
+UGA,Uganda,500 000 to 1 million,2030,3
+UGA,Uganda,1 to 5 million,2035,0
+UGA,Uganda,10 million or more,2035,0
+UGA,Uganda,300 000 to 500 000,2035,3
+UGA,Uganda,5 to 10 million,2035,1
+UGA,Uganda,500 000 to 1 million,2035,4
+ZAF,South Africa,1 to 5 million,2020,5
+ZAF,South Africa,10 million or more,2020,0
+ZAF,South Africa,300 000 to 500 000,2020,2
+ZAF,South Africa,5 to 10 million,2020,1
+ZAF,South Africa,500 000 to 1 million,2020,7
+ZAF,South Africa,1 to 5 million,2025,4
+ZAF,South Africa,10 million or more,2025,0
+ZAF,South Africa,300 000 to 500 000,2025,1
+ZAF,South Africa,5 to 10 million,2025,2
+ZAF,South Africa,500 000 to 1 million,2025,9
+ZAF,South Africa,1 to 5 million,2030,5
+ZAF,South Africa,10 million or more,2030,0
+ZAF,South Africa,300 000 to 500 000,2030,4
+ZAF,South Africa,5 to 10 million,2030,2
+ZAF,South Africa,500 000 to 1 million,2030,8
+ZAF,South Africa,1 to 5 million,2035,6
+ZAF,South Africa,10 million or more,2035,0
+ZAF,South Africa,300 000 to 500 000,2035,4
+ZAF,South Africa,5 to 10 million,2035,2
+ZAF,South Africa,500 000 to 1 million,2035,7
+ZMB,Zambia,1 to 5 million,2020,1
+ZMB,Zambia,10 million or more,2020,0
+ZMB,Zambia,300 000 to 500 000,2020,0
+ZMB,Zambia,5 to 10 million,2020,0
+ZMB,Zambia,500 000 to 1 million,2020,2
+ZMB,Zambia,1 to 5 million,2025,1
+ZMB,Zambia,10 million or more,2025,0
+ZMB,Zambia,300 000 to 500 000,2025,0
+ZMB,Zambia,5 to 10 million,2025,0
+ZMB,Zambia,500 000 to 1 million,2025,2
+ZMB,Zambia,1 to 5 million,2030,2
+ZMB,Zambia,10 million or more,2030,0
+ZMB,Zambia,300 000 to 500 000,2030,3
+ZMB,Zambia,5 to 10 million,2030,0
+ZMB,Zambia,500 000 to 1 million,2030,1
+ZMB,Zambia,1 to 5 million,2035,1
+ZMB,Zambia,10 million or more,2035,0
+ZMB,Zambia,300 000 to 500 000,2035,6
+ZMB,Zambia,5 to 10 million,2035,1
+ZMB,Zambia,500 000 to 1 million,2035,1
+ZWE,Zimbabwe,1 to 5 million,2020,1
+ZWE,Zimbabwe,10 million or more,2020,0
+ZWE,Zimbabwe,300 000 to 500 000,2020,1
+ZWE,Zimbabwe,5 to 10 million,2020,0
+ZWE,Zimbabwe,500 000 to 1 million,2020,1
+ZWE,Zimbabwe,1 to 5 million,2025,1
+ZWE,Zimbabwe,10 million or more,2025,0
+ZWE,Zimbabwe,300 000 to 500 000,2025,1
+ZWE,Zimbabwe,5 to 10 million,2025,0
+ZWE,Zimbabwe,500 000 to 1 million,2025,1
+ZWE,Zimbabwe,1 to 5 million,2030,1
+ZWE,Zimbabwe,10 million or more,2030,0
+ZWE,Zimbabwe,300 000 to 500 000,2030,2
+ZWE,Zimbabwe,5 to 10 million,2030,0
+ZWE,Zimbabwe,500 000 to 1 million,2030,1
+ZWE,Zimbabwe,1 to 5 million,2035,1
+ZWE,Zimbabwe,10 million or more,2035,0
+ZWE,Zimbabwe,300 000 to 500 000,2035,1
+ZWE,Zimbabwe,5 to 10 million,2035,0
+ZWE,Zimbabwe,500 000 to 1 million,2035,2

@@ -2,14 +2,24 @@
 
 ## Architecture Overview
 
-This is a **Dash-based dashboard** for analyzing disaster risk management (DRM) data across Sub-Saharan Africa. The application follows a modular architecture with clear separation of concerns:
+This is a **Dash-based dashboard** for analyzing disaster risk management (DRM) data across Sub-Saharan Africa. The application follows a **strictly modular architecture** with clear separation of concerns to support easy addition of new visualizations and data sources.
+
+### Core Architecture Layers
 
 - **Entry Point**: `app.py` - initializes Dash app, registers callbacks, handles deployment config
-- **Layout System**: `src/layouts/world_bank_layout.py` - creates World Bank-styled UI components with responsive design
+- **Layout System**: `src/layouts/world_bank_layout.py` - creates World Bank-styled UI components with responsive design  
 - **Callback Controllers**: `src/callbacks/` - organized by feature area with nested structure for complex visualizations
 - **Data Layer**: `src/utils/` - centralized data loading, country utilities, chart helpers, and benchmark configuration
-- **Configuration**: `config/settings.py` - comprehensive dashboard settings, styling, and environment configuration
+- **Configuration**: `config/settings.py` - comprehensive dashboard settings, styling, and environment configuration (NEVER hardcode values)
 - **Definitions**: `data/Definitions/` - centralized configuration files for countries, disaster types, and indicators
+
+### Modularity Principles ⚠️ CRITICAL
+
+1. **No Hardcoding**: All configuration values (years, colors, regions, indicators) MUST be in `config/settings.py`, `data/Definitions/`, or `src/utils/*_config.py`
+2. **Centralized Utilities**: Always use shared utilities in `src/utils/` - never duplicate logic across callbacks
+3. **Configuration-Driven**: New visualizations should require minimal code changes - add config, not code
+4. **Reusable Components**: UI components in `src/utils/ui_helpers.py` should be parametric and reusable
+5. **Single Source of Truth**: Each data element, color scheme, or business rule has exactly one definition location
 
 ## Current Dashboard Structure
 
@@ -20,53 +30,127 @@ This is a **Dash-based dashboard** for analyzing disaster risk management (DRM) 
    - Total Affected Population - population impact analysis
    - Total Deaths - mortality impact analysis
 
-2. **Historical Urbanization** - WDI urbanization indicators with three subtabs:
+2. **Historical Urbanization** - WDI urbanization indicators with five subtabs:
+   - Urban Population Projections - UN DESA urban population forecasts with uncertainty bands
+   - Urbanization Rate - urban population growth projections with regional benchmarks
    - Urban Population Living in Slums - slums population trends with regional benchmarks
    - Access to Electricity, Urban - electricity access trends with regional benchmarks
-   - Urbanization Rate - urban population growth projections with regional benchmarks
+   - GDP vs Urbanization - scatterplot with country and global benchmarks
 
 3. **Exposure to Flood Hazard** - (placeholder for future flood risk data)
 4. **Projections of Flood Risk** - (placeholder for future flood projections)
 
 ## Key Patterns & Conventions
 
-### Data Loading Pattern
-All data access goes through centralized utilities in `src/utils/`:
+### Data Loading Pattern (REQUIRED)
+All data access MUST go through centralized utilities in `src/utils/`:
+
 ```python
-# Country data - always use centralized utilities
-from src.utils.country_utils import get_subsaharan_countries, load_subsaharan_countries_dict
+# Country data - ALWAYS use centralized utilities
+from src.utils.country_utils import get_subsaharan_countries, load_subsaharan_countries_dict, load_subsaharan_countries_and_regions_dict
 
 # Disaster data - use the standardized loader
 from src.utils.data_loader import load_emdat_data
 
 # WDI data - urbanization indicators
-from src.utils.data_loader import load_wdi_data, load_urbanization_indicators_dict
+from src.utils.data_loader import load_wdi_data, load_urbanization_indicators_dict, load_urbanization_indicators_notes_dict
 
-# Regional benchmarks - centralized configuration
+# UN DESA urban projections
+from src.utils.data_loader import load_undesa_urban_projections
+
+# Regional benchmarks - Sub-Saharan Africa specific (SSA, AFE, AFW)
 from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names, get_benchmark_options
+
+# Global benchmarks - All world regions (SSA, AFE, AFW, EAP, ECA, LCR, MNA, SAR)
+from src.utils.GLOBAL_BENCHMARK_CONFIG import (
+    get_global_benchmark_colors, 
+    get_global_benchmark_names, 
+    get_global_benchmark_options,
+    get_global_benchmark_dropdown_options,
+    get_all_global_benchmark_codes
+)
+
+# UI helpers - reusable components
+from src.utils.ui_helpers import create_benchmark_selectors
 
 # Error handling - use shared chart utilities
 from src.utils.component_helpers import create_error_chart
 ```
 
-### Callback Registration
-Callbacks are organized by feature area with nested structure:
+### Benchmark System Architecture
+
+The dashboard supports two levels of regional benchmarks:
+
+1. **Regional Benchmarks** (`benchmark_config.py`): Sub-Saharan Africa specific regions
+   - SSA (Sub-Saharan Africa) - Red
+   - AFE (Eastern and Southern Africa) - Orange
+   - AFW (Western and Central Africa) - Green
+   - Used for: checkboxes in urbanization charts
+
+2. **Global Benchmarks** (`GLOBAL_BENCHMARK_CONFIG.py`): All world regions  
+   - Includes SSA, AFE, AFW plus:
+   - EAP (East Asia & Pacific) - Blue
+   - ECA (Europe & Central Asia) - Purple
+   - LCR (Latin America & Caribbean) - Dark Orange
+   - MNA (Middle East & North Africa) - Teal
+   - SAR (South Asia) - Dark Red
+   - Used for: dropdown in GDP vs Urbanization chart
+
+### Creating Benchmark Selectors (UI Pattern)
+
 ```python
-# Feature-level callback orchestrators
-src/callbacks/disaster_callbacks.py     # Coordinates all disaster visualizations
-src/callbacks/urbanization_callbacks.py # Coordinates all urbanization visualizations
-src/callbacks/main_callbacks.py         # Handles main navigation and header updates
+# In urbanization_callbacks.py or disaster_callbacks.py orchestrator
 
-# Individual visualization callbacks
-src/callbacks/disaster/Frequency_by_Type_callbacks.py
-src/callbacks/disaster/Disasters_by_Year_callbacks.py
-src/callbacks/disaster/Total_Affected_Population_callbacks.py
-src/callbacks/disaster/Total_Deaths_callbacks.py
-src/callbacks/urbanization/Urban_Population_Living_in_Slums_callbacks.py
-src/callbacks/urbanization/Access_to_Electricity_Urban_callbacks.py
-src/callbacks/urbanization/Urbanization_Rate_callbacks.py
+from src.utils.ui_helpers import create_benchmark_selectors
 
-# Registration in app.py
+# Example 1: Regional checkboxes + Country dropdown
+*create_benchmark_selectors(
+    regional_id='slums-benchmark-selector',
+    country_id='slums-country-benchmark-selector',
+    include_regional=True,
+    include_country=True
+)
+
+# Example 2: Global dropdown + Country dropdown (GDP vs Urbanization pattern)
+*create_benchmark_selectors(
+    regional_id='gdp-vs-urbanization-benchmark-selector',
+    country_id='gdp-vs-urbanization-country-benchmark-selector',
+    global_id='gdp-vs-urbanization-global-benchmark-selector',
+    include_regional=False,
+    include_country=True,
+    include_global=True
+)
+```
+
+The `create_benchmark_selectors` function automatically:
+- Creates properly styled containers
+- Applies correct CSS classes
+- Sets default values (global benchmarks default to all except AFE/AFW)
+- Returns unpacked components ready for layout
+
+### Callback Registration Pattern
+
+Callbacks are organized by feature area with nested structure:
+
+```python
+# Feature-level callback orchestrators (in src/callbacks/)
+disaster_callbacks.py     # Coordinates all disaster visualizations
+urbanization_callbacks.py # Coordinates all urbanization visualizations
+main_callbacks.py         # Handles main navigation and header updates
+country_benchmark_callbacks.py  # Populates country benchmark dropdowns
+
+# Individual visualization callbacks (in src/callbacks/disaster/ or urbanization/)
+disaster/Frequency_by_Type_callbacks.py
+disaster/Disasters_by_Year_callbacks.py
+disaster/Total_Affected_Population_callbacks.py
+disaster/Total_Deaths_callbacks.py
+urbanization/Urban_Population_Projections_callbacks.py
+urbanization/Urbanization_Rate_callbacks.py
+urbanization/Urban_Population_Living_in_Slums_callbacks.py
+urbanization/Access_to_Electricity_Urban_callbacks.py
+urbanization/GDP_vs_Urbanization_callbacks.py
+
+# Registration in app.py (THIS IS THE ONLY PLACE CALLBACKS ARE REGISTERED)
 from src.callbacks import disaster_callbacks, urbanization_callbacks
 from src.callbacks.main_callbacks import register_main_callbacks
 
@@ -75,33 +159,72 @@ disaster_callbacks.register_callbacks(app)
 urbanization_callbacks.register_callbacks(app)
 ```
 
-### Error Handling Pattern
-All error states use centralized utilities in `src/utils/component_helpers.py`:
+### Error Handling Pattern (REQUIRED)
+
+All error states MUST use centralized utilities - never create local error functions:
+
 ```python
-# For error charts with annotations
 from src.utils.component_helpers import create_error_chart
 
-# Handle data loading errors - use create_error_chart with appropriate parameters
-# Handle empty data gracefully - use create_error_chart with appropriate parameters
-# Handle "no country selected" consistently - use title_suffix = "No country selected"
+# Standard error handling pattern
+try:
+    # Load data
+    data = load_emdat_data()
+    
+    # Filter and process
+    if selected_country:
+        data = data[data['ISO'] == selected_country]
+    
+    # Check for empty data
+    if data.empty:
+        raise Exception("No data available for selected country")
+    
+    # Create chart
+    fig = create_chart(data)
+    return fig
+    
+except Exception as e:
+    return create_error_chart(
+        error_message=f"Error loading data: {str(e)}",
+        chart_type='bar',  # or 'line', 'scatter'
+        xaxis_title='X Axis Label',
+        yaxis_title='Y Axis Label',
+        title='Chart Title'
+    )
 ```
+
+**NEVER** use these outdated patterns:
+- ❌ Creating local `create_empty_chart` functions
+- ❌ Raising `ValueError` for "no country selected" (use create_error_chart instead)
+- ❌ Using `@handle_callback_errors` decorator (deprecated - use try/except)
 
 ### Data Processing Pipeline
 
-**EM-DAT Disaster Data Flow:**
+#### EM-DAT Disaster Data Flow
 1. **Raw data**: `data/raw/` - original Excel files from EM-DAT
 2. **Processing script**: `scripts/clean_emdat_data.py` - filters Sub-Saharan countries, cleans columns
-3. **Processed data**: `data/processed/african_disasters_emdat.csv` - cleaned CSV for dashboard use
-4. **Disaster types**: `data/Definitions/disaster_type_selection.txt` - approved disaster categories
+3. **Processed data**: `data/processed/african_disasters_emdat.csv` - cleaned CSV with columns:
+   - `Disaster Type`, `ISO`, `Year`, `Total Deaths`, `Total Affected`, `Number of Events`
+4. **Disaster types**: `data/Definitions/disaster_type_selection.txt` - 10 approved disaster categories
 
-**WDI Urbanization Data Flow:**
-1. **Raw data**: `data/raw/WDI_CSV/` - World Bank World Development Indicators
-2. **Processing script**: `scripts/clean_WDI_data.py` - extracts urbanization indicators
-3. **Processed data**: `data/processed/wdi/` - individual CSV files per indicator
-4. **Indicators**: `data/Definitions/urbanization_indicators_selection.csv` - selected WDI indicators
+#### WDI Urbanization Data Flow
+1. **Raw data**: `data/raw/WDI_CSV/WDICSV.csv` - World Bank World Development Indicators
+2. **Processing script**: `scripts/clean_WDI_data.py` - extracts urbanization indicators for all global regions
+3. **Processed data**: `data/processed/wdi/{INDICATOR_CODE}.csv` - one file per indicator with columns:
+   - `Country Code`, `Year`, `Value`
+4. **Indicators**: `data/Definitions/urbanization_indicators_selection.csv` - selected WDI indicators with metadata
 
-**Country Definitions:**
-- `data/Definitions/WB_Classification.csv` - World Bank country classifications (authoritative source for all Sub-Saharan African countries and regional mappings)
+#### UN DESA Urban Projections Flow
+1. **Raw data**: `data/raw/Urban/` - UN World Urbanization Prospects and Population Division data
+2. **Processing script**: `scripts/process_urban_population.py` - processes urban projections with uncertainty
+3. **Processed data**: `data/processed/UNDESA_Country/{ISO3}_urban_population_projections.csv` - projections per country
+4. **Consolidated**: `data/processed/UNDESA_Country/UNDESA_urban_projections_consolidated.csv` - all countries combined
+
+#### Country Definitions
+- `data/Definitions/WB_Classification.csv` - **Authoritative source** for:
+  - All Sub-Saharan African countries (Region Code = SSA)
+  - Regional mappings (Subregion Code = AFE or AFW)
+  - Country metadata (income group, lending category)
 
 ## Development Workflow
 
@@ -110,59 +233,250 @@ from src.utils.component_helpers import create_error_chart
 python app.py  # Starts on localhost:8050
 ```
 
-### Documentation Updates
-**IMPORTANT**: Always update `.github/copilot-instructions.md` when making significant changes to:
-- Architecture patterns and conventions
-- New utility functions or shared components
-- Error handling patterns
-- File structure changes
-- New visualization capabilities
-- Data processing pipelines
+### Adding New Visualizations (Step-by-Step)
 
-This ensures the AI assistant has current knowledge of the codebase for future development tasks.
+#### Step 1: Create Callback File
+Create `src/callbacks/urbanization/New_Feature_callbacks.py`:
 
-### Data Updates
+```python
+"""
+Callbacks for [Feature Name] visualization
+[Description of what this chart shows]
+"""
 
-**Updating Disaster Data:**
-1. Place new EM-DAT Excel file in `data/raw/`
-2. Update file path in `scripts/clean_emdat_data.py`
-3. Run: `python scripts/clean_emdat_data.py`
-4. Restart dashboard to pick up new data
+from dash import Input, Output
+import plotly.graph_objects as go
+import pandas as pd
 
-**Updating Urbanization Data:**
-1. Place new WDI CSV files in `data/raw/WDI_CSV/`
-2. Update indicators in `data/Definitions/urbanization_indicators_selection.csv` if needed
-3. Run: `python scripts/clean_WDI_data.py`
-4. Restart dashboard to pick up new data
+try:
+    from ...utils.data_loader import load_wdi_data  # or appropriate loader
+    from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
+    from ...utils.component_helpers import create_error_chart
+    from config.settings import CHART_STYLES
+except ImportError:
+    import sys, os
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+    from src.utils.data_loader import load_wdi_data
+    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
+    from src.utils.component_helpers import create_error_chart
+    from config.settings import CHART_STYLES
 
-**Updating Country Lists:**
-1. Modify `data/Definitions/WB_Classification.csv` for country additions/removals or regional changes
-2. Update Region Code (SSA), Subregion Code (AFE/AFW), and country classifications as needed
-3. No processing script needed - changes take effect on restart
+def register_new_feature_callbacks(app):
+    """Register callbacks for [Feature Name] chart"""
+    
+    @app.callback(
+        Output('new-feature-chart', 'figure'),
+        [Input('main-country-filter', 'value')],
+        prevent_initial_call=False
+    )
+    def generate_new_feature_chart(selected_country):
+        try:
+            # Load data
+            data = load_wdi_data('INDICATOR_CODE')
+            countries_dict = load_subsaharan_countries_and_regions_dict()
+            
+            # Handle no country selected
+            if selected_country:
+                title_suffix = countries_dict.get(selected_country)
+                data = data[data['Country Code'] == selected_country]
+            else:
+                raise Exception("No country selected")
+            
+            if data.empty:
+                raise Exception("No data available for selected country")
+            
+            # Create chart
+            fig = go.Figure()
+            # ... add traces ...
+            
+            fig.update_layout(
+                title=f'<b>{title_suffix}</b> | Chart Title',
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                font={'color': CHART_STYLES['colors']['primary']}
+            )
+            
+            return fig
+            
+        except Exception as e:
+            return create_error_chart(
+                error_message=f"Error loading data: {str(e)}",
+                chart_type='line',
+                title='Chart Title'
+            )
+```
 
-### Adding New Visualizations
-1. **Create individual callback file** in appropriate subfolder (`src/callbacks/disaster/` or `src/callbacks/urbanization/`)
-2. **Follow naming convention**: `Feature_Name_callbacks.py` with `register_feature_name_callbacks(app)` function
-3. **Update orchestrator** (`disaster_callbacks.py` or `urbanization_callbacks.py`) to import and register new callback
-4. **Add subtab** to `src/layouts/world_bank_layout.py` in the appropriate tab section
-5. **Update chart container logic** in orchestrator to handle new subtab rendering
-6. **Use centralized utilities**: `benchmark_config.py` for regional comparisons, `data_loader.py` for data access
-7. **Follow error handling patterns**: graceful degradation with informative error messages
+#### Step 2: Register in Orchestrator
+Update `src/callbacks/urbanization_callbacks.py`:
+
+```python
+# Add import at top
+from .urbanization.New_Feature_callbacks import register_new_feature_callbacks
+
+# Add registration in register_callbacks()
+def register_callbacks(app):
+    # ... existing registrations ...
+    register_new_feature_callbacks(app)
+    
+    # Add new subtab rendering in render_urbanization_chart()
+    elif active_subtab == 'new-feature':
+        return html.Div([
+            dcc.Graph(id="new-feature-chart"),
+            html.Div([
+                html.P([html.B("Data Source"), ": Source info.", html.Br(), 
+                       html.B("Note:"), " Description."], 
+                       className="indicator-note")
+            ], className="indicator-note-container")
+        ], className="chart-container")
+```
+
+#### Step 3: Add UI Tab
+Update `src/layouts/world_bank_layout.py`:
+
+```python
+# Add new tab in create_world_bank_urbanization_tab_content()
+dbc.Tab(
+    label="New Feature",
+    tab_id="new-feature"
+)
+```
 
 ### Adding New Data Sources
+
 1. **Place raw data** in `data/raw/` with descriptive subfolder
-2. **Create processing script** in `scripts/` folder following `clean_*.py` pattern
-3. **Output processed data** to `data/processed/` with clear naming
-4. **Add data definitions** to `data/Definitions/` if applicable
-5. **Update data_loader.py** with new loading functions
-6. **Test data loading** before creating visualizations
+2. **Create processing script** in `scripts/` folder following `clean_*.py` pattern:
+   - Use centralized utilities: `from src.utils.country_utils import load_subsaharan_countries_dict`
+   - Use centralized config: `from config.settings import DATA_CONFIG`
+   - Filter by Sub-Saharan countries using `WB_Classification.csv`
+   - Output to `data/processed/` with clear naming
+3. **Add data definitions** to `data/Definitions/` if applicable
+4. **Update data_loader.py** with new loading function:
+```python
+def load_new_data_source(indicator_code: str = None) -> pd.DataFrame:
+    """
+    Load new data source
+    
+    Args:
+        indicator_code: Optional indicator code to filter
+        
+    Returns:
+        DataFrame with columns: ['Country Code', 'Year', 'Value']
+    """
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file_path = os.path.join(project_root, 'data', 'processed', 'new_source', f'{indicator_code}.csv')
+    return pd.read_csv(file_path)
+```
+5. **Test data loading** before creating visualizations
 
 ### Regional Benchmark Integration
+
 When adding charts with regional comparisons:
-1. **Import benchmark utilities**: `from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names, get_benchmark_options`
-2. **Use standard colors**: SSA (red), AFE (orange), AFW (green)
-3. **Add benchmark selector**: Use `get_benchmark_options()` for consistent checklist options
-4. **Handle benchmark data**: Filter for regional codes and apply appropriate styling
+
+```python
+# For Sub-Saharan Africa regional benchmarks (checkboxes)
+from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names, get_benchmark_options
+
+# In callback:
+if benchmark_regions:  # e.g., ['SSA', 'AFE']
+    colors = get_benchmark_colors()
+    names = get_benchmark_names()
+    for region_code in benchmark_regions:
+        # Filter data for region
+        region_data = data[data['Country Code'] == region_code]
+        # Plot with colors[region_code]
+```
+
+```python
+# For global benchmarks (dropdown)
+from src.utils.GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_colors, get_global_benchmark_names
+
+# In callback:
+if global_benchmarks:  # e.g., ['EAP', 'ECA', 'LCR']
+    colors = get_global_benchmark_colors()
+    names = get_global_benchmark_names()
+    for region_code in global_benchmarks:
+        # Filter data for region
+        region_data = data[data['Country Code'] == region_code]
+        # Plot with colors[region_code]
+```
+
+## Critical Configuration Files
+
+### config/settings.py
+Contains all hardcoded values that should be configurable:
+- `DATA_CONFIG['emdat_start_year']` - Starting year for analysis (currently 1976)
+- `DATA_CONFIG['analysis_period']` - Display string for time period
+- `CHART_STYLES['colors']` - Color palette for charts
+- `DASHBOARD_CONFIG` - App settings (title, port, debug mode)
+
+### src/utils/benchmark_config.py
+Regional benchmarks for Sub-Saharan Africa:
+- `BENCHMARK_CONFIG` - Dictionary of region codes to names and colors
+- SSA, AFE, AFW definitions
+
+### src/utils/GLOBAL_BENCHMARK_CONFIG.py
+Global regional benchmarks:
+- `GLOBAL_BENCHMARK_CONFIG` - Merges BENCHMARK_CONFIG with additional world regions
+- SSA, AFE, AFW, EAP, ECA, LCR, MNA, SAR definitions
+- Functions for dropdown options and default selections
+
+### data/Definitions/WB_Classification.csv
+**Single source of truth** for:
+- All country-to-region mappings
+- Sub-Saharan Africa country list (Region Code = SSA)
+- Subregional groupings (AFE, AFW)
+- Country metadata (income levels, lending categories)
+
+## Common Gotchas ⚠️
+
+1. **Import paths**: Callbacks use relative imports (`..utils`) with try/catch fallback for direct execution
+2. **Country filtering**: ALWAYS filter by Sub-Saharan Africa using centralized country utilities, NEVER hardcode ISO lists
+3. **Callback dependencies**: Main country filter (`main-country-filter`) drives other components across all tabs
+4. **Data columns**:
+   - EM-DAT: `['Disaster Type', 'ISO', 'Year', 'Total Deaths', 'Total Affected', 'Number of Events']`
+   - WDI: `['Country Code', 'Year', 'Value']`
+   - UNDESA: Wide format with years as columns, indicators as rows
+5. **Regional benchmarks**: NEVER hardcode colors or names - always use `get_benchmark_colors()` and `get_benchmark_names()`
+6. **Error handling**: ALWAYS use `create_error_chart()` - never create local error functions
+7. **No country selected**: Use `create_error_chart()` with appropriate message - don't raise exceptions
+8. **File paths**: All definition files in `data/Definitions/` - never use relative paths
+9. **Chart IDs**: Must be unique across entire app - use format `{feature}-{chart-type}-chart`
+10. **Global vs Regional**: Use GLOBAL_BENCHMARK_CONFIG for world regions, benchmark_config for SSA-only
+
+## Folder Structure
+```
+├── app.py                    # Main entry point
+├── config/
+│   └── settings.py          # All configuration constants
+├── data/
+│   ├── Definitions/         # Config files (countries, indicators)
+│   ├── processed/           # Cleaned data ready for dashboard
+│   └── raw/                # Original data files
+├── scripts/                # Data processing scripts
+│   ├── clean_emdat_data.py
+│   ├── clean_WDI_data.py
+│   └── process_urban_population.py
+├── src/
+│   ├── callbacks/
+│   │   ├── disaster/       # Individual disaster chart callbacks
+│   │   ├── urbanization/   # Individual urbanization chart callbacks
+│   │   ├── disaster_callbacks.py      # Disaster orchestrator
+│   │   ├── urbanization_callbacks.py  # Urbanization orchestrator
+│   │   ├── main_callbacks.py          # Navigation & header
+│   │   └── country_benchmark_callbacks.py  # Country dropdown population
+│   ├── layouts/
+│   │   └── world_bank_layout.py       # Complete UI layout
+│   └── utils/
+│       ├── benchmark_config.py         # Regional benchmarks (SSA-specific)
+│       ├── GLOBAL_BENCHMARK_CONFIG.py  # Global benchmarks (all regions)
+│       ├── component_helpers.py        # Shared chart utilities and error handling
+│       ├── data_loader.py             # Data loading utilities
+│       ├── country_utils.py           # Country filtering utilities
+│       ├── ui_helpers.py              # Reusable UI components
+│       └── color_utils.py             # Disaster color configuration
+└── tests/
+    └── [currently empty - old tests removed]
+```
 
 ## Deployment Context
 
@@ -171,7 +485,7 @@ When adding charts with regional comparisons:
 - **Environment Variables**: `PORT` (defaults to 8050), `ENVIRONMENT` (dev/production)
 - **Python Version**: 3.10+ (see `runtime.txt`)
 
-## Critical Dependencies
+## Dependencies
 
 Core stack (from `requirements.txt`):
 - `dash` + `dash-bootstrap-components` - UI framework
@@ -179,58 +493,16 @@ Core stack (from `requirements.txt`):
 - `pandas` + `numpy` - data processing
 - `flask` - underlying web server
 
-Optional packages commented out for deployment compatibility - install separately if needed.
+## Documentation Maintenance
 
-## Common Gotchas
+**ALWAYS update this file** when making changes to:
+- Architecture patterns and conventions
+- New utility functions or shared components
+- Error handling patterns
+- File structure changes
+- New visualization capabilities
+- Data processing pipelines
+- Configuration files or settings
+- Benchmark systems
 
-1. **Import paths**: Callbacks use relative imports (`..utils`) with try/catch fallback for direct execution
-2. **Country filtering**: Always filter by Sub-Saharan Africa using centralized country utilities, never hardcode ISO lists
-3. **Callback dependencies**: Main country filter (`main-country-filter`) drives other components across all tabs
-4. **Data columns**: 
-   - EM-DAT processed data: `['Disaster Type', 'ISO', 'Year', 'Total Deaths', 'Total Affected']`
-   - WDI processed data: `['Country Code', 'Year', 'Value']`
-5. **Regional benchmarks**: Use `src/utils/benchmark_config.py` for colors, names, and options - never hardcode
-6. **Error handling**: Always use `create_error_chart()` from `component_helpers.py` for consistent error states - never create local `create_empty_chart` functions
-7. **No country selected**: Always use `title_suffix = "No country selected"` instead of raising `ValueError` - this allows benchmark data to still be displayed
-8. **File paths**: All definition files moved to `data/Definitions/` - update imports accordingly
-9. **Chart IDs**: Each visualization has unique IDs (e.g., `urban-population-slums-chart`, `access-to-electricity-urban-chart`)
-
-## File Dependencies & Data Structure
-
-### Core Data Files
-- **Country Selection**: `src/utils/data_loader.get_subsaharan_countries()` for dropdowns
-- **Disaster Data**: `data/processed/african_disasters_emdat.csv` (required for disaster callbacks)
-- **Urbanization Data**: `data/processed/wdi/*.csv` (individual indicator files)
-- **Chart Styling**: `config/settings.py` constants and `src/utils/benchmark_config.py`
-
-### Definition Files (data/Definitions/)
-- `WB_Classification.csv` - World Bank country classifications (authoritative source for countries and regions)
-- `disaster_type_selection.txt` - 10 approved disaster types
-- `urbanization_indicators_selection.csv` - 2 WDI indicators (slums, electricity)
-
-### Folder Structure
-```
-src/
-├── callbacks/
-│   ├── disaster/           # Individual disaster chart callbacks
-│   ├── urbanization/       # Individual urbanization chart callbacks
-│   ├── disaster_callbacks.py      # Disaster orchestrator
-│   ├── urbanization_callbacks.py  # Urbanization orchestrator
-│   └── main_callbacks.py          # Navigation & header
-├── layouts/
-│   └── world_bank_layout.py       # Complete UI layout
-└── utils/
-    ├── benchmark_config.py         # Regional benchmark settings
-    ├── component_helpers.py        # Shared chart utilities and error handling
-    ├── data_loader.py             # Data loading utilities
-    ├── country_utils.py           # Country filtering utilities
-    └── [other utilities]
-```
-
-### Current Visualization Capabilities
-1. **Disaster Analysis** (4 charts): Frequency by type, timeline trends, affected population, deaths analysis
-2. **Urbanization Analysis** (4 charts): Slums population trends, electricity access trends, urbanization rate projections, GDP vs urbanization scatterplot
-3. **Regional Benchmarks**: SSA, Eastern/Southern Africa, Western/Central Africa comparisons
-4. **Interactive Features**: Country selection, benchmark toggling, responsive design
-
-When modifying core data structures or adding features, ensure consistency across these interconnected layers.
+This ensures AI assistants have current knowledge for future development.

@@ -22,16 +22,6 @@ DISASTER_COLORS = {
     'default': '#000000'
 }
 
-def load_disaster_colors() -> Dict[str, str]:
-    """
-    Load disaster type colors from hardcoded configuration
-    
-    Returns:
-        Dictionary mapping disaster types to hex colors
-    """
-    return DISASTER_COLORS.copy()
-
-
 def get_disaster_color(disaster_type: str, colors_dict: Dict[str, str] = None) -> str:
     """
     Get color for a specific disaster type

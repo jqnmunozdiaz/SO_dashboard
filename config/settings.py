@@ -49,22 +49,3 @@ UPLOAD_CONFIG = {
     'allowed_extensions': ['.csv', '.xlsx', '.json', '.geojson'],
     'upload_folder': 'data/uploads'
 }
-
-def get_config(key: str) -> Any:
-    """
-    Get configuration value by key
-    
-    Args:
-        key: Configuration key
-        
-    Returns:
-        Configuration value
-    """
-    config_map = {
-        'dashboard': DASHBOARD_CONFIG,
-        'data_config': DATA_CONFIG,
-        'chart_styles': CHART_STYLES,
-        'upload_config': UPLOAD_CONFIG
-    }
-    
-    return config_map.get(key, {})

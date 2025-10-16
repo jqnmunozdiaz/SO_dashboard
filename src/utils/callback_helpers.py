@@ -1,30 +1,8 @@
-"""
-Utility functions for error handling in callbacks
+﻿"""
+Utility functions for data filtering and aggregation in callbacks
 """
 
 import pandas as pd
-from functools import wraps
-
-# Use the shared error/chart helper to keep UI consistent
-from .component_helpers import create_error_chart
-
-
-def handle_callback_errors(default_title="No Data Available"):
-    """
-    Decorator to handle callback errors gracefully
-    """
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            try:
-                return func(*args, **kwargs)
-            except Exception as e:
-                # Use the centralized create_error_chart so all callbacks show
-                # errors with the same look-and-feel.
-                err_msg = f"{default_title} - {str(e)[:200]}"
-                return create_error_chart(error_message=err_msg, chart_type='line', title=default_title)
-        return wrapper
-    return decorator
 
 
 def safe_filter_data(data, countries=None, disaster_types=None):
@@ -50,24 +28,6 @@ def safe_filter_data(data, countries=None, disaster_types=None):
         filtered_data = filtered_data[filtered_data['Disaster Type'].isin(disaster_types)]
     
     return filtered_data
-
-
-def create_empty_figure(title="No Data Available", subtitle=""):
-    """
-    Create an empty figure with a message
-    """
-    fig = go.Figure()
-    fig.update_layout(
-        title=f"{title}<br><span style='font-size:12px'>{subtitle}</span>",
-        xaxis_title="",
-        yaxis_title="",
-        showlegend=False,
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        font={'color': '#2c3e50'},
-        title_font_size=16
-    )
-    return fig
 
 
 def safe_aggregate_data(data, group_by, agg_dict):
@@ -101,18 +61,3 @@ def safe_aggregate_data(data, group_by, agg_dict):
     
     except Exception as e:
         return pd.DataFrame()
-
-
-def validate_inputs(*args):
-    """
-    Validate callback inputs and return safe values
-    """
-    safe_args = []
-    for arg in args:
-        if arg is None:
-            safe_args.append([])
-        elif isinstance(arg, (list, tuple)):
-            safe_args.append(list(arg))
-        else:
-            safe_args.append(arg)
-    return safe_args

@@ -116,14 +116,15 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'gdp-vs-urbanization':
             return html.Div([
-                # Benchmark selectors (only country benchmarks for this chart)
+                # Benchmark selectors (global and country benchmarks)
                 *create_benchmark_selectors(
                     regional_id='gdp-vs-urbanization-benchmark-selector',
                     country_id='gdp-vs-urbanization-country-benchmark-selector',
                     global_id='gdp-vs-urbanization-global-benchmark-selector',
-                    include_regional=False,  # This chart doesn't have regional benchmarks
+                    include_regional=False,
                     include_country=True,
-                    include_global=True
+                    include_global=True,
+                    exclude_from_default=['AFE', 'AFW']  # Exclude subregions from default selection
                 ),
                 # Chart
                 dcc.Graph(id="gdp-vs-urbanization-chart"),

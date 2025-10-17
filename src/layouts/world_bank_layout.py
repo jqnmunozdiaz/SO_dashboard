@@ -96,17 +96,6 @@ def create_world_bank_layout():
                                 )
                             ], className="filter-dropdown-container")
                         ], className="filter-control-group"),
-                        
-                        # Methodological Note download button - moved to separate container
-                        html.A([
-                            html.Button(
-                                "📄 Methodological Note",
-                                className="methodological-note-btn"
-                            )
-                        ], 
-                        href="/assets/documents/SSA DRM Dashboard - Methodological Note.docx",
-                        download="SSA_DRM_Dashboard_Methodological_Note.docx"
-                        )
                     ], className="filter-card")
                 ], className="filter-inner")
             ], className="filter-section"),

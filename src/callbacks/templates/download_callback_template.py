@@ -69,18 +69,21 @@ Example for multiple CSV files (ZIP download):
             return None
 
 
-STEP 3: Add download button to layout
----------------------------------------
+STEP 3: Add download and methodological note buttons to layout
+----------------------------------------------------------------
 In your orchestrator file (e.g., urbanization_callbacks.py or disaster_callbacks.py):
 
-1. Import create_download_button:
-   from ..utils.ui_helpers import create_download_button
+1. Import button helpers:
+   from ..utils.ui_helpers import create_download_button, create_methodological_note_button
 
-2. Add the button after your indicator note:
+2. Add both buttons after your indicator note:
 
    html.Div([
        html.P([...your indicator note...], className="indicator-note"),
-       create_download_button('your-chart-download')  # Must match Output ID in callback
+       html.Div([
+           create_download_button('your-chart-download'),  # Must match Output ID in callback
+           create_methodological_note_button()
+       ], className="buttons-container")
    ], className="indicator-note-container")
 
 

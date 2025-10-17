@@ -79,7 +79,8 @@ def register_cities_distribution_callbacks(app):
             city_names = sorted_data['City Name'].tolist()
             populations = sorted_data['Population'].tolist()
             size_categories = sorted_data['Size Category'].tolist()
-            
+            scaled_populations = [p * 1000 for p in populations]
+
             # Assign colors based on size category
             colors = [CITY_SIZE_COLORS.get(category, '#95a5a6') for category in size_categories]
             
@@ -90,13 +91,12 @@ def register_cities_distribution_callbacks(app):
             # Create pie chart with individual cities
             fig = go.Figure(data=[go.Pie(
                 labels=city_names,
-                values=populations,
+                values=scaled_populations,
                 marker=dict(colors=colors),
                 textinfo='percent',
                 textposition='inside',
                 hovertemplate='<b>%{label}</b><br>' +
-                              'Population: %{value:,.0f} thousand<br>' +
-                              'Size Category: %{customdata}<br>' +
+                              'Population: %{value:,.0f}<br>' +
                               'Percentage: %{percent}<br>' +
                               '<extra></extra>',
                 customdata=size_categories,

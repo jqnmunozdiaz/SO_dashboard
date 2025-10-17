@@ -831,8 +831,17 @@ label {
 /* Download Button Styles */
 .download-button-container {
     margin-top: 1rem;
-    display: flex;
+    display: inline-flex;
     justify-content: flex-end;
+}
+
+/* Container for multiple buttons (Download + Methodological Note) */
+.buttons-container {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    flex-wrap: wrap;
 }
 
 .download-data-button {

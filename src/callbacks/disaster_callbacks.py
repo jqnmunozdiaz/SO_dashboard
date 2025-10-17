@@ -12,12 +12,12 @@ from .disaster.Total_Affected_Population_callbacks import setup_total_affected_p
 from .disaster.Total_Deaths_callbacks import setup_total_deaths_callbacks
 
 try:
-    from ..utils.ui_helpers import create_download_button
+    from ..utils.ui_helpers import create_download_button, create_methodological_note_button
 except ImportError:
     import sys
     import os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-    from src.utils.ui_helpers import create_download_button
+    from src.utils.ui_helpers import create_download_button, create_methodological_note_button
 
 
 def register_callbacks(app):
@@ -44,7 +44,10 @@ def register_callbacks(app):
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
-                    create_download_button('disaster-frequency-download')
+                    html.Div([
+                        create_download_button('disaster-frequency-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container")
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'disaster-timeline':
@@ -53,8 +56,11 @@ def register_callbacks(app):
                 dcc.Graph(id="disaster-timeline-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
-                    create_download_button('disaster-timeline-download')
+                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Number of disaster events recorded per year, 1976-2024."], className="indicator-note"),
+                    html.Div([
+                        create_download_button('disaster-timeline-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container")
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'disaster-affected':
@@ -64,7 +70,10 @@ def register_callbacks(app):
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
-                    create_download_button('disaster-affected-download')
+                    html.Div([
+                        create_download_button('disaster-affected-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container"),
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'disaster-deaths':
@@ -73,8 +82,11 @@ def register_callbacks(app):
                 dcc.Graph(id="disaster-deaths-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
-                    create_download_button('disaster-deaths-download')
+                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Total number of deaths attributed to disasters, 1976-2024."], className="indicator-note"),
+                    html.Div([
+                        create_download_button('disaster-deaths-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container")
                 ], className="indicator-note-container")
             ], className="chart-container")
         else:

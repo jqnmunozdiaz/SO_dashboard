@@ -1,5 +1,5 @@
 """
-Callbacks for Cities Distribution pie chart visualization
+Callbacks for Cities Distribution treemap visualization
 Shows distribution of urban population across city size categories
 """
 
@@ -25,7 +25,7 @@ except ImportError:
     from config.settings import CHART_STYLES
 
 def register_cities_distribution_callbacks(app):
-    """Register callbacks for Cities Distribution pie chart"""
+    """Register callbacks for Cities Distribution treemap chart"""
     
     @app.callback(
         Output('cities-distribution-chart', 'figure'),
@@ -79,8 +79,13 @@ def register_cities_distribution_callbacks(app):
             city_names = sorted_data['City Name'].tolist()
             populations = sorted_data['Population'].tolist()
             size_categories = sorted_data['Size Category'].tolist()
+            
+            # Scale populations to actual numbers (from thousands)
             scaled_populations = [p * 1000 for p in populations]
-
+            
+            # Calculate total population for percentage calculation
+            total_population = sum(scaled_populations)
+            
             # Assign colors based on size category
             colors = [CITY_SIZE_COLORS.get(category, '#95a5a6') for category in size_categories]
             
@@ -88,22 +93,45 @@ def register_cities_distribution_callbacks(app):
             if sum(populations) == 0:
                 raise Exception(f"No city size data available for {countries_dict.get(selected_country, selected_country)} in {selected_year}")
             
-            # Create pie chart with individual cities
-            fig = go.Figure(data=[go.Pie(
-                labels=city_names,
+            # Calculate percentage for each city relative to total
+            percentages = [(val / total_population * 100) for val in scaled_populations]
+            
+            # Create custom hover text with correct percentages
+            hover_texts = []
+            for i, (name, val, pct) in enumerate(zip(city_names, scaled_populations, percentages)):
+                hover_texts.append(
+                    f'<b>{name}</b><br>' +
+                    f'Population: {val:,.0f}<br>' +
+                    f'Percentage: {pct:.1f}%<br>'
+                )
+            
+            # Create treemap with flat structure (no hierarchy)
+            # Use sort=False to maintain the order we defined (categories from largest to smallest)
+            fig = go.Figure(go.Treemap(
+                labels=[f"{name}<br>{pct:.1f}%" for name, pct in zip(city_names, percentages)],
+                parents=[''] * len(city_names),
                 values=scaled_populations,
-                marker=dict(colors=colors),
-                textinfo='percent',
-                textposition='inside',
-                hovertemplate='<b>%{label}</b><br>' +
-                              'Population: %{value:,.0f}<br>' +
-                              'Percentage: %{percent}<br>' +
-                              '<extra></extra>',
-                customdata=size_categories,
-                showlegend=False,  # Hide pie legend, we'll add custom legend
-                direction='clockwise',
-                sort=False  # Preserve our custom sort order
-            )])
+                textposition='middle center',
+                marker=dict(
+                    colors=colors,
+                    line=dict(width=2, color='white')
+                ),
+                hovertext=hover_texts,
+                hoverinfo='text',
+                pathbar=dict(visible=False),
+                sort=False  # Preserve the order we sorted by category
+            ))
+            
+            # Add invisible traces for legend (one for each size category)
+            for category in size_categories_ordered:
+                fig.add_trace(go.Scatter(
+                    x=[None],
+                    y=[None],
+                    mode='markers',
+                    marker=dict(size=12, color=CITY_SIZE_COLORS.get(category, '#95a5a6')),
+                    name=category,
+                    showlegend=True
+                ))
             
             country_name = countries_dict.get(selected_country, selected_country)
             
@@ -125,28 +153,19 @@ def register_cities_distribution_callbacks(app):
                     borderwidth=1
                 ),
                 height=600,
-                margin=dict(r=250, l=50, t=80, b=50),
-                xaxis=dict(visible=False),
-                yaxis=dict(visible=False)
+                margin=dict(l=10, r=10, t=80, b=10)
             )
             
-            # Add visible traces for legend (one for each size category)
-            for category in size_categories_ordered:
-                fig.add_trace(go.Scatter(
-                    x=[None],
-                    y=[None],
-                    mode='markers',
-                    marker=dict(size=12, color=CITY_SIZE_COLORS.get(category, '#95a5a6')),
-                    name=category,
-                    showlegend=True
-                ))
+            # Hide axes (even though treemap doesn't use them)
+            fig.update_xaxes(visible=False)
+            fig.update_yaxes(visible=False)
             
             return fig
             
         except Exception as e:
             return create_error_chart(
                 error_message=f"Error loading data: {str(e)}",
-                chart_type='pie',
+                chart_type='treemap',
                 title='Urban Population Distribution by City Size'
             )
     

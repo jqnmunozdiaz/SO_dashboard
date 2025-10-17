@@ -11,6 +11,7 @@ try:
     from ...utils.data_loader import load_city_size_distribution, load_city_agglomeration_counts
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.component_helpers import create_error_chart
+    from ...utils.download_helpers import prepare_csv_download
     from ...utils.color_utils import CITY_SIZE_COLORS
     from config.settings import CHART_STYLES
 except ImportError:
@@ -19,6 +20,7 @@ except ImportError:
     from src.utils.data_loader import load_city_size_distribution, load_city_agglomeration_counts
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.component_helpers import create_error_chart
+    from src.utils.download_helpers import prepare_csv_download
     from src.utils.color_utils import CITY_SIZE_COLORS
     from config.settings import CHART_STYLES
 
@@ -188,3 +190,26 @@ def register_cities_evolution_callbacks(app):
                 xaxis_title='Year',
                 yaxis_title='Urban Population'
             )
+    
+    @app.callback(
+        Output('cities-evolution-download', 'data'),
+        [Input('cities-evolution-download-button', 'n_clicks'),
+         Input('main-country-filter', 'value')],
+        prevent_initial_call=True
+    )
+    def download_cities_evolution_data(n_clicks, selected_country):
+        """Download city size distribution data as CSV"""
+        if n_clicks is None or n_clicks == 0:
+            return None
+        
+        try:
+            # Load full dataset (raw data, no filtering)
+            cities_data = load_city_size_distribution()
+            
+            filename = "cities_individual"
+            
+            return prepare_csv_download(cities_data, filename)
+        
+        except Exception as e:
+            print(f"Error preparing download: {str(e)}")
+            return None

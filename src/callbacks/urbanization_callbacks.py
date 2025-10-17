@@ -119,7 +119,8 @@ def register_callbacks(app):
                 dcc.Graph(id="urbanization-rate-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects.", html.Br(), html.B("Note:"), " Percentage of population living in urban areas. Shows historical trends and future projections of urbanization levels."], className="indicator-note")
+                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects.", html.Br(), html.B("Note:"), " Percentage of population living in urban areas. Shows historical trends and future projections of urbanization levels."], className="indicator-note"),
+                    create_download_button('urbanization-rate-download')
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'urban-population-slums':
@@ -136,7 +137,8 @@ def register_callbacks(app):
                 dcc.Graph(id="urban-population-slums-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "World Bank World Development Indicators (EN.POP.SLUM.UR.ZS).", html.Br(), html.B("Note:"), f" {slums_note}"], className="indicator-note")
+                    html.P([html.B("Data Source: "), "World Bank World Development Indicators (EN.POP.SLUM.UR.ZS).", html.Br(), html.B("Note:"), f" {slums_note}"], className="indicator-note"),
+                    create_download_button('urban-population-slums-download')
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'access-to-electricity-urban':
@@ -153,7 +155,8 @@ def register_callbacks(app):
                 dcc.Graph(id="access-to-electricity-urban-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "World Bank World Development Indicators (EG.ELC.ACCS.UR.ZS).", html.Br(), html.B("Note:"), f" {electricity_note}"], className="indicator-note")
+                    html.P([html.B("Data Source: "), "World Bank World Development Indicators (EG.ELC.ACCS.UR.ZS).", html.Br(), html.B("Note:"), f" {electricity_note}"], className="indicator-note"),
+                    create_download_button('access-to-electricity-urban-download')
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'gdp-vs-urbanization':
@@ -198,7 +201,8 @@ def register_callbacks(app):
                 dcc.Graph(id="cities-distribution-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Population distribution across city size categories."], className="indicator-note")
+                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Population distribution across city size categories."], className="indicator-note"),
+                    create_download_button('cities-distribution-download')
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'cities-evolution':
@@ -207,7 +211,8 @@ def register_callbacks(app):
                 dcc.Graph(id="cities-evolution-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Urban population evolution showing individual cities stacked and colored by size category."], className="indicator-note")
+                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Urban population evolution showing individual cities stacked and colored by size category."], className="indicator-note"),
+                    create_download_button('cities-evolution-download')
                 ], className="indicator-note-container")
             ], className="chart-container")
         else:

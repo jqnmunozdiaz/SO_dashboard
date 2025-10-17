@@ -11,6 +11,14 @@ from .disaster.Disasters_by_Year_callbacks import setup_disasters_by_year_callba
 from .disaster.Total_Affected_Population_callbacks import setup_total_affected_population_callbacks
 from .disaster.Total_Deaths_callbacks import setup_total_deaths_callbacks
 
+try:
+    from ..utils.ui_helpers import create_download_button
+except ImportError:
+    import sys
+    import os
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+    from src.utils.ui_helpers import create_download_button
+
 
 def register_callbacks(app):
     """Register all disaster-related callbacks with organized structure"""
@@ -35,7 +43,8 @@ def register_callbacks(app):
                 dcc.Graph(id="disaster-frequency-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note")
+                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
+                    create_download_button('disaster-frequency-download')
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'disaster-timeline':
@@ -44,7 +53,8 @@ def register_callbacks(app):
                 dcc.Graph(id="disaster-timeline-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note")
+                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
+                    create_download_button('disaster-timeline-download')
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'disaster-affected':
@@ -53,7 +63,8 @@ def register_callbacks(app):
                 dcc.Graph(id="disaster-affected-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note")
+                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
+                    create_download_button('disaster-affected-download')
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'disaster-deaths':
@@ -62,7 +73,8 @@ def register_callbacks(app):
                 dcc.Graph(id="disaster-deaths-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note")
+                    html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
+                    create_download_button('disaster-deaths-download')
                 ], className="indicator-note-container")
             ], className="chart-container")
         else:

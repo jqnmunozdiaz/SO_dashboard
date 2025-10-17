@@ -17,6 +17,7 @@ try:
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
     from ...utils.component_helpers import create_error_chart
+    from ...utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 except ImportError:
     # Fallback for direct execution
@@ -27,6 +28,7 @@ except ImportError:
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
     from src.utils.component_helpers import create_error_chart
+    from src.utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 
 
@@ -223,3 +225,26 @@ def register_urbanization_rate_callbacks(app):
                 yaxis_range=[0, 100],
                 title='Urbanization Rate'
             )
+    
+    @app.callback(
+        Output('urbanization-rate-download', 'data'),
+        [Input('urbanization-rate-download-button', 'n_clicks'),
+         Input('main-country-filter', 'value')],
+        prevent_initial_call=True
+    )
+    def download_urbanization_rate_data(n_clicks, selected_country):
+        """Download UN DESA urbanization rate data as CSV"""
+        if n_clicks is None or n_clicks == 0:
+            return None
+        
+        try:
+            # Load full dataset (raw data, no filtering)
+            undesa_data = load_undesa_urban_projections()
+            
+            filename = "urbanization_rate"
+            
+            return prepare_csv_download(undesa_data, filename)
+        
+        except Exception as e:
+            print(f"Error preparing download: {str(e)}")
+            return None

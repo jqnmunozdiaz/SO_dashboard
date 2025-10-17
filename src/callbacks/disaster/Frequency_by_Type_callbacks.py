@@ -17,6 +17,7 @@ try:
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.color_utils import get_disaster_color, DISASTER_COLORS
     from ...utils.component_helpers import create_error_chart
+    from ...utils.download_helpers import prepare_csv_download
     from config.settings import DATA_CONFIG
 except ImportError:
     # Fallback for direct execution
@@ -27,6 +28,7 @@ except ImportError:
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.color_utils import get_disaster_color, DISASTER_COLORS
     from src.utils.component_helpers import create_error_chart
+    from src.utils.download_helpers import prepare_csv_download
     from config.settings import DATA_CONFIG
 
 
@@ -139,3 +141,26 @@ def setup_frequency_by_type_callbacks(app):
         )
         
         return fig
+    
+    @app.callback(
+        Output('disaster-frequency-download', 'data'),
+        [Input('disaster-frequency-download-button', 'n_clicks'),
+         Input('main-country-filter', 'value')],
+        prevent_initial_call=True
+    )
+    def download_disaster_frequency_data(n_clicks, selected_country):
+        """Download EM-DAT disaster data as CSV"""
+        if n_clicks is None or n_clicks == 0:
+            return None
+        
+        try:
+            # Load full dataset (raw data, no filtering)
+            emdat_data = load_emdat_data()
+            
+            filename = "african_disasters_emdat"
+            
+            return prepare_csv_download(emdat_data, filename)
+        
+        except Exception as e:
+            print(f"Error preparing download: {str(e)}")
+            return None

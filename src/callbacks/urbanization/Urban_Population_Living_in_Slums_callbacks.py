@@ -17,6 +17,7 @@ try:
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
     from ...utils.component_helpers import create_error_chart
+    from ...utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 except ImportError:
     # Fallback for direct execution
@@ -27,6 +28,7 @@ except ImportError:
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
     from src.utils.component_helpers import create_error_chart
+    from src.utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 
 
@@ -173,3 +175,26 @@ def register_urban_population_living_in_slums_callbacks(app):
                 yaxis_range=[0, 100],
                 title='Urban Population Living in Slums'
             )
+    
+    @app.callback(
+        Output('urban-population-slums-download', 'data'),
+        [Input('urban-population-slums-download-button', 'n_clicks'),
+         Input('main-country-filter', 'value')],
+        prevent_initial_call=True
+    )
+    def download_urban_population_slums_data(n_clicks, selected_country):
+        """Download WDI slums data as CSV"""
+        if n_clicks is None or n_clicks == 0:
+            return None
+        
+        try:
+            # Load full dataset (raw data, no filtering)
+            slums_data = load_wdi_data('EN.POP.SLUM.UR.ZS')
+            
+            filename = "urban_population_slums_EN.POP.SLUM.UR.ZS"
+            
+            return prepare_csv_download(slums_data, filename)
+        
+        except Exception as e:
+            print(f"Error preparing download: {str(e)}")
+            return None

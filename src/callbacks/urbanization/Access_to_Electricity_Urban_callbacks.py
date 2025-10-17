@@ -17,6 +17,7 @@ try:
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
     from ...utils.component_helpers import create_error_chart
+    from ...utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 except ImportError:
     # Fallback for direct execution
@@ -27,6 +28,7 @@ except ImportError:
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
     from src.utils.component_helpers import create_error_chart
+    from src.utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 
 
@@ -163,3 +165,26 @@ def register_access_to_electricity_urban_callbacks(app):
                 yaxis_range=[0, 100],
                 title='Access to Electricity, Urban'
             )
+    
+    @app.callback(
+        Output('access-to-electricity-urban-download', 'data'),
+        [Input('access-to-electricity-urban-download-button', 'n_clicks'),
+         Input('main-country-filter', 'value')],
+        prevent_initial_call=True
+    )
+    def download_access_to_electricity_urban_data(n_clicks, selected_country):
+        """Download WDI electricity access data as CSV"""
+        if n_clicks is None or n_clicks == 0:
+            return None
+        
+        try:
+            # Load full dataset (raw data, no filtering)
+            electricity_data = load_wdi_data('EG.ELC.ACCS.UR.ZS')
+            
+            filename = "access_to_electricity_urban_EG.ELC.ACCS.UR.ZS"
+            
+            return prepare_csv_download(electricity_data, filename)
+        
+        except Exception as e:
+            print(f"Error preparing download: {str(e)}")
+            return None

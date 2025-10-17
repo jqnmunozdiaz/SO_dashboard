@@ -228,11 +228,10 @@ def register_urbanization_rate_callbacks(app):
     
     @app.callback(
         Output('urbanization-rate-download', 'data'),
-        [Input('urbanization-rate-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value')],
+        Input('urbanization-rate-download-button', 'n_clicks'),
         prevent_initial_call=True
     )
-    def download_urbanization_rate_data(n_clicks, selected_country):
+    def download_urbanization_rate_data(n_clicks):
         """Download UN DESA urbanization rate data as CSV"""
         if n_clicks is None or n_clicks == 0:
             return None

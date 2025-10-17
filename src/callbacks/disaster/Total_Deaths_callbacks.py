@@ -146,11 +146,10 @@ def setup_total_deaths_callbacks(app):
     
     @app.callback(
         Output('disaster-deaths-download', 'data'),
-        [Input('disaster-deaths-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value')],
+        Input('disaster-deaths-download-button', 'n_clicks'),
         prevent_initial_call=True
     )
-    def download_disaster_deaths_data(n_clicks, selected_country):
+    def download_disaster_deaths_data(n_clicks):
         """Download EM-DAT disaster data as CSV"""
         if n_clicks is None or n_clicks == 0:
             return None

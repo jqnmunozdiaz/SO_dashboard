@@ -15,11 +15,10 @@ Example for single CSV download:
 
     @app.callback(
         Output('your-chart-download', 'data'),
-        [Input('your-chart-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value')],
+        Input('your-chart-download-button', 'n_clicks'),
         prevent_initial_call=True
     )
-    def download_your_chart_data(n_clicks, selected_country):
+    def download_your_chart_data(n_clicks):
         """Download data used in your chart as CSV"""
         if n_clicks is None or n_clicks == 0:
             return None
@@ -41,11 +40,10 @@ Example for multiple CSV files (ZIP download):
 
     @app.callback(
         Output('your-chart-download', 'data'),
-        [Input('your-chart-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value')],
+        Input('your-chart-download-button', 'n_clicks'),
         prevent_initial_call=True
     )
-    def download_your_chart_data(n_clicks, selected_country):
+    def download_your_chart_data(n_clicks):
         """Download multiple data files as ZIP"""
         if n_clicks is None or n_clicks == 0:
             return None

@@ -147,11 +147,10 @@ def setup_disasters_by_year_callbacks(app):
     
     @app.callback(
         Output('disaster-timeline-download', 'data'),
-        [Input('disaster-timeline-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value')],
+        Input('disaster-timeline-download-button', 'n_clicks'),
         prevent_initial_call=True
     )
-    def download_disaster_timeline_data(n_clicks, selected_country):
+    def download_disaster_timeline_data(n_clicks):
         """Download EM-DAT disaster data as CSV"""
         if n_clicks is None or n_clicks == 0:
             return None

@@ -229,11 +229,10 @@ def register_urban_population_projections_callbacks(app):
     
     @app.callback(
         Output('urban-population-projections-download', 'data'),
-        [Input('urban-population-projections-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value')],
+        Input('urban-population-projections-download-button', 'n_clicks'),
         prevent_initial_call=True
     )
-    def download_urban_population_projections_data(n_clicks, selected_country):
+    def download_urban_population_projections_data(n_clicks):
         """Download urban population projections data as CSV"""
         if n_clicks is None or n_clicks == 0:
             return None

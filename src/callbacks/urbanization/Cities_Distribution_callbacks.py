@@ -54,10 +54,31 @@ def register_cities_distribution_callbacks(app):
             if filtered_data.empty:
                 raise Exception(f"No data available for {countries_dict.get(selected_country, selected_country)} in {selected_year}")
             
-            # Get city names, populations, and size categories
-            city_names = filtered_data['City Name'].tolist()
-            populations = filtered_data['Population'].tolist()
-            size_categories = filtered_data['Size Category'].tolist()
+            # Define size categories in order (for consistent grouping) Order from largest to smallest for visual hierarchy in pie chart
+            size_categories_ordered = [
+                '10 million or more',
+                '5 to 10 million',
+                '1 to 5 million',
+                '500 000 to 1 million',
+                '300 000 to 500 000',
+                'Fewer than 300 000'
+            ]
+            
+            # Create sorting keys to ensure "Other cities" always appear at the end of each category
+            category_order = {cat: i for i, cat in enumerate(size_categories_ordered)}
+            filtered_data['category_sort_order'] = filtered_data['Size Category'].map(category_order)
+            filtered_data['is_other_cities'] = filtered_data['City Name'].str.startswith('Other cities').astype(int)
+            
+            # Sort by: 1) size category, 2) named cities before "Other cities", 3) population descending
+            sorted_data = filtered_data.sort_values(
+                ['category_sort_order', 'is_other_cities', 'Population'], 
+                ascending=[True, True, False]
+            ).reset_index(drop=True)
+            
+            # Get city names, populations, and size categories in sorted order
+            city_names = sorted_data['City Name'].tolist()
+            populations = sorted_data['Population'].tolist()
+            size_categories = sorted_data['Size Category'].tolist()
             
             # Assign colors based on size category
             colors = [CITY_SIZE_COLORS.get(category, '#95a5a6') for category in size_categories]
@@ -79,7 +100,9 @@ def register_cities_distribution_callbacks(app):
                               'Percentage: %{percent}<br>' +
                               '<extra></extra>',
                 customdata=size_categories,
-                showlegend=False  # Hide pie legend, we'll add custom legend
+                showlegend=False,  # Hide pie legend, we'll add custom legend
+                direction='clockwise',
+                sort=False  # Preserve our custom sort order
             )])
             
             country_name = countries_dict.get(selected_country, selected_country)
@@ -108,12 +131,12 @@ def register_cities_distribution_callbacks(app):
             )
             
             # Add visible traces for legend (one for each size category)
-            for category, color in CITY_SIZE_COLORS.items():
+            for category in size_categories_ordered:
                 fig.add_trace(go.Scatter(
                     x=[None],
                     y=[None],
                     mode='markers',
-                    marker=dict(size=12, color=color),
+                    marker=dict(size=12, color=CITY_SIZE_COLORS.get(category, '#95a5a6')),
                     name=category,
                     showlegend=True
                 ))
@@ -129,11 +152,10 @@ def register_cities_distribution_callbacks(app):
     
     @app.callback(
         Output('cities-distribution-download', 'data'),
-        [Input('cities-distribution-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value')],
+        Input('cities-distribution-download-button', 'n_clicks'),
         prevent_initial_call=True
     )
-    def download_cities_distribution_data(n_clicks, selected_country):
+    def download_cities_distribution_data(n_clicks):
         """Download city size distribution data as CSV"""
         if n_clicks is None or n_clicks == 0:
             return None

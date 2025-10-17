@@ -178,11 +178,10 @@ def register_urban_population_living_in_slums_callbacks(app):
     
     @app.callback(
         Output('urban-population-slums-download', 'data'),
-        [Input('urban-population-slums-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value')],
+        Input('urban-population-slums-download-button', 'n_clicks'),
         prevent_initial_call=True
     )
-    def download_urban_population_slums_data(n_clicks, selected_country):
+    def download_urban_population_slums_data(n_clicks):
         """Download WDI slums data as CSV"""
         if n_clicks is None or n_clicks == 0:
             return None

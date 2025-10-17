@@ -147,11 +147,10 @@ def setup_total_affected_population_callbacks(app):
     
     @app.callback(
         Output('disaster-affected-download', 'data'),
-        [Input('disaster-affected-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value')],
+        Input('disaster-affected-download-button', 'n_clicks'),
         prevent_initial_call=True
     )
-    def download_disaster_affected_data(n_clicks, selected_country):
+    def download_disaster_affected_data(n_clicks):
         """Download EM-DAT disaster data as CSV"""
         if n_clicks is None or n_clicks == 0:
             return None

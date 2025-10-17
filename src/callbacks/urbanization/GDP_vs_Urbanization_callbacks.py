@@ -153,11 +153,10 @@ def register_gdp_vs_urbanization_callbacks(app):
     
     @app.callback(
         Output('gdp-vs-urbanization-download', 'data'),
-        [Input('gdp-vs-urbanization-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value')],
+        Input('gdp-vs-urbanization-download-button', 'n_clicks'),
         prevent_initial_call=True
     )
-    def download_gdp_vs_urbanization_data(n_clicks, selected_country):
+    def download_gdp_vs_urbanization_data(n_clicks):
         """Download GDP and urbanization data as ZIP with two CSV files"""
         if n_clicks is None or n_clicks == 0:
             return None

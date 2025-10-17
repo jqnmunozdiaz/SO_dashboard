@@ -193,11 +193,10 @@ def register_cities_evolution_callbacks(app):
     
     @app.callback(
         Output('cities-evolution-download', 'data'),
-        [Input('cities-evolution-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value')],
+        Input('cities-evolution-download-button', 'n_clicks'),
         prevent_initial_call=True
     )
-    def download_cities_evolution_data(n_clicks, selected_country):
+    def download_cities_evolution_data(n_clicks):
         """Download city size distribution data as CSV"""
         if n_clicks is None or n_clicks == 0:
             return None

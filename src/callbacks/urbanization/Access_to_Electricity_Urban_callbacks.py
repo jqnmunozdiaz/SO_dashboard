@@ -168,11 +168,10 @@ def register_access_to_electricity_urban_callbacks(app):
     
     @app.callback(
         Output('access-to-electricity-urban-download', 'data'),
-        [Input('access-to-electricity-urban-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value')],
+        Input('access-to-electricity-urban-download-button', 'n_clicks'),
         prevent_initial_call=True
     )
-    def download_access_to_electricity_urban_data(n_clicks, selected_country):
+    def download_access_to_electricity_urban_data(n_clicks):
         """Download WDI electricity access data as CSV"""
         if n_clicks is None or n_clicks == 0:
             return None

@@ -50,7 +50,7 @@ def setup_disasters_by_year_callbacks(app):
             
             # Filter data based on country input only
             if selected_country and 'ISO' in emdat_data.columns:
-                emdat_data = emdat_data[emdat_data['ISO'] == selected_country]
+                emdat_data = emdat_data[emdat_data['ISO'] == selected_country].copy()
             
             # Create 5-year intervals starting from 1975
             if emdat_data.empty:

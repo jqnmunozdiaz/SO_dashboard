@@ -58,7 +58,7 @@ def setup_frequency_by_type_callbacks(app):
             
             # Filter data based on country input only
             if selected_country and 'ISO' in emdat_data.columns:
-                emdat_data = emdat_data[emdat_data['ISO'] == selected_country]
+                emdat_data = emdat_data[emdat_data['ISO'] == selected_country].copy()
             
             # Count frequency by disaster type using the 'Number of Events' column
             if emdat_data.empty:

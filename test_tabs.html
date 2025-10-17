@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tab Color Test</title>
+    <link rel="stylesheet" href="assets/css/custom.css">
+    <style>
+        body {
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+        .test-section {
+            margin-bottom: 40px;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Urbanization Subtabs Color Test</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Direct class application (should show orange)</h2>
+        <div id="urbanization-subtabs">
+            <div class="tab-container">
+                <a class="nav-link" href="#urban-population-projections">Urban Population</a>
+                <a class="nav-link active" href="#urbanization-rate">Urbanization Rate (Active)</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: With actual href values from Dash</h2>
+        <div id="urbanization-subtabs">
+            <div class="tab-container">
+                <a class="nav-link" href="/page/urban-population-projections">Urban Population</a>
+                <a class="nav-link active" href="/page/urbanization-rate">Urbanization Rate (Active)</a>
+                <a class="nav-link" href="/page/urban-population-slums">Slums (should be green)</a>
+                <a class="nav-link" href="/page/cities-distribution">Cities Distribution (should be red)</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Simulate Dash Bootstrap Components structure</h2>
+        <div id="urbanization-subtabs" class="sub-nav-tabs subtabs-container">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" data-rb-event-key="urban-population-projections" href="#" role="tab">Urban Population</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" data-rb-event-key="urbanization-rate" href="#" role="tab">Urbanization Rate</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-rb-event-key="urban-population-slums" href="#" role="tab">Slums (green)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-rb-event-key="cities-distribution" href="#" role="tab">Cities (red)</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Current CSS Selector Being Used:</h2>
+        <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px;">
+#urbanization-subtabs a.nav-link[href*="urban-population-projections"],
+#urbanization-subtabs a.nav-link[href*="urbanization-rate"] {
+    background: #fed7aa !important;
+    border-color: #fb923c !important;
+    color: #7c2d12 !important;
+}
+        </pre>
+    </div>
+
+    <div class="test-section">
+        <h2>Info:</h2>
+        <p>The CSS uses <code>[href*="urban-population-projections"]</code> which should match any href containing that substring.</p>
+        <p>If tabs are not showing orange, the issue is likely that:</p>
+        <ol>
+            <li>Dash Bootstrap Components doesn't use href attributes with these values</li>
+            <li>We need to use data-rb-event-key instead</li>
+            <li>The tab structure is different from expected</li>
+        </ol>
+    </div>
+
+    <script>
+        // Add hover effect test
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('.nav-link');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Remove active from all
+                    links.forEach(l => l.classList.remove('active'));
+                    // Add active to clicked
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -49,7 +49,7 @@ def register_cities_distribution_callbacks(app):
             filtered_data = data[
                 (data['Country Code'] == selected_country) & 
                 (data['Year'] == selected_year)
-            ]
+            ].copy()
             
             if filtered_data.empty:
                 raise Exception(f"No data available for {countries_dict.get(selected_country, selected_country)} in {selected_year}")

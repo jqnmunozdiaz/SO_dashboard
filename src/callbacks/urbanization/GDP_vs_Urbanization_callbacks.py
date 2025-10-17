@@ -15,6 +15,7 @@ try:
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.component_helpers import create_error_chart
     from ...utils.GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_colors, get_global_benchmark_names
+    from ...utils.download_helpers import prepare_multi_csv_download
     from config.settings import CHART_STYLES
 except ImportError:
     import sys
@@ -24,6 +25,7 @@ except ImportError:
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.component_helpers import create_error_chart
     from src.utils.GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_colors, get_global_benchmark_names
+    from src.utils.download_helpers import prepare_multi_csv_download
     from config.settings import CHART_STYLES
 
 GDP_INDICATOR = "NY.GDP.PCAP.PP.KD"
@@ -148,3 +150,32 @@ def register_gdp_vs_urbanization_callbacks(app):
                 yaxis_range=[0, None],
                 title='GDP per Capita vs Urbanization Rate'
             )
+    
+    @app.callback(
+        Output('gdp-vs-urbanization-download', 'data'),
+        [Input('gdp-vs-urbanization-download-button', 'n_clicks'),
+         Input('main-country-filter', 'value')],
+        prevent_initial_call=True
+    )
+    def download_gdp_vs_urbanization_data(n_clicks, selected_country):
+        """Download GDP and urbanization data as ZIP with two CSV files"""
+        if n_clicks is None or n_clicks == 0:
+            return None
+        
+        try:
+            # Load both datasets (raw data, no filtering)
+            gdp_df = load_wdi_data(GDP_INDICATOR)
+            urb_df = load_wdi_data(URBAN_INDICATOR)
+            
+            # Create dictionary of dataframes
+            dataframes_dict = {
+                f'gdp_per_capita_{GDP_INDICATOR}': gdp_df,
+                f'urbanization_rate_{URBAN_INDICATOR}': urb_df
+            }
+            
+            filename = f"gdp_urbanization"
+            return prepare_multi_csv_download(dataframes_dict, filename)
+        
+        except Exception as e:
+            print(f"Error preparing download: {str(e)}")
+            return None

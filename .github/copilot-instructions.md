@@ -71,11 +71,63 @@ from src.utils.GLOBAL_BENCHMARK_CONFIG import (
 )
 
 # UI helpers - reusable components
-from src.utils.ui_helpers import create_benchmark_selectors
+from src.utils.ui_helpers import create_benchmark_selectors, create_download_button
+
+# Download helpers - data export functionality
+from src.utils.download_helpers import prepare_csv_download, prepare_multi_csv_download
 
 # Error handling - use shared chart utilities
 from src.utils.component_helpers import create_error_chart
 ```
+
+### Download Data Feature
+
+All charts should include a "Download Data" button allowing users to export the underlying data as CSV or ZIP files. Downloads provide the complete raw dataset without filtering.
+
+#### Adding Download to Charts
+
+1. **Import download helpers** in callback file:
+```python
+from ...utils.download_helpers import prepare_csv_download  # or prepare_multi_csv_download
+```
+
+2. **Create download callback** (single CSV example):
+```python
+@app.callback(
+    Output('chart-name-download', 'data'),
+    [Input('chart-name-download-button', 'n_clicks'),
+     Input('main-country-filter', 'value')],
+    prevent_initial_call=True
+)
+def download_chart_data(n_clicks, selected_country):
+    if n_clicks is None or n_clicks == 0:
+        return None
+    try:
+        data = load_chart_data()  # Load raw data
+        countries_dict = load_subsaharan_countries_and_regions_dict()
+        country_name = countries_dict.get(selected_country, 'all')
+        filename = f"data_{selected_country}_{country_name.replace(' ', '_')}"
+        return prepare_csv_download(data, filename)
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return None
+```
+
+3. **Add button to layout** in orchestrator:
+```python
+html.Div([
+    html.P([html.B("Data Source: "), "...", html.Br(), html.B("Note:"), "..."], className="indicator-note"),
+    create_download_button('chart-name-download')
+], className="indicator-note-container")
+```
+
+Downloads provide the complete raw dataset. For multiple data sources, use `prepare_multi_csv_download()` with a dictionary of `{filename: DataFrame}`.
+
+See complete examples:
+- Single CSV: `src/callbacks/urbanization/Urban_Population_Projections_callbacks.py`
+- Multiple CSV: `src/callbacks/urbanization/GDP_vs_Urbanization_callbacks.py`
+- Template: `src/callbacks/templates/download_callback_template.py`
+- Full guide: `DOWNLOAD_FEATURE.md`
 
 ### Benchmark System Architecture
 
@@ -442,6 +494,8 @@ Global regional benchmarks:
 8. **File paths**: All definition files in `data/Definitions/` - never use relative paths
 9. **Chart IDs**: Must be unique across entire app - use format `{feature}-{chart-type}-chart`
 10. **Global vs Regional**: Use GLOBAL_BENCHMARK_CONFIG for world regions, benchmark_config for SSA-only
+11. **Download buttons**: ALWAYS add download functionality to new charts using `create_download_button()` - see `DOWNLOAD_FEATURE.md`
+12. **Download IDs**: Download component IDs must follow pattern `{chart-name}-download` with button `{chart-name}-download-button`
 
 ## Folder Structure
 ```
@@ -473,7 +527,12 @@ Global regional benchmarks:
 │       ├── data_loader.py             # Data loading utilities
 │       ├── country_utils.py           # Country filtering utilities
 │       ├── ui_helpers.py              # Reusable UI components
+│       ├── download_helpers.py        # Data export utilities
 │       └── color_utils.py             # Disaster color configuration
+├── assets/
+│   └── css/
+│       └── custom.css                 # Includes download button styles
+├── DOWNLOAD_FEATURE.md                # Complete download feature guide
 └── tests/
     └── [currently empty - old tests removed]
 ```

@@ -18,7 +18,7 @@ from .country_benchmark_callbacks import register_country_benchmark_options_call
 try:
     from ..utils.benchmark_config import get_benchmark_options
     from ..utils.data_loader import load_urbanization_indicators_notes_dict
-    from ..utils.ui_helpers import create_benchmark_selectors
+    from ..utils.ui_helpers import create_benchmark_selectors, create_download_button
     from ..utils.country_utils import get_subsaharan_countries
 except ImportError:
     # Fallback for direct execution
@@ -27,7 +27,7 @@ except ImportError:
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
     from src.utils.benchmark_config import get_benchmark_options
     from src.utils.data_loader import load_urbanization_indicators_notes_dict
-    from src.utils.ui_helpers import create_benchmark_selectors
+    from src.utils.ui_helpers import create_benchmark_selectors, create_download_button
     from src.utils.country_utils import get_subsaharan_countries
 
 
@@ -102,7 +102,8 @@ def register_callbacks(app):
                 dcc.Graph(id="urban-population-projections-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "UN DESA (World Population Prospects & World Urbanization Prospects).", html.Br(), html.B("Note:"), " Uncertainty bands show 95% and 80% confidence intervals for future projections."], className="indicator-note")
+                    html.P([html.B("Data Source: "), "UN DESA (World Population Prospects & World Urbanization Prospects).", html.Br(), html.B("Note:"), " Uncertainty bands show 95% and 80% confidence intervals for future projections."], className="indicator-note"),
+                    create_download_button('urban-population-projections-download')
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'urbanization-rate':
@@ -171,7 +172,8 @@ def register_callbacks(app):
                 dcc.Graph(id="gdp-vs-urbanization-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "World Bank World Development Indicators.", html.Br(), html.B("Note:"), " Urban population refers to people living in urban areas as defined by national statistical offices. The data are collected by the UN Population Division. Aggregation of urban and rural population may not add up to total population because of different country coverage. There is no consistent and universally accepted standard for distinguishing urban from rural areas. Therefore, cross-country comparisons should be made with caution. Gross domestic product (GDP) is expressed in constant international dollars, converted by purchasing power parities (PPPs). PPPs account for the different price levels across countries and thus PPP-based comparisons of economic output are more appropriate for comparing the output of economies and the average material well-being of their inhabitants than exchange-rate based comparisons."], className="indicator-note")
+                    html.P([html.B("Data Source: "), "World Bank World Development Indicators.", html.Br(), html.B("Note:"), " Urban population refers to people living in urban areas as defined by national statistical offices. The data are collected by the UN Population Division. Aggregation of urban and rural population may not add up to total population because of different country coverage. There is no consistent and universally accepted standard for distinguishing urban from rural areas. Therefore, cross-country comparisons should be made with caution. Gross domestic product (GDP) is expressed in constant international dollars, converted by purchasing power parities (PPPs). PPPs account for the different price levels across countries and thus PPP-based comparisons of economic output are more appropriate for comparing the output of economies and the average material well-being of their inhabitants than exchange-rate based comparisons."], className="indicator-note"),
+                    create_download_button('gdp-vs-urbanization-download')
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'cities-distribution':

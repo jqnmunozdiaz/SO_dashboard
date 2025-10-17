@@ -3,6 +3,7 @@ UI component helpers for creating reusable dashboard components
 """
 
 from dash import dcc, html
+import dash_bootstrap_components as dbc
 
 try:
     from .benchmark_config import get_benchmark_options
@@ -97,3 +98,26 @@ def create_benchmark_selectors(
         ], className="country-benchmark-selector-container"))
 
     return components
+
+
+def create_download_button(download_id):
+    """
+    Create a download data button component
+    
+    Args:
+        download_id (str): Unique ID for the download component (e.g., 'urban-pop-projections-download')
+        
+    Returns:
+        html.Div: Download button component with dcc.Download
+    """
+    return html.Div([
+        dbc.Button(
+            [html.I(className="fas fa-download me-2"), "Download Data"],
+            id=f"{download_id}-button",
+            color="primary",
+            size="sm",
+            className="download-data-button",
+            n_clicks=0
+        ),
+        dcc.Download(id=download_id)
+    ], className="download-button-container")

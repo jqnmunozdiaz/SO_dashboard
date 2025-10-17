@@ -16,6 +16,7 @@ try:
     from ...utils.data_loader import load_undesa_urban_projections
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.component_helpers import create_error_chart
+    from ...utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 except ImportError:
     # Fallback for direct execution
@@ -25,6 +26,7 @@ except ImportError:
     from src.utils.data_loader import load_undesa_urban_projections
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.component_helpers import create_error_chart
+    from src.utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 
 
@@ -224,3 +226,26 @@ def register_urban_population_projections_callbacks(app):
                 yaxis_title='Population (millions)',
                 title='Urban and Rural Population Projections'
             )
+    
+    @app.callback(
+        Output('urban-population-projections-download', 'data'),
+        [Input('urban-population-projections-download-button', 'n_clicks'),
+         Input('main-country-filter', 'value')],
+        prevent_initial_call=True
+    )
+    def download_urban_population_projections_data(n_clicks, selected_country):
+        """Download urban population projections data as CSV"""
+        if n_clicks is None or n_clicks == 0:
+            return None
+        
+        try:
+            # Load full dataset (raw data, no filtering)
+            undesa_data = load_undesa_urban_projections()
+            
+            filename = "urban_population_projections"
+            
+            return prepare_csv_download(undesa_data, filename)
+        
+        except Exception as e:
+            print(f"Error preparing download: {str(e)}")
+            return None

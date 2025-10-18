@@ -52,25 +52,18 @@ def setup_disasters_by_year_callbacks(app):
             if selected_country and 'ISO' in emdat_data.columns:
                 emdat_data = emdat_data[emdat_data['ISO'] == selected_country].copy()
             
-            # Create 5-year intervals starting from 1975
+            # Check if data is available
             if emdat_data.empty:
                 raise Exception("No data available for selected country")
             else:
-                # Create 5-year interval bins starting from configured year
-                start_year = DATA_CONFIG['emdat_start_year']
-                emdat_data['Year_Interval'] = pd.cut(
-                    emdat_data['Year'],
-                    bins=range(start_year, 2030, 5),
-                    labels=[f"{year}-{year+4}" for year in range(start_year, 2025, 5)],
-                    include_lowest=True,
-                    right=False
-                )
+                # Group by year and disaster type using the 'Number of Events' column
+                timeline_data = emdat_data.groupby(['Year', 'Disaster Type'])['Number of Events'].sum().reset_index(name='Event Count')
                 
-                # Group by interval and disaster type using the 'Number of Events' column
-                timeline_data = emdat_data.groupby(['Year_Interval', 'Disaster Type'])['Number of Events'].sum().reset_index(name='Event Count')
+                # Sort by year in ascending order
+                timeline_data = timeline_data.sort_values('Year')
                 
-                # Convert interval to string for plotting
-                timeline_data['Year_Interval'] = timeline_data['Year_Interval'].astype(str)
+                # Convert year to string for plotting
+                timeline_data['Year'] = timeline_data['Year'].astype(str)
                 
                 # Map ISO code to full country/region name
                 if selected_country:
@@ -84,7 +77,7 @@ def setup_disasters_by_year_callbacks(app):
             return create_error_chart(
                 error_message=f"Error loading data: {str(e)}",
                 chart_type='bar',
-                xaxis_title='5-Year Interval',
+                xaxis_title='Year',
                 yaxis_title='Number of Events',
                 title='Disasters by Year'
             )
@@ -92,12 +85,13 @@ def setup_disasters_by_year_callbacks(app):
         # Create stacked bar chart with disaster type colors
         fig = px.bar(
             timeline_data,
-            x='Year_Interval',
+            x='Year',
             y='Event Count',
             color='Disaster Type',
-            title=f'<b>{title_suffix}</b> | Number of Disasters by 5-Year Intervals ({DATA_CONFIG["analysis_period"]})',
-            labels={'Event Count': 'Number of Events', 'Year_Interval': '5-Year Interval'},
-            color_discrete_map=DISASTER_COLORS
+            title=f'<b>{title_suffix}</b> | Number of Disasters by Year ({DATA_CONFIG["analysis_period"]})',
+            labels={'Event Count': 'Number of Events', 'Year': 'Year'},
+            color_discrete_map=DISASTER_COLORS,
+            category_orders={'Year': sorted(timeline_data['Year'].unique())}
         )
         
         # Update layout styling
@@ -118,9 +112,7 @@ def setup_disasters_by_year_callbacks(app):
                 showgrid=False,
                 gridwidth=0,
                 gridcolor='#e5e7eb',
-                tickmode='array',
-                tickvals=timeline_data['Year_Interval'].unique(),
-                ticktext=[interval.replace('-', ' -<br>') for interval in timeline_data['Year_Interval'].unique()],
+                tickangle=-45,
                 tickfont=dict(size=10)
             ),
             yaxis=dict(

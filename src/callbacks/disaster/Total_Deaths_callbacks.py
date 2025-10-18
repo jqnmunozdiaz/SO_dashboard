@@ -52,25 +52,18 @@ def setup_total_deaths_callbacks(app):
             if selected_country and 'ISO' in emdat_data.columns:
                 emdat_data = emdat_data[emdat_data['ISO'] == selected_country].copy()
             
-            # Create 5-year intervals starting from configured year
+            # Check if data is available
             if emdat_data.empty:
                 raise Exception("No data available for selected country")
             else:
-                # Create 5-year interval bins starting from configured year
-                start_year = DATA_CONFIG['emdat_start_year']
-                emdat_data['Year_Interval'] = pd.cut(
-                    emdat_data['Year'],
-                    bins=range(start_year, 2030, 5),
-                    labels=[f"{year}-{year+4}" for year in range(start_year, 2025, 5)],
-                    include_lowest=True,
-                    right=False
-                )
+                # Group by year and disaster type, sum deaths
+                deaths_data = emdat_data.groupby(['Year', 'Disaster Type'])['Total Deaths'].sum().reset_index()
                 
-                # Group by interval and disaster type, sum deaths
-                deaths_data = emdat_data.groupby(['Year_Interval', 'Disaster Type'])['Total Deaths'].sum().reset_index()
+                # Sort by year in ascending order
+                deaths_data = deaths_data.sort_values('Year')
                 
-                # Convert interval to string for plotting
-                deaths_data['Year_Interval'] = deaths_data['Year_Interval'].astype(str)
+                # Convert year to string for plotting
+                deaths_data['Year'] = deaths_data['Year'].astype(str)
                 
                 # Map ISO code to full country/region name
                 if selected_country:
@@ -84,19 +77,20 @@ def setup_total_deaths_callbacks(app):
             return create_error_chart(
                 error_message=str(e),
                 chart_type='bar',
-                xaxis_title='5-Year Interval',
+                xaxis_title='Year',
                 yaxis_title='Total Deaths'
             )
         
         # Create stacked bar chart with disaster type colors
         fig = px.bar(
             deaths_data,
-            x='Year_Interval',
+            x='Year',
             y='Total Deaths',
             color='Disaster Type',
-            title=f'<b>{title_suffix}</b> | Total Deaths by 5-Year Intervals ({DATA_CONFIG["analysis_period"]})',
-            labels={'Total Deaths': 'Total Deaths', 'Year_Interval': '5-Year Interval'},
-            color_discrete_map=DISASTER_COLORS
+            title=f'<b>{title_suffix}</b> | Total Deaths by Year ({DATA_CONFIG["analysis_period"]})',
+            labels={'Total Deaths': 'Total Deaths', 'Year': 'Year'},
+            color_discrete_map=DISASTER_COLORS,
+            category_orders={'Year': sorted(deaths_data['Year'].unique())}
         )
         
         # Update layout styling
@@ -117,9 +111,7 @@ def setup_total_deaths_callbacks(app):
                 showgrid=False,
                 gridwidth=0,
                 gridcolor='#e5e7eb',
-                tickmode='array',
-                tickvals=deaths_data['Year_Interval'].unique(),
-                ticktext=[interval.replace('-', ' -<br>') for interval in deaths_data['Year_Interval'].unique()],
+                tickangle=-45,
                 tickfont=dict(size=10)
             ),
             yaxis=dict(

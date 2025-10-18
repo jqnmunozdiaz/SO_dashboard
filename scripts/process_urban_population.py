@@ -28,17 +28,19 @@ def load_wup_excel(file_path, sheet_name='Data', skiprows=16):
 def CountryFile(ISO3):
     df = pd.DataFrame()
     
-    # Retrieve WPP 2022 estimates
+    # Retrieve WPP 2024 estimates
     for prob in ['Median', 'Lower 95', 'Lower 80', 'Upper 80', 'Upper 95']:
-        wpp = pd.read_excel('data/raw/Urban/UN_PPP2022_Output_PopTot.xlsx', sheet_name = prob, skiprows = 16, header = 0)
+        wpp = pd.read_excel('data/raw/Urban/UN_PPP2024_Output_PopTot.xlsx', sheet_name = prob, skiprows = 16, header = 0)
         wpp['ISO3'] = wpp['Location code'].astype(int).map(country_code_to_iso3)
         wpp = wpp.set_index('ISO3') # Map Location code to ISO3 and set as index
         
-        for year in range(2022, 2101):
+        for year in range(2024, 2101):
             df.at[f'wpp_{prob.lower().replace(" ", "")}', year] = wpp.at[ISO3, year]/1000
-        # Fill 2021 values with 2022 values interpolaitng between 2022 and 2023
-        delta = df.at[f'wpp_{prob.lower().replace(" ", "")}', 2023] - df.at[f'wpp_{prob.lower().replace(" ", "")}', 2022]
-        df.at[f'wpp_{prob.lower().replace(" ", "")}', 2021] = (df.at[f'wpp_{prob.lower().replace(" ", "")}', 2022] - delta)
+        # Fill 2021-2023 values by interpolating backward from 2024-2025
+        delta = df.at[f'wpp_{prob.lower().replace(" ", "")}', 2025] - df.at[f'wpp_{prob.lower().replace(" ", "")}', 2024]
+        df.at[f'wpp_{prob.lower().replace(" ", "")}', 2023] = df.at[f'wpp_{prob.lower().replace(" ", "")}', 2024] - delta
+        df.at[f'wpp_{prob.lower().replace(" ", "")}', 2022] = df.at[f'wpp_{prob.lower().replace(" ", "")}', 2023] - delta
+        df.at[f'wpp_{prob.lower().replace(" ", "")}', 2021] = df.at[f'wpp_{prob.lower().replace(" ", "")}', 2022] - delta
     
     # Retrieve WUP 2018 estimates
     wup_urban_prop = load_wup_excel('data/raw/Urban/WUP2018-F02-Proportion_Urban.xlsx')

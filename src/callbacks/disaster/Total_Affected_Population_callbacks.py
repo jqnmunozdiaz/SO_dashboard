@@ -59,6 +59,27 @@ def setup_total_affected_population_callbacks(app):
                 # Group by year and disaster type, sum affected population
                 affected_data = emdat_data.groupby(['Year', 'Disaster Type'])['Total Affected'].sum().reset_index()
                 
+                # Create complete year range from start year to 2024
+                start_year = DATA_CONFIG['emdat_start_year']
+                end_year = DATA_CONFIG['emdat_end_year']
+                all_years = pd.DataFrame({'Year': range(start_year, end_year + 1)})
+                
+                # Get all disaster types
+                all_disaster_types = affected_data['Disaster Type'].unique()
+                
+                # Create all combinations of years and disaster types
+                year_disaster_combinations = pd.MultiIndex.from_product(
+                    [all_years['Year'], all_disaster_types],
+                    names=['Year', 'Disaster Type']
+                ).to_frame(index=False)
+                
+                # Merge with actual data to include years with no disasters
+                affected_data = year_disaster_combinations.merge(
+                    affected_data, 
+                    on=['Year', 'Disaster Type'], 
+                    how='left'
+                ).fillna(0)
+                
                 # Sort by year in ascending order
                 affected_data = affected_data.sort_values('Year')
                 

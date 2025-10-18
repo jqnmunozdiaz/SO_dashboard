@@ -59,6 +59,27 @@ def setup_total_deaths_callbacks(app):
                 # Group by year and disaster type, sum deaths
                 deaths_data = emdat_data.groupby(['Year', 'Disaster Type'])['Total Deaths'].sum().reset_index()
                 
+                # Create complete year range from start year to 2024
+                start_year = DATA_CONFIG['emdat_start_year']
+                end_year = DATA_CONFIG['emdat_end_year']
+                all_years = pd.DataFrame({'Year': range(start_year, end_year + 1)})
+                
+                # Get all disaster types
+                all_disaster_types = deaths_data['Disaster Type'].unique()
+                
+                # Create all combinations of years and disaster types
+                year_disaster_combinations = pd.MultiIndex.from_product(
+                    [all_years['Year'], all_disaster_types],
+                    names=['Year', 'Disaster Type']
+                ).to_frame(index=False)
+                
+                # Merge with actual data to include years with no disasters
+                deaths_data = year_disaster_combinations.merge(
+                    deaths_data, 
+                    on=['Year', 'Disaster Type'], 
+                    how='left'
+                ).fillna(0)
+                
                 # Sort by year in ascending order
                 deaths_data = deaths_data.sort_values('Year')
                 

@@ -174,8 +174,38 @@ def load_city_agglomeration_counts() -> pd.DataFrame:
         raise Exception(f"Error loading city agglomeration counts data: {str(e)}")
 
 
+def load_population_data(country_iso: str) -> pd.DataFrame:
+    """
+    Load total population data for a specific country from WPP 2024
+    
+    Args:
+        country_iso: ISO3 country code
+        
+    Returns:
+        DataFrame with columns: year, population (actual count, not in millions)
+    """
+    try:
+        # Get the absolute path to the project root directory
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.join(current_dir, '..', '..')
+        file_path = os.path.join(project_root, 'data', 'processed', 'WPP2024_Total_Population.csv')
+        
+        # Load WPP 2024 population data
+        pop_data = pd.read_csv(file_path)
+        
+        # Filter for the specific country
+        pop_data = pop_data[pop_data['ISO3'] == country_iso][['Year', 'population']].copy()
+                       
+        return pop_data
+        
+    except FileNotFoundError:
+        raise Exception(f"WPP 2024 population data file not found.")
+    except Exception as e:
+        raise Exception(f"Error loading population data for {country_iso}: {str(e)}")
+
+
 # Import centralized country utilities
 from .country_utils import get_subsaharan_countries, load_subsaharan_countries_dict, load_subsaharan_countries_and_regions_dict
 
 # Re-export for backward compatibility
-__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections', 'load_city_size_distribution', 'load_city_agglomeration_counts']
+__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections', 'load_city_size_distribution', 'load_city_agglomeration_counts', 'load_population_data']

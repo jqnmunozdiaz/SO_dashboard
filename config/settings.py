@@ -2,9 +2,6 @@
 Configuration settings for the DRM dashboard
 """
 
-import os
-from typing import Dict, Any
-
 # Dashboard configuration
 DASHBOARD_CONFIG = {
     'title': 'Sub-Saharan Africa Disaster Risk Management Dashboard',

@@ -12,7 +12,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 try:
-    from ...utils.data_loader import load_emdat_data
+    from ...utils.data_loader import load_emdat_data, load_population_data
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.color_utils import DISASTER_COLORS
     from ...utils.component_helpers import create_error_chart
@@ -23,7 +23,7 @@ except ImportError:
     import sys
     import os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.data_loader import load_emdat_data
+    from src.utils.data_loader import load_emdat_data, load_population_data
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.color_utils import DISASTER_COLORS
     from src.utils.component_helpers import create_error_chart
@@ -36,11 +36,12 @@ def setup_total_affected_population_callbacks(app):
     
     @app.callback(
         Output('disaster-affected-chart', 'figure'),
-        Input('main-country-filter', 'value'),
+        [Input('main-country-filter', 'value'),
+         Input('disaster-affected-mode-selector', 'value')],
         prevent_initial_call=False
     )
-    def generate_total_affected_population_chart(selected_country):
-        """Generate stacked bar chart showing total affected population by 5-year intervals since configured start year"""
+    def generate_total_affected_population_chart(selected_country, display_mode):
+        """Generate stacked bar chart showing total affected population by year (absolute or relative)"""
         try:
             # Load real EM-DAT data
             emdat_data = load_emdat_data()
@@ -59,7 +60,7 @@ def setup_total_affected_population_callbacks(app):
                 # Group by year and disaster type, sum affected population
                 affected_data = emdat_data.groupby(['Year', 'Disaster Type'])['Total Affected'].sum().reset_index()
                 
-                # Create complete year range from start year to 2024
+                # Create complete year range from start year to end year
                 start_year = DATA_CONFIG['emdat_start_year']
                 end_year = DATA_CONFIG['emdat_end_year']
                 all_years = pd.DataFrame({'Year': range(start_year, end_year + 1)})
@@ -80,6 +81,25 @@ def setup_total_affected_population_callbacks(app):
                     how='left'
                 ).fillna(0)
                 
+                # If relative mode, normalize by population
+                if display_mode == 'relative':
+                    try:
+                        # Load population data for selected country
+                        pop_data = load_population_data(selected_country)
+                        
+                        # Merge with affected data
+                        affected_data = affected_data.merge(pop_data, left_on='Year', right_on='Year', how='left')
+                        
+                        # Check if population data is available for all years
+                        if affected_data['population'].isna().any():
+                            raise Exception("Population data not available for all years. Relative chart not available.")
+                        
+                        # Calculate percentage of population affected
+                        affected_data['Total Affected'] = (affected_data['Total Affected'] / affected_data['population']) * 100
+                        
+                    except Exception as e:
+                        raise Exception(f"Relative chart not available: {str(e)}")
+                
                 # Sort by year in ascending order
                 affected_data = affected_data.sort_values('Year')
                 
@@ -95,13 +115,24 @@ def setup_total_affected_population_callbacks(app):
                     
         except Exception as e:
             # Return error chart using shared utility
+            y_label = 'Total Affected Population (% of population)' if display_mode == 'relative' else 'Total Affected Population'
             return create_error_chart(
                 error_message=f"Error loading data: {str(e)}",
                 chart_type='bar',
                 xaxis_title='Year',
-                yaxis_title='Total Affected Population',
+                yaxis_title=y_label,
                 title='Total Affected Population by Year'
             )
+        
+        # Set labels based on display mode
+        if display_mode == 'relative':
+            y_label = 'Total Affected (% of population)'
+            title_text = f'<b>{title_suffix}</b> | Total Affected Population by Year - Relative ({DATA_CONFIG["analysis_period"]})'
+            hover_format = '%{y:.2f}%'
+        else:
+            y_label = 'Total Affected Population'
+            title_text = f'<b>{title_suffix}</b> | Total Affected Population by Year ({DATA_CONFIG["analysis_period"]})'
+            hover_format = '%{y:,.0f}'
         
         # Create stacked bar chart with disaster type colors
         fig = px.bar(
@@ -109,8 +140,8 @@ def setup_total_affected_population_callbacks(app):
             x='Year',
             y='Total Affected',
             color='Disaster Type',
-            title=f'<b>{title_suffix}</b> | Total Affected Population by Year ({DATA_CONFIG["analysis_period"]})',
-            labels={'Total Affected': 'Total Affected Population', 'Year': 'Year'},
+            title=title_text,
+            labels={'Total Affected': y_label, 'Year': 'Year'},
             color_discrete_map=DISASTER_COLORS,
             category_orders={'Year': sorted(affected_data['Year'].unique())}
         )
@@ -144,16 +175,19 @@ def setup_total_affected_population_callbacks(app):
                 gridcolor='#e5e7eb',
                 zeroline=True,
                 zerolinewidth=1,
-                zerolinecolor='#e5e7eb'
+                zerolinecolor='#e5e7eb',
+                title=y_label,
+                ticksuffix='%' if display_mode == 'relative' else '',
+                range=[0, max(affected_data['Total Affected'].max() * 1.1, 0.01)] if display_mode == 'relative' else None
             ),
             margin=dict(b=100, r=150)  # Extra margin for legend
         )
         
-        # Update bar styling
+        # Update bar styling with appropriate hover template
         fig.update_traces(
             marker_line_color='white',
             marker_line_width=0.5,
-            hovertemplate='<b>%{fullData.name}</b><br>Period: %{x}<br>Affected: %{y:,.0f}<extra></extra>'
+            hovertemplate=f'<b>%{{fullData.name}}</b><br>Year: %{{x}}<br>Affected: {hover_format}<extra></extra>'
         )
         
         return fig

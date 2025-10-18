@@ -142,3 +142,28 @@ def create_methodological_note_button():
     download="SSA_DRM_Dashboard_Methodological_Note.docx",
     className="download-button-container"
     )
+
+
+def create_absolute_relative_selector(radio_id):
+    """
+    Create radio button selector for Absolute vs Relative view
+    
+    Args:
+        radio_id (str): Unique ID for the radio button component
+        
+    Returns:
+        html.Div: Radio button selector component
+    """
+    return html.Div([
+        html.Label("Display Mode:", className="filter-label"),
+        dcc.RadioItems(
+            id=radio_id,
+            options=[
+                {'label': ' Absolute', 'value': 'absolute'},
+                {'label': ' Relative (% of population)', 'value': 'relative'}
+            ],
+            value='absolute',
+            className="year-radio-buttons",
+            inline=True
+        )
+    ], className="year-filter-container")

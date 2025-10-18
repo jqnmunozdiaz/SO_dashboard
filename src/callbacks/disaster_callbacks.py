@@ -12,12 +12,12 @@ from .disaster.Total_Affected_Population_callbacks import setup_total_affected_p
 from .disaster.Total_Deaths_callbacks import setup_total_deaths_callbacks
 
 try:
-    from ..utils.ui_helpers import create_download_button, create_methodological_note_button
+    from ..utils.ui_helpers import create_download_button, create_methodological_note_button, create_absolute_relative_selector
 except ImportError:
     import sys
     import os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-    from src.utils.ui_helpers import create_download_button, create_methodological_note_button
+    from src.utils.ui_helpers import create_download_button, create_methodological_note_button, create_absolute_relative_selector
 
 
 def register_callbacks(app):
@@ -65,6 +65,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'disaster-affected':
             return html.Div([
+                # Display mode selector
+                create_absolute_relative_selector('disaster-affected-mode-selector'),
                 # Chart
                 dcc.Graph(id="disaster-affected-chart"),
                 # Indicator note
@@ -78,6 +80,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'disaster-deaths':
             return html.Div([
+                # Display mode selector
+                create_absolute_relative_selector('disaster-deaths-mode-selector'),
                 # Chart
                 dcc.Graph(id="disaster-deaths-chart"),
                 # Indicator note

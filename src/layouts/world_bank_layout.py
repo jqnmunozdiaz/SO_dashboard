@@ -63,10 +63,14 @@ def create_world_bank_layout():
                             "An interactive platform for analyzing historical disaster patterns, urbanization trends, and resilience indicators across Sub-Saharan Africa. This tool enables evidence-based decision making for disaster preparedness, response planning, and long-term risk reduction strategies.",
                             className="hero-description"
                         ),
-                        html.P(
-                            "Select a country and interact with the dynamic figures.",
-                            className="hero-description"
-                        )
+                        html.P([
+                            "Select a country and interact with the dynamic figures, or visit the ",
+                            html.A("city-level dedicated platform", 
+                                   href="https://www.google.com", 
+                                   target="_blank",
+                                   style={'color': '#295e84', 'text-decoration': 'underline'}),
+                            "."
+                        ], className="hero-description")
                     ], className="hero-content"),
                     # Right map section
                     html.Div([
@@ -219,20 +223,25 @@ def create_world_bank_flood_exposure_tab_content():
     """Create World Bank-styled content for the Exposure to Flood Hazard tab"""
     return html.Div([
         html.Div([
-            html.H3(
-                "Exposure to Flood Hazard",
-                className="tab-title"
+            # Subtabs for different flood exposure visualizations
+            dbc.Tabs(
+                id="flood-exposure-subtabs",
+                active_tab="national-flood-exposure",
+                className="sub-nav-tabs subtabs-container",
+                children=[
+                    dbc.Tab(
+                        label="National Flood Exposure (Built-up, Absolute)",
+                        tab_id="national-flood-exposure"
+                    ),
+                    dbc.Tab(
+                        label="National Flood Exposure (Built-up, Relative)",
+                        tab_id="national-flood-exposure-relative"
+                    )
+                ]
             ),
-            html.P(
-                "This section will contain current flood hazard exposure data, vulnerable population mapping, and infrastructure at risk assessments for Sub-Saharan African countries.",
-                className="tab-description"
-            ),
-            html.Div([
-                html.P(
-                    "Flood exposure analysis coming soon...",
-                    className="coming-soon-text"
-                )
-            ], className="coming-soon-card")
+            
+            # Content area that will be populated based on selected subtab
+            html.Div(id="flood-exposure-content")
         ], className="tab-content-inner")
     ], className="tab-content-container")
 
@@ -241,17 +250,9 @@ def create_world_bank_flood_projections_tab_content():
     """Create World Bank-styled content for the Projections of Flood Risk tab"""
     return html.Div([
         html.Div([
-            html.H3(
-                "Projections of Flood Risk",
-                className="tab-title"
-            ),
-            html.P(
-                "This section will contain future flood risk projections, climate change impact scenarios, and long-term risk assessments for Sub-Saharan African countries.",
-                className="tab-description"
-            ),
             html.Div([
                 html.P(
-                    "Flood risk projections coming soon...",
+                    "...",
                     className="coming-soon-text"
                 )
             ], className="coming-soon-card")

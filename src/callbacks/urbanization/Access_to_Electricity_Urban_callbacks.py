@@ -38,13 +38,17 @@ def register_access_to_electricity_urban_callbacks(app):
     @app.callback(
         Output('access-to-electricity-urban-chart', 'figure'),
         [Input('main-country-filter', 'value'),
-         Input('electricity-benchmark-selector', 'value'),
-         Input('electricity-country-benchmark-selector', 'value')],
+         Input('electricity-combined-benchmark-selector', 'value')],
         prevent_initial_call=False
     )
-    def generate_access_to_electricity_urban_chart(selected_country, benchmark_regions, country_benchmarks):
+    def generate_access_to_electricity_urban_chart(selected_country, combined_benchmarks):
         """Generate line chart showing access to electricity in urban areas over time"""
         try:
+            # Split combined benchmarks into regions and countries
+            from ...utils.benchmark_config import get_benchmark_colors
+            benchmark_colors_dict = get_benchmark_colors()
+            benchmark_regions = [b for b in (combined_benchmarks or []) if b in benchmark_colors_dict]
+            benchmark_countries = [b for b in (combined_benchmarks or []) if b not in benchmark_colors_dict]
             # Load electricity access data
             electricity_data = load_wdi_data('EG.ELC.ACCS.UR.ZS')
             

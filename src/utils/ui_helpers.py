@@ -100,6 +100,33 @@ def create_benchmark_selectors(
     return components
 
 
+def create_combined_benchmark_selector(dropdown_id, default_regional_codes=None):
+    """
+    Create a combined benchmark selector that includes both countries and regions in a single dropdown.
+    Countries are listed first alphabetically, followed by regional benchmarks at the end.
+    
+    Args:
+        dropdown_id (str): ID for the combined benchmark dropdown
+        default_regional_codes (list): List of regional codes to select by default (e.g., ['SSA'])
+        
+    Returns:
+        html.Div: Combined benchmark selector component
+    """
+    return html.Div([
+        html.Label("Benchmarks:", className="dropdown-label"),
+        html.Div([
+            dcc.Dropdown(
+                id=dropdown_id,
+                options=[],  # Will be populated by callback with countries + regions
+                value=default_regional_codes if default_regional_codes else [],
+                multi=True,
+                placeholder="Select countries or regions to compare...",
+                className="country-benchmark-dropdown"
+            )
+        ], className="dropdown-group")
+    ], className="country-benchmark-selector-container")
+
+
 def create_download_button(download_id):
     """
     Create a download data button component

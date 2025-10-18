@@ -38,13 +38,17 @@ def register_urban_population_living_in_slums_callbacks(app):
     @app.callback(
         Output('urban-population-slums-chart', 'figure'),
         [Input('main-country-filter', 'value'),
-         Input('slums-benchmark-selector', 'value'),
-         Input('slums-country-benchmark-selector', 'value')],
+         Input('slums-combined-benchmark-selector', 'value')],
         prevent_initial_call=False
     )
-    def generate_urban_population_slums_chart(selected_country, benchmark_regions, benchmark_countries):
+    def generate_urban_population_slums_chart(selected_country, combined_benchmarks):
         """Generate line chart showing urban population living in slums over time"""
         try:
+            # Split combined benchmarks into regions and countries
+            from ...utils.benchmark_config import get_benchmark_colors
+            benchmark_colors_dict = get_benchmark_colors()
+            benchmark_regions = [b for b in (combined_benchmarks or []) if b in benchmark_colors_dict]
+            benchmark_countries = [b for b in (combined_benchmarks or []) if b not in benchmark_colors_dict]
             # Load slums data
             slums_data = load_wdi_data('EN.POP.SLUM.UR.ZS')
             

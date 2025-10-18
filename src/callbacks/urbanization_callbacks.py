@@ -13,12 +13,12 @@ from .urbanization.Urbanization_Rate_callbacks import register_urbanization_rate
 from .urbanization.GDP_vs_Urbanization_callbacks import register_gdp_vs_urbanization_callbacks
 from .urbanization.Cities_Distribution_callbacks import register_cities_distribution_callbacks
 from .urbanization.Cities_Evolution_callbacks import register_cities_evolution_callbacks
-from .country_benchmark_callbacks import register_country_benchmark_options_callback
+from .country_benchmark_callbacks import register_country_benchmark_options_callback, register_combined_benchmark_options_callback
 
 try:
     from ..utils.benchmark_config import get_benchmark_options
     from ..utils.data_loader import load_urbanization_indicators_notes_dict
-    from ..utils.ui_helpers import create_benchmark_selectors, create_download_button, create_methodological_note_button
+    from ..utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_download_button, create_methodological_note_button
     from ..utils.country_utils import get_subsaharan_countries
 except ImportError:
     # Fallback for direct execution
@@ -27,7 +27,7 @@ except ImportError:
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
     from src.utils.benchmark_config import get_benchmark_options
     from src.utils.data_loader import load_urbanization_indicators_notes_dict
-    from src.utils.ui_helpers import create_benchmark_selectors, create_download_button, create_methodological_note_button
+    from src.utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_download_button, create_methodological_note_button
     from src.utils.country_utils import get_subsaharan_countries
 
 
@@ -43,10 +43,12 @@ def register_callbacks(app):
     register_cities_distribution_callbacks(app)
     register_cities_evolution_callbacks(app)
     
-    # Register country benchmark dropdown callbacks
-    register_country_benchmark_options_callback(app, 'slums-country-benchmark-selector')
-    register_country_benchmark_options_callback(app, 'urbanization-rate-country-benchmark-selector')
-    register_country_benchmark_options_callback(app, 'electricity-country-benchmark-selector')
+    # Register combined benchmark dropdown callbacks (countries + regions in one dropdown)
+    register_combined_benchmark_options_callback(app, 'slums-combined-benchmark-selector')
+    register_combined_benchmark_options_callback(app, 'urbanization-rate-combined-benchmark-selector')
+    register_combined_benchmark_options_callback(app, 'electricity-combined-benchmark-selector')
+    
+    # Register separate country benchmark callback for GDP vs Urbanization
     register_country_benchmark_options_callback(app, 'gdp-vs-urbanization-country-benchmark-selector')
     
     # Callback to filter country dropdown options based on active subtab
@@ -111,12 +113,10 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'urbanization-rate':
             return html.Div([
-                # Benchmark selectors
-                *create_benchmark_selectors(
-                    regional_id='urbanization-rate-benchmark-selector',
-                    country_id='urbanization-rate-country-benchmark-selector',
-                    include_regional=True,
-                    include_country=True
+                # Combined benchmark selector
+                create_combined_benchmark_selector(
+                    dropdown_id='urbanization-rate-combined-benchmark-selector',
+                    default_regional_codes=[]
                 ),
                 # Chart
                 dcc.Graph(id="urbanization-rate-chart"),
@@ -132,12 +132,10 @@ def register_callbacks(app):
         elif active_subtab == 'urban-population-slums':
             slums_note = notes_dict.get('EN.POP.SLUM.UR.ZS', '')
             return html.Div([
-                # Benchmark selectors
-                *create_benchmark_selectors(
-                    regional_id='slums-benchmark-selector',
-                    country_id='slums-country-benchmark-selector',
-                    include_regional=True,
-                    include_country=True
+                # Combined benchmark selector
+                create_combined_benchmark_selector(
+                    dropdown_id='slums-combined-benchmark-selector',
+                    default_regional_codes=[]
                 ),
                 # Chart
                 dcc.Graph(id="urban-population-slums-chart"),
@@ -153,12 +151,10 @@ def register_callbacks(app):
         elif active_subtab == 'access-to-electricity-urban':
             electricity_note = notes_dict.get('EG.ELC.ACCS.UR.ZS', '')
             return html.Div([
-                # Benchmark selectors
-                *create_benchmark_selectors(
-                    regional_id='electricity-benchmark-selector',
-                    country_id='electricity-country-benchmark-selector',
-                    include_regional=True,
-                    include_country=True
+                # Combined benchmark selector
+                create_combined_benchmark_selector(
+                    dropdown_id='electricity-combined-benchmark-selector',
+                    default_regional_codes=[]
                 ),
                 # Chart
                 dcc.Graph(id="access-to-electricity-urban-chart"),
@@ -198,7 +194,7 @@ def register_callbacks(app):
             return html.Div([
                 # Year filter (radio buttons)
                 html.Div([
-                    html.Label("Select Year:", className="filter-label"),
+                    html.Label("Year:", className="filter-label"),
                     dcc.RadioItems(
                         id='cities-distribution-year-filter',
                         options=[

@@ -38,13 +38,16 @@ def register_urbanization_rate_callbacks(app):
     @app.callback(
         Output('urbanization-rate-chart', 'figure'),
         [Input('main-country-filter', 'value'),
-         Input('urbanization-rate-benchmark-selector', 'value'),
-         Input('urbanization-rate-country-benchmark-selector', 'value')],
+         Input('urbanization-rate-combined-benchmark-selector', 'value')],
         prevent_initial_call=False
     )
-    def generate_urbanization_rate_chart(selected_country, benchmark_regions, benchmark_countries):
+    def generate_urbanization_rate_chart(selected_country, combined_benchmarks):
         """Generate line chart showing urbanization rate over time"""
         try:
+            # Split combined benchmarks into regions and countries
+            benchmark_colors_dict = get_benchmark_colors()
+            benchmark_regions = [b for b in (combined_benchmarks or []) if b in benchmark_colors_dict]
+            benchmark_countries = [b for b in (combined_benchmarks or []) if b not in benchmark_colors_dict]
             # Load UNDESA urban projections data
             undesa_data = load_undesa_urban_projections()
             

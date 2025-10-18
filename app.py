@@ -8,7 +8,7 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 from src.layouts.world_bank_layout import create_world_bank_layout
-from src.callbacks import disaster_callbacks, urbanization_callbacks
+from src.callbacks import disaster_callbacks, urbanization_callbacks, flood_callbacks
 from src.callbacks.main_callbacks import register_main_callbacks
 
 # Initialize the Dash app
@@ -32,6 +32,7 @@ app.layout = create_world_bank_layout()
 register_main_callbacks(app)
 disaster_callbacks.register_callbacks(app)
 urbanization_callbacks.register_callbacks(app)
+flood_callbacks.register_callbacks(app)
 
 if __name__ == '__main__':
     import os

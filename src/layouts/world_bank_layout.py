@@ -236,6 +236,14 @@ def create_world_bank_flood_exposure_tab_content():
                     dbc.Tab(
                         label="National Flood Exposure (Built-up, Relative)",
                         tab_id="national-flood-exposure-relative"
+                    ),
+                    dbc.Tab(
+                        label="National Flood Exposure (Population, Absolute)",
+                        tab_id="national-flood-exposure-population"
+                    ),
+                    dbc.Tab(
+                        label="National Flood Exposure (Population, Relative)",
+                        tab_id="national-flood-exposure-population-relative"
                     )
                 ]
             ),

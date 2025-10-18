@@ -39,6 +39,21 @@ def load_ghsl_total_buildup_data():
     return df[['ISO_A3', 'ghsl_year', 'ghsl_total_built_s_km2']]
 
 
+def load_ghsl_total_population_data():
+    """
+    Load GHSL total population data for normalization
+    
+    Returns:
+        DataFrame with total population by country and year
+    """
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    file_path = os.path.join(project_root, 'data', 'processed', 'flood', 
+                             'country_ghsl2023_pop.csv')
+    
+    df = pd.read_csv(file_path)
+    return df[['ISO_A3', 'ghsl_year', 'ghsl_total_pop_#']]
+
+
 def get_flood_types():
     """
     Get list of available flood types

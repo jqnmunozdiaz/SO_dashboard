@@ -167,7 +167,7 @@ def setup_total_deaths_callbacks(app):
                 tickfont=dict(size=10)
             ),
             yaxis=dict(
-                dtick=1 if deaths_data['Total Deaths'].max() <= 10 else None,
+                dtick=None if display_mode == 'relative' else (1 if deaths_data['Total Deaths'].max() <= 10 else None),
                 rangemode='tozero',
                 showgrid=True,
                 gridwidth=1,

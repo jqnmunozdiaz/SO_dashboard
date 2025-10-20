@@ -51,6 +51,21 @@
     flex-wrap: wrap;
 }
 
+/* Remove hyperlink formatting from buttons inside links */
+.download-button-container a,
+.buttons-container a,
+.hero-map-action a {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+.download-button-container a:hover,
+.buttons-container a:hover,
+.hero-map-action a:hover {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
 .download-data-button {
     background-color: #295e84 !important;
     border-color: #295e84 !important;

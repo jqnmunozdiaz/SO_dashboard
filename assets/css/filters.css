@@ -2,14 +2,16 @@
 
 .filter-section {
     /* background: #0067ce; */
-    padding: 1.25rem 0;
+    padding: 0rem 0;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 1rem;
 }
 
 .filter-inner {
     /* background: #0067ce; */
     max-width: 80rem;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 0rem;
     align-items: center;
 }
 
@@ -21,7 +23,7 @@
     box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.1), 0 0px 0px 0 rgba(0, 0, 0, 0.06);
     border: 0px solid #e5e7eb;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 }
 

@@ -126,6 +126,10 @@ def create_world_bank_layout():
                 create_download_component("gdp-vs-urbanization-download"),
                 create_download_component("cities-distribution-download"),
                 create_download_component("cities-evolution-download"),
+                create_download_component("national-flood-exposure-download"),
+                create_download_component("national-flood-exposure-relative-download"),
+                create_download_component("national-flood-exposure-population-download"),
+                create_download_component("national-flood-exposure-population-relative-download"),
             ], style={"display": "none"}),
         ], className="main-content"),
     ], className="dashboard-container")

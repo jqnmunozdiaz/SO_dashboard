@@ -195,7 +195,7 @@ def create_methodological_note_button():
             [html.I(className="fas fa-file-alt me-2"), "Methodological Note"],
             color="primary",
             size="sm",
-            className="download-data-button methodological-note-button",
+            className="download-data-button",
         )
     ], 
     href="/assets/documents/SSA DRM Dashboard - Methodological Note.docx",
@@ -219,7 +219,7 @@ def create_city_platform_button(href: str = "https://www.google.com"):
             [html.I(className="fas fa-city me-2"), "City-level platform"],
             color="primary",
             size="sm",
-            className="download-data-button city-platform-button",
+            className="download-data-button",
         )
     ], href=href, target="_blank", rel="noopener noreferrer", className="download-button-container")
 

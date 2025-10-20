@@ -11,12 +11,12 @@ from .country_benchmark_callbacks import register_country_benchmark_options_call
 
 try:
     from ..utils.flood_ui_helpers import create_flood_type_selector, create_return_period_selector
-    from ..utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector
+    from ..utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
 except ImportError:
     import sys, os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
     from src.utils.flood_ui_helpers import create_flood_type_selector, create_return_period_selector
-    from src.utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector
+    from src.utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
 
 
 def register_callbacks(app):
@@ -62,7 +62,11 @@ def register_callbacks(app):
                                target="_blank",
                                style={'color': '#295e84', 'text-decoration': 'underline'}),
                         "."
-                    ], className="indicator-note")
+                    ], className="indicator-note"),
+                    html.Div([
+                        create_download_trigger_button('national-flood-exposure-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container")
                 ], className="indicator-note-container")
             ], className="chart-container")
         
@@ -97,7 +101,11 @@ def register_callbacks(app):
                                target="_blank",
                                style={'color': '#295e84', 'text-decoration': 'underline'}),
                         "."
-                    ], className="indicator-note")
+                    ], className="indicator-note"),
+                    html.Div([
+                        create_download_trigger_button('national-flood-exposure-relative-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container")
                 ], className="indicator-note-container")
             ], className="chart-container")
         
@@ -124,7 +132,11 @@ def register_callbacks(app):
                                target="_blank",
                                style={'color': '#295e84', 'text-decoration': 'underline'}),
                         "."
-                    ], className="indicator-note")
+                    ], className="indicator-note"),
+                    html.Div([
+                        create_download_trigger_button('national-flood-exposure-population-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container")
                 ], className="indicator-note-container")
             ], className="chart-container")
         
@@ -159,7 +171,11 @@ def register_callbacks(app):
                                target="_blank",
                                style={'color': '#295e84', 'text-decoration': 'underline'}),
                         "."
-                    ], className="indicator-note")
+                    ], className="indicator-note"),
+                    html.Div([
+                        create_download_trigger_button('national-flood-exposure-population-relative-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container")
                 ], className="indicator-note-container")
             ], className="chart-container")
         

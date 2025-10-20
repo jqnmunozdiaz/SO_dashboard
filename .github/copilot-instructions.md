@@ -25,19 +25,26 @@ This is a **Dash-based dashboard** for analyzing disaster risk management (DRM) 
 
 ### Main Tabs
 1. **Historical Disasters** - EM-DAT disaster analysis with four subtabs:
-   - Frequency by Type - disaster type distribution charts
+   - Overview of Disasters - disaster type distribution charts
    - Disasters by Year - temporal trend analysis
    - Total Affected Population - population impact analysis
    - Total Deaths - mortality impact analysis
 
-2. **Historical Urbanization** - WDI urbanization indicators with five subtabs:
+2. **Historical Urbanization** - WDI urbanization indicators with seven subtabs:
    - Urban Population Projections - UN DESA urban population forecasts with uncertainty bands
    - Urbanization Rate - urban population growth projections with regional benchmarks
    - Urban Population Living in Slums - slums population trends with regional benchmarks
    - Access to Electricity, Urban - electricity access trends with regional benchmarks
    - GDP vs Urbanization - scatterplot with country and global benchmarks
+   - Cities Distribution - city size distribution analysis
+   - Cities Evolution - city growth over time
 
-3. **Exposure to Flood Hazard** - (placeholder for future flood risk data)
+3. **Exposure to Flood Hazard** - Fathom3 flood risk analysis with four subtabs:
+   - Built-up Absolute - total built-up area exposed to flooding
+   - Built-up Relative - percentage of built-up area exposed to flooding
+   - Population Absolute - total population exposed to flooding
+   - Population Relative - percentage of population exposed to flooding
+
 4. **Projections of Flood Risk** - (placeholder for future flood projections)
 
 ## Key Patterns & Conventions
@@ -71,7 +78,13 @@ from src.utils.GLOBAL_BENCHMARK_CONFIG import (
 )
 
 # UI helpers - reusable components
-from src.utils.ui_helpers import create_benchmark_selectors, create_download_button
+from src.utils.ui_helpers import (
+    create_benchmark_selectors, 
+    create_download_trigger_button,     # Creates visible button to trigger download
+    create_download_component,          # Creates hidden dcc.Download component
+    create_methodological_note_button,  # Creates link to methodological note doc
+    create_city_platform_button         # Creates city-level platform link
+)
 
 # Download helpers - data export functionality
 from src.utils.download_helpers import prepare_csv_download, prepare_multi_csv_download
@@ -82,52 +95,76 @@ from src.utils.component_helpers import create_error_chart
 
 ### Download Data Feature
 
-All charts should include a "Download Data" button allowing users to export the underlying data as CSV or ZIP files. Downloads provide the complete raw dataset without filtering.
+All charts have "Download Data" and "Methodological Note" buttons allowing users to export the underlying data as CSV files. Downloads provide the complete raw dataset without filtering. The feature uses a two-component pattern:
 
-#### Adding Download to Charts
+1. **Hidden `dcc.Download` Components** (in `src/layouts/world_bank_layout.py`)
+   - Rendered in a hidden div at the end of main-content
+   - One per download ID: `dcc.Download(id='chart-name-download')`
+   - These persist across page navigation
 
-1. **Import download helpers** in callback file:
+2. **Visible Trigger Buttons** (in individual callback orchestrators)
+   - `create_download_trigger_button('chart-name-download')` - renders as blue World Bank styled button with download icon
+   - `create_methodological_note_button()` - renders as button linking to external documentation
+   - Both placed in `indicator-note-container` with `buttons-container` class
+
+3. **Download Callbacks** (in individual chart callback files)
+   - Watch for button clicks: `@app.callback(Output('chart-name-download', 'data'), ...)`
+   - Load raw data, prepare CSV format, return via `prepare_csv_download(data, filename)`
+
+#### Implementation Example
+
+In **callback orchestrator** (`src/callbacks/disaster_callbacks.py`):
 ```python
-from ...utils.download_helpers import prepare_csv_download  # or prepare_multi_csv_download
+# In render function for each subtab
+html.Div([
+    html.P([html.B("Data Source: "), "...", html.Br(), html.B("Note:"), "..."], className="indicator-note"),
+    html.Div([
+        create_download_trigger_button('disaster-frequency-download'),
+        create_methodological_note_button()
+    ], className="buttons-container")
+], className="indicator-note-container")
 ```
 
-2. **Create download callback** (single CSV example):
+In **layout file** (`src/layouts/world_bank_layout.py`):
+```python
+# In hidden div at end of main-content
+html.Div([
+    create_download_component("disaster-frequency-download"),
+    create_download_component("disaster-timeline-download"),
+    # ... more downloads ...
+], style={"display": "none"})
+```
+
+In **chart callback file** (`src/callbacks/disaster/Frequency_by_Type_callbacks.py`):
 ```python
 @app.callback(
-    Output('chart-name-download', 'data'),
-    [Input('chart-name-download-button', 'n_clicks'),
+    Output('disaster-frequency-download', 'data'),
+    [Input('disaster-frequency-download-button', 'n_clicks'),
      Input('main-country-filter', 'value')],
     prevent_initial_call=True
 )
-def download_chart_data(n_clicks, selected_country):
+def download_disaster_frequency_data(n_clicks, selected_country):
     if n_clicks is None or n_clicks == 0:
         return None
     try:
-        data = load_chart_data()  # Load raw data
+        data = load_emdat_data()
+        if selected_country:
+            data = data[data['ISO'] == selected_country]
         countries_dict = load_subsaharan_countries_and_regions_dict()
         country_name = countries_dict.get(selected_country, 'all')
-        filename = f"data_{selected_country}_{country_name.replace(' ', '_')}"
+        filename = f"disaster_frequency_{selected_country}_{country_name.replace(' ', '_')}"
         return prepare_csv_download(data, filename)
     except Exception as e:
         print(f"Error: {str(e)}")
         return None
 ```
 
-3. **Add button to layout** in orchestrator:
-```python
-html.Div([
-    html.P([html.B("Data Source: "), "...", html.Br(), html.B("Note:"), "..."], className="indicator-note"),
-    create_download_button('chart-name-download')
-], className="indicator-note-container")
-```
-
-Downloads provide the complete raw dataset. For multiple data sources, use `prepare_multi_csv_download()` with a dictionary of `{filename: DataFrame}`.
-
-See complete examples:
-- Single CSV: `src/callbacks/urbanization/Urban_Population_Projections_callbacks.py`
-- Multiple CSV: `src/callbacks/urbanization/GDP_vs_Urbanization_callbacks.py`
-- Template: `src/callbacks/templates/download_callback_template.py`
-- Full guide: `DOWNLOAD_FEATURE.md`
+**Key Patterns:**
+- Download IDs follow format: `{chart-name}-download`
+- Trigger button IDs automatically append `-button`: `{chart-name}-download-button`
+- All charts should have both Download and Methodological Note buttons
+- Hidden components centralized in layout; visible buttons scattered logically near charts
+- Use `prepare_csv_download()` for single files, `prepare_multi_csv_download()` for multiple CSVs
 
 ### Benchmark System Architecture
 
@@ -188,10 +225,11 @@ Callbacks are organized by feature area with nested structure:
 # Feature-level callback orchestrators (in src/callbacks/)
 disaster_callbacks.py     # Coordinates all disaster visualizations
 urbanization_callbacks.py # Coordinates all urbanization visualizations
+flood_callbacks.py        # Coordinates all flood exposure visualizations
 main_callbacks.py         # Handles main navigation and header updates
 country_benchmark_callbacks.py  # Populates country benchmark dropdowns
 
-# Individual visualization callbacks (in src/callbacks/disaster/ or urbanization/)
+# Individual visualization callbacks (in src/callbacks/disaster/, urbanization/, or flood/)
 disaster/Frequency_by_Type_callbacks.py
 disaster/Disasters_by_Year_callbacks.py
 disaster/Total_Affected_Population_callbacks.py
@@ -201,14 +239,21 @@ urbanization/Urbanization_Rate_callbacks.py
 urbanization/Urban_Population_Living_in_Slums_callbacks.py
 urbanization/Access_to_Electricity_Urban_callbacks.py
 urbanization/GDP_vs_Urbanization_callbacks.py
+urbanization/Cities_Distribution_callbacks.py
+urbanization/Cities_Evolution_callbacks.py
+flood/National_Flood_Exposure_callbacks.py
+flood/National_Flood_Exposure_Relative_callbacks.py
+flood/National_Flood_Exposure_Population_callbacks.py
+flood/National_Flood_Exposure_Population_Relative_callbacks.py
 
 # Registration in app.py (THIS IS THE ONLY PLACE CALLBACKS ARE REGISTERED)
-from src.callbacks import disaster_callbacks, urbanization_callbacks
+from src.callbacks import disaster_callbacks, urbanization_callbacks, flood_callbacks
 from src.callbacks.main_callbacks import register_main_callbacks
 
 register_main_callbacks(app)
 disaster_callbacks.register_callbacks(app)
 urbanization_callbacks.register_callbacks(app)
+flood_callbacks.register_callbacks(app)
 ```
 
 ### Error Handling Pattern (REQUIRED)
@@ -488,14 +533,21 @@ Global regional benchmarks:
    - EM-DAT: `['Disaster Type', 'ISO', 'Year', 'Total Deaths', 'Total Affected', 'Number of Events']`
    - WDI: `['Country Code', 'Year', 'Value']`
    - UNDESA: Wide format with years as columns, indicators as rows
+   - Fathom3 Flood: Country code, flood type, return period, built-up area/population values
 5. **Regional benchmarks**: NEVER hardcode colors or names - always use `get_benchmark_colors()` and `get_benchmark_names()`
 6. **Error handling**: ALWAYS use `create_error_chart()` - never create local error functions
 7. **No country selected**: Use `create_error_chart()` with appropriate message - don't raise exceptions
 8. **File paths**: All definition files in `data/Definitions/` - never use relative paths
 9. **Chart IDs**: Must be unique across entire app - use format `{feature}-{chart-type}-chart`
 10. **Global vs Regional**: Use GLOBAL_BENCHMARK_CONFIG for world regions, benchmark_config for SSA-only
-11. **Download buttons**: ALWAYS add download functionality to new charts using `create_download_button()` - see `DOWNLOAD_FEATURE.md`
+11. **Download buttons**: ALWAYS add download functionality to new charts - follows two-component pattern:
+    - Hidden `dcc.Download` component in layout (one ID per download)
+    - Visible `create_download_trigger_button()` in orchestrator render function
+    - Data callback watches button clicks and populates dcc.Download data
 12. **Download IDs**: Download component IDs must follow pattern `{chart-name}-download` with button `{chart-name}-download-button`
+13. **UI Helper Imports**: Always import the specific helper you need (`create_download_trigger_button`, `create_methodological_note_button`, etc.) not generic names
+14. **Hero Map Button**: City-level platform button positioned in `.hero-map-action` (positioned absolutely within `.hero-map`)
+15. **Flood Tab Structure**: 4 subtabs with flood-type-selector and return-period-selector; each subtab follows standard download/methodological pattern
 
 ## Folder Structure
 ```
@@ -514,8 +566,10 @@ Global regional benchmarks:
 │   ├── callbacks/
 │   │   ├── disaster/       # Individual disaster chart callbacks
 │   │   ├── urbanization/   # Individual urbanization chart callbacks
+│   │   ├── flood/          # Individual flood exposure chart callbacks
 │   │   ├── disaster_callbacks.py      # Disaster orchestrator
 │   │   ├── urbanization_callbacks.py  # Urbanization orchestrator
+│   │   ├── flood_callbacks.py         # Flood exposure orchestrator
 │   │   ├── main_callbacks.py          # Navigation & header
 │   │   └── country_benchmark_callbacks.py  # Country dropdown population
 │   ├── layouts/
@@ -528,14 +582,37 @@ Global regional benchmarks:
 │       ├── country_utils.py           # Country filtering utilities
 │       ├── ui_helpers.py              # Reusable UI components
 │       ├── download_helpers.py        # Data export utilities
-│       └── color_utils.py             # Disaster color configuration
+│       ├── color_utils.py             # Disaster color configuration
+│       └── flood_ui_helpers.py        # Flood-specific UI components
 ├── assets/
-│   └── css/
-│       └── custom.css                 # Includes download button styles
+│   ├── css/
+│   │   ├── base.css                  # Global typography, spacing
+│   │   ├── layout.css                # Page structure and grid
+│   │   ├── hero.css                  # Hero section and SSA map
+│   │   ├── navigation.css            # Header, tabs, nav styling
+│   │   ├── filters.css               # Filter section styling
+│   │   ├── dropdowns.css             # Dropdown component styling
+│   │   ├── buttons.css               # Button styling (includes hero-map-action for city-level button)
+│   │   ├── slider.css                # Year slider styling
+│   │   ├── benchmarks.css            # Benchmark selector styling
+│   │   ├── tabs-theme.css            # Tab styling and theme
+│   │   ├── notes.css                 # Notes and indicators styling
+│   │   ├── responsive.css            # Media queries for mobile/tablet
+│   │   └── custom.css                # Imports all above
+│   ├── documents/                    # Methodological notes and documentation
+│   └── images/                       # Logos, icons, background images
 ├── DOWNLOAD_FEATURE.md                # Complete download feature guide
 └── tests/
     └── [currently empty - old tests removed]
 ```
+
+### Key CSS Structure Notes
+
+- **Modular CSS**: Each component area has its own file, imported in `custom.css`
+- **Hero Map Button**: `.hero-map-action` positioned with `position: absolute; top: 0.6rem; right: 0.6rem;` over `.hero-map` background
+- **Download Buttons**: `.download-data-button` class styled with World Bank blue (#295e84), hover effects
+- **Subtabs**: Border-bottom removed from subtabs for clean appearance (`border-bottom: none` in tabs-theme.css)
+- **Year Slider**: `dcc.Slider` component with custom CSS for compact, responsive display
 
 ## Deployment Context
 

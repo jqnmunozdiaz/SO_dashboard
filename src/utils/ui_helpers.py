@@ -216,7 +216,7 @@ def create_city_platform_button(href: str = "https://www.google.com"):
     """
     return html.A([
         dbc.Button(
-            [html.I(className="fas fa-city me-2"), "City-level platform"],
+            [html.I(className="fas fa-city me-2"), "City-level Platform"],
             color="primary",
             size="sm",
             className="download-data-button",

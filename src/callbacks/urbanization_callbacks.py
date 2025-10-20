@@ -8,6 +8,7 @@ from dash import Input, Output, dcc, html
 # Import individual callback modules
 from .urbanization.Urban_Population_Living_in_Slums_callbacks import register_urban_population_living_in_slums_callbacks
 from .urbanization.Access_to_Drinking_Water_callbacks import register_access_to_drinking_water_callbacks
+from .urbanization.Access_to_Sanitation_callbacks import register_access_to_sanitation_callbacks
 from .urbanization.Access_to_Electricity_Urban_callbacks import register_access_to_electricity_urban_callbacks
 from .urbanization.Urban_Population_Projections_callbacks import register_urban_population_projections_callbacks
 from .urbanization.Urbanization_Rate_callbacks import register_urbanization_rate_callbacks
@@ -38,6 +39,7 @@ def register_callbacks(app):
     # Register individual callback modules
     register_urban_population_living_in_slums_callbacks(app)
     register_access_to_drinking_water_callbacks(app)
+    register_access_to_sanitation_callbacks(app)
     register_access_to_electricity_urban_callbacks(app)
     register_urban_population_projections_callbacks(app)
     register_urbanization_rate_callbacks(app)
@@ -163,6 +165,23 @@ def register_callbacks(app):
                             html.Br(), html.B("Surface Water: "), "Drinking water directly from a river, dam, lake, pond, stream, canal or irrigation canal."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('access-to-drinking-water-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container")
+                ], className="indicator-note-container")
+            ], className="chart-container")
+        elif active_subtab == 'access-to-sanitation':
+            return html.Div([
+                # Chart
+                dcc.Graph(id="access-to-sanitation-chart"),
+                # Indicator note
+                html.Div([
+                    html.P([html.B("Data Source: "), "WHO/UNICEF Joint Monitoring Programme (JMP) for Water Supply, Sanitation and Hygiene.", html.Br(), html.B("Note:"),
+                            html.Br(), html.B("At Least Basic: "), "Use of improved facilities that are not shared with other households.",
+                            html.Br(), html.B("Limited: "), "Use of improved facilities shared between two or more households.",
+                            html.Br(), html.B("Unimproved: "), "Use of pit latrines without a slab or platform, hanging latrines or bucket latrines.",
+                            html.Br(), html.B("Open Defecation: "), "Disposal of human faeces in fields, forests, bushes, open bodies of water, beaches and other open spaces or with solid waste."], className="indicator-note"),
+                    html.Div([
+                        create_download_trigger_button('access-to-sanitation-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")

@@ -227,8 +227,31 @@ def load_jmp_water_data() -> pd.DataFrame:
         raise Exception(f"Error loading JMP water data: {str(e)}")
 
 
+def load_jmp_sanitation_data() -> pd.DataFrame:
+    """
+    Load JMP WASH urban sanitation data for Sub-Saharan Africa in long format
+
+    Returns:
+        DataFrame with columns: Country Code, Year, Indicator, Value
+        Indicators: 'At least basic', 'Limited', 'Unimproved', 'Open defecation'
+    """
+    # Get the absolute path to the project root directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.join(current_dir, '..', '..')
+    file_path = os.path.join(project_root, 'data', 'processed', 'jmp_sanitation', 'urban_sanitation_ssa.csv')
+
+    try:
+        df = pd.read_csv(file_path)
+        return df
+
+    except FileNotFoundError:
+        raise FileNotFoundError(f"JMP sanitation data file not found: {file_path}")
+    except Exception as e:
+        raise Exception(f"Error loading JMP sanitation data: {str(e)}")
+
+
 # Import centralized country utilities
 from .country_utils import get_subsaharan_countries, load_subsaharan_countries_dict, load_subsaharan_countries_and_regions_dict
 
 # Re-export for backward compatibility
-__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections', 'load_city_size_distribution', 'load_city_agglomeration_counts', 'load_population_data', 'load_jmp_water_data']
+__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections', 'load_city_size_distribution', 'load_city_agglomeration_counts', 'load_population_data', 'load_jmp_water_data', 'load_jmp_sanitation_data']

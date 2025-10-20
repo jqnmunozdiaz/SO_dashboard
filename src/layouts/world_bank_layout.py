@@ -9,7 +9,6 @@ from src.utils.country_utils import get_countries_with_regions
 from src.utils.ui_helpers import (
     create_city_platform_button,
     create_download_component,
-    create_methodological_note_button,
 )
 
 
@@ -59,8 +58,8 @@ def create_world_bank_layout():
                         ),
                         html.P("Select a country, explore the tabs, and interact with the dynamic figures.", className="hero-description"),
                         html.P([
-                            "For city-level information, visit the ",
-                            html.A("dedicated platform", href="https://www.google.com", target="_blank"),
+                            "To access subnational information, visit the ",
+                            html.A("city-level platform", href="https://www.google.com", target="_blank"),
                             "."
                         ], className="hero-description"),
                     ], className="hero-content"),
@@ -127,6 +126,7 @@ def create_world_bank_layout():
                 create_download_component("urbanization-rate-download"),
                 create_download_component("urban-population-slums-download"),
                 create_download_component("access-to-drinking-water-download"),
+                create_download_component("access-to-sanitation-download"),
                 create_download_component("access-to-electricity-urban-download"),
                 create_download_component("gdp-vs-urbanization-download"),
                 create_download_component("cities-distribution-download"),
@@ -171,6 +171,7 @@ def create_world_bank_urbanization_tab_content():
                         dbc.Tab(label="Urbanization Rate", tab_id="urbanization-rate"),
                         dbc.Tab(label="Population Living in Slums", tab_id="urban-population-slums"),
                         dbc.Tab(label="Access to Drinking Water", tab_id="access-to-drinking-water"),
+                        dbc.Tab(label="Access to Sanitation", tab_id="access-to-sanitation"),
                         dbc.Tab(label="Access to Electricity", tab_id="access-to-electricity-urban"),
                         dbc.Tab(label="GDP vs Urbanization", tab_id="gdp-vs-urbanization"),
                         dbc.Tab(label="Cities Distribution", tab_id="cities-distribution"),

@@ -57,8 +57,12 @@ def create_world_bank_layout():
                             "An interactive platform for analyzing historical disaster patterns, urbanization trends, and resilience indicators across Sub-Saharan Africa. This tool informs decision making for disaster preparedness and long-term risk reduction strategies.",
                             className="hero-description",
                         ),
-                        html.P("Select a country, explore the tabs, and interact with the dynamic figures. For city-level information, visit the dedicated platform.", className="hero-description",
-                        ),
+                        html.P("Select a country, explore the tabs, and interact with the dynamic figures.", className="hero-description"),
+                        html.P([
+                            "For city-level information, visit the ",
+                            html.A("dedicated platform", href="https://www.google.com", target="_blank"),
+                            "."
+                        ], className="hero-description"),
                     ], className="hero-content"),
 
                     html.Div([

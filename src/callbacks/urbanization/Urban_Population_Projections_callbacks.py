@@ -145,7 +145,6 @@ def register_urban_population_projections_callbacks(app):
                             line=dict(color=colors[aoi], width=3),
                             marker=dict(size=6),
                             hovertemplate=f'<b>{aoi.title()} Population</b><br>' +
-                                        'Year: %{x}<br>' +
                                         'Population: %{y:.1f} million<br>' +
                                         '<extra></extra>'
                         ))
@@ -165,7 +164,6 @@ def register_urban_population_projections_callbacks(app):
                             line=dict(color=colors[aoi], width=3, dash='dash'),
                             marker=dict(size=6),
                             hovertemplate=f'<b>{aoi.title()} Population (Projected)</b><br>' +
-                                        'Year: %{x}<br>' +
                                         'Population: %{y:.1f} million<br>' +
                                         '<extra></extra>'
                         ))

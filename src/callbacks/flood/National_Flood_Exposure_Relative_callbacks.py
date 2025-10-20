@@ -12,6 +12,7 @@ try:
     from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.component_helpers import create_error_chart
+    from ...utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 except ImportError:
     import sys, os
@@ -21,6 +22,7 @@ except ImportError:
     from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.component_helpers import create_error_chart
+    from src.utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 
 
@@ -241,3 +243,22 @@ def register_national_flood_exposure_relative_callbacks(app):
                 yaxis_title='Built-up Area (%)',
                 title='National Flood Exposure - Built-up Area (Relative)'
             )
+    
+    @app.callback(
+        Output('national-flood-exposure-relative-download', 'data'),
+        Input('national-flood-exposure-relative-download-button', 'n_clicks'),
+        prevent_initial_call=True
+    )
+    def download_national_flood_exposure_relative_data(n_clicks):
+        """Download flood exposure data as CSV"""
+        if n_clicks is None or n_clicks == 0:
+            return None
+        
+        try:
+            # Load full dataset (raw data, no filtering)
+            data = load_flood_exposure_data('built_s')
+            filename = "national_flood_exposure_built_up_relative"
+            return prepare_csv_download(data, filename)
+        except Exception as e:
+            print(f"Error preparing download: {str(e)}")
+            return None

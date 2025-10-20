@@ -11,6 +11,7 @@ try:
     from ...utils.flood_ui_helpers import get_return_period_colors, get_return_period_labels
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.component_helpers import create_error_chart
+    from ...utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 except ImportError:
     import sys, os
@@ -19,6 +20,7 @@ except ImportError:
     from src.utils.flood_ui_helpers import get_return_period_colors, get_return_period_labels
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.component_helpers import create_error_chart
+    from src.utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 
 
@@ -142,3 +144,22 @@ def register_national_flood_exposure_callbacks(app):
                 yaxis_title='Built-up Area (km²)',
                 title='National Flood Exposure - Built-up Area'
             )
+    
+    @app.callback(
+        Output('national-flood-exposure-download', 'data'),
+        Input('national-flood-exposure-download-button', 'n_clicks'),
+        prevent_initial_call=True
+    )
+    def download_national_flood_exposure_data(n_clicks):
+        """Download flood exposure data as CSV"""
+        if n_clicks is None or n_clicks == 0:
+            return None
+        
+        try:
+            # Load full dataset (raw data, no filtering)
+            data = load_flood_exposure_data('built_s')
+            filename = "national_flood_exposure_built_up"
+            return prepare_csv_download(data, filename)
+        except Exception as e:
+            print(f"Error preparing download: {str(e)}")
+            return None

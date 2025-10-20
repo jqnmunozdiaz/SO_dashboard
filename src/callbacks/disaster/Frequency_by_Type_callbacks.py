@@ -136,7 +136,7 @@ def setup_frequency_by_type_callbacks(app):
         fig.update_traces(
             marker_line_color='white',
             marker_line_width=0.5,
-            hovertemplate='<b>%{customdata}</b><br>Events: %{y}<extra></extra>',
+            hovertemplate='Events: %{y}<extra></extra>',
             customdata=frequency_data['Disaster Type']
         )
         

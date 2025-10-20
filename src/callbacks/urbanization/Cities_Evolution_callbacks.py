@@ -111,7 +111,6 @@ def register_cities_evolution_callbacks(app):
                             hover_text = (
                                 f'<b>{city_name}</b><br>' +
                                 f'Size: {year_size_category}<br>' +
-                                f'Year: {year}<br>' +
                                 f'Population: {pop_text}<br>' +
                                 '<extra></extra>'
                             )

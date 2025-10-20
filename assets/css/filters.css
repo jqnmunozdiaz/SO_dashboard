@@ -3,7 +3,6 @@
 .filter-section {
     /* background: #0067ce; */
     padding: 0rem 0;
-    border-bottom: 1px solid #e5e7eb;
     margin-bottom: 1rem;
 }
 
@@ -13,6 +12,7 @@
     margin: 0 auto;
     padding: 0 0rem;
     align-items: center;
+    border-bottom: 2px solid #e5e7eb;
 }
 
 .filter-card {

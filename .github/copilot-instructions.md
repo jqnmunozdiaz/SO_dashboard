@@ -610,7 +610,7 @@ Global regional benchmarks:
 
 - **Modular CSS**: Each component area has its own file, imported in `custom.css`
 - **Hero Map Button**: `.hero-map-action` positioned with `position: absolute; top: 0.6rem; right: 0.6rem;` over `.hero-map` background
-- **Download Buttons**: `.download-data-button` class styled with World Bank blue (#295e84), hover effects
+- **Download Buttons**: `.download-data-button` class styled with World Bank blue (295e84), hover effects
 - **Subtabs**: Border-bottom removed from subtabs for clean appearance (`border-bottom: none` in tabs-theme.css)
 - **Year Slider**: `dcc.Slider` component with custom CSS for compact, responsive display
 

@@ -135,7 +135,8 @@ def register_gdp_vs_urbanization_callbacks(app):
                     showgrid=True,
                     gridwidth=1,
                     gridcolor='#e5e7eb',
-                    zeroline=False
+                    zeroline=False,
+                    ticksuffix='%'
                 ),
                 margin=dict(b=80, t=100)
             )

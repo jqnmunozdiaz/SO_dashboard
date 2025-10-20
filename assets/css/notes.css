@@ -1,0 +1,17 @@
+/* Indicator Notes - Data source and methodology notes */
+
+.indicator-note-container {
+    margin-top: 12px;
+}
+
+.indicator-note {
+    font-style: italic;
+    font-size: 11.5px;
+    color: #666666;
+    margin: 12px 0 8px 0;
+    padding: 10px 12px;
+    background-color: #f8f9fa;
+    border-left: 3px solid #007bff;
+    border-radius: 4px;
+    line-height: 1.35;
+}

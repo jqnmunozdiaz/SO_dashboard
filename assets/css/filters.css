@@ -1,0 +1,86 @@
+/* Filters - Country selector and other filter components */
+
+.filter-section {
+    background: #f9fafb;
+    padding: 1.25rem 0;
+}
+
+.filter-inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    align-items: center;
+}
+
+.filter-card {
+    background: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-control-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.filter-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.filter-dropdown-container {
+    width: 300px;
+}
+
+/* Year filter container and radio buttons */
+.year-filter-container {
+    background: #ffffff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 0px solid #e2e8f0;
+    margin-bottom: 0rem;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.year-radio-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.year-radio-buttons .form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.year-radio-buttons input[type="radio"] {
+    width: 1rem !important;
+    height: 1rem !important;
+    cursor: pointer;
+    margin-right: 0.375rem;
+    accent-color: #002244;
+}
+
+.year-radio-buttons label {
+    font-size: 0.875rem;
+    color: #374151;
+    cursor: pointer;
+    margin-bottom: 0;
+    user-select: none;
+}
+
+.year-radio-buttons label:hover {
+    color: #002244;
+}

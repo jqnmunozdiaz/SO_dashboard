@@ -85,9 +85,10 @@ def register_access_to_electricity_urban_callbacks(app):
                     raise Exception("No country selected")
             else:
                 raise Exception("No country selected")
+            
             # Add country benchmarks if selected
-            if country_benchmarks:
-                for iso in country_benchmarks:
+            if benchmark_countries:
+                for iso in benchmark_countries:
                     if iso in electricity_data['Country Code'].values:
                         bench_data = electricity_data[electricity_data['Country Code'] == iso].copy()
                         bench_data = bench_data.sort_values('Year')

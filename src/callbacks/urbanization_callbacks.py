@@ -192,20 +192,22 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'cities-distribution':
             return html.Div([
-                # Year filter (radio buttons)
+                # Year filter (slider)
                 html.Div([
                     html.Label("Year:", className="filter-label"),
-                    dcc.RadioItems(
+                    dcc.Slider(
                         id='cities-distribution-year-filter',
-                        options=[
-                            {'label': '2020', 'value': 2020},
-                            {'label': '2025', 'value': 2025},
-                            {'label': '2030', 'value': 2030},
-                            {'label': '2035', 'value': 2035}
-                        ],
+                        min=2020,
+                        max=2035,
+                        step=5,
                         value=2025,
-                        inline=True,
-                        className="year-radio-buttons"
+                        marks={
+                            2020: {'label': '2020', 'style': {'color': '#374151'}},
+                            2025: {'label': '2025', 'style': {'color': '#374151'}},
+                            2030: {'label': '2030', 'style': {'color': '#374151'}},
+                            2035: {'label': '2035', 'style': {'color': '#374151'}}
+                        },
+                        tooltip={"placement": "bottom", "always_visible": False}
                     )
                 ], className="year-filter-container"),
                 # Chart

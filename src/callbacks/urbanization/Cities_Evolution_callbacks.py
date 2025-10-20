@@ -157,7 +157,7 @@ def register_cities_evolution_callbacks(app):
                     x=1.02,
                     bgcolor="rgba(255, 255, 255, 0.8)",
                     bordercolor="#e2e8f0",
-                    borderwidth=1
+                    borderwidth=0
                 ),
                 height=600,
                 margin=dict(r=250, l=80, t=80, b=80),

@@ -150,6 +150,39 @@ def create_download_button(download_id):
     ], className="download-button-container")
 
 
+def create_download_trigger_button(download_id):
+    """
+    Create only the visible download trigger button (no dcc.Download component).
+
+    Args:
+        download_id (str): Base download id (e.g., 'urban-population-projections-download')
+
+    Returns:
+        dbc.Button: Button element with id `{download_id}-button`.
+    """
+    return dbc.Button(
+        [html.I(className="fas fa-download me-2"), "Download Data"],
+        id=f"{download_id}-button",
+        color="primary",
+        size="sm",
+        className="download-data-button",
+        n_clicks=0
+    )
+
+
+def create_download_component(download_id):
+    """
+    Create only the dcc.Download component for a given download id.
+
+    Args:
+        download_id (str): ID for the dcc.Download component.
+
+    Returns:
+        dcc.Download: Download component with the given id.
+    """
+    return dcc.Download(id=download_id)
+
+
 def create_methodological_note_button():
     """
     Create a methodological note download button component
@@ -169,6 +202,26 @@ def create_methodological_note_button():
     download="SSA_DRM_Dashboard_Methodological_Note.docx",
     className="download-button-container"
     )
+
+
+def create_city_platform_button(href: str = "https://www.google.com"):
+    """
+    Create a styled action button that links to an external city-level platform.
+
+    Args:
+        href (str): URL to navigate to when the button is clicked.
+
+    Returns:
+        html.A: Anchor-wrapped button linking to the provided href.
+    """
+    return html.A([
+        dbc.Button(
+            [html.I(className="fas fa-city me-2"), "City-level platform"],
+            color="primary",
+            size="sm",
+            className="download-data-button city-platform-button",
+        )
+    ], href=href, target="_blank", rel="noopener noreferrer", className="download-button-container")
 
 
 def create_absolute_relative_selector(radio_id):

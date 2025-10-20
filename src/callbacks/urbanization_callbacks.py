@@ -18,7 +18,7 @@ from .country_benchmark_callbacks import register_country_benchmark_options_call
 try:
     from ..utils.benchmark_config import get_benchmark_options
     from ..utils.data_loader import load_urbanization_indicators_notes_dict
-    from ..utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_download_button, create_methodological_note_button
+    from ..utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
     from ..utils.country_utils import get_subsaharan_countries
 except ImportError:
     # Fallback for direct execution
@@ -106,7 +106,7 @@ def register_callbacks(app):
                 html.Div([
                     html.P([html.B("Data Source: "), "UN DESA (World Population Prospects & World Urbanization Prospects).", html.Br(), html.B("Note:"), " Uncertainty bands show 95% and 80% confidence intervals for future projections."], className="indicator-note"),
                     html.Div([
-                        create_download_button('urban-population-projections-download'),
+                        create_download_trigger_button('urban-population-projections-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")
@@ -124,7 +124,7 @@ def register_callbacks(app):
                 html.Div([
                     html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects.", html.Br(), html.B("Note:"), " Percentage of population living in urban areas. Shows historical trends and future projections of urbanization levels."], className="indicator-note"),
                     html.Div([
-                        create_download_button('urbanization-rate-download'),
+                        create_download_trigger_button('urbanization-rate-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")
@@ -143,7 +143,7 @@ def register_callbacks(app):
                 html.Div([
                     html.P([html.B("Data Source: "), "World Bank World Development Indicators (WDI).", html.Br(), html.B("Note:"), f" {slums_note}"], className="indicator-note"),
                     html.Div([
-                        create_download_button('urban-population-slums-download'),
+                        create_download_trigger_button('urban-population-slums-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")
@@ -162,7 +162,7 @@ def register_callbacks(app):
                 html.Div([
                     html.P([html.B("Data Source: "), "World Bank World Development Indicators (WDI).", html.Br(), html.B("Note:"), f" {electricity_note}"], className="indicator-note"),
                     html.Div([
-                        create_download_button('access-to-electricity-urban-download'),
+                        create_download_trigger_button('access-to-electricity-urban-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")
@@ -185,7 +185,7 @@ def register_callbacks(app):
                 html.Div([
                     html.P([html.B("Data Source: "), "World Bank World Development Indicators.", html.Br(), html.B("Note:"), " Urban population refers to people living in urban areas as defined by national statistical offices. The data are collected by the UN Population Division. Aggregation of urban and rural population may not add up to total population because of different country coverage. There is no consistent and universally accepted standard for distinguishing urban from rural areas. Therefore, cross-country comparisons should be made with caution. Gross domestic product (GDP) is expressed in constant international dollars, converted by purchasing power parities (PPPs). PPPs account for the different price levels across countries and thus PPP-based comparisons of economic output are more appropriate for comparing the output of economies and the average material well-being of their inhabitants than exchange-rate based comparisons."], className="indicator-note"),
                     html.Div([
-                        create_download_button('gdp-vs-urbanization-download'),
+                        create_download_trigger_button('gdp-vs-urbanization-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")
@@ -216,7 +216,7 @@ def register_callbacks(app):
                 html.Div([
                     html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Distribution of urban population across city size categories for selected year."], className="indicator-note"),
                     html.Div([
-                        create_download_button('cities-distribution-download'),
+                        create_download_trigger_button('cities-distribution-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")
@@ -229,7 +229,7 @@ def register_callbacks(app):
                 html.Div([
                     html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Urban population evolution showing individual cities stacked and colored by size category."], className="indicator-note"),
                     html.Div([
-                        create_download_button('cities-evolution-download'),
+                        create_download_trigger_button('cities-evolution-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")

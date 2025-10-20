@@ -52,3 +52,16 @@
     background-position: center;
     opacity: 0.8;
 }
+
+/* Position the city platform button at the top-right corner of the hero map */
+.hero-map {
+    position: relative;
+}
+
+.hero-map-action {
+    position: absolute;
+    top: 0rem;
+    right: 0rem;
+    z-index: 2000;
+    display: inline-flex;
+}

@@ -211,7 +211,7 @@ def register_national_flood_exposure_relative_callbacks(app):
                     x=1.02,
                     bgcolor='rgba(255, 255, 255, 0.8)',
                     bordercolor='#e5e7eb',
-                    borderwidth=1
+                    borderwidth=0
                 ),
                 xaxis=dict(
                     showgrid=True,

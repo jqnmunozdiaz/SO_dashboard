@@ -1,11 +1,12 @@
 /* Filters - Country selector and other filter components */
 
 .filter-section {
-    background: #f9fafb;
+    /* background: #0067ce; */
     padding: 1.25rem 0;
 }
 
 .filter-inner {
+    /* background: #0067ce; */
     max-width: 80rem;
     margin: 0 auto;
     padding: 0 1.5rem;
@@ -13,11 +14,12 @@
 }
 
 .filter-card {
-    background: white;
+    /* background: #0067ce; */
+    /* background: white; */
     padding: 1rem;
     border-radius: 0.5rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    border: 1px solid #e5e7eb;
+    box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.1), 0 0px 0px 0 rgba(0, 0, 0, 0.06);
+    border: 0px solid #e5e7eb;
     display: flex;
     justify-content: space-between;
     align-items: center;

@@ -12,7 +12,7 @@ from .disaster.Total_Affected_Population_callbacks import setup_total_affected_p
 from .disaster.Total_Deaths_callbacks import setup_total_deaths_callbacks
 
 try:
-    from ..utils.ui_helpers import create_download_button, create_methodological_note_button, create_absolute_relative_selector
+    from ..utils.ui_helpers import create_download_trigger_button, create_methodological_note_button, create_absolute_relative_selector
 except ImportError:
     import sys
     import os
@@ -45,7 +45,7 @@ def register_callbacks(app):
                 html.Div([
                     html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
                     html.Div([
-                        create_download_button('disaster-frequency-download'),
+                        create_download_trigger_button('disaster-frequency-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")
@@ -58,7 +58,7 @@ def register_callbacks(app):
                 html.Div([
                     html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
                     html.Div([
-                        create_download_button('disaster-timeline-download'),
+                        create_download_trigger_button('disaster-timeline-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")
@@ -73,7 +73,7 @@ def register_callbacks(app):
                 html.Div([
                     html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
                     html.Div([
-                        create_download_button('disaster-affected-download'),
+                        create_download_trigger_button('disaster-affected-download'),
                         create_methodological_note_button()
                     ], className="buttons-container"),
                 ], className="indicator-note-container")
@@ -88,7 +88,7 @@ def register_callbacks(app):
                 html.Div([
                     html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
                     html.Div([
-                        create_download_button('disaster-deaths-download'),
+                        create_download_trigger_button('disaster-deaths-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")

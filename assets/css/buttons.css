@@ -1,9 +1,45 @@
 /* Buttons - Download buttons and other action buttons */
 
 .download-button-container {
-    margin-top: 1rem;
+    margin-top: 0rem;
     display: inline-flex;
     justify-content: flex-end;
+}
+
+/* Main body top-right action area */
+.main-action-topright {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+}
+
+.main-action-topright-inner {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Global fixed top-right action button (overlaps header/logo if needed) */
+.global-topright-action {
+    position: fixed;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    pointer-events: auto;
+}
+
+.global-topright-action .download-data-button {
+    padding: 0.6rem 1.05rem !important;
+    font-size: 0.9rem !important;
+    border-radius: 8px !important;
+}
+
+/* Ensure hero map action uses same button sizing */
+.hero-map-action .download-data-button {
+    padding: 0.5rem 0.9rem !important;
+    font-size: 0.875rem !important;
 }
 
 /* Container for multiple buttons (Download + Methodological Note) */

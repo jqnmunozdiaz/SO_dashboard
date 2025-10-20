@@ -7,6 +7,7 @@ from dash import Input, Output, dcc, html
 
 # Import individual callback modules
 from .urbanization.Urban_Population_Living_in_Slums_callbacks import register_urban_population_living_in_slums_callbacks
+from .urbanization.Access_to_Drinking_Water_callbacks import register_access_to_drinking_water_callbacks
 from .urbanization.Access_to_Electricity_Urban_callbacks import register_access_to_electricity_urban_callbacks
 from .urbanization.Urban_Population_Projections_callbacks import register_urban_population_projections_callbacks
 from .urbanization.Urbanization_Rate_callbacks import register_urbanization_rate_callbacks
@@ -36,6 +37,7 @@ def register_callbacks(app):
     
     # Register individual callback modules
     register_urban_population_living_in_slums_callbacks(app)
+    register_access_to_drinking_water_callbacks(app)
     register_access_to_electricity_urban_callbacks(app)
     register_urban_population_projections_callbacks(app)
     register_urbanization_rate_callbacks(app)
@@ -144,6 +146,23 @@ def register_callbacks(app):
                     html.P([html.B("Data Source: "), "World Bank World Development Indicators (WDI).", html.Br(), html.B("Note:"), f" {slums_note}"], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('urban-population-slums-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container")
+                ], className="indicator-note-container")
+            ], className="chart-container")
+        elif active_subtab == 'access-to-drinking-water':
+            return html.Div([
+                # Chart
+                dcc.Graph(id="access-to-drinking-water-chart"),
+                # Indicator note
+                html.Div([
+                    html.P([html.B("Data Source: "), "WHO/UNICEF Joint Monitoring Programme (JMP) for Water Supply, Sanitation and Hygiene.", html.Br(), html.B("Note:"),
+                            html.Br(), html.B("At Least Basic: "), "Drinking water from an improved source (piped water, boreholes or tubewells, protected dug wells, protected springs, rainwater, and packaged or delivered water), that is accessible on premises, available when needed and free from faecal and priority chemical contamination, or can be collected within 30 minutes.",
+                            html.Br(), html.B("Limited: "), "Drinking water from an improved source, for which collection time exceeds 30 minutes for a round trip, including queuing.",
+                            html.Br(), html.B("Unimproved: "), "Drinking water from an unprotected dug well or unprotected spring.",
+                            html.Br(), html.B("Surface Water: "), "Drinking water directly from a river, dam, lake, pond, stream, canal or irrigation canal."], className="indicator-note"),
+                    html.Div([
+                        create_download_trigger_button('access-to-drinking-water-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")

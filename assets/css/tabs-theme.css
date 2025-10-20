@@ -26,10 +26,11 @@
     box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25) !important;
 }
 
-/* Green - Slums, Electricity, GDP (tabs 3, 4, and 5) */
+/* Green - Slums, Drinking Water, Electricity, GDP (tabs 3, 4, 5, and 6) */
 #urbanization-subtabs .nav-item:nth-child(3) .nav-link,
 #urbanization-subtabs .nav-item:nth-child(4) .nav-link,
-#urbanization-subtabs .nav-item:nth-child(5) .nav-link {
+#urbanization-subtabs .nav-item:nth-child(5) .nav-link,
+#urbanization-subtabs .nav-item:nth-child(6) .nav-link {
     background: #dcfce7 !important;
     border-color: #22c55e !important;
     color: #166534 !important;
@@ -37,7 +38,8 @@
 
 #urbanization-subtabs .nav-item:nth-child(3) .nav-link:hover,
 #urbanization-subtabs .nav-item:nth-child(4) .nav-link:hover,
-#urbanization-subtabs .nav-item:nth-child(5) .nav-link:hover {
+#urbanization-subtabs .nav-item:nth-child(5) .nav-link:hover,
+#urbanization-subtabs .nav-item:nth-child(6) .nav-link:hover {
     background: #bbf7d0 !important;
     border-color: #16a34a !important;
     color: #14532d !important;
@@ -45,7 +47,8 @@
 
 #urbanization-subtabs .nav-item:nth-child(3) .nav-link.active,
 #urbanization-subtabs .nav-item:nth-child(4) .nav-link.active,
-#urbanization-subtabs .nav-item:nth-child(5) .nav-link.active {
+#urbanization-subtabs .nav-item:nth-child(5) .nav-link.active,
+#urbanization-subtabs .nav-item:nth-child(6) .nav-link.active {
     color: #166534 !important;
     background: #86efac !important;
     border-color: #16a34a !important;
@@ -53,23 +56,23 @@
     box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25) !important;
 }
 
-/* Light Orange - Cities Distribution & Evolution (tabs 6 and 7) */
-#urbanization-subtabs .nav-item:nth-child(6) .nav-link,
-#urbanization-subtabs .nav-item:nth-child(7) .nav-link {
+/* Light Orange - Cities Distribution & Evolution (tabs 7 and 8) */
+#urbanization-subtabs .nav-item:nth-child(7) .nav-link,
+#urbanization-subtabs .nav-item:nth-child(8) .nav-link {
     background: #fed7aa !important;
     border-color: #fb923c !important;
     color: #7c2d12 !important;
 }
 
-#urbanization-subtabs .nav-item:nth-child(6) .nav-link:hover,
-#urbanization-subtabs .nav-item:nth-child(7) .nav-link:hover {
+#urbanization-subtabs .nav-item:nth-child(7) .nav-link:hover,
+#urbanization-subtabs .nav-item:nth-child(8) .nav-link:hover {
     background: #fdba74 !important;
     border-color: #f97316 !important;
     color: #6b1f00 !important;
 }
 
-#urbanization-subtabs .nav-item:nth-child(6) .nav-link.active,
-#urbanization-subtabs .nav-item:nth-child(7) .nav-link.active {
+#urbanization-subtabs .nav-item:nth-child(7) .nav-link.active,
+#urbanization-subtabs .nav-item:nth-child(8) .nav-link.active {
     color: #7c2d12 !important;
     background: #fb923c !important;
     border-color: #f97316 !important;

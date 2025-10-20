@@ -1,0 +1,162 @@
+"""
+Callbacks for Access to Drinking Water visualization
+Shows stacked area chart of urban drinking water access categories over time for selected country
+Data from JMP WASH database: At least basic, Limited (>30 mins), Unimproved, Surface water
+"""
+
+from dash import Input, Output
+import plotly.graph_objects as go
+import warnings
+
+# Suppress pandas future warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
+try:
+    from ...utils.data_loader import load_jmp_water_data
+    from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
+    from ...utils.component_helpers import create_error_chart
+    from ...utils.download_helpers import prepare_csv_download
+    from config.settings import CHART_STYLES
+except ImportError:
+    # Fallback for direct execution
+    import sys
+    import os
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+    from src.utils.data_loader import load_jmp_water_data
+    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
+    from src.utils.component_helpers import create_error_chart
+    from src.utils.download_helpers import prepare_csv_download
+    from config.settings import CHART_STYLES
+
+
+def register_access_to_drinking_water_callbacks(app):
+    """Register callbacks for Access to Drinking Water chart"""
+    
+    @app.callback(
+        Output('access-to-drinking-water-chart', 'figure'),
+        [Input('main-country-filter', 'value')],
+        prevent_initial_call=False
+    )
+    def generate_access_to_drinking_water_chart(selected_country):
+        """Generate stacked area chart showing drinking water access categories over time"""
+        try:
+            # Load JMP water data (long format)
+            water_data = load_jmp_water_data()
+            
+            # Load country mapping for ISO code to full name conversion
+            countries_dict = load_subsaharan_countries_and_regions_dict()
+            
+            if water_data.empty:
+                raise Exception("No data available")
+            
+            # Filter for selected country
+            if selected_country and selected_country in water_data['Country Code'].values:
+                country_data = water_data[water_data['Country Code'] == selected_country].copy()
+                
+                if country_data.empty:
+                    raise Exception(f"No data available for selected country")
+                
+                country_name = countries_dict.get(selected_country, selected_country)
+            else:
+                raise Exception(f"No data available for selected country")
+            
+            # Create the figure with stacked area chart
+            fig = go.Figure()
+            
+            # Define water access categories with colors (green gradient for better to worse)
+            categories = [
+                ('At least basic', '#10b981', 'At least basic water service'),
+                ('Limited (more than 30 mins)', '#fbbf24', 'Limited service (>30 mins)'),
+                ('Unimproved', '#fb923c', 'Unimproved water source'),
+                ('Surface water', '#ef4444', 'Surface water')
+            ]
+            
+            # Add traces in order (bottom to top) - filter long format data for each indicator
+            for indicator_name, color, hover_name in categories:
+                indicator_data = country_data[country_data['Indicator'] == indicator_name].copy()
+                indicator_data = indicator_data.sort_values('Year')
+                
+                if not indicator_data.empty:
+                    fig.add_trace(go.Scatter(
+                        x=indicator_data['Year'],
+                        y=indicator_data['Value'],
+                        mode='lines',
+                        name=indicator_name,
+                        line=dict(width=0.5, color=color),
+                        fillcolor=color,
+                        fill='tonexty' if fig.data else 'tozeroy',
+                        stackgroup='one',
+                        hovertemplate=f'<b>{hover_name}</b><br>Percentage: %{{y:.0%}}<extra></extra>'
+                    ))
+            
+            # Update layout
+            fig.update_layout(
+                title=f'<b>{country_name}</b> | Access to Drinking Water (Urban)<br>',
+                xaxis_title='Year',
+                yaxis_title='Population Distribution (%)',
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                font={'color': CHART_STYLES['colors']['primary']},
+                title_font_size=16,
+                showlegend=True,
+                legend=dict(
+                    orientation="h",
+                    yanchor="bottom",
+                    y=1.02,
+                    xanchor="right",
+                    x=1
+                ),
+                yaxis=dict(
+                    range=[0, 1],
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#e5e7eb',
+                    zeroline=True,
+                    zerolinewidth=1,
+                    zerolinecolor='#e5e7eb',
+                    tickformat=".0%",
+                    ticksuffix=''
+                ),
+                xaxis=dict(
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#e5e7eb',
+                    zeroline=False
+                ),
+                margin=dict(b=80, t=100),
+                hovermode='x unified'
+            )
+            
+            return fig
+            
+        except Exception as e:
+            return create_error_chart(
+                error_message=f"Error loading data: {str(e)}",
+                chart_type='line',
+                xaxis_title='Year',
+                yaxis_title='Population Distribution (%)',
+                yaxis_range=[0, 100],
+                title='Access to Drinking Water (Urban)'
+            )
+    
+    @app.callback(
+        Output('access-to-drinking-water-download', 'data'),
+        Input('access-to-drinking-water-download-button', 'n_clicks'),
+        prevent_initial_call=True
+    )
+    def download_access_to_drinking_water_data(n_clicks):
+        """Download JMP drinking water data as CSV"""
+        if n_clicks is None or n_clicks == 0:
+            return None
+        
+        try:
+            # Load full dataset (raw data, no filtering)
+            water_data = load_jmp_water_data()
+            
+            filename = "access_to_drinking_water_urban_jmp_wash"
+            
+            return prepare_csv_download(water_data, filename)
+        
+        except Exception as e:
+            print(f"Error preparing download: {str(e)}")
+            return None

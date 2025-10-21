@@ -134,12 +134,10 @@ dmypy.json
 # Data files - exclude large raw Excel files but keep processed CSV files
 data/external/*
 data/uploads/*
+data/raw/*
 data/raw/WDI_CSV/*
 
 # Keep essential data files for deployment
-!data/raw/README.md
-!data/raw/*.txt
-!data/raw/*.csv
 !data/processed/README.md
 !data/processed/*
 !data/external/README.md

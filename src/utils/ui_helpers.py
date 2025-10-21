@@ -107,7 +107,7 @@ def create_combined_benchmark_selector(dropdown_id, default_regional_codes=None)
     
     Args:
         dropdown_id (str): ID for the combined benchmark dropdown
-        default_regional_codes (list): List of regional codes to select by default (e.g., ['SSA'])
+        default_regional_codes (list): List of regional codes to select by default (e.g., ['SSA']) - now handled by callback
         
     Returns:
         html.Div: Combined benchmark selector component
@@ -118,7 +118,7 @@ def create_combined_benchmark_selector(dropdown_id, default_regional_codes=None)
             dcc.Dropdown(
                 id=dropdown_id,
                 options=[],  # Will be populated by callback with countries + regions
-                value=default_regional_codes if default_regional_codes else [],
+                value=[],    # Will be set by callback
                 multi=True,
                 placeholder="Select countries or regions to compare...",
                 className="country-benchmark-dropdown"

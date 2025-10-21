@@ -49,7 +49,7 @@ def register_country_benchmark_options_callback(app, output_id):
             return []
 
 
-def register_combined_benchmark_options_callback(app, output_id):
+def register_combined_benchmark_options_callback(app, output_id, default_regional_codes=None):
     """
     Register a callback to populate combined benchmark dropdown with countries and regions.
     Countries are listed first alphabetically, followed by regional benchmarks.
@@ -57,9 +57,10 @@ def register_combined_benchmark_options_callback(app, output_id):
     Args:
         app: Dash app instance
         output_id: ID of the dropdown to populate (e.g., 'slums-combined-benchmark-selector')
+        default_regional_codes: List of regional codes to select by default (e.g., ['SSA'])
     """
     @app.callback(
-        Output(output_id, 'options'),
+        [Output(output_id, 'options'), Output(output_id, 'value')],
         [Input('main-country-filter', 'value')]
     )
     def populate_combined_benchmark_options(selected_country):
@@ -86,8 +87,12 @@ def register_combined_benchmark_options_callback(app, output_id):
             
             # Combine countries and regions
             all_options = country_options + regional_options
-            return all_options
+            
+            # Set default value if provided
+            default_value = default_regional_codes if default_regional_codes else []
+            
+            return all_options, default_value
         
         except Exception as e:
             print(f"Error populating combined benchmark options for {output_id}: {str(e)}")
-            return []
+            return [], []

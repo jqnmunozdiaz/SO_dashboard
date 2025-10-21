@@ -52,10 +52,10 @@ def register_callbacks(app):
     register_cities_growth_rate_callbacks(app)
     
     # Register combined benchmark dropdown callbacks (countries + regions in one dropdown)
-    register_combined_benchmark_options_callback(app, 'slums-combined-benchmark-selector')
-    register_combined_benchmark_options_callback(app, 'urbanization-rate-combined-benchmark-selector')
-    register_combined_benchmark_options_callback(app, 'urban-density-combined-benchmark-selector')
-    register_combined_benchmark_options_callback(app, 'electricity-combined-benchmark-selector')
+    register_combined_benchmark_options_callback(app, 'slums-combined-benchmark-selector', default_regional_codes=['SSA'])
+    register_combined_benchmark_options_callback(app, 'urbanization-rate-combined-benchmark-selector', default_regional_codes=['SSA'])
+    register_combined_benchmark_options_callback(app, 'urban-density-combined-benchmark-selector', default_regional_codes=['SSA'])
+    register_combined_benchmark_options_callback(app, 'electricity-combined-benchmark-selector', default_regional_codes=['SSA'])
     
     # Register separate country benchmark callback for GDP vs Urbanization
     register_country_benchmark_options_callback(app, 'gdp-vs-urbanization-country-benchmark-selector')
@@ -125,7 +125,7 @@ def register_callbacks(app):
                 # Combined benchmark selector
                 create_combined_benchmark_selector(
                     dropdown_id='urbanization-rate-combined-benchmark-selector',
-                    default_regional_codes=[]
+                    default_regional_codes=['SSA']
                 ),
                 # Chart
                 dcc.Graph(id="urbanization-rate-chart"),

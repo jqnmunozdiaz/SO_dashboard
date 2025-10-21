@@ -13,7 +13,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 try:
-    from ...utils.data_loader import load_undesa_urban_projections
+    from ...utils.data_loader import load_undesa_urban_projections, load_undesa_urban_growth_rates
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.component_helpers import create_error_chart
     from ...utils.download_helpers import prepare_csv_download
@@ -23,7 +23,7 @@ except ImportError:
     import sys
     import os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.data_loader import load_undesa_urban_projections
+    from src.utils.data_loader import load_undesa_urban_projections, load_undesa_urban_growth_rates
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.component_helpers import create_error_chart
     from src.utils.download_helpers import prepare_csv_download
@@ -53,8 +53,13 @@ def register_urban_population_projections_callbacks(app):
             else:
                 raise Exception("No country selected")
 
-            # Load UNDESA urban projections data
-            undesa_data = load_undesa_urban_projections()
+            # Load appropriate data based on display mode
+            if display_mode == 'growth_rate':
+                # Load pre-calculated growth rates
+                undesa_data = load_undesa_urban_growth_rates()
+            else:
+                # Load absolute population values
+                undesa_data = load_undesa_urban_projections()
                
             # Filter data for selected country
             country_data = undesa_data[undesa_data['ISO3'] == selected_country].copy()
@@ -71,33 +76,6 @@ def register_urban_population_projections_callbacks(app):
             
             # Get colors from CHART_STYLES
             colors = {'urban': CHART_STYLES['colors']['urban'], 'rural': CHART_STYLES['colors']['rural']}
-            
-            # Calculate growth rates if in growth_rate mode
-            if display_mode == 'growth_rate':
-                # Calculate growth rates for historical data
-                for aoi in ['urban', 'rural']:
-                    col_name = f'wup_{aoi}_pop'
-                    if col_name in country_pivot.columns:
-                        country_pivot[f'{aoi}_growth_rate'] = country_pivot[col_name].pct_change() * 100
-                
-                # Calculate growth rates for projections (median and uncertainty bounds)
-                for aoi in ['urban', 'rural']:
-                    # Median growth rate
-                    median_col = f'{aoi}_pop_median'
-                    if median_col in country_pivot.columns:
-                        country_pivot[f'{aoi}_median_growth_rate'] = country_pivot[median_col].pct_change() * 100
-                    
-                    # Lower and upper 80% growth rates
-                    for bound in ['lower80', 'upper80']:
-                        col_name = f'{aoi}_pop_{bound}'
-                        if col_name in country_pivot.columns:
-                            country_pivot[f'{aoi}_{bound}_growth_rate'] = country_pivot[col_name].pct_change() * 100
-                    
-                    # Lower and upper 95% growth rates
-                    for bound in ['lower95', 'upper95']:
-                        col_name = f'{aoi}_pop_{bound}'
-                        if col_name in country_pivot.columns:
-                            country_pivot[f'{aoi}_{bound}_growth_rate'] = country_pivot[col_name].pct_change() * 100
             
             # Add data for both urban and rural
             for aoi in ['urban', 'rural']:

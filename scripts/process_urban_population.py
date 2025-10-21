@@ -52,22 +52,16 @@ def CountryFile(ISO3):
         df.at['wup_urban_pop', year] = wup_urban_pop.at[ISO3, year]/1000
         df.at['wup_rural_pop', year] = wup_rural_pop.at[ISO3, year]/1000
 
-    # Interpolate for every year between 1950 and 2050
-    for var in ['wup_urban_prop', 'wup_urban_pop', 'wup_rural_pop']:
-        for year in range(1950, 2050, 5):
-            for k in range(1, 5):
-                df.at[var, year + k] = df.at[var, year] + (df.at[var, year + 5] - df.at[var, year]) * k / 5
-
-    # Calculate 'wup_rural_prop' as 1 - 'wup_urban_prop' for all years
-    for year in range(1950, 2051):
-        df.at['wup_rural_prop', year] = 1 - df.at['wup_urban_prop', year]
+    # Calculate 'wup_rural_prop' as 1 - 'wup_urban_prop' for available years
+    for year in range(1950, 2055, 5):
+        if year in df.columns and pd.notna(df.at['wup_urban_prop', year]):
+            df.at['wup_rural_prop', year] = 1 - df.at['wup_urban_prop', year]
     
     for aoi in ['urban', 'rural']:
         for prob in ['median', 'lower95', 'lower80', 'upper80', 'upper95']:
-            for year in range(2025, 2051, 1):
-                df.at[f'{aoi}_pop_{prob}', year] = df.at[f'wup_{aoi}_pop', year] * (df.at[f'wpp_{prob}', year] / df.at['wpp_median', year])
-                # I'm not sure why I need the relative values, commenting out for now
-                # df.at[f'{aoi}_pop_{prob}_rel', year] = df.at[f'{aoi}_pop_{prob}', year] / df.at[f'{aoi}_pop_{prob}', 2025]
+            for year in range(2025, 2055, 5):  # Only at 5-year intervals to match WUP data
+                if year in df.columns and f'wup_{aoi}_pop' in df.index and pd.notna(df.at[f'wup_{aoi}_pop', year]):
+                    df.at[f'{aoi}_pop_{prob}', year] = df.at[f'wup_{aoi}_pop', year] * (df.at[f'wpp_{prob}', year] / df.at['wpp_median', year])
 
     # Reorder columns by year in ascending order
     year_columns = [col for col in df.columns if isinstance(col, int)]
@@ -201,7 +195,19 @@ final_df = pd.concat(consolidated_data, ignore_index=True)
 # Sort by country, indicator, and year for better organization
 final_df = final_df.sort_values(['ISO3', 'indicator', 'year']).reset_index(drop=True)
 
+# Filter to keep only years that are multiples of 5 between 1950 and 2100
+final_df = final_df[(final_df['year'] % 5 == 0) & (final_df['year'] >= 1950) & (final_df['year'] <= 2050)]
+
 # Save consolidated DataFrame
 final_df.to_csv('data/processed/UNDESA_Country/UNDESA_urban_projections_consolidated.csv', index=False)
+
+# %%
+# Remove individual country files after consolidation
+
+for ISO3 in ALL_COUNTRY_CODES:
+    file_path = f'data/processed/UNDESA_Country/{ISO3}_urban_population_projections.csv'
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        print(f"Removed {file_path}")
 
 # %%

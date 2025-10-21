@@ -130,6 +130,29 @@ def load_undesa_urban_projections() -> pd.DataFrame:
         raise Exception(f"Error loading UNDESA urban projections data: {str(e)}")
 
 
+def load_undesa_urban_growth_rates() -> pd.DataFrame:
+    """
+    Load pre-calculated UN DESA urban population growth rates
+    
+    Returns:
+        DataFrame with columns: ISO3, year, indicator, value
+        where value represents year-over-year percentage change
+    """
+    # Get the absolute path to the project root directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.join(current_dir, '..', '..')
+    file_path = os.path.join(project_root, 'data', 'processed', 'UNDESA_Country', 'UNDESA_urban_growth_rates_consolidated.csv')
+    
+    try:
+        df = pd.read_csv(file_path)
+        return df
+        
+    except FileNotFoundError:
+        raise FileNotFoundError(f"UNDESA urban growth rates data file not found: {file_path}")
+    except Exception as e:
+        raise Exception(f"Error loading UNDESA urban growth rates data: {str(e)}")
+
+
 def load_city_size_distribution() -> pd.DataFrame:
     """
     Load individual cities data for Sub-Saharan African countries

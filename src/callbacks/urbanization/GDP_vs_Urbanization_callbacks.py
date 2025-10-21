@@ -33,6 +33,14 @@ URBAN_INDICATOR = "SP.URB.TOTL.IN.ZS"
 
 def register_gdp_vs_urbanization_callbacks(app):
     """Register callbacks for GDP vs Urbanization chart"""
+    
+    # Load static data once at registration time for performance
+    gdp_df = load_wdi_data(GDP_INDICATOR)
+    urb_df = load_wdi_data(URBAN_INDICATOR)
+    countries_dict = load_subsaharan_countries_and_regions_dict()
+    global_colors = get_global_benchmark_colors()
+    global_names = get_global_benchmark_names()
+    
     @app.callback(
         Output('gdp-vs-urbanization-chart', 'figure'),
         [Input('main-country-filter', 'value'),
@@ -42,12 +50,9 @@ def register_gdp_vs_urbanization_callbacks(app):
     )
     def generate_gdp_vs_urbanization_chart(selected_country, benchmark_countries, global_benchmarks):
         try:            
-            # Load data for both indicators
-            gdp_df = load_wdi_data(GDP_INDICATOR)
-            urb_df = load_wdi_data(URBAN_INDICATOR)
+            # Load data for both indicators (pre-loaded)
             
-            # Handle no country selected case
-            countries_dict = load_subsaharan_countries_and_regions_dict()
+            # Handle no country selected case (pre-loaded)
             
             if selected_country:
                 title_suffix = countries_dict.get(selected_country)
@@ -85,8 +90,6 @@ def register_gdp_vs_urbanization_callbacks(app):
                         plot_country(iso, countries_dict[iso], palette[i % len(palette)], dash='dot')
             # Global benchmarks
             if global_benchmarks:
-                global_colors = get_global_benchmark_colors()
-                global_names = get_global_benchmark_names()
                 # Use actual data from processed WDI files for global regions
                 for region_code in global_benchmarks:
                     if region_code in global_colors:
@@ -163,18 +166,12 @@ def register_gdp_vs_urbanization_callbacks(app):
             return None
         
         try:
-            # Load both datasets (raw data, no filtering)
-            gdp_df = load_wdi_data(GDP_INDICATOR)
-            urb_df = load_wdi_data(URBAN_INDICATOR)
-            
             # Create dictionary of dataframes
             dataframes_dict = {
                 f'gdp_per_capita_{GDP_INDICATOR}': gdp_df,
                 f'urbanization_rate_{URBAN_INDICATOR}': urb_df
             }
-            
-            filename = f"gdp_urbanization"
-            return prepare_multi_csv_download(dataframes_dict, filename)
+            return prepare_multi_csv_download(dataframes_dict, "gdp_urbanization")
         
         except Exception as e:
             print(f"Error preparing download: {str(e)}")

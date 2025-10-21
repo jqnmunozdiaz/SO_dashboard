@@ -27,6 +27,12 @@ except ImportError:
 def register_national_flood_exposure_callbacks(app):
     """Register callbacks for National Flood Exposure (Built-up, Absolute) chart"""
     
+    # Load static data once at registration time for performance
+    data = load_flood_exposure_data('built_s')
+    countries_dict = load_subsaharan_countries_and_regions_dict()
+    colors = get_return_period_colors()
+    labels = get_return_period_labels()
+    
     @app.callback(
         Output('national-flood-exposure-chart', 'figure'),
         [Input('main-country-filter', 'value'),
@@ -45,9 +51,7 @@ def register_national_flood_exposure_callbacks(app):
             Plotly figure object
         """
         try:
-            # Load data
-            data = load_flood_exposure_data('built_s')
-            countries_dict = load_subsaharan_countries_and_regions_dict()
+            # Load data (pre-loaded)
             
             # Handle no country selected
             if not selected_country:
@@ -62,9 +66,7 @@ def register_national_flood_exposure_callbacks(app):
             # Get country name for title
             country_name = countries_dict.get(selected_country, selected_country)
             
-            # Get color and label mappings
-            colors = get_return_period_colors()
-            labels = get_return_period_labels()
+            # Get color and label mappings (pre-loaded)
             
             # Create figure
             fig = go.Figure()
@@ -156,10 +158,7 @@ def register_national_flood_exposure_callbacks(app):
             return None
         
         try:
-            # Load full dataset (raw data, no filtering)
-            data = load_flood_exposure_data('built_s')
-            filename = "national_flood_exposure_built_up"
-            return prepare_csv_download(data, filename)
+            return prepare_csv_download(data, "national_flood_exposure_built_up")
         except Exception as e:
             print(f"Error preparing download: {str(e)}")
             return None

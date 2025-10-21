@@ -29,6 +29,15 @@ except ImportError:
 def register_national_flood_exposure_relative_callbacks(app):
     """Register callbacks for National Flood Exposure (Built-up, Relative) chart"""
     
+    # Load static data once at registration time for performance
+    flood_data = load_flood_exposure_data('built_s')
+    total_buildup_data = load_ghsl_total_buildup_data()
+    countries_dict = load_subsaharan_countries_and_regions_dict()
+    benchmark_colors_dict = get_benchmark_colors()
+    benchmark_names = get_benchmark_names()
+    return_period_colors = get_return_period_colors()
+    return_period_labels = get_return_period_labels()
+    
     @app.callback(
         Output('national-flood-exposure-relative-chart', 'figure'),
         [Input('main-country-filter', 'value'),
@@ -52,13 +61,9 @@ def register_national_flood_exposure_relative_callbacks(app):
         """
         try:
             # Split combined benchmarks into regions and countries
-            benchmark_colors_dict = get_benchmark_colors()
             regional_benchmarks = [b for b in (combined_benchmarks or []) if b in benchmark_colors_dict]
             benchmark_countries = [b for b in (combined_benchmarks or []) if b not in benchmark_colors_dict]
-            # Load data
-            flood_data = load_flood_exposure_data('built_s')
-            total_buildup_data = load_ghsl_total_buildup_data()
-            countries_dict = load_subsaharan_countries_and_regions_dict()
+            # Load data (pre-loaded)
             
             # Handle no country selected
             if not selected_country:
@@ -255,10 +260,9 @@ def register_national_flood_exposure_relative_callbacks(app):
             return None
         
         try:
-            # Load full dataset (raw data, no filtering)
-            data = load_flood_exposure_data('built_s')
+            # Load full dataset (pre-loaded)
             filename = "national_flood_exposure_built_up_relative"
-            return prepare_csv_download(data, filename)
+            return prepare_csv_download(flood_data, filename)
         except Exception as e:
             print(f"Error preparing download: {str(e)}")
             return None

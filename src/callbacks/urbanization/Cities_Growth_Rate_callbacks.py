@@ -27,6 +27,10 @@ except ImportError:
 def register_cities_growth_rate_callbacks(app):
     """Register callbacks for Cities Growth Rate scatterplot chart"""
     
+    # Load static data once at registration time for performance
+    data = load_cities_growth_rate()
+    countries_dict = load_subsaharan_countries_and_regions_dict()
+    
     @app.callback(
         Output('cities-growth-rate-chart', 'figure'),
         Input('main-country-filter', 'value'),
@@ -34,9 +38,7 @@ def register_cities_growth_rate_callbacks(app):
     )
     def generate_cities_growth_rate_chart(selected_country):
         try:
-            # Load data
-            data = load_cities_growth_rate()
-            countries_dict = load_subsaharan_countries_and_regions_dict()
+            # Load data (pre-loaded)
             
             # Handle no country selected
             if not selected_country:
@@ -196,12 +198,11 @@ def register_cities_growth_rate_callbacks(app):
             return None
         
         try:
-            # Load full dataset (raw data, no filtering)
-            growth_data = load_cities_growth_rate()
+            # Load full dataset (pre-loaded)
             
             filename = "africapolis_ghsl2023_cagr_2000_2020"
             
-            return prepare_csv_download(growth_data, filename)
+            return prepare_csv_download(data, filename)
         
         except Exception as e:
             print(f"Error preparing download: {str(e)}")

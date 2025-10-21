@@ -188,8 +188,8 @@ def register_urban_density_callbacks(app):
         if not n_clicks:
             return None
         try:
-            density_data = load_urban_density_data()
-            return prepare_csv_download(density_data, 'urban_density_by_country_year')
+            # Use pre-loaded data
+            return prepare_csv_download(density_data_cache, 'urban_density_by_country_year')
         except Exception as e:
             print(f"Error preparing urban density download: {str(e)}")
             return None

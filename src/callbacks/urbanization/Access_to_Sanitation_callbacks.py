@@ -31,6 +31,10 @@ except ImportError:
 
 def register_access_to_sanitation_callbacks(app):
     """Register callbacks for Access to Sanitation chart"""
+    
+    # Load static data once at registration time for performance
+    sanitation_data = load_jmp_sanitation_data()
+    countries_dict = load_subsaharan_countries_and_regions_dict()
 
     @app.callback(
         Output('access-to-sanitation-chart', 'figure'),
@@ -40,11 +44,9 @@ def register_access_to_sanitation_callbacks(app):
     def generate_access_to_sanitation_chart(selected_country):
         """Generate stacked area chart showing sanitation access categories over time"""
         try:
-            # Load JMP sanitation data (long format)
-            sanitation_data = load_jmp_sanitation_data()
+            # Load JMP sanitation data (pre-loaded)
 
-            # Load country mapping for ISO code to full name conversion
-            countries_dict = load_subsaharan_countries_and_regions_dict()
+            # Load country mapping for ISO code to full name conversion (pre-loaded)
 
             if sanitation_data.empty:
                 raise Exception("No data available")
@@ -150,12 +152,7 @@ def register_access_to_sanitation_callbacks(app):
             return None
 
         try:
-            # Load full dataset (raw data, no filtering)
-            sanitation_data = load_jmp_sanitation_data()
-
-            filename = "access_to_sanitation_urban_jmp_wash"
-
-            return prepare_csv_download(sanitation_data, filename)
+            return prepare_csv_download(sanitation_data, "access_to_sanitation_urban_jmp_wash")
 
         except Exception as e:
             print(f"Error preparing download: {str(e)}")

@@ -4,7 +4,6 @@ Main application entry point for the Dash application.
 """
 
 import dash
-from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 from src.layouts.world_bank_layout import create_world_bank_layout

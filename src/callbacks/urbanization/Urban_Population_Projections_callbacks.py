@@ -32,6 +32,11 @@ except ImportError:
 def register_urban_population_projections_callbacks(app):
     """Register callbacks for Urban Population Projections chart"""
     
+    # Load static data once at registration time for performance
+    undesa_projections = load_undesa_urban_projections()
+    undesa_growth_rates = load_undesa_urban_growth_rates()
+    countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
+    
     @app.callback(
         Output('urban-population-projections-chart', 'figure'),
         [Input('main-country-filter', 'value'),
@@ -45,21 +50,20 @@ def register_urban_population_projections_callbacks(app):
             display_mode = 'absolute'
         
         try:
-            # Load country and region mapping for ISO code to full name conversion
-            countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
+            # Load country and region mapping for ISO code to full name conversion (pre-loaded)
             
             if selected_country:
                 country_name = countries_and_regions_dict.get(selected_country, selected_country)
             else:
                 raise Exception("No country selected")
 
-            # Load appropriate data based on display mode
+            # Load appropriate data based on display mode (pre-loaded)
             if display_mode == 'growth_rate':
-                # Load pre-calculated growth rates
-                undesa_data = load_undesa_urban_growth_rates()
+                # Use pre-loaded growth rates
+                undesa_data = undesa_growth_rates
             else:
-                # Load absolute population values
-                undesa_data = load_undesa_urban_projections()
+                # Use pre-loaded absolute population values
+                undesa_data = undesa_projections
                
             # Filter data for selected country
             country_data = undesa_data[undesa_data['ISO3'] == selected_country].copy()
@@ -291,12 +295,12 @@ def register_urban_population_projections_callbacks(app):
             return None
         
         try:
-            # Load appropriate dataset based on display mode
+            # Load appropriate dataset based on display mode (pre-loaded)
             if display_mode == 'growth_rate':
-                undesa_data = load_undesa_urban_growth_rates()
+                undesa_data = undesa_growth_rates
                 filename = "UNDESA_urban_growth_rates_consolidated"
             else:
-                undesa_data = load_undesa_urban_projections()
+                undesa_data = undesa_projections
                 filename = "UNDESA_urban_projections_consolidated"
             
             return prepare_csv_download(undesa_data, filename)

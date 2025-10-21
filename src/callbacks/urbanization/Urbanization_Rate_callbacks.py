@@ -35,6 +35,12 @@ except ImportError:
 def register_urbanization_rate_callbacks(app):
     """Register callbacks for Urbanization Rate chart"""
     
+    # Load static data once at registration time for performance
+    undesa_data = load_undesa_urban_projections()
+    countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
+    benchmark_colors_dict = get_benchmark_colors()
+    benchmark_names = get_benchmark_names()
+    
     @app.callback(
         Output('urbanization-rate-chart', 'figure'),
         [Input('main-country-filter', 'value'),
@@ -45,14 +51,11 @@ def register_urbanization_rate_callbacks(app):
         """Generate line chart showing urbanization rate over time"""
         try:
             # Split combined benchmarks into regions and countries
-            benchmark_colors_dict = get_benchmark_colors()
             benchmark_regions = [b for b in (combined_benchmarks or []) if b in benchmark_colors_dict]
             benchmark_countries = [b for b in (combined_benchmarks or []) if b not in benchmark_colors_dict]
-            # Load UNDESA urban projections data
-            undesa_data = load_undesa_urban_projections()
+            # Load UNDESA urban projections data (pre-loaded)
             
-            # Load country and region mapping for ISO code to full name conversion
-            countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
+            # Load country and region mapping for ISO code to full name conversion (pre-loaded)
             
             if undesa_data.empty:
                 # Return empty chart if no data
@@ -112,8 +115,6 @@ def register_urbanization_rate_callbacks(app):
                 raise Exception("No country selected")
             
             # Add benchmark regions if selected
-            benchmark_colors = get_benchmark_colors()
-            benchmark_names = get_benchmark_names()
             
             if benchmark_regions:
                 for region in benchmark_regions:
@@ -127,7 +128,7 @@ def register_urbanization_rate_callbacks(app):
                                 y=region_data['value'] * 100,  # Convert to percentage
                                 mode='lines',
                                 name=benchmark_names.get(region, region),
-                                line=dict(color=benchmark_colors.get(region, '#95a5a6'), width=2, dash='dash'),
+                                line=dict(color=benchmark_colors_dict.get(region, '#95a5a6'), width=2, dash='dash'),
                                 hovertemplate=f'<b>{benchmark_names.get(region, region)}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>'
                             ))
             
@@ -240,8 +241,7 @@ def register_urbanization_rate_callbacks(app):
             return None
         
         try:
-            # Load full dataset (raw data, no filtering)
-            undesa_data = load_undesa_urban_projections()
+            # Load full dataset (pre-loaded)
             
             filename = "urbanization_rate"
             

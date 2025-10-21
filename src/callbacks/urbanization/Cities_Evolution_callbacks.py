@@ -27,6 +27,10 @@ except ImportError:
 def register_cities_evolution_callbacks(app):
     """Register callbacks for Cities Evolution stacked bar chart"""
     
+    # Load static data once at registration time for performance
+    data = load_city_size_distribution()
+    countries_dict = load_subsaharan_countries_and_regions_dict()
+    
     @app.callback(
         Output('cities-evolution-chart', 'figure'),
         [Input('main-country-filter', 'value')],
@@ -34,10 +38,6 @@ def register_cities_evolution_callbacks(app):
     )
     def generate_cities_evolution_chart(selected_country):
         try:
-            # Load data
-            data = load_city_size_distribution()
-            countries_dict = load_subsaharan_countries_and_regions_dict()
-            
             # Handle no country selected
             if not selected_country:
                 raise Exception("No country selected")
@@ -201,12 +201,7 @@ def register_cities_evolution_callbacks(app):
             return None
         
         try:
-            # Load full dataset (raw data, no filtering)
-            cities_data = load_city_size_distribution()
-            
-            filename = "cities_individual"
-            
-            return prepare_csv_download(cities_data, filename)
+            return prepare_csv_download(data, "cities_individual")
         
         except Exception as e:
             print(f"Error preparing download: {str(e)}")

@@ -4,9 +4,7 @@ Shows line chart of urban electricity access percentage over time for selected c
 """
 
 from dash import Input, Output
-import plotly.express as px
 import plotly.graph_objects as go
-import pandas as pd
 import warnings
 
 # Suppress pandas future warnings
@@ -15,7 +13,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 try:
     from ...utils.data_loader import load_wdi_data, load_urbanization_indicators_dict
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
+    from ...utils.benchmark_config import get_benchmark_names, get_benchmark_colors
     from ...utils.component_helpers import create_error_chart
     from ...utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
@@ -26,7 +24,7 @@ except ImportError:
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_wdi_data, load_urbanization_indicators_dict
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
+    from src.utils.benchmark_config import get_benchmark_names, get_benchmark_colors
     from src.utils.component_helpers import create_error_chart
     from src.utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
@@ -34,6 +32,13 @@ except ImportError:
 
 def register_access_to_electricity_urban_callbacks(app):
     """Register callbacks for Access to Electricity, Urban chart"""
+    
+    # Load static data once at registration time for performance
+    electricity_data = load_wdi_data('EG.ELC.ACCS.UR.ZS')
+    indicators_dict = load_urbanization_indicators_dict()
+    countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
+    benchmark_colors_dict = get_benchmark_colors()
+    benchmark_names = get_benchmark_names()
     
     @app.callback(
         Output('access-to-electricity-urban-chart', 'figure'),
@@ -45,19 +50,11 @@ def register_access_to_electricity_urban_callbacks(app):
         """Generate line chart showing access to electricity in urban areas over time"""
         try:
             # Split combined benchmarks into regions and countries
-            from ...utils.benchmark_config import get_benchmark_colors
-            benchmark_colors_dict = get_benchmark_colors()
             benchmark_regions = [b for b in (combined_benchmarks or []) if b in benchmark_colors_dict]
             benchmark_countries = [b for b in (combined_benchmarks or []) if b not in benchmark_colors_dict]
-            # Load electricity access data
-            electricity_data = load_wdi_data('EG.ELC.ACCS.UR.ZS')
-            
-            # Load indicators dictionary for title
-            indicators_dict = load_urbanization_indicators_dict()
+
+            # Load indicators dictionary for title (pre-loaded)
             chart_title = indicators_dict.get('EG.ELC.ACCS.UR.ZS', 'Access to Electricity, Urban')
-            
-            # Load country and region mapping for ISO code to full name conversion
-            countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
             
             if electricity_data.empty:
                 raise Exception("No data available for selected country")
@@ -104,9 +101,6 @@ def register_access_to_electricity_urban_callbacks(app):
                             ))
             
             # Add benchmark regions if selected
-            benchmark_colors = get_benchmark_colors()
-            benchmark_names = get_benchmark_names()
-            
             if benchmark_regions:
                 for region in benchmark_regions:
                     if region in electricity_data['Country Code'].values:
@@ -119,7 +113,7 @@ def register_access_to_electricity_urban_callbacks(app):
                                 y=region_data['Value'],
                                 mode='lines',
                                 name=benchmark_names.get(region, region),
-                                line=dict(color=benchmark_colors.get(region, '#95a5a6'), width=2, dash='dash'),
+                                line=dict(color=benchmark_colors_dict.get(region, '#95a5a6'), width=2, dash='dash'),
                                 hovertemplate=f'<b>{benchmark_names.get(region, region)}</b><br>Year: %{{x}}<br>Electricity Access: %{{y:.1f}}%<extra></extra>'
                             ))
             
@@ -182,12 +176,7 @@ def register_access_to_electricity_urban_callbacks(app):
             return None
         
         try:
-            # Load full dataset (raw data, no filtering)
-            electricity_data = load_wdi_data('EG.ELC.ACCS.UR.ZS')
-            
-            filename = "access_to_electricity_urban_EG.ELC.ACCS.UR.ZS"
-            
-            return prepare_csv_download(electricity_data, filename)
+            return prepare_csv_download(electricity_data, "access_to_electricity_urban_EG.ELC.ACCS.UR.ZS")
         
         except Exception as e:
             print(f"Error preparing download: {str(e)}")

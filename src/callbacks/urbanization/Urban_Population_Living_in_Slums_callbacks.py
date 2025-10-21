@@ -4,7 +4,6 @@ Shows line chart of slums population percentage over time for selected country w
 """
 
 from dash import Input, Output
-import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 import warnings
@@ -35,6 +34,13 @@ except ImportError:
 def register_urban_population_living_in_slums_callbacks(app):
     """Register callbacks for Urban Population Living in Slums chart"""
     
+    # Load static data once at registration time for performance
+    slums_data = load_wdi_data('EN.POP.SLUM.UR.ZS')
+    indicators_dict = load_urbanization_indicators_dict()
+    countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
+    benchmark_colors_dict = get_benchmark_colors()
+    benchmark_names = get_benchmark_names()
+    
     @app.callback(
         Output('urban-population-slums-chart', 'figure'),
         [Input('main-country-filter', 'value'),
@@ -45,19 +51,14 @@ def register_urban_population_living_in_slums_callbacks(app):
         """Generate line chart showing urban population living in slums over time"""
         try:
             # Split combined benchmarks into regions and countries
-            from ...utils.benchmark_config import get_benchmark_colors
-            benchmark_colors_dict = get_benchmark_colors()
             benchmark_regions = [b for b in (combined_benchmarks or []) if b in benchmark_colors_dict]
             benchmark_countries = [b for b in (combined_benchmarks or []) if b not in benchmark_colors_dict]
-            # Load slums data
-            slums_data = load_wdi_data('EN.POP.SLUM.UR.ZS')
+            # Load slums data (pre-loaded)
             
-            # Load indicators dictionary for title
-            indicators_dict = load_urbanization_indicators_dict()
+            # Load indicators dictionary for title (pre-loaded)
             chart_title = indicators_dict.get('EN.POP.SLUM.UR.ZS', 'Urban Population Living in Slums')
             
-            # Load country and region mapping for ISO code to full name conversion
-            countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
+            # Load country and region mapping for ISO code to full name conversion (pre-loaded)
             
             # Create the figure
             fig = go.Figure()
@@ -88,8 +89,6 @@ def register_urban_population_living_in_slums_callbacks(app):
                 raise Exception("No country selected")
             
             # Add benchmark regions if selected
-            benchmark_colors = get_benchmark_colors()
-            benchmark_names = get_benchmark_names()
             
             if benchmark_regions:
                 for region in benchmark_regions:
@@ -103,7 +102,7 @@ def register_urban_population_living_in_slums_callbacks(app):
                                 y=region_data['Value'],
                                 mode='lines',
                                 name=benchmark_names.get(region, region),
-                                line=dict(color=benchmark_colors.get(region, '#95a5a6'), width=2, dash='dash'),
+                                line=dict(color=benchmark_colors_dict.get(region, '#95a5a6'), width=2, dash='dash'),
                                 hovertemplate=f'<b>{benchmark_names.get(region, region)}</b><br>Year: %{{x}}<br>Slums Population: %{{y:.1f}}%<extra></extra>'
                             ))
             
@@ -191,8 +190,7 @@ def register_urban_population_living_in_slums_callbacks(app):
             return None
         
         try:
-            # Load full dataset (raw data, no filtering)
-            slums_data = load_wdi_data('EN.POP.SLUM.UR.ZS')
+            # Load full dataset (pre-loaded)
             
             filename = "urban_population_slums_EN.POP.SLUM.UR.ZS"
             

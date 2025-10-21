@@ -22,6 +22,10 @@ except ImportError:
 def register_cities_distribution_callbacks(app):
     """Register callbacks for Cities Distribution d3.js treemap chart"""
     
+    # Load static data once at registration time for performance
+    data = load_city_size_distribution()
+    countries_dict = load_subsaharan_countries_and_regions_dict()
+    
     @app.callback(
         Output('cities-distribution-store', 'data'),
         [
@@ -33,10 +37,6 @@ def register_cities_distribution_callbacks(app):
     def update_cities_distribution_store(selected_country, selected_year):
         """Populate data store for d3.js rendering"""
         try:
-            # Load data
-            data = load_city_size_distribution()
-            countries_dict = load_subsaharan_countries_and_regions_dict()
-            
             # Handle no country selected
             if not selected_country:
                 return {
@@ -124,12 +124,7 @@ def register_cities_distribution_callbacks(app):
             return None
         
         try:
-            # Load full dataset (raw data, no filtering)
-            cities_data = load_city_size_distribution()
-            
-            filename = "cities_individual"
-            
-            return prepare_csv_download(cities_data, filename)
+            return prepare_csv_download(data, "cities_individual")
         
         except Exception as e:
             print(f"Error preparing download: {str(e)}")

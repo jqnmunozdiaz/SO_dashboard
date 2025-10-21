@@ -123,6 +123,20 @@ def register_callbacks(app):
         
         if active_subtab == 'urban-population-projections':
             return html.Div([
+                # Radio button to toggle between absolute values and growth rate
+                html.Div([
+                    html.Label('Display Mode:', className='filter-label'),
+                    dcc.RadioItems(
+                        id='urban-population-projections-mode',
+                        options=[
+                            {'label': 'Absolute Values', 'value': 'absolute'},
+                            {'label': 'Growth Rate', 'value': 'growth_rate'}
+                        ],
+                        value='absolute',
+                        className='year-radio-buttons',
+                        labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
+                    )
+                ], className='year-filter-container'),
                 # Chart
                 dcc.Graph(id="urban-population-projections-chart"),
                 # Indicator note

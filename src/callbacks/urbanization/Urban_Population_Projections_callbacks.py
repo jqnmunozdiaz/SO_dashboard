@@ -34,11 +34,16 @@ def register_urban_population_projections_callbacks(app):
     
     @app.callback(
         Output('urban-population-projections-chart', 'figure'),
-        [Input('main-country-filter', 'value')],
+        [Input('main-country-filter', 'value'),
+         Input('urban-population-projections-mode', 'value')],
         prevent_initial_call=False
     )
-    def generate_urban_population_projections_chart(selected_country):
+    def generate_urban_population_projections_chart(selected_country, display_mode):
         """Generate urban and rural population projections chart with uncertainty bands"""
+        # Default to absolute values if mode not specified
+        if display_mode is None:
+            display_mode = 'absolute'
+        
         try:
             # Load country and region mapping for ISO code to full name conversion
             countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
@@ -57,9 +62,9 @@ def register_urban_population_projections_callbacks(app):
             # Pivot data for easier access
             country_pivot = country_data.pivot(index='year', columns='indicator', values='value')
             
-            # Define year ranges
-            past_years = list(range(1950, 2030, 5))
-            future_years = list(range(2025, 2055, 5))
+            # Define year ranges - ensure 2025 is in both to connect the lines
+            past_years = list(range(1950, 2030, 5))  # Includes 2025
+            future_years = list(range(2025, 2055, 5))  # Also includes 2025
             
             # Create figure
             fig = go.Figure()
@@ -67,18 +72,61 @@ def register_urban_population_projections_callbacks(app):
             # Get colors from CHART_STYLES
             colors = {'urban': CHART_STYLES['colors']['urban'], 'rural': CHART_STYLES['colors']['rural']}
             
+            # Calculate growth rates if in growth_rate mode
+            if display_mode == 'growth_rate':
+                # Calculate growth rates for historical data
+                for aoi in ['urban', 'rural']:
+                    col_name = f'wup_{aoi}_pop'
+                    if col_name in country_pivot.columns:
+                        country_pivot[f'{aoi}_growth_rate'] = country_pivot[col_name].pct_change() * 100
+                
+                # Calculate growth rates for projections (median and uncertainty bounds)
+                for aoi in ['urban', 'rural']:
+                    # Median growth rate
+                    median_col = f'{aoi}_pop_median'
+                    if median_col in country_pivot.columns:
+                        country_pivot[f'{aoi}_median_growth_rate'] = country_pivot[median_col].pct_change() * 100
+                    
+                    # Lower and upper 80% growth rates
+                    for bound in ['lower80', 'upper80']:
+                        col_name = f'{aoi}_pop_{bound}'
+                        if col_name in country_pivot.columns:
+                            country_pivot[f'{aoi}_{bound}_growth_rate'] = country_pivot[col_name].pct_change() * 100
+                    
+                    # Lower and upper 95% growth rates
+                    for bound in ['lower95', 'upper95']:
+                        col_name = f'{aoi}_pop_{bound}'
+                        if col_name in country_pivot.columns:
+                            country_pivot[f'{aoi}_{bound}_growth_rate'] = country_pivot[col_name].pct_change() * 100
+            
             # Add data for both urban and rural
             for aoi in ['urban', 'rural']:
+                # Determine which columns to use based on display mode
+                if display_mode == 'growth_rate':
+                    lower95_col = f'{aoi}_lower95_growth_rate'
+                    upper95_col = f'{aoi}_upper95_growth_rate'
+                    lower80_col = f'{aoi}_lower80_growth_rate'
+                    upper80_col = f'{aoi}_upper80_growth_rate'
+                    median_col = f'{aoi}_median_growth_rate'
+                    historical_col = f'{aoi}_growth_rate'
+                else:
+                    lower95_col = f'{aoi}_pop_lower95'
+                    upper95_col = f'{aoi}_pop_upper95'
+                    lower80_col = f'{aoi}_pop_lower80'
+                    upper80_col = f'{aoi}_pop_upper80'
+                    median_col = f'{aoi}_pop_median'
+                    historical_col = f'wup_{aoi}_pop'
+                
                 # Add uncertainty bands for future projections (95% confidence interval)
-                if f'{aoi}_pop_lower95' in country_pivot.columns and f'{aoi}_pop_upper95' in country_pivot.columns:
+                if lower95_col in country_pivot.columns and upper95_col in country_pivot.columns:
                     # Get data for uncertainty bands
                     years_with_data = [year for year in future_years if year in country_pivot.index 
-                                     and pd.notna(country_pivot.loc[year, f'{aoi}_pop_lower95']) 
-                                     and pd.notna(country_pivot.loc[year, f'{aoi}_pop_upper95'])]
+                                     and pd.notna(country_pivot.loc[year, lower95_col]) 
+                                     and pd.notna(country_pivot.loc[year, upper95_col])]
                     
                     if years_with_data:
-                        lower95_values = [country_pivot.loc[year, f'{aoi}_pop_lower95'] for year in years_with_data]
-                        upper95_values = [country_pivot.loc[year, f'{aoi}_pop_upper95'] for year in years_with_data]
+                        lower95_values = [country_pivot.loc[year, lower95_col] for year in years_with_data]
+                        upper95_values = [country_pivot.loc[year, upper95_col] for year in years_with_data]
                         
                         # Add 95% confidence interval
                         # Convert hex to rgba with 20% opacity
@@ -99,15 +147,15 @@ def register_urban_population_projections_callbacks(app):
                         ))
                 
                 # Add uncertainty bands for future projections (80% confidence interval)
-                if f'{aoi}_pop_lower80' in country_pivot.columns and f'{aoi}_pop_upper80' in country_pivot.columns:
+                if lower80_col in country_pivot.columns and upper80_col in country_pivot.columns:
                     # Get data for uncertainty bands
                     years_with_data = [year for year in future_years if year in country_pivot.index 
-                                     and pd.notna(country_pivot.loc[year, f'{aoi}_pop_lower80']) 
-                                     and pd.notna(country_pivot.loc[year, f'{aoi}_pop_upper80'])]
+                                     and pd.notna(country_pivot.loc[year, lower80_col]) 
+                                     and pd.notna(country_pivot.loc[year, upper80_col])]
                     
                     if years_with_data:
-                        lower80_values = [country_pivot.loc[year, f'{aoi}_pop_lower80'] for year in years_with_data]
-                        upper80_values = [country_pivot.loc[year, f'{aoi}_pop_upper80'] for year in years_with_data]
+                        lower80_values = [country_pivot.loc[year, lower80_col] for year in years_with_data]
+                        upper80_values = [country_pivot.loc[year, upper80_col] for year in years_with_data]
                         
                         # Add 80% confidence interval
                         # Convert hex to rgba with 40% opacity
@@ -127,12 +175,18 @@ def register_urban_population_projections_callbacks(app):
                             name=f'{aoi.title()} 80% CI'
                         ))
                 
-                # Add historical data (solid line)
-                if f'wup_{aoi}_pop' in country_pivot.columns:
+                # Add historical data (solid line) - includes up to 2025
+                if historical_col in country_pivot.columns:
                     past_years_with_data = [year for year in past_years if year in country_pivot.index 
-                                          and pd.notna(country_pivot.loc[year, f'wup_{aoi}_pop'])]
+                                          and pd.notna(country_pivot.loc[year, historical_col])]
                     if past_years_with_data:
-                        past_values = [country_pivot.loc[year, f'wup_{aoi}_pop'] for year in past_years_with_data]
+                        past_values = [country_pivot.loc[year, historical_col] for year in past_years_with_data]
+                        
+                        # Set hover template based on display mode
+                        if display_mode == 'growth_rate':
+                            hover_template = f'<b>{aoi.title()} Growth Rate</b><br>Growth Rate: %{{y:.2f}}%<br><extra></extra>'
+                        else:
+                            hover_template = f'<b>{aoi.title()} Population</b><br>Population: %{{y:.1f}} million<br><extra></extra>'
                         
                         fig.add_trace(go.Scatter(
                             x=past_years_with_data,
@@ -141,17 +195,22 @@ def register_urban_population_projections_callbacks(app):
                             name=f'{aoi.title()} (Historical)',
                             line=dict(color=colors[aoi], width=3),
                             marker=dict(size=6),
-                            hovertemplate=f'<b>{aoi.title()} Population</b><br>' +
-                                        'Population: %{y:.1f} million<br>' +
-                                        '<extra></extra>'
+                            hovertemplate=hover_template,
+                            connectgaps=False
                         ))
                 
-                # Add future projections (dashed line)
-                if f'{aoi}_pop_median' in country_pivot.columns:
+                # Add future projections (dashed line) - starts at 2025 to connect with historical
+                if median_col in country_pivot.columns:
                     future_years_with_data = [year for year in future_years if year in country_pivot.index 
-                                            and pd.notna(country_pivot.loc[year, f'{aoi}_pop_median'])]
+                                            and pd.notna(country_pivot.loc[year, median_col])]
                     if future_years_with_data:
-                        future_values = [country_pivot.loc[year, f'{aoi}_pop_median'] for year in future_years_with_data]
+                        future_values = [country_pivot.loc[year, median_col] for year in future_years_with_data]
+                        
+                        # Set hover template based on display mode
+                        if display_mode == 'growth_rate':
+                            hover_template = f'<b>{aoi.title()} Growth Rate (Projected)</b><br>Growth Rate: %{{y:.2f}}%<br><extra></extra>'
+                        else:
+                            hover_template = f'<b>{aoi.title()} Population (Projected)</b><br>Population: %{{y:.1f}} million<br><extra></extra>'
                         
                         fig.add_trace(go.Scatter(
                             x=future_years_with_data,
@@ -160,16 +219,31 @@ def register_urban_population_projections_callbacks(app):
                             name=f'{aoi.title()} (Projected)',
                             line=dict(color=colors[aoi], width=3, dash='dash'),
                             marker=dict(size=6),
-                            hovertemplate=f'<b>{aoi.title()} Population (Projected)</b><br>' +
-                                        'Population: %{y:.1f} million<br>' +
-                                        '<extra></extra>'
+                            hovertemplate=hover_template,
+                            connectgaps=False
                         ))
             
-            # Update layout
+            # Update layout with appropriate y-axis title and formatting
+            if display_mode == 'growth_rate':
+                yaxis_title = 'Growth Rate (%)'
+                chart_title = f'<b>{country_name}</b> | Urban and Rural Population Growth Rate'
+                yaxis_config = dict(
+                    title=yaxis_title,
+                    tickformat='0.0f',  # Format as decimal with 1 place
+                    ticksuffix='%'  # Add % suffix to each tick
+                )
+            else:
+                yaxis_title = 'Population (millions)'
+                chart_title = f'<b>{country_name}</b> | Urban and Rural Population Projections'
+                yaxis_config = dict(
+                    title=yaxis_title,
+                    tickformat=None
+                )
+            
             fig.update_layout(
-                title=f'<b>{country_name}</b> | Urban and Rural Population Projections',
+                title=chart_title,
                 xaxis_title='Year',
-                yaxis_title='Population (millions)',
+                yaxis=yaxis_config,
                 hovermode='x unified',
                 legend=dict(
                     orientation="h",
@@ -190,7 +264,7 @@ def register_urban_population_projections_callbacks(app):
             
             # Add annotations on either side of the line
             fig.add_annotation(
-                x=2024,  # Midpoint of historical period (1950-2025)
+                x=2024,
                 y=1,
                 yref="paper",
                 text="Historical",
@@ -201,7 +275,7 @@ def register_urban_population_projections_callbacks(app):
             )
             
             fig.add_annotation(
-                x=2026,  # Midpoint of projection period (2025-2055)
+                x=2026,
                 y=1,
                 yref="paper", 
                 text="Projections",
@@ -210,6 +284,11 @@ def register_urban_population_projections_callbacks(app):
                 yanchor="top",
                 xanchor="left"
             )
+            
+            # Add zero line for growth rate mode
+            if display_mode == 'growth_rate':
+                fig.add_hline(y=0, line_dash="dot", line_color="gray", opacity=0.5)
+            
             return fig
             
         except Exception as e:

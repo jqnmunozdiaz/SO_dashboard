@@ -169,7 +169,7 @@ def create_world_bank_urbanization_tab_content():
             html.Div([
                 dbc.Tabs(
                     [
-                        dbc.Tab(label="Urban Population", tab_id="urban-population-projections"),
+                        dbc.Tab(label="Population", tab_id="urban-population-projections"),
                         dbc.Tab(label="Urbanization Rate", tab_id="urbanization-rate"),
                         dbc.Tab(label="Urban Density", tab_id="urban-density"),
                         dbc.Tab(label="Population Living in Slums", tab_id="urban-population-slums"),

@@ -1,0 +1,60 @@
+/* Cities Distribution d3.js Treemap Styles */
+
+#cities-distribution-d3 {
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+#cities-distribution-d3 svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Tooltip styling (overrides inline styles for better appearance) */
+.cities-treemap-tooltip {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.5;
+}
+
+.cities-treemap-tooltip strong {
+    color: #374151;
+    font-size: 14px;
+}
+
+/* Smooth transitions for treemap cells */
+#cities-distribution-d3 rect {
+    transition: opacity 0.2s ease, stroke 0.2s ease;
+}
+
+/* Error message styling */
+#cities-distribution-d3 .error-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #6b7280;
+    font-size: 16px;
+}
+
+/* Loading state */
+#cities-distribution-d3.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#cities-distribution-d3.loading::after {
+    content: "Loading visualization...";
+    color: #6b7280;
+    font-size: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #cities-distribution-d3 {
+        height: 500px !important;
+    }
+}

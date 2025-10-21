@@ -250,8 +250,56 @@ def load_jmp_sanitation_data() -> pd.DataFrame:
         raise Exception(f"Error loading JMP sanitation data: {str(e)}")
 
 
+def load_cities_growth_rate() -> pd.DataFrame:
+    """
+    Load Africapolis-GHSL2023 city growth rate data (2000-2020)
+    
+    Returns:
+        DataFrame with columns: ISO3, agglosID, agglosName, pop_2010, pop_2020, pop_cagr, 
+                                built_up_2010, built_up_2020, built_up_cagr, size_category
+    """
+    # Get the absolute path to the project root directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.join(current_dir, '..', '..')
+    file_path = os.path.join(project_root, 'data', 'processed', 'africapolis_ghsl2023_cagr_2000_2020.csv')
+    
+    try:
+        df = pd.read_csv(file_path)
+        return df
+        
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Cities growth rate data file not found: {file_path}")
+    except Exception as e:
+        raise Exception(f"Error loading cities growth rate data: {str(e)}")
+
+
+def load_urban_density_data(file_path: Optional[str] = None) -> pd.DataFrame:
+    """
+    Load urban density data aggregated by country and year.
+
+    Args:
+        file_path: Optional custom file path to the urban density CSV.
+
+    Returns:
+        DataFrame with columns: ISO3, year, population, built_up_km2, population_density
+    """
+    if file_path is None:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.join(current_dir, '..', '..')
+        file_path = os.path.join(project_root, 'data', 'processed', 'urban_density_by_country_year.csv')
+
+    try:
+        df = pd.read_csv(file_path)
+        return df
+
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Urban density data file not found: {file_path}")
+    except Exception as e:
+        raise Exception(f"Error loading urban density data: {str(e)}")
+
+
 # Import centralized country utilities
 from .country_utils import get_subsaharan_countries, load_subsaharan_countries_dict, load_subsaharan_countries_and_regions_dict
 
 # Re-export for backward compatibility
-__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections', 'load_city_size_distribution', 'load_city_agglomeration_counts', 'load_population_data', 'load_jmp_water_data', 'load_jmp_sanitation_data']
+__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections', 'load_city_size_distribution', 'load_city_agglomeration_counts', 'load_population_data', 'load_jmp_water_data', 'load_jmp_sanitation_data', 'load_cities_growth_rate', 'load_urban_density_data']

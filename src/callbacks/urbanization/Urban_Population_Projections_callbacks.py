@@ -29,7 +29,6 @@ except ImportError:
     from src.utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 
-
 def register_urban_population_projections_callbacks(app):
     """Register callbacks for Urban Population Projections chart"""
     
@@ -51,9 +50,7 @@ def register_urban_population_projections_callbacks(app):
 
             # Load UNDESA urban projections data
             undesa_data = load_undesa_urban_projections()
-            
-
-            
+               
             # Filter data for selected country
             country_data = undesa_data[undesa_data['ISO3'] == selected_country].copy()
             

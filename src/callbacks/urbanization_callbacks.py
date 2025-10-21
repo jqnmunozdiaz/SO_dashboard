@@ -15,6 +15,8 @@ from .urbanization.Urbanization_Rate_callbacks import register_urbanization_rate
 from .urbanization.GDP_vs_Urbanization_callbacks import register_gdp_vs_urbanization_callbacks
 from .urbanization.Cities_Distribution_callbacks import register_cities_distribution_callbacks
 from .urbanization.Cities_Evolution_callbacks import register_cities_evolution_callbacks
+from .urbanization.Urban_Density_callbacks import register_urban_density_callbacks
+from .urbanization.Cities_Growth_Rate_callbacks import register_cities_growth_rate_callbacks
 from .country_benchmark_callbacks import register_country_benchmark_options_callback, register_combined_benchmark_options_callback
 
 try:
@@ -43,13 +45,16 @@ def register_callbacks(app):
     register_access_to_electricity_urban_callbacks(app)
     register_urban_population_projections_callbacks(app)
     register_urbanization_rate_callbacks(app)
+    register_urban_density_callbacks(app)
     register_gdp_vs_urbanization_callbacks(app)
     register_cities_distribution_callbacks(app)
     register_cities_evolution_callbacks(app)
+    register_cities_growth_rate_callbacks(app)
     
     # Register combined benchmark dropdown callbacks (countries + regions in one dropdown)
     register_combined_benchmark_options_callback(app, 'slums-combined-benchmark-selector')
     register_combined_benchmark_options_callback(app, 'urbanization-rate-combined-benchmark-selector')
+    register_combined_benchmark_options_callback(app, 'urban-density-combined-benchmark-selector')
     register_combined_benchmark_options_callback(app, 'electricity-combined-benchmark-selector')
     
     # Register separate country benchmark callback for GDP vs Urbanization
@@ -61,7 +66,7 @@ def register_callbacks(app):
         Input('urbanization-subtabs', 'active_tab')
     )
     def update_country_filter_options(active_subtab):
-        """Update country filter options - hide regional aggregates for Cities Distribution/Evolution"""
+        """Update country filter options - hide regional aggregates for Cities Distribution/Evolution/Growth Rate"""
         try:
             # Get individual countries (without regional aggregates)
             countries = get_subsaharan_countries()
@@ -69,8 +74,8 @@ def register_callbacks(app):
             # Sort countries alphabetically by name
             countries = sorted(countries, key=lambda x: x['name'])
             
-            # For Cities Distribution and Cities Evolution, only show individual countries
-            if active_subtab in ['cities-distribution', 'cities-evolution']:
+            # For Cities Distribution, Cities Evolution, and Cities Growth Rate, only show individual countries
+            if active_subtab in ['cities-distribution', 'cities-evolution', 'cities-growth-rate']:
                 return [{'label': country['name'], 'value': country['code']} for country in countries]
             else:
                 # For other subtabs, include regional aggregates
@@ -129,6 +134,28 @@ def register_callbacks(app):
                     html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects.", html.Br(), html.B("Note:"), " Percentage of population living in urban areas. Shows historical trends and future projections of urbanization levels."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('urbanization-rate-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container")
+                ], className="indicator-note-container")
+            ], className="chart-container")
+        elif active_subtab == 'urban-density':
+            return html.Div([
+                # Combined benchmark selector
+                create_combined_benchmark_selector(
+                    dropdown_id='urban-density-combined-benchmark-selector',
+                    default_regional_codes=['SSA']
+                ),
+                # Chart
+                dcc.Graph(id="urban-density-chart"),
+                # Indicator note
+                html.Div([
+                    html.P([
+                        html.B("Data Source: "), "Africapolis & GHSL 2023 (processed).",
+                        html.Br(),
+                        html.B("Note:"), " Urban population density is calculated as total urban population divided by total built-up area (km²) for each country. Regional benchmarks aggregate populations and built-up areas before calculating density."
+                    ], className="indicator-note"),
+                    html.Div([
+                        create_download_trigger_button('urban-density-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")
@@ -268,6 +295,19 @@ def register_callbacks(app):
                     html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Urban population evolution showing individual cities stacked and colored by size category."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('cities-evolution-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container")
+                ], className="indicator-note-container")
+            ], className="chart-container")
+        elif active_subtab == 'cities-growth-rate':
+            return html.Div([
+                # Chart
+                dcc.Graph(id="cities-growth-rate-chart"),
+                # Indicator note
+                html.Div([
+                    html.P([html.B("Data Source: "), "Africapolis & GHSL 2023.", html.Br(), html.B("Note:"), " Scatterplot showing the relationship between population CAGR (Compound Annual Growth Rate) and built-up area CAGR for cities between 2000 and 2020. Points above the diagonal line (y=x) indicate cities where built-up area expanded faster than population, while points below indicate population growth outpaced spatial expansion."], className="indicator-note"),
+                    html.Div([
+                        create_download_trigger_button('cities-growth-rate-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")

@@ -281,19 +281,23 @@ def register_urban_population_projections_callbacks(app):
     
     @app.callback(
         Output('urban-population-projections-download', 'data'),
-        Input('urban-population-projections-download-button', 'n_clicks'),
+        [Input('urban-population-projections-download-button', 'n_clicks'),
+         Input('urban-population-projections-mode', 'value')],
         prevent_initial_call=True
     )
-    def download_urban_population_projections_data(n_clicks):
-        """Download urban population projections data as CSV"""
+    def download_urban_population_projections_data(n_clicks, display_mode):
+        """Download urban population projections data as CSV based on display mode"""
         if n_clicks is None or n_clicks == 0:
             return None
         
         try:
-            # Load full dataset (raw data, no filtering)
-            undesa_data = load_undesa_urban_projections()
-            
-            filename = "urban_population_projections"
+            # Load appropriate dataset based on display mode
+            if display_mode == 'growth_rate':
+                undesa_data = load_undesa_urban_growth_rates()
+                filename = "UNDESA_urban_growth_rates_consolidated"
+            else:
+                undesa_data = load_undesa_urban_projections()
+                filename = "UNDESA_urban_projections_consolidated"
             
             return prepare_csv_download(undesa_data, filename)
         

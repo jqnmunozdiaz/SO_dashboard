@@ -111,7 +111,7 @@ def register_gdp_vs_urbanization_callbacks(app):
             fig.update_layout(
                 title=f'<b>{title_suffix}</b> | GDP per Capita vs Urbanization Rate',
                 xaxis_title='Urbanization Rate (% of Population)',
-                yaxis_title='GDP per Capita (PPP, constant 2017 international $)',
+                yaxis_title='GDP per Capita<br>(PPP, constant 2017 international $)',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
@@ -150,7 +150,7 @@ def register_gdp_vs_urbanization_callbacks(app):
                 error_message=f"Error loading data: {str(e)}",
                 chart_type='scatter',
                 xaxis_title='Urbanization Rate (% of Population)',
-                yaxis_title='GDP per Capita (PPP, constant 2017 international $)',
+                yaxis_title='GDP per Capita<br>(PPP, constant 2017 international $)',
                 yaxis_range=[0, None],
                 title='GDP per Capita vs Urbanization Rate'
             )

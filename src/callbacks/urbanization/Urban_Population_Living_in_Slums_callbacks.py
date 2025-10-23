@@ -135,7 +135,7 @@ def register_urban_population_living_in_slums_callbacks(app):
             fig.update_layout(
                 title=f'<b>{title_suffix}</b> | {chart_title}',
                 xaxis_title='Year',
-                yaxis_title='Population Living in Slums (% of Urban Population)',
+                yaxis_title='Population Living in Slums<br>(% of Urban Population)',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
@@ -174,7 +174,7 @@ def register_urban_population_living_in_slums_callbacks(app):
                 error_message=f"Error loading data: {str(e)}",
                 chart_type='line',
                 xaxis_title='Year',
-                yaxis_title='Population Living in Slums (% of Urban Population)',
+                yaxis_title='Population Living in Slums<br>(% of Urban Population)',
                 yaxis_range=[0, 100],
                 title='Urban Population Living in Slums'
             )

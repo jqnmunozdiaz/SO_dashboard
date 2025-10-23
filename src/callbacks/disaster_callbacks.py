@@ -39,6 +39,20 @@ def register_callbacks(app):
         """Render different disaster charts based on selected subtab with clear chart mapping"""
         if active_subtab == 'disaster-frequency':
             return html.Div([
+                # Display mode selector
+                html.Div([
+                    html.Label("Display Mode:", className="filter-label"),
+                    dcc.RadioItems(
+                        id='disaster-frequency-mode-selector',
+                        options=[
+                            {'label': ' Absolute (count)', 'value': 'absolute'},
+                            {'label': ' Relative (share in %)', 'value': 'relative'}
+                        ],
+                        value='absolute',
+                        className='radio-buttons',
+                        labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
+                    )
+                ], className='filter-container'),
                 # Chart
                 dcc.Graph(id="disaster-frequency-chart"),
                 # Indicator note

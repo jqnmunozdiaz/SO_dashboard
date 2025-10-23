@@ -82,9 +82,9 @@ def register_urbanization_rate_callbacks(app):
                 if not country_data.empty:
                     country_name = countries_and_regions_dict.get(selected_country, selected_country)
                     
-                    # Split data for historical (<=2025) and projections (>2025)
+                    # Split data for historical (<=2025) and projections (>=2025)
                     hist_data = country_data[country_data['year'] <= 2025]
-                    proj_data = country_data[country_data['year'] > 2025]
+                    proj_data = country_data[country_data['year'] >= 2025]
 
                     # Add historical (solid line)
                     if not hist_data.empty:
@@ -92,9 +92,10 @@ def register_urbanization_rate_callbacks(app):
                             x=hist_data['year'],
                             y=hist_data['value'] * 100,
                             mode='lines',
-                            name=f'{country_name} (Historical)',
+                            name=country_name,
                             line=dict(color='#295e84', width=3),
-                            hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>'
+                            hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>',
+                            showlegend=True
                         ))
 
                     # Add projections (dashed line)
@@ -103,9 +104,10 @@ def register_urbanization_rate_callbacks(app):
                             x=proj_data['year'],
                             y=proj_data['value'] * 100,
                             mode='lines',
-                            name=f'{country_name} (Projections)',
+                            name=country_name,
                             line=dict(color='#295e84', width=3, dash='dash'),
-                            hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>'
+                            hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>',
+                            showlegend=False
                         ))
 
                     title_suffix = f"{country_name}"
@@ -123,14 +125,36 @@ def register_urbanization_rate_callbacks(app):
                         region_data = region_data.sort_values('year')
                         
                         if not region_data.empty:
-                            fig.add_trace(go.Scatter(
-                                x=region_data['year'],
-                                y=region_data['value'] * 100,  # Convert to percentage
-                                mode='lines',
-                                name=benchmark_names.get(region, region),
-                                line=dict(color=benchmark_colors_dict.get(region, '#95a5a6'), width=2, dash='dash'),
-                                hovertemplate=f'<b>{benchmark_names.get(region, region)}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>'
-                            ))
+                            region_name = benchmark_names.get(region, region)
+                            region_color = benchmark_colors_dict.get(region, '#95a5a6')
+                            
+                            # Split data for historical (<=2025) and projections (>=2025)
+                            region_hist = region_data[region_data['year'] <= 2025]
+                            region_proj = region_data[region_data['year'] >= 2025]
+                            
+                            # Add historical (solid line)
+                            if not region_hist.empty:
+                                fig.add_trace(go.Scatter(
+                                    x=region_hist['year'],
+                                    y=region_hist['value'] * 100,
+                                    mode='lines',
+                                    name=region_name,
+                                    line=dict(color=region_color, width=2),
+                                    hovertemplate=f'<b>{region_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>',
+                                    showlegend=True
+                                ))
+                            
+                            # Add projections (dashed line)
+                            if not region_proj.empty:
+                                fig.add_trace(go.Scatter(
+                                    x=region_proj['year'],
+                                    y=region_proj['value'] * 100,
+                                    mode='lines',
+                                    name=region_name,
+                                    line=dict(color=region_color, width=2, dash='dash'),
+                                    hovertemplate=f'<b>{region_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>',
+                                    showlegend=False
+                                ))
             
             # Add country benchmarks if selected
             if benchmark_countries:
@@ -147,21 +171,41 @@ def register_urbanization_rate_callbacks(app):
                             # Cycle through colors
                             color = country_colors[i % len(country_colors)]
                             
-                            fig.add_trace(go.Scatter(
-                                x=country_benchmark_data['year'],
-                                y=country_benchmark_data['value'] * 100,  # Convert to percentage
-                                mode='lines+markers',
-                                name=country_name,
-                                line=dict(color=color, width=2, dash='dot'),
-                                marker=dict(size=4, color=color),
-                                hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>'
-                            ))
+                            # Split data for historical (<=2025) and projections (>=2025)
+                            country_hist = country_benchmark_data[country_benchmark_data['year'] <= 2025]
+                            country_proj = country_benchmark_data[country_benchmark_data['year'] >= 2025]
+                            
+                            # Add historical (solid line with markers)
+                            if not country_hist.empty:
+                                fig.add_trace(go.Scatter(
+                                    x=country_hist['year'],
+                                    y=country_hist['value'] * 100,
+                                    mode='lines+markers',
+                                    name=country_name,
+                                    line=dict(color=color, width=2),
+                                    marker=dict(size=4, color=color),
+                                    hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>',
+                                    showlegend=True
+                                ))
+                            
+                            # Add projections (dashed line with markers)
+                            if not country_proj.empty:
+                                fig.add_trace(go.Scatter(
+                                    x=country_proj['year'],
+                                    y=country_proj['value'] * 100,
+                                    mode='lines+markers',
+                                    name=country_name,
+                                    line=dict(color=color, width=2, dash='dot'),
+                                    marker=dict(size=4, color=color),
+                                    hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>',
+                                    showlegend=False
+                                ))
             
             # Update layout
             fig.update_layout(
                 title=f'<b>{title_suffix}</b> | Urbanization Rate',
                 xaxis_title='Year',
-                yaxis_title='Urban Population (% of Total Population)',
+                yaxis_title='Urban Population<br>(% of Total Population)',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
@@ -225,7 +269,7 @@ def register_urbanization_rate_callbacks(app):
                 error_message=f"Error loading data: {str(e)}",
                 chart_type='line',
                 xaxis_title='Year',
-                yaxis_title='Urban Population (% of Total Population)',
+                yaxis_title='Urban Population<br>(% of Total Population)',
                 yaxis_range=[0, 100],
                 title='Urbanization Rate'
             )

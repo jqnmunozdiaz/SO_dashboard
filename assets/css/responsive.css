@@ -13,16 +13,16 @@
     }
 
     /* Responsive slider */
-    .year-filter-container {
+    .filter-container {
         display: block;
     }
     
-    .year-filter-container .filter-label {
+    .filter-container .filter-label {
         display: block;
         margin-bottom: 0.5rem;
     }
     
-    .year-filter-container .rc-slider {
+    .filter-container .rc-slider {
         min-width: 100%;
         width: 100%;
     }

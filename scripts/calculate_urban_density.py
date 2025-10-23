@@ -1,17 +1,18 @@
 #%%
 """
-Calculate urban population density by country and year from Africapolis GHSL 2023 data.
+Calculate built-up per capita by country and year from Africapolis GHSL 2023 data.
 
 This script:
 1. Loads population and built surface data from separate CSV files
 2. Aggregates total urban population and total built-up area by country and year
-3. Calculates population density (population per km²)
+3. Calculates built-up per capita (m² per person)
 4. Outputs the aggregated dataset to a CSV file
 """
 
 import pandas as pd
 import os
 import sys
+from src.utils.country_utils import load_wb_regional_classifications
 
 # Add project root to path for imports
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +21,7 @@ sys.path.insert(0, project_root)
 # Define file paths
 pop_file = os.path.join(project_root, 'data', 'raw', 'Fathom3-GHSL', 'africapolis_ghsl2023_pop.csv')
 built_file = os.path.join(project_root, 'data', 'raw', 'Fathom3-GHSL', 'africapolis_ghsl2023_built_s.csv')
-output_file = os.path.join(project_root, 'data', 'processed', 'urban_density_by_country_year.csv')
+output_file = os.path.join(project_root, 'data', 'processed', 'built_up_per_capita_m2_by_country_year.csv')
 
 pop_df = pd.read_csv(pop_file)
 built_df = pd.read_csv(built_file)
@@ -49,61 +50,38 @@ agg_df = df.groupby(['ISO3', 'year']).agg({
     'built_up_km2': 'sum'
 }).reset_index()
 
-# Calculate population density (population per km²)
-agg_df['population_density'] = agg_df['population'] / agg_df['built_up_km2']
+# Calculate built-up per capita (m² per person)
+agg_df['built_up_per_capita_m2'] = (agg_df['built_up_km2'] / agg_df['population']) * 1000000
 
 # Load World Bank regional classifications
-from src.utils.country_utils import load_wb_regional_classifications
-
 afe_countries, afw_countries, ssa_countries = load_wb_regional_classifications()
 
 # Calculate regional aggregates
 regional_data = []
 
+# Define regions for the loop
+regions = [
+    ('AFE', afe_countries),
+    ('AFW', afw_countries),
+    ('SSA', ssa_countries)
+]
+
 for year in agg_df['year'].unique():
     year_data = agg_df[agg_df['year'] == year]
     
-    # AFE (Eastern & Southern Africa)
-    afe_data = year_data[year_data['ISO3'].isin(afe_countries)]
-    if not afe_data.empty:
-        afe_pop = afe_data['population'].sum()
-        afe_built = afe_data['built_up_km2'].sum()
-        if afe_built > 0:
-            regional_data.append({
-                'ISO3': 'AFE',
-                'year': year,
-                'population': afe_pop,
-                'built_up_km2': afe_built,
-                'population_density': afe_pop / afe_built
-            })
-    
-    # AFW (Western & Central Africa)
-    afw_data = year_data[year_data['ISO3'].isin(afw_countries)]
-    if not afw_data.empty:
-        afw_pop = afw_data['population'].sum()
-        afw_built = afw_data['built_up_km2'].sum()
-        if afw_built > 0:
-            regional_data.append({
-                'ISO3': 'AFW',
-                'year': year,
-                'population': afw_pop,
-                'built_up_km2': afw_built,
-                'population_density': afw_pop / afw_built
-            })
-    
-    # SSA (Sub-Saharan Africa = AFE + AFW)
-    ssa_data = year_data[year_data['ISO3'].isin(ssa_countries)]
-    if not ssa_data.empty:
-        ssa_pop = ssa_data['population'].sum()
-        ssa_built = ssa_data['built_up_km2'].sum()
-        if ssa_built > 0:
-            regional_data.append({
-                'ISO3': 'SSA',
-                'year': year,
-                'population': ssa_pop,
-                'built_up_km2': ssa_built,
-                'population_density': ssa_pop / ssa_built
-            })
+    for region_code, countries in regions:
+        region_data = year_data[year_data['ISO3'].isin(countries)]
+        if not region_data.empty:
+            pop = region_data['population'].sum()
+            built = region_data['built_up_km2'].sum()
+            if pop > 0:
+                regional_data.append({
+                    'ISO3': region_code,
+                    'year': year,
+                    'population': pop,
+                    'built_up_km2': built,
+                    'built_up_per_capita_m2': (built / pop) * 1000000
+                })
 
 # Append regional data to country data
 if regional_data:

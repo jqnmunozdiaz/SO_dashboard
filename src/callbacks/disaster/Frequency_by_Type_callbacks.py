@@ -5,6 +5,7 @@ Shows bar chart of disaster event counts grouped by disaster type for selected c
 
 from dash import Input, Output
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 import warnings
 import textwrap
@@ -44,10 +45,11 @@ def setup_frequency_by_type_callbacks(app):
     
     @app.callback(
         Output('disaster-frequency-chart', 'figure'),
-        Input('main-country-filter', 'value'),
+        [Input('main-country-filter', 'value'),
+         Input('disaster-frequency-mode-selector', 'value')],
         prevent_initial_call=False
     )
-    def generate_disaster_frequency_by_type_chart(selected_country):
+    def generate_disaster_frequency_by_type_chart(selected_country, display_mode):
         """Generate bar chart showing frequency of historical disasters by disaster type since configured start year"""
         try:
             # Load real EM-DAT data
@@ -84,61 +86,95 @@ def setup_frequency_by_type_callbacks(app):
                 
         except Exception as e:
             # Return error chart using shared utility
+            chart_type = 'pie' if display_mode == 'relative' else 'bar'
             return create_error_chart(
                 error_message=f"Error loading data: {str(e)}",
-                chart_type='bar',
+                chart_type=chart_type,
                 xaxis_title='Disaster Type',
                 yaxis_title='Number of Events',
                 title='Frequency of Disasters by Type'
             )
         
-        # Create bar chart with custom colors
-        fig = px.bar(
-            frequency_data,
-            x='Disaster Type Wrapped',
-            y='Event Count',
-            title=f'<b>{title_suffix}</b> | Frequency of Disasters by Type ({DATA_CONFIG["analysis_period"]})',
-            labels={'Event Count': 'Number of Events', 'Disaster Type Wrapped': 'Disaster Type'},
-            color='Disaster Type',
-            color_discrete_map={
-            row['Disaster Type']: row['Color'] 
-            for _, row in frequency_data.iterrows()
-            }
-        )
-        
-        # Update layout styling
-        fig.update_layout(
-            plot_bgcolor='white',
-            paper_bgcolor='white',
-            font={'color': '#2c3e50'},
-            title_font_size=16,
-            xaxis_tickangle=0,
-            showlegend=False,
-            xaxis=dict(
-                tickmode='array',
-                tickvals=list(range(len(frequency_data))),
-                ticktext=frequency_data['Disaster Type Wrapped'].tolist()
-            ),
-            yaxis=dict(
-                dtick=1 if frequency_data['Event Count'].max() <= 10 else None,
-                rangemode='tozero',
-                showgrid=True,
-                gridwidth=1,
-                gridcolor='#e5e7eb',
-                zeroline=True,
-                zerolinewidth=1,
-                zerolinecolor='#e5e7eb'
-            ),
-            margin=dict(b=100)
-        )
-        
-        # Update bar styling
-        fig.update_traces(
-            marker_line_color='white',
-            marker_line_width=0.5,
-            hovertemplate='Events: %{y}<extra></extra>',
-            customdata=frequency_data['Disaster Type']
-        )
+        # If relative mode, create pie chart showing share of each hazard
+        if display_mode == 'relative':
+            # Calculate percentages
+            total_events = frequency_data['Event Count'].sum()
+            frequency_data['Share'] = (frequency_data['Event Count'] / total_events * 100).round(2)
+            
+            # Create pie chart
+            fig = go.Figure(data=[go.Pie(
+                labels=frequency_data['Disaster Type'],
+                values=frequency_data['Share'],
+                marker=dict(colors=frequency_data['Color']),
+                textinfo='label+percent',
+                textposition='auto',
+                hovertemplate='<b>%{label}</b><br>Share: %{value:.2f}%<br>Events: %{customdata}<extra></extra>',
+                customdata=frequency_data['Event Count']
+            )])
+            
+            fig.update_layout(
+                title=f'<b>{title_suffix}</b> | Share of Disasters by Type ({DATA_CONFIG["analysis_period"]})',
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                font={'color': '#2c3e50'},
+                title_font_size=16,
+                showlegend=True,
+                legend=dict(
+                    orientation="v",
+                    yanchor="middle",
+                    y=0.5,
+                    xanchor="left",
+                    x=1.02
+                )
+            )
+        else:
+            # Create bar chart with custom colors
+            fig = px.bar(
+                frequency_data,
+                x='Disaster Type Wrapped',
+                y='Event Count',
+                title=f'<b>{title_suffix}</b> | Frequency of Disasters by Type ({DATA_CONFIG["analysis_period"]})',
+                labels={'Event Count': 'Number of Events', 'Disaster Type Wrapped': 'Disaster Type'},
+                color='Disaster Type',
+                color_discrete_map={
+                row['Disaster Type']: row['Color'] 
+                for _, row in frequency_data.iterrows()
+                }
+            )
+            
+            # Update layout styling
+            fig.update_layout(
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                font={'color': '#2c3e50'},
+                title_font_size=16,
+                xaxis_tickangle=0,
+                showlegend=False,
+                xaxis=dict(
+                    tickmode='array',
+                    tickvals=list(range(len(frequency_data))),
+                    ticktext=frequency_data['Disaster Type Wrapped'].tolist()
+                ),
+                yaxis=dict(
+                    dtick=1 if frequency_data['Event Count'].max() <= 10 else None,
+                    rangemode='tozero',
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#e5e7eb',
+                    zeroline=True,
+                    zerolinewidth=1,
+                    zerolinecolor='#e5e7eb'
+                ),
+                margin=dict(b=100)
+            )
+            
+            # Update bar styling
+            fig.update_traces(
+                marker_line_color='white',
+                marker_line_width=0.5,
+                hovertemplate='Events: %{y}<extra></extra>',
+                customdata=frequency_data['Disaster Type']
+            )
         
         return fig
     

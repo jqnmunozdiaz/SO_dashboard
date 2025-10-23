@@ -2,10 +2,11 @@
 
 /* Urbanization Subtabs Color Coding */
 
-/* Light Blue - Urban Population, Urbanization Rate & Urban Density (tabs 1, 2, and 3) */
+/* Light Blue - Urban Population, Urbanization Rate, GDP vs Urbanization & Urban Density (tabs 1, 2, 3, and 4) */
 #urbanization-subtabs .nav-item:nth-child(1) .nav-link,
 #urbanization-subtabs .nav-item:nth-child(2) .nav-link,
-#urbanization-subtabs .nav-item:nth-child(3) .nav-link {
+#urbanization-subtabs .nav-item:nth-child(3) .nav-link,
+#urbanization-subtabs .nav-item:nth-child(4) .nav-link {
     background: #e0f2fe !important;
     border-color: #0ea5e9 !important;
     color: #0c4a6e !important;
@@ -13,7 +14,8 @@
 
 #urbanization-subtabs .nav-item:nth-child(1) .nav-link:hover,
 #urbanization-subtabs .nav-item:nth-child(2) .nav-link:hover,
-#urbanization-subtabs .nav-item:nth-child(3) .nav-link:hover {
+#urbanization-subtabs .nav-item:nth-child(3) .nav-link:hover,
+#urbanization-subtabs .nav-item:nth-child(4) .nav-link:hover {
     background: #bae6fd !important;
     border-color: #0284c7 !important;
     color: #082f49 !important;
@@ -21,7 +23,8 @@
 
 #urbanization-subtabs .nav-item:nth-child(1) .nav-link.active,
 #urbanization-subtabs .nav-item:nth-child(2) .nav-link.active,
-#urbanization-subtabs .nav-item:nth-child(3) .nav-link.active {
+#urbanization-subtabs .nav-item:nth-child(3) .nav-link.active,
+#urbanization-subtabs .nav-item:nth-child(4) .nav-link.active {
     color: #0c4a6e !important;
     background: #7dd3fc !important;
     border-color: #0284c7 !important;
@@ -29,8 +32,7 @@
     box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25) !important;
 }
 
-/* Green - Slums, Drinking Water, Sanitation, Electricity, GDP (tabs 4, 5, 6, 7, and 8) */
-#urbanization-subtabs .nav-item:nth-child(4) .nav-link,
+/* Green - Urban Density, Slums, Drinking Water, Sanitation, Electricity (tabs 5, 6, 7, and 8) */
 #urbanization-subtabs .nav-item:nth-child(5) .nav-link,
 #urbanization-subtabs .nav-item:nth-child(6) .nav-link,
 #urbanization-subtabs .nav-item:nth-child(7) .nav-link,
@@ -40,7 +42,6 @@
     color: #166534 !important;
 }
 
-#urbanization-subtabs .nav-item:nth-child(4) .nav-link:hover,
 #urbanization-subtabs .nav-item:nth-child(5) .nav-link:hover,
 #urbanization-subtabs .nav-item:nth-child(6) .nav-link:hover,
 #urbanization-subtabs .nav-item:nth-child(7) .nav-link:hover,
@@ -50,7 +51,6 @@
     color: #14532d !important;
 }
 
-#urbanization-subtabs .nav-item:nth-child(4) .nav-link.active,
 #urbanization-subtabs .nav-item:nth-child(5) .nav-link.active,
 #urbanization-subtabs .nav-item:nth-child(6) .nav-link.active,
 #urbanization-subtabs .nav-item:nth-child(7) .nav-link.active,

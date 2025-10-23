@@ -243,7 +243,7 @@ def create_absolute_relative_selector(radio_id):
                 {'label': ' Relative (% of population)', 'value': 'relative'}
             ],
             value='absolute',
-            className="year-radio-buttons",
+            className="radio-buttons",
             inline=True
         )
-    ], className="year-filter-container")
+    ], className="filter-container")

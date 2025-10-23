@@ -298,27 +298,27 @@ def load_cities_growth_rate() -> pd.DataFrame:
 
 def load_urban_density_data(file_path: Optional[str] = None) -> pd.DataFrame:
     """
-    Load urban density data aggregated by country and year.
+    Load built-up per capita data aggregated by country and year.
 
     Args:
-        file_path: Optional custom file path to the urban density CSV.
+        file_path: Optional custom file path to the built-up per capita CSV.
 
     Returns:
-        DataFrame with columns: ISO3, year, population, built_up_km2, population_density
+        DataFrame with columns: ISO3, year, population, built_up_km2, built_up_per_capita_m2
     """
     if file_path is None:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         project_root = os.path.join(current_dir, '..', '..')
-        file_path = os.path.join(project_root, 'data', 'processed', 'urban_density_by_country_year.csv')
+        file_path = os.path.join(project_root, 'data', 'processed', 'built_up_per_capita_m2_by_country_year.csv')
 
     try:
         df = pd.read_csv(file_path)
         return df
 
     except FileNotFoundError:
-        raise FileNotFoundError(f"Urban density data file not found: {file_path}")
+        raise FileNotFoundError(f"Built-up per capita data file not found: {file_path}")
     except Exception as e:
-        raise Exception(f"Error loading urban density data: {str(e)}")
+        raise Exception(f"Error loading built-up per capita data: {str(e)}")
 
 
 # Import centralized country utilities

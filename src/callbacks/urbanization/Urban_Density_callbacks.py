@@ -1,6 +1,6 @@
 """
-Callbacks for Urban Density visualization
-Shows line chart of urban population density (population per km² of built-up area)
+Callbacks for Built-up per capita visualization
+Shows line chart of built-up area per person (m² per capita) in cities
 """
 
 from dash import Input, Output
@@ -35,7 +35,7 @@ except ImportError:
 
 
 def register_urban_density_callbacks(app):
-    """Register callbacks for Urban Density chart"""
+    """Register callbacks for Built-up per capita chart"""
 
     density_data_cache = load_urban_density_data()
     countries_dict = load_subsaharan_countries_and_regions_dict()
@@ -51,22 +51,22 @@ def register_urban_density_callbacks(app):
     }
 
     def compute_series_for_code(code: str) -> pd.DataFrame:
-        """Return a dataframe with year and population_density for a country or region code"""
+        """Return a dataframe with year and built_up_per_capita_m2 for a country or region code"""
         if code in region_country_map:
             region_countries = region_country_map[code]
             region_subset = density_data_cache[density_data_cache['ISO3'].isin(region_countries)].copy()
             if region_subset.empty:
-                return region_subset[['year', 'population_density']]
+                return region_subset[['year', 'built_up_per_capita_m2']]
             aggregated = (
                 region_subset.groupby('year', as_index=False)
                 .agg({'population': 'sum', 'built_up_km2': 'sum'})
             )
             aggregated = aggregated[aggregated['built_up_km2'] > 0]
-            aggregated['population_density'] = aggregated['population'] / aggregated['built_up_km2']
-            return aggregated[['year', 'population_density']]
+            aggregated['built_up_per_capita_m2'] = (aggregated['built_up_km2'] / aggregated['population']) * 1000000
+            return aggregated[['year', 'built_up_per_capita_m2']]
 
         subset = density_data_cache[density_data_cache['ISO3'] == code].copy()
-        return subset[['year', 'population_density']]
+        return subset[['year', 'built_up_per_capita_m2']]
 
     @app.callback(
         Output('urban-density-chart', 'figure'),
@@ -86,7 +86,7 @@ def register_urban_density_callbacks(app):
             main_series = compute_series_for_code(selected_country)
             if main_series.empty:
                 raise Exception(
-                    f"No urban density data available for {country_name}"
+                    f"No built-up per capita data available for {country_name}"
                 )
 
             main_series = main_series.sort_values('year')
@@ -96,12 +96,12 @@ def register_urban_density_callbacks(app):
             fig.add_trace(
                 go.Scatter(
                     x=main_series['year'],
-                    y=main_series['population_density'],
+                    y=main_series['built_up_per_capita_m2'],
                     mode='lines+markers',
                     name=country_name,
                     line=dict(color=CHART_STYLES['colors']['info'], width=3),
                     marker=dict(size=6),
-                    hovertemplate=f'<b>{country_name}</b><br>Urban Density: %{{y:,.0f}} people/km²<extra></extra>'
+                    hovertemplate=f'<b>{country_name}</b><br>Built-up per capita: %{{y:.2f}} m²/person<extra></extra>'
                 )
             )
 
@@ -122,7 +122,7 @@ def register_urban_density_callbacks(app):
                 fig.add_trace(
                     go.Scatter(
                         x=benchmark_series['year'],
-                        y=benchmark_series['population_density'],
+                        y=benchmark_series['built_up_per_capita_m2'],
                         mode='lines+markers',
                         name=display_name,
                         line=dict(
@@ -131,14 +131,14 @@ def register_urban_density_callbacks(app):
                             dash=benchmark_line_styles[idx % len(benchmark_line_styles)],
                         ),
                         marker=dict(size=5),
-                        hovertemplate=f'<b>{display_name}</b><br>Urban Density: %{{y:,.0f}} people/km²<extra></extra>'
+                        hovertemplate=f'<b>{display_name}</b><br>Built-up per capita: %{{y:.2f}} m²/person<extra></extra>'
                     )
                 )
 
             country_name = countries_dict.get(selected_country, selected_country)
             
             fig.update_layout(
-                title=f'<b>{country_name}</b> | Urban Population Density',
+                title=f'<b>{country_name}</b> | Built-up per capita in Cities',
                 xaxis=dict(
                     title='Year',
                     showgrid=True,
@@ -146,7 +146,7 @@ def register_urban_density_callbacks(app):
                     zeroline=False,
                 ),
                 yaxis=dict(
-                    title='Urban Density (people/km²)',
+                    title='Built-up per capita (m²/person)',
                     showgrid=True,
                     gridcolor='#e2e8f0',
                     zeroline=True,
@@ -175,8 +175,8 @@ def register_urban_density_callbacks(app):
                 error_message=f"Error loading data: {str(e)}",
                 chart_type='line',
                 xaxis_title='Year',
-                yaxis_title='Urban Density (people/km²)',
-                title='Urban Population Density',
+                yaxis_title='Built-up per capita (m²/person)',
+                title='Built-up per capita in Cities',
             )
 
     @app.callback(

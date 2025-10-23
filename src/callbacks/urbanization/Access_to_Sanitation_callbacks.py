@@ -93,9 +93,9 @@ def register_access_to_sanitation_callbacks(app):
 
             # Update layout
             fig.update_layout(
-                title=f'<b>{country_name}</b> | Access to Sanitation (Urban)<br>',
+                title=f'<b>{country_name}</b> | Access to Sanitation, Urban (% of Urban Population)<br>',
                 xaxis_title='Year',
-                yaxis_title='Population Distribution (%)',
+                yaxis_title='Access to Sanitation<br>(% of Urban Population)',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
@@ -136,9 +136,9 @@ def register_access_to_sanitation_callbacks(app):
                 error_message=f"Error loading data: {str(e)}",
                 chart_type='line',
                 xaxis_title='Year',
-                yaxis_title='Population Distribution (%)',
+                yaxis_title='Access to Sanitation<br>(% of Urban Population)',
                 yaxis_range=[0, 100],
-                title='Access to Sanitation (Urban)'
+                title='Access to Sanitation, Urban (% of Urban Population)'
             )
 
     @app.callback(

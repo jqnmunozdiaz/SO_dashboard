@@ -45,8 +45,8 @@
     width: 300px;
 }
 
-/* Year filter container and radio buttons */
-.year-filter-container {
+/* Filter container and radio buttons */
+.filter-container {
     background: #ffffff;
     padding: 0.5rem 0.75rem;
     border-radius: 0.5rem;
@@ -56,20 +56,20 @@
     gap: 0.75rem;
 }
 
-.year-radio-buttons {
+.radio-buttons {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
     align-items: center;
 }
 
-.year-radio-buttons .form-check {
+.radio-buttons .form-check {
     display: flex;
     align-items: center;
     margin-bottom: 0;
 }
 
-.year-radio-buttons input[type="radio"] {
+.radio-buttons input[type="radio"] {
     width: 1rem !important;
     height: 1rem !important;
     cursor: pointer;
@@ -77,7 +77,7 @@
     accent-color: #002244;
 }
 
-.year-radio-buttons label {
+.radio-buttons label {
     font-size: 0.875rem;
     color: #374151;
     cursor: pointer;
@@ -85,6 +85,6 @@
     user-select: none;
 }
 
-.year-radio-buttons label:hover {
+.radio-buttons label:hover {
     color: #002244;
 }

@@ -40,10 +40,10 @@ def create_flood_type_selector(component_id, default_value=None):
             id=component_id,
             options=options,
             value=default,
-            className='year-radio-buttons',
+            className='radio-buttons',
             labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
         )
-    ], className='year-filter-container')
+    ], className='filter-container')
 
 
 def get_return_period_colors():
@@ -98,4 +98,4 @@ def create_return_period_selector(component_id):
             inline=True,
             labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
         )
-    ], className='year-filter-container')
+    ], className='filter-container')

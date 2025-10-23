@@ -93,9 +93,9 @@ def register_access_to_drinking_water_callbacks(app):
             
             # Update layout
             fig.update_layout(
-                title=f'<b>{country_name}</b> | Access to Drinking Water (Urban)<br>',
+                title=f'<b>{country_name}</b> | Access to Drinking Water, Urban (% of Urban Population)<br>',
                 xaxis_title='Year',
-                yaxis_title='Population Distribution (%)',
+                yaxis_title='Access to Drinking Water<br>(% of Urban Population)',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
@@ -136,9 +136,9 @@ def register_access_to_drinking_water_callbacks(app):
                 error_message=f"Error loading data: {str(e)}",
                 chart_type='line',
                 xaxis_title='Year',
-                yaxis_title='Population Distribution (%)',
+                yaxis_title='Access to Drinking Water<br>(% of Urban Population)',
                 yaxis_range=[0, 100],
-                title='Access to Drinking Water (Urban)'
+                title='Access to Drinking Water, Urban (% of Urban Population)'
             )
     
     @app.callback(

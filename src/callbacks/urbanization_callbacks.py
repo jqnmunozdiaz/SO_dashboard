@@ -60,19 +60,6 @@ def register_callbacks(app):
     # Register separate country benchmark callback for GDP vs Urbanization
     register_country_benchmark_options_callback(app, 'gdp-vs-urbanization-country-benchmark-selector')
     
-    # Clientside callback for d3.js Cities Distribution rendering
-    app.clientside_callback(
-        """
-        function(storeData) {
-            if (storeData && window.renderCitiesDistribution) {
-                window.renderCitiesDistribution(storeData);
-            }
-            return window.dash_clientside.no_update;
-        }
-        """,
-        Output('cities-distribution-d3', 'data-rendering'),
-        Input('cities-distribution-store', 'data')
-    )
     
     # Callback to filter country dropdown options based on active subtab
     @app.callback(
@@ -299,14 +286,11 @@ def register_callbacks(app):
                             2025: {'label': '2025', 'style': {'color': '#374151'}},
                             2030: {'label': '2030', 'style': {'color': '#374151'}},
                             2035: {'label': '2035', 'style': {'color': '#374151'}}
-                        },
-                        tooltip={"placement": "bottom", "always_visible": False}
+                        }
                     )
                 ], className="filter-container"),
-                # Data store for d3.js
-                dcc.Store(id='cities-distribution-store'),
-                # d3.js chart container
-                html.Div(id="cities-distribution-d3", style={'width': '100%', 'height': '600px', 'position': 'relative'}),
+                # Plotly treemap chart
+                dcc.Graph(id="cities-distribution-chart"),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Distribution of urban population across city size categories for selected year."], className="indicator-note"),

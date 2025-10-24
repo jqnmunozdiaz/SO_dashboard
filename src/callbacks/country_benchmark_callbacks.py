@@ -3,7 +3,7 @@ Shared callbacks for country benchmark dropdowns
 Provides reusable callback registration for populating country benchmark options
 """
 
-from dash import Input, Output
+from dash import Input, Output, State
 
 try:
     from ..utils.country_utils import load_subsaharan_countries_dict
@@ -59,11 +59,15 @@ def register_combined_benchmark_options_callback(app, output_id, default_regiona
         output_id: ID of the dropdown to populate (e.g., 'slums-combined-benchmark-selector')
         default_regional_codes: List of regional codes to select by default (e.g., ['SSA'])
     """
+    # Also read the flood-benchmark-store if present so we can set the dropdown value
+    # from the persisted store when available. This prevents the options callback from
+    # overwriting server-rendered initial values with an empty list.
     @app.callback(
         [Output(output_id, 'options'), Output(output_id, 'value')],
-        [Input('main-country-filter', 'value')]
+        [Input('main-country-filter', 'value')],
+        [State('flood-benchmark-store', 'data')]
     )
-    def populate_combined_benchmark_options(selected_country):
+    def populate_combined_benchmark_options(selected_country, stored_benchmarks):
         """Populate dropdown with countries (excluding selected) and regions"""
         try:
             countries_dict = load_subsaharan_countries_dict()
@@ -88,9 +92,13 @@ def register_combined_benchmark_options_callback(app, output_id, default_regiona
             # Combine countries and regions
             all_options = country_options + regional_options
             
-            # Set default value if provided
-            default_value = default_regional_codes if default_regional_codes else []
-            
+            # Prefer the stored benchmarks (from the persistent store) if available.
+            # Fall back to the default_regional_codes provided at registration time.
+            if stored_benchmarks:
+                default_value = stored_benchmarks
+            else:
+                default_value = default_regional_codes if default_regional_codes else []
+
             return all_options, default_value
         
         except Exception as e:

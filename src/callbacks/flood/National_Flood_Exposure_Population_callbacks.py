@@ -36,8 +36,8 @@ def register_national_flood_exposure_population_callbacks(app):
     @app.callback(
         Output('national-flood-exposure-population-chart', 'figure'),
         [Input('main-country-filter', 'value'),
-         Input('flood-return-period-selector-population', 'value'),
-         Input('flood-measurement-type-selector-population', 'value')],
+         Input('flood-return-period-selector', 'value'),
+         Input('flood-measurement-type-selector', 'value')],
         prevent_initial_call=False
     )
     def generate_national_flood_exposure_population_chart(selected_country, selected_return_periods, measurement_type):

@@ -41,7 +41,7 @@ def register_national_flood_exposure_relative_callbacks(app):
     @app.callback(
         Output('national-flood-exposure-relative-chart', 'figure'),
         [Input('main-country-filter', 'value'),
-         Input('flood-return-period-selector-relative', 'value'),
+         Input('flood-return-period-selector', 'value'),
          Input('flood-combined-benchmark-selector', 'value'),
          Input('flood-measurement-type-selector', 'value')],
         prevent_initial_call=False

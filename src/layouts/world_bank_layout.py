@@ -137,6 +137,8 @@ def create_world_bank_layout():
                 create_download_component("national-flood-exposure-relative-download"),
                 create_download_component("national-flood-exposure-population-download"),
                 create_download_component("national-flood-exposure-population-relative-download"),
+                # Store for flood benchmark selections
+                dcc.Store(id='flood-benchmark-store', data=[]),
             ], style={"display": "none"}),
         ], className="main-content"),
     ], className="dashboard-container")
@@ -196,11 +198,10 @@ def create_world_bank_flood_exposure_tab_content():
         html.Div([
             dbc.Tabs(
                 id="flood-exposure-subtabs",
-                active_tab="national-flood-exposure-buildup",
+                active_tab="national-flood-exposure",
                 className="sub-nav-tabs subtabs-container",
                 children=[
-                    dbc.Tab(label="National Flood Exposure (Built-up)", tab_id="national-flood-exposure-buildup"),
-                    dbc.Tab(label="National Flood Exposure (Population)", tab_id="national-flood-exposure-population"),
+                    dbc.Tab(label="National Flood Exposure", tab_id="national-flood-exposure"),
                 ],
             ),
             html.Div(id="flood-exposure-content"),

@@ -112,13 +112,18 @@ def create_combined_benchmark_selector(dropdown_id, default_regional_codes=None)
     Returns:
         html.Div: Combined benchmark selector component
     """
+    # Use the provided default_regional_codes as the initial value for the dropdown value property.
+    # This ensures the server-rendered default is applied as the component value on initial render
+    # and reduces spurious client-side change events that overwrite stored selections.
+    initial_value = default_regional_codes if default_regional_codes is not None else []
+
     return html.Div([
         html.Label("Benchmarks:", className="dropdown-label"),
         html.Div([
             dcc.Dropdown(
                 id=dropdown_id,
                 options=[],  # Will be populated by callback with countries + regions
-                value=[],    # Will be set by callback
+                value=initial_value,    # Set initial value from server-provided defaults
                 multi=True,
                 placeholder="Select countries or regions to compare...",
                 className="country-benchmark-dropdown"

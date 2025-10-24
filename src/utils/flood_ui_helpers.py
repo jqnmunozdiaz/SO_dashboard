@@ -125,3 +125,29 @@ def create_measurement_type_selector(component_id, default_value='absolute'):
             labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
         )
     ], className='filter-container')
+
+
+def create_exposure_type_selector(component_id, default_value='built_s'):
+    """
+    Create a radio button selector for exposure type (Built-up vs Population)
+    
+    Args:
+        component_id: Unique ID for the component
+        default_value: Default exposure type ('built_s' or 'pop')
+        
+    Returns:
+        html.Div containing the exposure type selector
+    """
+    return html.Div([
+        html.Label('Exposure Type:', className='filter-label'),
+        dcc.RadioItems(
+            id=component_id,
+            options=[
+                {'label': 'Built-up Area', 'value': 'built_s'},
+                {'label': 'Population', 'value': 'pop'}
+            ],
+            value=default_value,
+            className='radio-buttons',
+            labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
+        )
+    ], className='filter-container')

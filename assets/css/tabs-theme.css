@@ -123,28 +123,46 @@
 
 /* Flood Exposure Subtabs Color Coding */
 
-/* Light Blue - Built-up Exposure (tabs 1 and 2) */
-#flood-exposure-subtabs .nav-item:nth-child(1) .nav-link,
-#flood-exposure-subtabs .nav-item:nth-child(2) .nav-link {
+/* Light Blue - National Flood Exposure (tab 1) */
+#flood-exposure-subtabs .nav-item:nth-child(1) .nav-link {
     background: #e0f2fe !important;
     border-color: #0ea5e9 !important;
     color: #0c4a6e !important;
 }
 
-#flood-exposure-subtabs .nav-item:nth-child(1) .nav-link:hover,
-#flood-exposure-subtabs .nav-item:nth-child(2) .nav-link:hover {
+#flood-exposure-subtabs .nav-item:nth-child(1) .nav-link:hover {
     background: #bae6fd !important;
     border-color: #0284c7 !important;
     color: #082f49 !important;
 }
 
-#flood-exposure-subtabs .nav-item:nth-child(1) .nav-link.active,
-#flood-exposure-subtabs .nav-item:nth-child(2) .nav-link.active {
+#flood-exposure-subtabs .nav-item:nth-child(1) .nav-link.active {
     color: #0c4a6e !important;
     background: #7dd3fc !important;
     border-color: #0284c7 !important;
     font-weight: 500 !important;
     box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25) !important;
+}
+
+/* Light Orange - Cities Flood Exposure (tab 2) */
+#flood-exposure-subtabs .nav-item:nth-child(2) .nav-link {
+    background: #fed7aa !important;
+    border-color: #fb923c !important;
+    color: #7c2d12 !important;
+}
+
+#flood-exposure-subtabs .nav-item:nth-child(2) .nav-link:hover {
+    background: #fdba74 !important;
+    border-color: #f97316 !important;
+    color: #6b1f00 !important;
+}
+
+#flood-exposure-subtabs .nav-item:nth-child(2) .nav-link.active {
+    color: #7c2d12 !important;
+    background: #fb923c !important;
+    border-color: #f97316 !important;
+    font-weight: 500 !important;
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.25) !important;
 }
 
 /* Light Green - Population Exposure (tabs 3 and 4) */

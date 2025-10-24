@@ -3,8 +3,6 @@ Shared utility functions for creating consistent chart components
 """
 
 import plotly.graph_objects as go
-import pandas as pd
-
 
 def create_empty_chart(chart_type='bar', title="No Data Available", xaxis_title="", yaxis_title="", yaxis_range=None):
     """

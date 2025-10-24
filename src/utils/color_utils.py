@@ -65,3 +65,30 @@ def get_city_size_color(size_category: str, colors_dict: Dict[str, str] = None) 
     
     return colors_dict.get(size_category, '#95a5a6')  # Default gray
 
+
+# Benchmark country colors for flood exposure charts
+BENCHMARK_COUNTRY_COLORS = [
+    '#7f7f7f',  # Gray
+    '#17becf',  # Cyan
+    '#bcbd22',  # Yellow-green
+    '#e377c2',  # Pink
+    '#8c564b',  # Brown
+    '#9467bd',  # Purple
+    '#d62728',  # Red
+    '#2ca02c',  # Green
+    '#ff7f0e',  # Orange
+]
+
+
+def get_benchmark_country_color(index: int) -> str:
+    """
+    Get color for a benchmark country by index
+    
+    Args:
+        index: Index of the benchmark country in the list
+        
+    Returns:
+        Hex color code for the benchmark country
+    """
+    return BENCHMARK_COUNTRY_COLORS[index % len(BENCHMARK_COUNTRY_COLORS)]
+

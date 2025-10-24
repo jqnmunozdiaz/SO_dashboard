@@ -5,7 +5,7 @@ Shows population growth rate vs built-up area growth rate for cities (2000-2020)
 
 from dash import Input, Output
 import plotly.graph_objects as go
-import pandas as pd
+
 
 try:
     from ...utils.data_loader import load_cities_growth_rate
@@ -38,8 +38,6 @@ def register_cities_growth_rate_callbacks(app):
     )
     def generate_cities_growth_rate_chart(selected_country):
         try:
-            # Load data (pre-loaded)
-            
             # Handle no country selected
             if not selected_country:
                 raise Exception("No country selected")

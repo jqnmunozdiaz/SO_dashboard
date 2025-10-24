@@ -5,10 +5,9 @@ Shows evolution of urban population across city size categories over time
 
 from dash import Input, Output
 import plotly.graph_objects as go
-import pandas as pd
 
 try:
-    from ...utils.data_loader import load_city_size_distribution, load_city_agglomeration_counts
+    from ...utils.data_loader import load_city_size_distribution
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.component_helpers import create_error_chart
     from ...utils.download_helpers import prepare_csv_download
@@ -17,7 +16,7 @@ try:
 except ImportError:
     import sys, os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.data_loader import load_city_size_distribution, load_city_agglomeration_counts
+    from src.utils.data_loader import load_city_size_distribution
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.component_helpers import create_error_chart
     from src.utils.download_helpers import prepare_csv_download
@@ -75,10 +74,7 @@ def register_cities_evolution_callbacks(app):
             
             # Create stacked bar chart - bars ordered by size category for each year
             fig = go.Figure()
-            
-            # Get all unique cities and years
-            all_cities = filtered_data['City Name'].unique()
-            
+                       
             # For each year, we need to add cities in order by size category
             for year in years:
                 year_data = filtered_data[filtered_data['Year'] == year]

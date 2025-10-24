@@ -151,3 +151,53 @@ def create_exposure_type_selector(component_id, default_value='built_s'):
             labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
         )
     ], className='filter-container')
+
+
+def get_city_colors():
+    """
+    Get a list of distinct colors for differentiating cities in charts
+    Uses a qualitative color palette suitable for multiple categories
+    
+    Returns:
+        List of color hex codes
+    """
+    return [
+        '#1f77b4',  # Blue
+        '#ff7f0e',  # Orange
+        '#2ca02c',  # Green
+        '#d62728',  # Red
+        '#9467bd',  # Purple
+        '#8c564b',  # Brown
+        '#e377c2',  # Pink
+        '#7f7f7f',  # Gray
+        '#bcbd22',  # Olive
+        '#17becf',  # Cyan
+    ]
+
+
+def create_city_return_period_selector(component_id):
+    """
+    Create a radio button selector for return periods (single selection)
+    Used for city-level flood exposure where only one return period displays at a time
+    
+    Args:
+        component_id: Unique ID for the component
+        
+    Returns:
+        html.Div containing the return period radio selector
+    """
+    return html.Div([
+        html.Label('Return Period:', className='filter-label'),
+        dcc.RadioItems(
+            id=component_id,
+            options=[
+                {'label': ' 1-in-5 year', 'value': '1in5'},
+                {'label': ' 1-in-10 year', 'value': '1in10'},
+                {'label': ' 1-in-100 year', 'value': '1in100'}
+            ],
+            value='1in100',  # Default to 1-in-100 year
+            className='radio-buttons',
+            inline=True,
+            labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
+        )
+    ], className='filter-container')

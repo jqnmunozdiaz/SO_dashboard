@@ -2,31 +2,75 @@
 Orchestrator for flood exposure callbacks
 """
 
-from dash import Input, Output, State, html, dcc, ctx, MATCH, ALL, no_update
+from dash import Input, Output, State, html, dcc, no_update
 from .flood.National_Flood_Exposure_callbacks import register_national_flood_exposure_callbacks
 from .flood.National_Flood_Exposure_Relative_callbacks import register_national_flood_exposure_relative_callbacks
 from .flood.National_Flood_Exposure_Population_callbacks import register_national_flood_exposure_population_callbacks
 from .flood.National_Flood_Exposure_Population_Relative_callbacks import register_national_flood_exposure_population_relative_callbacks
-from .country_benchmark_callbacks import register_country_benchmark_options_callback, register_combined_benchmark_options_callback
+from .flood.Cities_Flood_Exposure_callbacks import register_cities_flood_exposure_callbacks
+from .country_benchmark_callbacks import register_combined_benchmark_options_callback
 
 try:
-    from ..utils.flood_ui_helpers import create_flood_type_selector, create_return_period_selector, create_measurement_type_selector, create_exposure_type_selector
-    from ..utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
+    from ..utils.flood_ui_helpers import (create_return_period_selector, 
+                                           create_measurement_type_selector, create_exposure_type_selector,
+                                           create_city_return_period_selector)
+    from ..utils.ui_helpers import create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
+    from ..utils.country_utils import get_subsaharan_countries
 except ImportError:
     import sys, os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-    from src.utils.flood_ui_helpers import create_flood_type_selector, create_return_period_selector, create_measurement_type_selector, create_exposure_type_selector
-    from src.utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
+    from src.utils.flood_ui_helpers import (create_return_period_selector, 
+                                             create_measurement_type_selector, create_exposure_type_selector,
+                                             create_city_return_period_selector)
+    from src.utils.ui_helpers import create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
+    from src.utils.country_utils import get_subsaharan_countries
 
 
 def register_callbacks(app):
     """Register all flood exposure callbacks"""
+    
+    # Callback to filter country dropdown options based on active flood subtab
+    @app.callback(
+        Output('main-country-filter', 'options', allow_duplicate=True),
+        Input('flood-exposure-subtabs', 'active_tab'),
+        prevent_initial_call=True
+    )
+    def update_country_filter_options_flood(flood_subtab):
+        """Update country filter options for flood tabs - hide regional aggregates for Cities Flood Exposure"""
+        try:
+            # Get individual countries (without regional aggregates)
+            countries = get_subsaharan_countries()
+            
+            # Sort countries alphabetically by name
+            countries = sorted(countries, key=lambda x: x['name'])
+            
+            # For Cities Flood Exposure, only show individual countries
+            if flood_subtab == 'cities-flood-exposure':
+                return [{'label': country['name'], 'value': country['code']} for country in countries]
+            else:
+                # For National Flood Exposure, include regional aggregates
+                regional_options = [
+                    {'label': 'Sub-Saharan Africa', 'value': 'SSA'},
+                    {'label': 'Eastern & Southern Africa', 'value': 'AFE'},
+                    {'label': 'Western & Central Africa', 'value': 'AFW'}
+                ]
+                all_options = [{'label': country['name'], 'value': country['code']} for country in countries]
+                all_options.extend(regional_options)
+                return all_options
+                
+        except Exception as e:
+            print(f"Error updating country filter options for flood: {str(e)}")
+            # Fallback to individual countries only
+            countries = get_subsaharan_countries()
+            countries = sorted(countries, key=lambda x: x['name'])
+            return [{'label': country['name'], 'value': country['code']} for country in countries]
     
     # Register individual chart callbacks
     register_national_flood_exposure_callbacks(app)
     register_national_flood_exposure_relative_callbacks(app)
     register_national_flood_exposure_population_callbacks(app)
     register_national_flood_exposure_population_relative_callbacks(app)
+    register_cities_flood_exposure_callbacks(app)
     
     # Register combined benchmark dropdown callbacks
     register_combined_benchmark_options_callback(app, 'flood-combined-benchmark-selector')
@@ -34,8 +78,7 @@ def register_callbacks(app):
     def create_flood_exposure_tab_content(exposure_type='built_s', measurement_type='absolute', benchmark_selections=None):
         """Helper function to create flood exposure tab content based on exposure and measurement type"""
         
-        # Create 2x2 grid layout for filters
-        # Top row: Exposure type (left) and Measurement type (right)
+        # Create 2x2 grid layout for filters # Top row: Exposure type (left) and Measurement type (right)
         top_row = html.Div([
             html.Div(
                 create_exposure_type_selector('flood-exposure-type-selector', default_value=exposure_type),
@@ -118,6 +161,73 @@ def register_callbacks(app):
         return html.Div([
             # Filters
             filters_container,
+            # Chart
+            dcc.Graph(id=chart_id),
+            # Data source note
+            html.Div([
+                html.P(note_text, className="indicator-note"),
+                html.Div([
+                    create_download_trigger_button(download_id),
+                    create_methodological_note_button()
+                ], className="buttons-container")
+            ], className="indicator-note-container")
+        ], className="chart-container")
+    
+    def create_cities_flood_exposure_tab_content():
+        """Helper function to create cities flood exposure tab content"""
+        
+        # Create filters layout - simpler than national (no benchmarks)
+        # Top row: Exposure type (left) and Measurement type (right)
+        top_row = html.Div([
+            html.Div(
+                create_exposure_type_selector('cities-flood-exposure-type-selector', default_value='built_s'),
+                style={'flex': '1', 'min-width': '300px'}
+            ),
+            html.Div(
+                create_measurement_type_selector('cities-flood-measurement-type-selector', default_value='absolute'),
+                style={'flex': '1', 'min-width': '300px'}
+            )
+        ], style={'display': 'flex', 'gap': '1rem', 'flex-wrap': 'wrap'})
+        
+        # Bottom row: Return period selector (radio buttons, single selection)
+        bottom_row = html.Div([
+            html.Div(
+                create_city_return_period_selector('cities-flood-return-period-selector'),
+                style={'flex': '1', 'min-width': '300px'}
+            )
+        ], style={'display': 'flex', 'gap': '1rem', 'flex-wrap': 'wrap'})
+        
+        filters_container = html.Div([
+            top_row, 
+            bottom_row
+        ], style={'display': 'flex', 'flex-direction': 'column', 'gap': '1rem'})
+        
+        # Chart and download IDs
+        chart_id = 'cities-flood-exposure-chart'
+        download_id = 'cities-flood-exposure-download'
+        
+        # Data source note
+        data_source = "Fathom3 flood maps (2020), GHSL Built-up Surface and Population (2023), and Africapolis city boundaries."
+        note_prefix = "This chart shows flood exposure over time for cities in the selected country. Each line represents a different city. "
+        
+        note_text = [
+            html.B("Data Source: "), 
+            data_source,
+            html.Br(),
+            html.B("Note: "), 
+            note_prefix,
+            "The data includes up to 5 major cities per country. ",
+            "A 1-in-100 year flood has a 1% probability of occurring in any given year. ",
+            html.A("Learn more about flood return periods", 
+                   href="https://www.gfdrr.org/en/100-year-flood", 
+                   target="_blank",
+                   style={'color': '#295e84', 'text-decoration': 'underline'}),
+            "."
+        ]
+        
+        return html.Div([
+            # Filters
+            filters_container,
             
             # Chart
             dcc.Graph(id=chart_id),
@@ -143,6 +253,10 @@ def register_callbacks(app):
         if active_subtab == 'national-flood-exposure':
             # Default to built-up area, absolute view on initial load
             return create_flood_exposure_tab_content('built_s', 'absolute')
+        
+        elif active_subtab == 'cities-flood-exposure':
+            # Cities flood exposure tab - no benchmarks
+            return create_cities_flood_exposure_tab_content()
         
         return html.Div("Select a subtab to view flood exposure data")
     

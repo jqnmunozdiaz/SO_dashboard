@@ -5,7 +5,6 @@ Shows line chart of slums population percentage over time for selected country w
 
 from dash import Input, Output
 import plotly.graph_objects as go
-import pandas as pd
 import warnings
 
 # Suppress pandas future warnings
@@ -57,8 +56,6 @@ def register_urban_population_living_in_slums_callbacks(app):
             
             # Load indicators dictionary for title (pre-loaded)
             chart_title = indicators_dict.get('EN.POP.SLUM.UR.ZS', 'Urban Population Living in Slums')
-            
-            # Load country and region mapping for ISO code to full name conversion (pre-loaded)
             
             # Create the figure
             fig = go.Figure()

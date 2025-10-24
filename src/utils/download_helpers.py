@@ -3,7 +3,6 @@ Helper functions for creating data download callbacks
 Provides reusable utilities for generating CSV downloads from dashboard data
 """
 
-import pandas as pd
 from dash import dcc
 import io
 import zipfile

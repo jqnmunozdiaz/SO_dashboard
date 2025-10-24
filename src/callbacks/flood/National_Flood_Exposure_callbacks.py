@@ -4,7 +4,6 @@ Callbacks for National Flood Exposure (Built-up, Absolute) visualization
 
 from dash import Input, Output
 import plotly.graph_objects as go
-import pandas as pd
 
 try:
     from ...utils.flood_data_loader import load_flood_exposure_data, filter_flood_data
@@ -98,7 +97,7 @@ def register_national_flood_exposure_callbacks(app):
                     name=labels.get(rp, rp),
                     line=dict(color=colors.get(rp, '#666666'), width=2.5),
                     marker=dict(size=8),
-                    hovertemplate=f'<b>{country_name}</b><br>Built-up Area: %{{y:.2f}} km²<extra></extra>'
+                    hovertemplate=f'<b>{country_name}</b><br>Return Period: {labels.get(rp, rp)}<br>Built-up Area: %{{y:.2f}} km²<extra></extra>'
                 ))
             
             # Update layout (flood type is hardcoded to Fluvial & Pluvial (Defended))

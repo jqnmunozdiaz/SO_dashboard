@@ -2,7 +2,7 @@
 Main callback controller that handles tab switching and content rendering
 """
 
-from dash import Input, Output, html, clientside_callback, ClientsideFunction
+from dash import Input, Output, html
 from src.layouts.world_bank_layout import (
     create_world_bank_disaster_tab_content, 
     create_world_bank_urbanization_tab_content,

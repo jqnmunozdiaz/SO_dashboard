@@ -9,7 +9,7 @@ import warnings
 # Suppress pandas future warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 def load_emdat_data(file_path: Optional[str] = None) -> pd.DataFrame:
     """

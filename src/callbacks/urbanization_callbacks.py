@@ -20,7 +20,6 @@ from .urbanization.Cities_Growth_Rate_callbacks import register_cities_growth_ra
 from .country_benchmark_callbacks import register_country_benchmark_options_callback, register_combined_benchmark_options_callback
 
 try:
-    from ..utils.benchmark_config import get_benchmark_options
     from ..utils.data_loader import load_urbanization_indicators_notes_dict
     from ..utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
     from ..utils.country_utils import get_subsaharan_countries
@@ -29,9 +28,8 @@ except ImportError:
     import sys
     import os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-    from src.utils.benchmark_config import get_benchmark_options
     from src.utils.data_loader import load_urbanization_indicators_notes_dict
-    from src.utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_download_button, create_methodological_note_button
+    from src.utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_methodological_note_button
     from src.utils.country_utils import get_subsaharan_countries
 
 
@@ -63,11 +61,12 @@ def register_callbacks(app):
     
     # Callback to filter country dropdown options based on active subtab
     @app.callback(
-        Output('main-country-filter', 'options'),
-        Input('urbanization-subtabs', 'active_tab')
+        Output('main-country-filter', 'options', allow_duplicate=True),
+        Input('urbanization-subtabs', 'active_tab'),
+        prevent_initial_call=True
     )
-    def update_country_filter_options(active_subtab):
-        """Update country filter options - hide regional aggregates for Cities Distribution/Evolution/Growth Rate"""
+    def update_country_filter_options_urbanization(urbanization_subtab):
+        """Update country filter options for urbanization tabs - hide regional aggregates for Cities Distribution/Evolution/Growth Rate"""
         try:
             # Get individual countries (without regional aggregates)
             countries = get_subsaharan_countries()
@@ -76,7 +75,7 @@ def register_callbacks(app):
             countries = sorted(countries, key=lambda x: x['name'])
             
             # For Cities Distribution, Cities Evolution, and Cities Growth Rate, only show individual countries
-            if active_subtab in ['cities-distribution', 'cities-evolution', 'cities-growth-rate']:
+            if urbanization_subtab in ['cities-distribution', 'cities-evolution', 'cities-growth-rate']:
                 return [{'label': country['name'], 'value': country['code']} for country in countries]
             else:
                 # For other subtabs, include regional aggregates
@@ -90,7 +89,7 @@ def register_callbacks(app):
                 return all_options
                 
         except Exception as e:
-            print(f"Error updating country filter options: {str(e)}")
+            print(f"Error updating country filter options for urbanization: {str(e)}")
             # Fallback to individual countries only
             countries = get_subsaharan_countries()
             countries = sorted(countries, key=lambda x: x['name'])

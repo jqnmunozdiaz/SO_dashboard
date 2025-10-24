@@ -6,7 +6,6 @@ Based on UN DESA World Urbanization Prospects data
 
 from dash import Input, Output
 import plotly.graph_objects as go
-import pandas as pd
 import warnings
 
 # Suppress pandas future warnings

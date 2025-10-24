@@ -4,25 +4,26 @@ Callbacks for National Flood Exposure (Built-up, Relative) visualization
 
 from dash import Input, Output
 import plotly.graph_objects as go
-import pandas as pd
 
 try:
-    from ...utils.flood_data_loader import load_flood_exposure_data, load_ghsl_total_buildup_data, filter_flood_data
-    from ...utils.flood_ui_helpers import get_return_period_colors, get_return_period_labels
+    from ...utils.flood_data_loader import load_flood_exposure_data, filter_flood_data
+    from ...utils.flood_ui_helpers import get_return_period_labels
     from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.component_helpers import create_error_chart
     from ...utils.download_helpers import prepare_csv_download
+    from ...utils.color_utils import get_benchmark_country_color
     from config.settings import CHART_STYLES
 except ImportError:
     import sys, os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.flood_data_loader import load_flood_exposure_data, load_ghsl_total_buildup_data, filter_flood_data
-    from src.utils.flood_ui_helpers import get_return_period_colors, get_return_period_labels
+    from src.utils.flood_data_loader import load_flood_exposure_data, filter_flood_data
+    from src.utils.flood_ui_helpers import get_return_period_labels
     from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.component_helpers import create_error_chart
     from src.utils.download_helpers import prepare_csv_download
+    from src.utils.color_utils import get_benchmark_country_color
     from config.settings import CHART_STYLES
 
 
@@ -31,13 +32,9 @@ def register_national_flood_exposure_relative_callbacks(app):
     
     # Load static data once at registration time for performance
     flood_data = load_flood_exposure_data('built_s')
-    total_buildup_data = load_ghsl_total_buildup_data()
     countries_dict = load_subsaharan_countries_and_regions_dict()
     benchmark_colors_dict = get_benchmark_colors()
-    benchmark_names = get_benchmark_names()
-    return_period_colors = get_return_period_colors()
-    return_period_labels = get_return_period_labels()
-    
+
     @app.callback(
         Output('national-flood-exposure-relative-chart', 'figure'),
         [Input('main-country-filter', 'value'),
@@ -67,7 +64,6 @@ def register_national_flood_exposure_relative_callbacks(app):
             # Split combined benchmarks into regions and countries
             regional_benchmarks = [b for b in (combined_benchmarks or []) if b in benchmark_colors_dict]
             benchmark_countries = [b for b in (combined_benchmarks or []) if b not in benchmark_colors_dict]
-            # Load data (pre-loaded)
             
             # Handle no country selected
             if not selected_country:
@@ -77,21 +73,7 @@ def register_national_flood_exposure_relative_callbacks(app):
             if not selected_return_periods:
                 raise Exception("Please select at least one return period")
             
-            # Merge flood data with total built-up data
-            merged_data = flood_data.merge(
-                total_buildup_data,
-                on=['ISO_A3', 'ghsl_year'],
-                how='left'
-            )
-            
-            # Calculate relative exposure (percentage)
-            merged_data['relative_exposure_pct'] = (
-                merged_data['ftm3_ghsl_total_built_s_km2'] / 
-                merged_data['ghsl_total_built_s_km2']
-            ) * 100
-            
             # Get color and label mappings
-            colors = get_return_period_colors()
             labels = get_return_period_labels()
             benchmark_colors = get_benchmark_colors()
             benchmark_names = get_benchmark_names()
@@ -110,7 +92,7 @@ def register_national_flood_exposure_relative_callbacks(app):
             return_period_order = ['1in100', '1in10', '1in5']
             
             # Plot main country
-            country_data = filter_flood_data(merged_data, selected_country, selected_flood_type)
+            country_data = filter_flood_data(flood_data, selected_country, selected_flood_type)
             
             if country_data.empty:
                 raise Exception(f"No flood exposure data available for selected country and flood type")
@@ -130,13 +112,13 @@ def register_national_flood_exposure_relative_callbacks(app):
                     name=f"{labels.get(rp, rp)} - {country_name}",
                     line=dict(color="#0a83d9", width=2.5, dash=return_period_line_types.get(rp, 'solid')),
                     marker=dict(size=8),
-                    hovertemplate=f'<b>{country_name}</b><br>Exposure: %{{y:.2f}}%<extra></extra>'
+                    hovertemplate=f'<b>{country_name}</b><br>Return Period: {labels.get(rp, rp)}<br>Exposure: %{{y:.2f}}%<extra></extra>'
                 ))
             
             # Plot regional benchmarks
             if regional_benchmarks:
                 for region_code in regional_benchmarks:
-                    region_data = filter_flood_data(merged_data, region_code, selected_flood_type)
+                    region_data = filter_flood_data(flood_data, region_code, selected_flood_type)
                     
                     if not region_data.empty:
                         region_name = benchmark_names.get(region_code, region_code)
@@ -153,32 +135,19 @@ def register_national_flood_exposure_relative_callbacks(app):
                                     name=f"{labels.get(rp, rp)} - {region_name}",
                                     line=dict(color=region_color, width=2, dash=return_period_line_types.get(rp, 'solid')),
                                     marker=dict(size=6, symbol='x'),
-                                    hovertemplate=f'<b>{region_name}</b><br>Exposure: %{{y:.2f}}%<extra></extra>',
+                                    hovertemplate=f'<b>{region_name}</b><br>Return Period: {labels.get(rp, rp)}<br>Exposure: %{{y:.2f}}%<extra></extra>',
                                     opacity=0.7
                                 ))
             
             # Plot benchmark countries
             if benchmark_countries:
-                # Define a palette of distinct colors for benchmark countries
-                benchmark_country_colors = [
-                    '#7f7f7f',  # Gray
-                    '#17becf',  # Cyan
-                    '#bcbd22',  # Yellow-green
-                    '#e377c2',  # Pink
-                    '#8c564b',  # Brown
-                    '#9467bd',  # Purple
-                    '#d62728',  # Red
-                    '#2ca02c',  # Green
-                    '#ff7f0e',  # Orange
-                ]
-                
                 for idx, benchmark_iso in enumerate(benchmark_countries):
-                    benchmark_data = filter_flood_data(merged_data, benchmark_iso, selected_flood_type)
+                    benchmark_data = filter_flood_data(flood_data, benchmark_iso, selected_flood_type)
                     
                     if not benchmark_data.empty:
                         benchmark_name = countries_dict.get(benchmark_iso, benchmark_iso)
                         # Assign a unique color to each benchmark country
-                        benchmark_color = benchmark_country_colors[idx % len(benchmark_country_colors)]
+                        benchmark_color = get_benchmark_country_color(idx)
                         
                         for rp in return_periods:
                             rp_data = benchmark_data[benchmark_data['return_period'] == rp].sort_values('ghsl_year')
@@ -191,7 +160,7 @@ def register_national_flood_exposure_relative_callbacks(app):
                                     name=f"{labels.get(rp, rp)} - {benchmark_name}",
                                     line=dict(color=benchmark_color, width=2, dash=return_period_line_types.get(rp, 'solid')),
                                     marker=dict(size=6, symbol='diamond'),
-                                    hovertemplate=f'<b>{benchmark_name}</b><br>Exposure: %{{y:.2f}}%<extra></extra>',
+                                    hovertemplate=f'<b>{benchmark_name}</b><br>Return Period: {labels.get(rp, rp)}<br>Exposure: %{{y:.2f}}%<extra></extra>',
                                     opacity=0.7
                                 ))
             

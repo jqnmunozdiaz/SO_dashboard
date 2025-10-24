@@ -50,10 +50,7 @@ def register_gdp_vs_urbanization_callbacks(app):
     )
     def generate_gdp_vs_urbanization_chart(selected_country, benchmark_countries, global_benchmarks):
         try:            
-            # Load data for both indicators (pre-loaded)
-            
-            # Handle no country selected case (pre-loaded)
-            
+            # Handle no country selected case (pre-loaded)     
             if selected_country:
                 title_suffix = countries_dict.get(selected_country)
             else:

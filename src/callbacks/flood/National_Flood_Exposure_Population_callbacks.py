@@ -36,22 +36,26 @@ def register_national_flood_exposure_population_callbacks(app):
     @app.callback(
         Output('national-flood-exposure-population-chart', 'figure'),
         [Input('main-country-filter', 'value'),
-         Input('flood-type-selector-population', 'value')],
+         Input('flood-return-period-selector-population', 'value'),
+         Input('flood-measurement-type-selector-population', 'value')],
         prevent_initial_call=False
     )
-    def generate_national_flood_exposure_population_chart(selected_country, selected_flood_type):
+    def generate_national_flood_exposure_population_chart(selected_country, selected_return_periods, measurement_type):
         """
         Generate line chart showing population flood exposure over time by return period
         
         Args:
             selected_country: ISO3 country code
-            selected_flood_type: Type of flood (e.g., 'COASTAL_DEFENDED')
+            selected_return_periods: List of return periods to display
+            measurement_type: Measurement type (absolute or relative)
             
         Returns:
             Plotly figure object
         """
         try:
-            # Load data (pre-loaded)
+            # Hardcoded to Fluvial & Pluvial (Defended)
+            selected_flood_type = 'FLUVIAL_PLUVIAL_DEFENDED'
+            measurement_type = measurement_type or 'absolute'
             
             # Handle no country selected
             if not selected_country:
@@ -75,7 +79,12 @@ def register_national_flood_exposure_population_callbacks(app):
             # Custom order: 1in100, 1in10, 1in5 (most severe to least severe)
             return_period_order = ['1in100', '1in10', '1in5']
             available_periods = country_data['return_period'].unique()
-            return_periods = [rp for rp in return_period_order if rp in available_periods]
+            # If the user selected specific return periods, respect that selection
+            if selected_return_periods:
+                selected_set = set(selected_return_periods)
+                return_periods = [rp for rp in return_period_order if rp in available_periods and rp in selected_set]
+            else:
+                return_periods = [rp for rp in return_period_order if rp in available_periods]
             
             for rp in return_periods:
                 rp_data = country_data[country_data['return_period'] == rp].sort_values('ghsl_year')
@@ -90,18 +99,9 @@ def register_national_flood_exposure_population_callbacks(app):
                     hovertemplate=f'<b>{country_name}</b><br>Population: %{{y:,.0f}}<extra></extra>'
                 ))
             
-            # Get flood type label for title
-            flood_type_labels = {
-                'COASTAL_DEFENDED': 'Coastal (Defended)',
-                'FLUVIAL_PLUVIAL_DEFENDED': 'Fluvial & Pluvial (Defended)',
-                'COASTAL_UNDEFENDED': 'Coastal (Undefended)',
-                'FLUVIAL_PLUVIAL_UNDEFENDED': 'Fluvial & Pluvial (Undefended)'
-            }
-            flood_type_label = flood_type_labels.get(selected_flood_type, selected_flood_type)
-            
-            # Update layout
+            # Update layout (flood type hardcoded to Fluvial & Pluvial (Defended))
             fig.update_layout(
-                title=f'<b>{country_name}</b> | National Flood Exposure - Population<br><sub>{flood_type_label}</sub>',
+                title=f'<b>{country_name}</b> | National Flood Exposure - Population<br><sub>Fluvial & Pluvial (Defended)</sub>',
                 xaxis_title='Year',
                 yaxis_title='Population',
                 plot_bgcolor='white',

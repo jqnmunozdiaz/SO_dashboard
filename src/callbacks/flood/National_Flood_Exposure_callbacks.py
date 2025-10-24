@@ -35,10 +35,12 @@ def register_national_flood_exposure_callbacks(app):
     
     @app.callback(
         Output('national-flood-exposure-chart', 'figure'),
-        [Input('main-country-filter', 'value')],
+        [Input('main-country-filter', 'value'),
+         Input('flood-return-period-selector-relative', 'value'),
+         Input('flood-measurement-type-selector', 'value')],
         prevent_initial_call=False
     )
-    def generate_national_flood_exposure_chart(selected_country):
+    def generate_national_flood_exposure_chart(selected_country, selected_return_periods, measurement_type):
         """
         Generate line chart showing flood exposure over time by return period
         
@@ -52,6 +54,8 @@ def register_national_flood_exposure_callbacks(app):
             # Load data (pre-loaded)
             # Hardcoded to Fluvial & Pluvial (Defended)
             selected_flood_type = 'FLUVIAL_PLUVIAL_DEFENDED'
+            # Ensure measurement_type has a default (not strictly needed here but keeps signature consistent)
+            measurement_type = measurement_type or 'absolute'
             
             # Handle no country selected
             if not selected_country:
@@ -75,8 +79,15 @@ def register_national_flood_exposure_callbacks(app):
             # Custom order: 1in100, 1in10, 1in5 (most severe to least severe)
             return_period_order = ['1in100', '1in10', '1in5']
             available_periods = country_data['return_period'].unique()
-            return_periods = [rp for rp in return_period_order if rp in available_periods]
-            
+            # If the user selected specific return periods (from the selector), respect that selection;
+            # otherwise plot all available periods in the standard order.
+            if selected_return_periods:
+                # ensure selection is iterable
+                selected_set = set(selected_return_periods)
+                return_periods = [rp for rp in return_period_order if rp in available_periods and rp in selected_set]
+            else:
+                return_periods = [rp for rp in return_period_order if rp in available_periods]
+
             for rp in return_periods:
                 rp_data = country_data[country_data['return_period'] == rp].sort_values('ghsl_year')
                 

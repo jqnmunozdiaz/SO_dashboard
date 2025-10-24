@@ -42,10 +42,11 @@ def register_national_flood_exposure_relative_callbacks(app):
         Output('national-flood-exposure-relative-chart', 'figure'),
         [Input('main-country-filter', 'value'),
          Input('flood-return-period-selector-relative', 'value'),
-         Input('flood-combined-benchmark-selector', 'value')],
+         Input('flood-combined-benchmark-selector', 'value'),
+         Input('flood-measurement-type-selector', 'value')],
         prevent_initial_call=False
     )
-    def generate_national_flood_exposure_relative_chart(selected_country, selected_return_periods, combined_benchmarks):
+    def generate_national_flood_exposure_relative_chart(selected_country, selected_return_periods, combined_benchmarks, measurement_type):
         """
         Generate line chart showing relative flood exposure over time by return period
         
@@ -60,6 +61,8 @@ def register_national_flood_exposure_relative_callbacks(app):
         try:
             # Hardcoded to Fluvial & Pluvial (Defended)
             selected_flood_type = 'FLUVIAL_PLUVIAL_DEFENDED'
+            # Ensure measurement_type default
+            measurement_type = measurement_type or 'relative'
             
             # Split combined benchmarks into regions and countries
             regional_benchmarks = [b for b in (combined_benchmarks or []) if b in benchmark_colors_dict]

@@ -89,9 +89,9 @@ def create_return_period_selector(component_id):
         dcc.Checklist(
             id=component_id,
             options=[
-                {'label': ' 1-in-100 year', 'value': '1in100'},
+                {'label': ' 1-in-5 year', 'value': '1in5'},
                 {'label': ' 1-in-10 year', 'value': '1in10'},
-                {'label': ' 1-in-5 year', 'value': '1in5'}
+                {'label': ' 1-in-100 year', 'value': '1in100'}
             ],
             value=['1in100', '1in10', '1in5'],  # All selected by default
             className='benchmark-checkboxes',

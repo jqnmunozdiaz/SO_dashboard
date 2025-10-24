@@ -36,15 +36,24 @@ def register_callbacks(app):
         """Helper function to create built-up tab content based on measurement type"""
         
         # Determine which filters to show based on measurement type
+        # Measurement type always shown in the first row
         filters = [create_measurement_type_selector('flood-measurement-type-selector', default_value=measurement_type)]
-        
-        # Show return period selector and benchmark dropdown only for relative view
-        if measurement_type == 'relative':
-            filters.append(create_combined_benchmark_selector(
-                dropdown_id='flood-combined-benchmark-selector',
-                default_regional_codes=[]
+
+        if measurement_type == 'absolute': # absolute view: render return periods on their own line after benchmarks
+            filters.append(html.Div(
+                create_return_period_selector('flood-return-period-selector-relative'),
+                style={'width': '100%'}
             ))
-            filters.append(create_return_period_selector('flood-return-period-selector-relative'))
+        
+        elif measurement_type == 'relative':
+            filters.append(create_combined_benchmark_selector(
+            dropdown_id='flood-combined-benchmark-selector',
+            default_regional_codes=[]
+            ))
+            filters.append(html.Div(
+                create_return_period_selector('flood-return-period-selector-relative'),
+                style={'width': '100%'}
+            ))    
         
         # Determine which chart to render and download button
         chart_id = 'national-flood-exposure-relative-chart' if measurement_type == 'relative' else 'national-flood-exposure-chart'
@@ -98,6 +107,81 @@ def register_callbacks(app):
             ], className="indicator-note-container")
         ], className="chart-container")
     
+    def create_population_tab_content(measurement_type='absolute'):
+        """Helper function to create population tab content based on measurement type"""
+        
+        # Measurement type always shown in the first row
+        filters = [create_measurement_type_selector('flood-measurement-type-selector-population', default_value=measurement_type)]
+
+        if measurement_type == 'absolute':
+            # absolute view: render return periods on their own line
+            filters.append(html.Div(
+                create_return_period_selector('flood-return-period-selector-population'),
+                style={'width': '100%'}
+            ))
+        
+        elif measurement_type == 'relative':
+            filters.append(create_combined_benchmark_selector(
+                dropdown_id='flood-combined-benchmark-selector-population',
+                default_regional_codes=[]
+            ))
+            filters.append(html.Div(
+                create_return_period_selector('flood-return-period-selector-population'),
+                style={'width': '100%'}
+            ))    
+        
+        # Determine which chart to render and download button
+        chart_id = 'national-flood-exposure-population-relative-chart' if measurement_type == 'relative' else 'national-flood-exposure-population-chart'
+        download_id = 'national-flood-exposure-population-relative-download' if measurement_type == 'relative' else 'national-flood-exposure-population-download'
+        
+        # Create note text based on measurement type
+        if measurement_type == 'relative':
+            note_text = [
+                html.B("Data Source: "), 
+                "Fathom3 flood maps (2020) and GHSL Population (2023).",
+                html.Br(),
+                html.B("Note: "), 
+                "This chart shows the percentage of total population exposed to flooding for different return periods. "
+                "Values represent the proportion of a country's population that falls within flood-prone zones. ",
+                html.A("Learn more about flood return periods", 
+                       href="https://www.gfdrr.org/en/100-year-flood", 
+                       target="_blank",
+                       style={'color': '#295e84', 'text-decoration': 'underline'}),
+                "."
+            ]
+        else:
+            note_text = [
+                html.B("Data Source: "), 
+                "Fathom3 flood maps (2020) and GHSL Population (2023).",
+                html.Br(),
+                html.B("Note: "), 
+                "This chart shows the total population exposed to flooding for different return periods. "
+                "A 1-in-100 year flood has a 1% probability of occurring in any given year and typically affects "
+                "larger areas than more frequent floods. ",
+                html.A("Learn more about flood return periods", 
+                       href="https://www.gfdrr.org/en/100-year-flood", 
+                       target="_blank",
+                       style={'color': '#295e84', 'text-decoration': 'underline'}),
+                "."
+            ]
+        
+        return html.Div([
+            # Filters
+            html.Div(filters, style={'display': 'flex', 'flex-wrap': 'wrap', 'gap': '1rem'}),
+            
+            # Chart
+            dcc.Graph(id=chart_id),
+            
+            # Data source note
+            html.Div([
+                html.P(note_text, className="indicator-note"),
+                html.Div([
+                    create_download_trigger_button(download_id),
+                    create_methodological_note_button()
+                ], className="buttons-container")
+            ], className="indicator-note-container")
+        ], className="chart-container")
+    
     @app.callback(
         Output('flood-exposure-content', 'children'),
         Input('flood-exposure-subtabs', 'active_tab'),
@@ -111,74 +195,8 @@ def register_callbacks(app):
             return create_buildup_tab_content('absolute')
         
         elif active_subtab == 'national-flood-exposure-population':
-            return html.Div([
-                # Flood type selector
-                create_flood_type_selector('flood-type-selector-population'),
-                
-                # Chart
-                dcc.Graph(id="national-flood-exposure-population-chart"),
-                
-                # Data source note
-                html.Div([
-                    html.P([
-                        html.B("Data Source: "), 
-                        "Fathom3 flood maps (2020) and GHSL Population (2023).",
-                        html.Br(),
-                        html.B("Note: "), 
-                        "This chart shows the total population exposed to flooding for different return periods. "
-                        "A 1-in-100 year flood has a 1% probability of occurring in any given year and typically affects "
-                        "larger areas than more frequent floods. ",
-                        html.A("Learn more about flood return periods", 
-                               href="https://www.gfdrr.org/en/100-year-flood", 
-                               target="_blank",
-                               style={'color': '#295e84', 'text-decoration': 'underline'}),
-                        "."
-                    ], className="indicator-note"),
-                    html.Div([
-                        create_download_trigger_button('national-flood-exposure-population-download'),
-                        create_methodological_note_button()
-                    ], className="buttons-container")
-                ], className="indicator-note-container")
-            ], className="chart-container")
-        
-        elif active_subtab == 'national-flood-exposure-population-relative':
-            return html.Div([
-                # Flood type selector
-                create_flood_type_selector('flood-type-selector-population-relative'),
-                
-                # Return period selector
-                create_return_period_selector('flood-return-period-selector-population-relative'),
-                
-                # Combined benchmark selector
-                create_combined_benchmark_selector(
-                    dropdown_id='flood-combined-benchmark-selector-population',
-                    default_regional_codes=[]
-                ),
-                
-                # Chart
-                dcc.Graph(id="national-flood-exposure-population-relative-chart"),
-                
-                # Data source note
-                html.Div([
-                    html.P([
-                        html.B("Data Source: "), 
-                        "Fathom3 flood maps (2020) and GHSL Population (2023).",
-                        html.Br(),
-                        html.B("Note: "), 
-                        "This chart shows the percentage of total population exposed to flooding for different return periods. "
-                        "Values represent the proportion of a country's population that falls within flood-prone zones. ",
-                        html.A("Learn more about flood return periods", 
-                               href="https://www.gfdrr.org/en/100-year-flood", 
-                               target="_blank",
-                               style={'color': '#295e84', 'text-decoration': 'underline'}),
-                        "."
-                    ], className="indicator-note"),
-                    html.Div([
-                        create_download_trigger_button('national-flood-exposure-population-relative-download'),
-                        create_methodological_note_button()
-                    ], className="buttons-container")
-                ], className="indicator-note-container")
-            ], className="chart-container")
+            # Default to absolute view on initial load
+            return create_population_tab_content('absolute')
         
         return html.Div("Select a subtab to view flood exposure data")
     
@@ -190,3 +208,12 @@ def register_callbacks(app):
     def update_buildup_measurement_type(measurement_type):
         """Update built-up tab content when measurement type changes"""
         return create_buildup_tab_content(measurement_type or 'absolute')
+    
+    @app.callback(
+        Output('flood-exposure-content', 'children', allow_duplicate=True),
+        Input('flood-measurement-type-selector-population', 'value'),
+        prevent_initial_call=True
+    )
+    def update_population_measurement_type(measurement_type):
+        """Update population tab content when measurement type changes"""
+        return create_population_tab_content(measurement_type or 'absolute')

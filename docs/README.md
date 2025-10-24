@@ -1,83 +1,68 @@
-# Sub-Saharan Africa Disaster Risk Management Dashboard
+# CSS File Organization
 
-A comprehensive Dash-based dashboard for visualizing and analyzing disaster risk data across Sub-Saharan African countries, including historical disasters, urbanization trends, and flood risk assessments.
+The dashboard CSS has been split into modular files for better maintainability and easier understanding. All styles are imported through the main `custom.css` file.
 
-## Features
+## File Structure
 
-- **Historical Disasters Analysis**: Interactive visualizations of past disaster events, patterns, and impacts
-- **Urbanization Trends**: Population growth and urban development indicators over time
-- **Flood Risk Assessment**: Current and projected flood risk maps and statistics
-- **Country Comparisons**: Side-by-side analysis of different Sub-Saharan African countries
-- **Interactive Maps**: Geospatial visualizations with country-level detail
+### Main Import File
+- **custom.css** - Main file that imports all other CSS modules
 
-## Project Structure
+### CSS Modules
 
-```
-SO_dashboard/
-├── app.py                    # Main application entry point
-├── requirements.txt          # Python dependencies
-├── README.md                # Project documentation
-├── config/                  # Configuration files
-├── data/                    # Data storage
-│   ├── raw/                 # Original, unprocessed data
-│   ├── processed/           # Cleaned and transformed data
-│   └── external/            # External API data cache
-├── src/                     # Source code
-│   ├── components/          # Reusable Dash components
-│   ├── layouts/             # Page layouts
-│   ├── callbacks/           # Interactive callback functions
-│   └── utils/               # Utility functions and data processing
-├── assets/                  # Static assets
-│   ├── css/                 # Custom stylesheets
-│   └── images/              # Images and icons
-├── notebooks/               # Jupyter notebooks for analysis
-├── scripts/                 # Data processing and utility scripts
-└── tests/                   # Unit and integration tests
-```
+#### Base Styles
+- **base.css** - Global resets, typography, fonts, and scrollbar styles
 
-## Installation
+#### Layout & Structure
+- **layout.css** - Dashboard container, header, content areas, and chart containers
+- **hero.css** - Hero section with title, description, and map image
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd SO_dashboard
-```
+#### Navigation
+- **navigation.css** - Main navigation tabs and sub-navigation tabs
+- **tabs-theme.css** - Color-coded themes for urbanization and disaster subtabs
 
-2. Create a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+#### Form Components
+- **filters.css** - Country selector, year filter, and radio button styles
+- **dropdowns.css** - Generic dropdown (Select) component styles
+- **benchmarks.css** - Regional and country benchmark selector components
+- **slider.css** - Year selector slider component (rc-slider)
 
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
+#### UI Elements
+- **buttons.css** - Download buttons and action button styles
+- **notes.css** - Indicator notes and data source annotations
+
+#### Responsive
+- **responsive.css** - Mobile and tablet breakpoints (768px, 576px)
+
+## How to Edit
+
+### To modify a specific component:
+1. Locate the relevant CSS file from the list above
+2. Edit the file directly
+3. Changes will be automatically reflected (no rebuild needed)
+
+### To add new styles:
+1. Add styles to the appropriate existing file, OR
+2. Create a new CSS file and import it in `custom.css`
+
+### Example: Adding new button styles
+Edit `buttons.css`:
+```css
+.my-new-button {
+    /* your styles here */
+}
 ```
 
-## Usage
-
-1. Start the dashboard:
-```bash
-python app.py
+### Example: Creating a new module
+1. Create `assets/css/my-module.css`
+2. Add to `custom.css`:
+```css
+@import url('my-module.css');
 ```
 
-2. Open your browser and navigate to `http://localhost:8050`
+## Benefits of This Structure
 
-## Data Sources
-
-- **Historical Disasters**: EM-DAT (Emergency Events Database)
-- **Urbanization Data**: World Bank Urban Development Indicators
-- **Flood Risk Data**: World Bank Climate Change Knowledge Portal
-- **Geospatial Data**: Natural Earth, OpenStreetMap
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+✅ **Easier to navigate** - Find styles quickly by component type  
+✅ **Better maintainability** - Changes are isolated to specific files  
+✅ **Clearer organization** - Each file has a single, clear purpose  
+✅ **Smaller file sizes** - Each module is ~50-150 lines instead of 800+  
+✅ **Team-friendly** - Multiple developers can work on different files without conflicts

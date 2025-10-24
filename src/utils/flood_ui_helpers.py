@@ -99,3 +99,29 @@ def create_return_period_selector(component_id):
             labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
         )
     ], className='filter-container')
+
+
+def create_measurement_type_selector(component_id, default_value='absolute'):
+    """
+    Create a radio button selector for measurement type (absolute vs relative)
+    
+    Args:
+        component_id: Unique ID for the component
+        default_value: Default measurement type ('absolute' or 'relative')
+        
+    Returns:
+        html.Div containing the measurement type selector
+    """
+    return html.Div([
+        html.Label('Measurement Type:', className='filter-label'),
+        dcc.RadioItems(
+            id=component_id,
+            options=[
+                {'label': 'Absolute', 'value': 'absolute'},
+                {'label': 'Relative (%)', 'value': 'relative'}
+            ],
+            value=default_value,
+            className='radio-buttons',
+            labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
+        )
+    ], className='filter-container')

@@ -41,18 +41,16 @@ def register_national_flood_exposure_relative_callbacks(app):
     @app.callback(
         Output('national-flood-exposure-relative-chart', 'figure'),
         [Input('main-country-filter', 'value'),
-         Input('flood-type-selector-relative', 'value'),
          Input('flood-return-period-selector-relative', 'value'),
          Input('flood-combined-benchmark-selector', 'value')],
         prevent_initial_call=False
     )
-    def generate_national_flood_exposure_relative_chart(selected_country, selected_flood_type, selected_return_periods, combined_benchmarks):
+    def generate_national_flood_exposure_relative_chart(selected_country, selected_return_periods, combined_benchmarks):
         """
         Generate line chart showing relative flood exposure over time by return period
         
         Args:
             selected_country: ISO3 country code
-            selected_flood_type: Type of flood (e.g., 'COASTAL_DEFENDED')
             selected_return_periods: List of return periods to display
             combined_benchmarks: List of combined benchmark codes (countries and regions)
             
@@ -60,6 +58,9 @@ def register_national_flood_exposure_relative_callbacks(app):
             Plotly figure object
         """
         try:
+            # Hardcoded to Fluvial & Pluvial (Defended)
+            selected_flood_type = 'FLUVIAL_PLUVIAL_DEFENDED'
+            
             # Split combined benchmarks into regions and countries
             regional_benchmarks = [b for b in (combined_benchmarks or []) if b in benchmark_colors_dict]
             benchmark_countries = [b for b in (combined_benchmarks or []) if b not in benchmark_colors_dict]
@@ -191,18 +192,9 @@ def register_national_flood_exposure_relative_callbacks(app):
                                     opacity=0.7
                                 ))
             
-            # Get flood type label for title
-            flood_type_labels = {
-                'COASTAL_DEFENDED': 'Coastal (Defended)',
-                'FLUVIAL_PLUVIAL_DEFENDED': 'Fluvial & Pluvial (Defended)',
-                'COASTAL_UNDEFENDED': 'Coastal (Undefended)',
-                'FLUVIAL_PLUVIAL_UNDEFENDED': 'Fluvial & Pluvial (Undefended)'
-            }
-            flood_type_label = flood_type_labels.get(selected_flood_type, selected_flood_type)
-            
-            # Update layout
+            # Update layout (flood type is hardcoded to Fluvial & Pluvial (Defended))
             fig.update_layout(
-                title=f'<b>{country_name}</b> | National Flood Exposure - Built-up Area (Relative)<br><sub>{flood_type_label}</sub>',
+                title=f'<b>{country_name}</b> | National Flood Exposure - Built-up Area (Relative)<br><sub>Fluvial & Pluvial (Defended)</sub>',
                 xaxis_title='Year',
                 yaxis_title='Built-up Area (%)',
                 plot_bgcolor='white',

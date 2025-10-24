@@ -70,10 +70,11 @@
 /* Country Benchmark Selector Styles */
 .country-benchmark-selector-container {
     background: #ffffff;
-    padding: 0.75rem;
+    padding: 0rem;
     border-radius: 0.5rem;
     border: 0px solid #e2e8f0;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0rem !important; /* removed extra space below selector to eliminate gap */
+    padding-bottom: 0 !important;
     display: flex;
     align-items: center;
     gap: 0.75rem;

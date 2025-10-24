@@ -35,23 +35,23 @@ def register_national_flood_exposure_callbacks(app):
     
     @app.callback(
         Output('national-flood-exposure-chart', 'figure'),
-        [Input('main-country-filter', 'value'),
-         Input('flood-type-selector', 'value')],
+        [Input('main-country-filter', 'value')],
         prevent_initial_call=False
     )
-    def generate_national_flood_exposure_chart(selected_country, selected_flood_type):
+    def generate_national_flood_exposure_chart(selected_country):
         """
         Generate line chart showing flood exposure over time by return period
         
         Args:
             selected_country: ISO3 country code
-            selected_flood_type: Type of flood (e.g., 'COASTAL_DEFENDED')
             
         Returns:
             Plotly figure object
         """
         try:
             # Load data (pre-loaded)
+            # Hardcoded to Fluvial & Pluvial (Defended)
+            selected_flood_type = 'FLUVIAL_PLUVIAL_DEFENDED'
             
             # Handle no country selected
             if not selected_country:
@@ -90,18 +90,9 @@ def register_national_flood_exposure_callbacks(app):
                     hovertemplate=f'<b>{country_name}</b><br>Built-up Area: %{{y:.2f}} km²<extra></extra>'
                 ))
             
-            # Get flood type label for title
-            flood_type_labels = {
-                'COASTAL_DEFENDED': 'Coastal (Defended)',
-                'FLUVIAL_PLUVIAL_DEFENDED': 'Fluvial & Pluvial (Defended)',
-                'COASTAL_UNDEFENDED': 'Coastal (Undefended)',
-                'FLUVIAL_PLUVIAL_UNDEFENDED': 'Fluvial & Pluvial (Undefended)'
-            }
-            flood_type_label = flood_type_labels.get(selected_flood_type, selected_flood_type)
-            
-            # Update layout
+            # Update layout (flood type is hardcoded to Fluvial & Pluvial (Defended))
             fig.update_layout(
-                title=f'<b>{country_name}</b> | National Flood Exposure - Built-up Area<br><sub>{flood_type_label}</sub>',
+                title=f'<b>{country_name}</b> | National Flood Exposure - Built-up Area<br><sub>Fluvial & Pluvial (Defended)</sub>',
                 xaxis_title='Year',
                 yaxis_title='Built-up Area (km²)',
                 plot_bgcolor='white',

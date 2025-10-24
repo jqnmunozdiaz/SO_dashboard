@@ -196,11 +196,10 @@ def create_world_bank_flood_exposure_tab_content():
         html.Div([
             dbc.Tabs(
                 id="flood-exposure-subtabs",
-                active_tab="national-flood-exposure",
+                active_tab="national-flood-exposure-buildup",
                 className="sub-nav-tabs subtabs-container",
                 children=[
-                    dbc.Tab(label="National Flood Exposure (Built-up, Absolute)", tab_id="national-flood-exposure"),
-                    dbc.Tab(label="National Flood Exposure (Built-up, Relative)", tab_id="national-flood-exposure-relative"),
+                    dbc.Tab(label="National Flood Exposure (Built-up)", tab_id="national-flood-exposure-buildup"),
                     dbc.Tab(label="National Flood Exposure (Population, Absolute)", tab_id="national-flood-exposure-population"),
                     dbc.Tab(label="National Flood Exposure (Population, Relative)", tab_id="national-flood-exposure-population-relative"),
                 ],

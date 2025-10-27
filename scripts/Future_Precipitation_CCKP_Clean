@@ -1,0 +1,46 @@
+#%% 
+# Data to be downloaded by country from https://climateknowledgeportal.worldbank.org/country/nigeria/extremes
+# Table "Future Return Period, 2035-2064 (center 2050) (years)" for 5-day RP prec. and put in excel
+
+import os
+import pandas as pd
+from src.utils.country_utils import get_subsaharan_countries
+
+# Get project root directory
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.join(current_dir, '..')
+
+# Directories
+climate_data_dir = os.path.join(project_root, 'data', 'raw', 'Climate Change CCKP') + os.sep
+processed_dir = os.path.join(project_root, 'data', 'processed') + os.sep
+
+# Parameters
+fyear = 2050
+RPs = [10, 100] # Return periods to analyze
+iso3_list = [country['code'] for country in get_subsaharan_countries()]
+
+# Setup variable name
+var_name = '1day' # 5day
+
+dfg = pd.DataFrame()
+c = 0
+for ISO3 in iso3_list:
+    df = pd.read_excel(climate_data_dir + f'ReturnPeriods-{var_name}-raw.xlsx', sheet_name=ISO3)
+    if len(df) != 31: 
+        print(ISO3, 'error!!!!')
+    for year, i in zip([2025, 2050, 2075, 2085], [2, 10, 18, 26]):
+        for j in range(0, 5):
+            for RP, col in zip([5, 10, 100], ['Unnamed: 2', 'Unnamed: 5', 'Unnamed: 17']):
+                dfg.at[c, 'ISO3'] = ISO3
+                dfg.at[c, 'year'] = year
+                dfg.at[c, 'RP'] = RP # Return Period
+                dfg.at[c, 'SSP'] = df.at[i + j, 'Future Return Period, 2010-2039 (center 2025) (years)']
+                dfg.at[c, 'Future_RP'] = df.at[i + j, col]
+                dfg.at[c, 'EP'] = 1/RP # Extreme Probability
+                dfg.at[c, 'Future_EP'] = 1/df.at[i + j, col] # Future Exceedance Probability
+                dfg.at[c, 'mult'] = dfg.at[c, 'Future_EP']/dfg.at[c, 'EP'] # 
+                c += 1
+    temp = dfg[(dfg['ISO3'] == ISO3) & (dfg['year'] == 2050)]
+    dfg['xmax_2050_RP5-10-100'] = max(temp['mult']) * dfg['EP'] * 100
+    dfg.to_csv(processed_dir + f'ReturnPeriods-{var_name}-clean.csv')
+

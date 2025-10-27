@@ -366,8 +366,35 @@ def load_urban_density_data(file_path: Optional[str] = None) -> pd.DataFrame:
         raise Exception(f"Error loading built-up per capita data: {str(e)}")
 
 
+def load_precipitation_data(var_name: str = '1day', file_path: Optional[str] = None) -> pd.DataFrame:
+    """
+    Load future precipitation return period data from Climate Change Knowledge Portal
+    
+    Args:
+        var_name: Variable name (e.g., '1day', '5day')
+        file_path: Path to precipitation CSV file (optional)
+        
+    Returns:
+        DataFrame with precipitation data (columns: ISO3, year, RP, SSP, Future_RP, EP, Future_EP, mult)
+    """
+    if file_path is None:
+        # Get the absolute path to the project root directory
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.join(current_dir, '..', '..')
+        file_path = os.path.join(project_root, 'data', 'processed', f'ReturnPeriods-{var_name}-clean.csv')
+    
+    try:
+        df = pd.read_csv(file_path)
+        return df
+
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Precipitation data file not found: {file_path}")
+    except Exception as e:
+        raise Exception(f"Error loading precipitation data: {str(e)}")
+
+
 # Import centralized country utilities
 from .country_utils import get_subsaharan_countries, load_subsaharan_countries_dict, load_subsaharan_countries_and_regions_dict
 
 # Re-export for backward compatibility
-__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections', 'load_city_size_distribution', 'load_city_agglomeration_counts', 'load_population_data', 'load_jmp_water_data', 'load_jmp_sanitation_data', 'load_cities_growth_rate', 'load_urban_density_data']
+__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections', 'load_city_size_distribution', 'load_city_agglomeration_counts', 'load_population_data', 'load_jmp_water_data', 'load_jmp_sanitation_data', 'load_cities_growth_rate', 'load_urban_density_data', 'load_precipitation_data']

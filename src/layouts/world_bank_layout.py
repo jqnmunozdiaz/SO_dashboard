@@ -124,7 +124,6 @@ def create_world_bank_layout():
                 create_download_component("disaster-deaths-download"),
                 create_download_component("urban-population-projections-download"),
                 create_download_component("urbanization-rate-download"),
-                create_download_component("urban-density-download"),
                 create_download_component("urban-population-slums-download"),
                 create_download_component("access-to-drinking-water-download"),
                 create_download_component("access-to-sanitation-download"),
@@ -140,6 +139,7 @@ def create_world_bank_layout():
                 create_download_component("national-flood-exposure-population-download"),
                 create_download_component("national-flood-exposure-population-relative-download"),
                 create_download_component("cities-flood-exposure-download"),
+                create_download_component("precipitation-download"),
                 # Store for flood benchmark selections
                 dcc.Store(id='flood-benchmark-store', data=[]),
             ], style={"display": "none"}),
@@ -217,7 +217,15 @@ def create_world_bank_flood_exposure_tab_content():
 def create_world_bank_flood_projections_tab_content():
     return html.Div([
         html.Div([
-            html.Div([html.P("...", className="coming-soon-text")], className="coming-soon-card")
+            dbc.Tabs(
+                id="flood-projections-subtabs",
+                active_tab="precipitation",
+                className="sub-nav-tabs subtabs-container",
+                children=[
+                    dbc.Tab(label="Changes in Extreme Precipitation", tab_id="precipitation", label_class_name="tab-blue"),
+                ],
+            ),
+            html.Div(id="flood-projections-content"),
         ], className="tab-content-inner"),
     ], className="tab-content-container")
 

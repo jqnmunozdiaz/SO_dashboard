@@ -9,6 +9,7 @@ from .flood.National_Flood_Exposure_Relative_callbacks import register_national_
 from .flood.National_Flood_Exposure_Population_callbacks import register_national_flood_exposure_population_callbacks
 from .flood.National_Flood_Exposure_Population_Relative_callbacks import register_national_flood_exposure_population_relative_callbacks
 from .flood.Cities_Flood_Exposure_callbacks import register_cities_flood_exposure_callbacks
+from .flood.Precipitation_callbacks import register_precipitation_callbacks
 from .country_benchmark_callbacks import register_combined_benchmark_options_callback
 
 try:
@@ -72,6 +73,7 @@ def register_callbacks(app):
     register_national_flood_exposure_population_callbacks(app)
     register_national_flood_exposure_population_relative_callbacks(app)
     register_cities_flood_exposure_callbacks(app)
+    register_precipitation_callbacks(app)
     
     # Register combined benchmark dropdown callbacks
     register_combined_benchmark_options_callback(app, 'flood-combined-benchmark-selector')
@@ -258,6 +260,59 @@ def register_callbacks(app):
             ], id="cities-flood-map-modal", size="xl", is_open=False)
         ], className="chart-container")
     
+    def create_precipitation_tab_content():
+        """Helper function to create precipitation patterns tab content"""
+        
+        # Return period checkboxes selector
+        rp_selector = html.Div([
+            html.Label('Return Periods:', className='filter-label'),
+            dcc.Checklist(
+                id='precipitation-rp-selector',
+                options=[
+                    {'label': ' 5-year (20% annual probability)', 'value': 5},
+                    {'label': ' 10-year (10% annual probability)', 'value': 10},
+                    {'label': ' 100-year (1% annual probability)', 'value': 100}
+                ],
+                value=[5, 10, 100],  # Both selected by default
+                className='benchmark-checkboxes',
+                inline=True,
+                labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
+            )
+        ], className='filter-container')
+        
+        # Data source note
+        data_source = "World Bank Climate Change Knowledge Portal (CCKP) - Future precipitation return periods based on climate projections."
+        note_prefix = "This chart shows how precipitation patterns are projected to change by 2050 under different climate scenarios (SSP pathways). "
+        
+        note_text = [
+            html.B("Data Source: "), 
+            data_source,
+            html.Br(),
+            html.B("Note: "), 
+            note_prefix,
+            "The 'Today' marker represents current conditions, while the colored dots show future projections. ",
+            "Values moving to the right indicate increased frequency of precipitation events. ",
+            "SSP1-1.9 represents the most optimistic scenario with strong climate mitigation, ",
+            "while SSP5-8.5 represents a high-emissions scenario."
+        ]
+        
+        return html.Div([
+            # Return period selector
+            rp_selector,
+            
+            # Chart
+            dcc.Graph(id='precipitation-chart'),
+            
+            # Data source note
+            html.Div([
+                html.P(note_text, className="indicator-note"),
+                html.Div([
+                    create_download_trigger_button('precipitation-download'),
+                    create_methodological_note_button()
+                ], className="buttons-container")
+            ], className="indicator-note-container")
+        ], className="chart-container")
+    
     @app.callback(
         Output('flood-exposure-content', 'children'),
         Input('flood-exposure-subtabs', 'active_tab'),
@@ -275,6 +330,20 @@ def register_callbacks(app):
             return create_cities_flood_exposure_tab_content()
         
         return html.Div("Select a subtab to view flood exposure data")
+    
+    @app.callback(
+        Output('flood-projections-content', 'children'),
+        Input('flood-projections-subtabs', 'active_tab'),
+        prevent_initial_call=False
+    )
+    def render_flood_projections_chart(active_subtab):
+        """Render the appropriate flood projections visualization"""
+        
+        if active_subtab == 'precipitation':
+            # Precipitation patterns tab
+            return create_precipitation_tab_content()
+        
+        return html.Div("Select a subtab to view flood projection data")
     
     @app.callback(
         [Output('flood-exposure-content', 'children', allow_duplicate=True),

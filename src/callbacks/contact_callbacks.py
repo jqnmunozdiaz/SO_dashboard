@@ -61,15 +61,11 @@ def register_contact_callbacks(app):
     )
     def handle_contact_form_submission(n_clicks, name, email, message):
         """
-        Handle contact form submission
+        Handle contact form submission via Formspree
         
-        For Render deployment, you have several options:
-        1. Use environment variables to configure email service (SendGrid, Mailgun, AWS SES)
-        2. Use Formspree or similar service (set FORMSPREE_ENDPOINT env var)
-        3. Save to a database (PostgreSQL add-on on Render)
-        4. Write to a log file (accessible via Render shell)
-        
-        This implementation logs to file by default and can be extended with email service.
+        Submissions are sent to Formspree (https://formspree.io/f/xovpjdbq)
+        which forwards them to your email and provides a web dashboard.
+        Also logs to file as backup.
         """
         if n_clicks is None or n_clicks == 0:
             return '', 'contact-form-feedback', None, None, None
@@ -99,21 +95,30 @@ def register_contact_callbacks(app):
                 'message': message
             }
             
-            # Method 1: Log to file (works on Render, accessible via shell)
+            # Send via Formspree
+            formspree_success = send_via_formspree(submission)
+            
+            # Also log to file as backup
             log_to_file(submission)
             
-            # Method 2: Send via email service (optional - requires environment variables)
-            # Uncomment and configure if using email service:
-            # send_via_email_service(submission)
-            
-            # Clear form and show success message
-            return (
-                html.Span('✓ Thank you for your message! We will get back to you soon.'),
-                'contact-form-feedback success',
-                None,  # Clear name
-                None,  # Clear email
-                None   # Clear message
-            )
+            if formspree_success:
+                # Clear form and show success message
+                return (
+                    html.Span('✓ Thank you for your message! We will get back to you soon.'),
+                    'contact-form-feedback success',
+                    None,  # Clear name
+                    None,  # Clear email
+                    None   # Clear message
+                )
+            else:
+                # Formspree failed but file logged
+                return (
+                    html.Span('✓ Message received! (Logged locally)'),
+                    'contact-form-feedback success',
+                    None,  # Clear name
+                    None,  # Clear email
+                    None   # Clear message
+                )
             
         except Exception as e:
             print(f"Error submitting contact form: {str(e)}")
@@ -136,6 +141,42 @@ def log_to_file(submission):
         print(f"Contact form submission logged: {submission['email']}")
     except Exception as e:
         print(f"Error logging to file: {str(e)}")
+
+
+def send_via_formspree(submission):
+    """
+    Send contact form submission via Formspree
+    
+    Formspree endpoint: https://formspree.io/f/xovpjdbq
+    - Free tier: 50 submissions/month
+    - Email notifications included
+    - Web dashboard to view submissions
+    """
+    try:
+        import requests
+        
+        FORMSPREE_ENDPOINT = "https://formspree.io/f/xovpjdbq"
+        
+        # Formspree expects form data
+        data = {
+            'name': submission['name'],
+            'email': submission['email'],
+            'message': submission['message'],
+            '_subject': f"Dashboard Contact: {submission['name']}",
+        }
+        
+        response = requests.post(FORMSPREE_ENDPOINT, data=data)
+        
+        if response.status_code == 200:
+            print(f"Formspree submission successful: {submission['email']}")
+            return True
+        else:
+            print(f"Formspree error {response.status_code}: {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"Error sending via Formspree: {str(e)}")
+        return False
 
 
 def send_via_email_service(submission):

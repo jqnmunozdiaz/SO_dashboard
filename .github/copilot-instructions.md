@@ -609,6 +609,10 @@ Global regional benchmarks:
 ### Key CSS Structure Notes
 
 - **Modular CSS**: Each component area has its own file, imported in `custom.css`
+- **Tab Color Themes**: Use class-based styling in `tabs-theme.css` - apply `class_name="tab-blue"`, `class_name="tab-green"`, or `class_name="tab-orange"` to `dbc.Tab` components
+  - Blue theme: Urban indicators, national-level data
+  - Green theme: Services & infrastructure (water, sanitation, electricity)
+  - Orange theme: City-level data and analysis
 - **Hero Map Button**: `.hero-map-action` positioned with `position: absolute; top: 0.6rem; right: 0.6rem;` over `.hero-map` background
 - **Download Buttons**: `.download-data-button` class styled with World Bank blue (295e84), hover effects
 - **Subtabs**: Border-bottom removed from subtabs for clean appearance (`border-bottom: none` in tabs-theme.css)

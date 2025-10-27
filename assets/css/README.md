@@ -18,7 +18,7 @@ The dashboard CSS has been split into modular files for better maintainability a
 
 #### Navigation
 - **navigation.css** - Main navigation tabs and sub-navigation tabs
-- **tabs-theme.css** - Color-coded themes for urbanization and disaster subtabs
+- **tabs-theme.css** - Class-based tab color themes (blue, green, orange) - see Tab Color Themes section below
 
 #### Form Components
 - **filters.css** - Country selector, year filter, and radio button styles
@@ -66,3 +66,45 @@ Edit `buttons.css`:
 ✅ **Clearer organization** - Each file has a single, clear purpose  
 ✅ **Smaller file sizes** - Each module is ~50-150 lines instead of 800+  
 ✅ **Team-friendly** - Multiple developers can work on different files without conflicts
+
+---
+
+## Tab Color Themes
+
+Tab colors are managed using **class-based styling** for easy customization.
+
+### Available Theme Classes
+
+#### Blue Theme (`tab-blue`)
+- **Use for**: Urban indicators, national-level data
+- **Colors**: Light blue → Sky blue (active) → Lighter blue (hover)
+
+#### Green Theme (`tab-green`)
+- **Use for**: Services & infrastructure (water, sanitation, electricity)
+- **Colors**: Light green → Lime green (active) → Lighter green (hover)
+
+#### Orange Theme (`tab-orange`)
+- **Use for**: City-level data and analysis
+- **Colors**: Light orange → Bright orange (active) → Medium orange (hover)
+
+### How to Apply in Python
+
+```python
+# In src/layouts/world_bank_layout.py
+dbc.Tab(label="Your Tab", tab_id="your-id", class_name="tab-blue")
+```
+
+### Adding New Colors
+
+Edit `tabs-theme.css` and follow the existing pattern:
+```css
+.tab-newcolor {
+    background: #yourcolor !important;
+    /* ... other styles */
+}
+```
+
+**Benefits:**  
+✅ No position dependency - tabs can be reordered freely  
+✅ Self-documenting - class name shows intent  
+✅ Easy to customize - colors defined in one place

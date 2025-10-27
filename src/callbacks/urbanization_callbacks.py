@@ -359,7 +359,7 @@ def register_callbacks(app):
                 dcc.Graph(id="cities-growth-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "Africapolis & GHSL 2023.", html.Br(), html.B("Note:"), " Shows absolute values in 2020 and Compound Annual Growth Rate (CAGR) between 2000 and 2020 for selected cities. Cities are sorted by 2020 population size."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "Africapolis & GHSL 2023.", html.Br(), html.B("Note:"), " Shows absolute values in 2020 and Compound Annual Growth Rate (CAGR) between 2000 and 2020 for selected cities."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('cities-growth-download'),
                         create_methodological_note_button()

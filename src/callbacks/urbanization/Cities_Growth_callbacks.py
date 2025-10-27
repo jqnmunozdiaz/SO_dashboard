@@ -145,9 +145,9 @@ def register_cities_growth_callbacks(app):
                     orientation='h',
                     marker=dict(color=bar_color),
                     text=filtered_data[col_2020].apply(lambda x: f'{x:.0f}' if selected_metric == 'BU' else f'{x:,.0f}'),
-                    textposition='outside',
+                    textposition='auto',
                     textfont=dict(size=10),
-                    hovertemplate='<b>%{y}</b><br>' + f'{metric_name}: %{{x:.2f}} {unit_2020}<extra></extra>',
+                    hovertemplate='<b>%{y}</b><br>' + f'{metric_name}: %{{x:,.2f}} {unit_2020}<extra></extra>',
                     showlegend=False
                 ),
                 row=1, col=1
@@ -160,10 +160,10 @@ def register_cities_growth_callbacks(app):
                     x=filtered_data[col_cagr],
                     orientation='h',
                     marker=dict(color=bar_color),
-                    text=filtered_data[col_cagr].apply(lambda x: f'{x:.1f}'),
-                    textposition='outside',
+                    text=filtered_data[col_cagr].apply(lambda x: f'{x:.1f}%'),
+                    textposition='auto',
                     textfont=dict(size=10),
-                    hovertemplate='<b>%{y}</b><br>' + f'Annual growth rate: %{{x:.2f}}{unit_cagr}<extra></extra>',
+                    hovertemplate='<b>%{y}</b><br>' + f'Annual growth rate: %{{x:,.2f}}{unit_cagr}<extra></extra>',
                     showlegend=False
                 ),
                 row=1, col=2
@@ -179,7 +179,7 @@ def register_cities_growth_callbacks(app):
                 font={'color': CHART_STYLES['colors']['primary']},
                 height=max(400, len(selected_cities) * 60),  # Dynamic height based on number of cities
                 showlegend=False,
-                margin=dict(l=150, r=100, t=100, b=50)
+                margin=dict(l=150, r=150, t=100, b=50)
             )
             
             # Update x-axes

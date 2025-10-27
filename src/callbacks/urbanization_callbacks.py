@@ -17,6 +17,7 @@ from .urbanization.Cities_Distribution_callbacks import register_cities_distribu
 from .urbanization.Cities_Evolution_callbacks import register_cities_evolution_callbacks
 from .urbanization.Urban_Density_callbacks import register_urban_density_callbacks
 from .urbanization.Cities_Growth_Rate_callbacks import register_cities_growth_rate_callbacks
+from .urbanization.Cities_Growth_callbacks import register_cities_growth_callbacks
 from .country_benchmark_callbacks import register_country_benchmark_options_callback, register_combined_benchmark_options_callback
 
 try:
@@ -48,6 +49,7 @@ def register_callbacks(app):
     register_cities_distribution_callbacks(app)
     register_cities_evolution_callbacks(app)
     register_cities_growth_rate_callbacks(app)
+    register_cities_growth_callbacks(app)
     
     # Register combined benchmark dropdown callbacks (countries + regions in one dropdown)
     register_combined_benchmark_options_callback(app, 'slums-combined-benchmark-selector', default_regional_codes=['SSA'])
@@ -74,8 +76,8 @@ def register_callbacks(app):
             # Sort countries alphabetically by name
             countries = sorted(countries, key=lambda x: x['name'])
             
-            # For Cities Distribution, Cities Evolution, and Cities Growth Rate, only show individual countries
-            if urbanization_subtab in ['cities-distribution', 'cities-evolution', 'cities-growth-rate']:
+            # For Cities Distribution, Cities Evolution, Cities Growth Rate, and Cities Growth, only show individual countries
+            if urbanization_subtab in ['cities-distribution', 'cities-evolution', 'cities-growth-rate', 'cities-growth']:
                 return [{'label': country['name'], 'value': country['code']} for country in countries]
             else:
                 # For other subtabs, include regional aggregates
@@ -321,6 +323,45 @@ def register_callbacks(app):
                     html.P([html.B("Data Source: "), "Africapolis & GHSL 2023.", html.Br(), html.B("Note:"), " Scatterplot showing the relationship between population CAGR (Compound Annual Growth Rate) and built-up area CAGR for cities between 2000 and 2020. Points above the diagonal line (y=x) indicate cities where built-up area expanded faster than population, while points below indicate population growth outpaced built-up growth rate."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('cities-growth-rate-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container")
+                ], className="indicator-note-container")
+            ], className="chart-container")
+        elif active_subtab == 'cities-growth':
+            return html.Div([
+                # Metric selector (Built-up vs Population)
+                html.Div([
+                    html.Label('Metric:', className='filter-label'),
+                    dcc.RadioItems(
+                        id='cities-growth-metric-selector',
+                        options=[
+                            {'label': 'Built-up', 'value': 'BU'},
+                            {'label': 'Population', 'value': 'POP'}
+                        ],
+                        value='BU',
+                        className='radio-buttons',
+                        labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
+                    )
+                ], className='filter-container'),
+                # City selector
+                html.Div([
+                    html.Label('Cities:', className='filter-label'),
+                    dcc.Dropdown(
+                        id='cities-growth-city-selector',
+                        options=[],
+                        value=[],
+                        multi=True,
+                        placeholder='Select cities...',
+                        className='dropdown'
+                    )
+                ], className='filter-container'),
+                # Chart
+                dcc.Graph(id="cities-growth-chart"),
+                # Indicator note
+                html.Div([
+                    html.P([html.B("Data Source: "), "Africapolis & GHSL 2023.", html.Br(), html.B("Note:"), " Shows absolute values in 2020 and Compound Annual Growth Rate (CAGR) between 2000 and 2020 for selected cities. Cities are sorted by 2020 population size."], className="indicator-note"),
+                    html.Div([
+                        create_download_trigger_button('cities-growth-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")

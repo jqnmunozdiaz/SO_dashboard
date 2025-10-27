@@ -20,6 +20,7 @@ ghsl_built_file = os.path.join(project_root, 'data', 'raw', 'Fathom3-GHSL', 'afr
 fathom_pop_file = os.path.join(project_root, 'data', 'raw', 'Fathom3-GHSL', 'africapolis_ftm3_current_ghsl2023_pop.csv')
 ghsl_pop_file = os.path.join(project_root, 'data', 'raw', 'Fathom3-GHSL', 'africapolis_ghsl2023_pop.csv')
 output_file = os.path.join(project_root, 'data', 'processed', 'africapolis_fathom_ghsl_merged.csv')
+output_file_simple = os.path.join(project_root, 'data', 'processed', 'africapolis_ghsl_simple.csv')
 output_file_5cities = os.path.join(project_root, 'data', 'processed', 'africapolis_fathom_ghsl_merged_5citiespercountry.csv')
 
 # Load fathom built-up data
@@ -136,10 +137,24 @@ top_cities = temp_df.groupby('ISO3').apply(lambda x: x.nlargest(5, 'POP')).reset
 selected_agglosID = top_cities['agglosID'].unique()
 
 # Filter final_df to keep only rows for the selected agglosID (across all years)
-final_df = final_df[final_df['agglosID'].isin(selected_agglosID)]
+df5 = final_df[final_df['agglosID'].isin(selected_agglosID)]
 
 # Save CSV
-final_df.to_csv(output_file_5cities, index=False)
+df5.to_csv(output_file_5cities, index=False)
 
+#%%
 
+simple_df = final_df[['ISO3', 'agglosName', 'agglosID', 'ghsl_year', 'POP', 'BU']]
 
+simple_df = simple_df[simple_df['ghsl_year'].isin([2000, 2020])]
+
+# Calculate growth between 2000 and 2020 for POP and BU
+growth_df = simple_df.pivot(index=['ISO3', 'agglosName', 'agglosID'], columns='ghsl_year', values=['POP', 'BU']).reset_index()
+
+growth_df['POP_CAGR_2000_2020'] = ((growth_df[('POP', 2020)] / growth_df[('POP', 2000)]) ** (1/20) - 1) * 100
+growth_df['BU_CAGR_2000_2020'] = ((growth_df[('BU', 2020)] / growth_df[('BU', 2000)]) ** (1/20) - 1) * 100
+
+growth_df.columns = ['ISO3', 'agglosName', 'agglosID', 'POP_2000', 'POP_2020', 'BU_2000', 'BU_2020', 'POP_CAGR_2000_2020', 'BU_CAGR_2000_2020']
+
+# Save to simple output file
+growth_df.to_csv(output_file_simple, index=False)

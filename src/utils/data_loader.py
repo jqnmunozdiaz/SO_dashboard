@@ -296,6 +296,29 @@ def load_cities_growth_rate() -> pd.DataFrame:
         raise Exception(f"Error loading cities growth rate data: {str(e)}")
 
 
+def load_africapolis_ghsl_simple() -> pd.DataFrame:
+    """
+    Load Africapolis-GHSL simple data for cities growth visualization
+    
+    Returns:
+        DataFrame with columns: ISO3, agglosName, agglosID, POP_2000, POP_2020, 
+                                BU_2000, BU_2020, POP_CAGR_2000_2020, BU_CAGR_2000_2020
+    """
+    # Get the absolute path to the project root directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.join(current_dir, '..', '..')
+    file_path = os.path.join(project_root, 'data', 'processed', 'africapolis_ghsl_simple.csv')
+    
+    try:
+        df = pd.read_csv(file_path)
+        return df
+        
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Africapolis GHSL simple data file not found: {file_path}")
+    except Exception as e:
+        raise Exception(f"Error loading Africapolis GHSL simple data: {str(e)}")
+
+
 def load_urban_density_data(file_path: Optional[str] = None) -> pd.DataFrame:
     """
     Load built-up per capita data aggregated by country and year.

@@ -1,5 +1,5 @@
 """
-Callbacks for Cities Growth (Built-up Expansion in Largest Cities) visualization
+Callbacks for Cities Growth (Built-up Expansion) visualization
 Shows 2020 absolute values and 2000-2020 CAGR for selected cities
 """
 
@@ -173,7 +173,7 @@ def register_cities_growth_callbacks(app):
             
             # Update layout
             fig.update_layout(
-                title=f'<b>{country_name}</b> | {title_suffix} Expansion in Largest Cities',
+                title=f'<b>{country_name}</b> | {title_suffix} Expansion',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
@@ -220,7 +220,7 @@ def register_cities_growth_callbacks(app):
                 chart_type='bar',
                 xaxis_title='Value',
                 yaxis_title='City',
-                title='Built-up Expansion in Largest Cities'
+                title='Built-up Expansion'
             )
     
     @app.callback(

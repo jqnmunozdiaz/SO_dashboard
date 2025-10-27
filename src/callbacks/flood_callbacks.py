@@ -3,6 +3,7 @@ Orchestrator for flood exposure callbacks
 """
 
 from dash import Input, Output, State, html, dcc, no_update
+import dash_bootstrap_components as dbc
 from .flood.National_Flood_Exposure_callbacks import register_national_flood_exposure_callbacks
 from .flood.National_Flood_Exposure_Relative_callbacks import register_national_flood_exposure_relative_callbacks
 from .flood.National_Flood_Exposure_Population_callbacks import register_national_flood_exposure_population_callbacks
@@ -189,13 +190,17 @@ def register_callbacks(app):
             )
         ], style={'display': 'flex', 'gap': '1rem', 'flex-wrap': 'wrap'})
         
-        # Bottom row: Return period selector (radio buttons, single selection)
+        # Bottom row: Return period selector (left) and map button (right)
         bottom_row = html.Div([
             html.Div(
                 create_city_return_period_selector('cities-flood-return-period-selector'),
                 style={'flex': '1', 'min-width': '300px'}
+            ),
+            html.Div(
+                dbc.Button("📍 Where are these cities?", id="cities-flood-map-button", color="info", className="download-data-button"),
+                style={'display': 'flex', 'align-items': 'flex-end', 'padding-bottom': '0.5rem'}
             )
-        ], style={'display': 'flex', 'gap': '1rem', 'flex-wrap': 'wrap'})
+        ], style={'display': 'flex', 'gap': '1rem', 'flex-wrap': 'wrap', 'justify-content': 'space-between'})
         
         filters_container = html.Div([
             top_row, 
@@ -239,7 +244,18 @@ def register_callbacks(app):
                     create_download_trigger_button(download_id),
                     create_methodological_note_button()
                 ], className="buttons-container")
-            ], className="indicator-note-container")
+            ], className="indicator-note-container"),
+            
+            # City Map Modal
+            dbc.Modal([
+                dbc.ModalHeader(dbc.ModalTitle("City Locations")),
+                dbc.ModalBody([
+                    html.Div(id="cities-flood-map-container", style={'height': '70vh'})
+                ]),
+                dbc.ModalFooter(
+                    dbc.Button("Close", id="close-cities-flood-map-button", className="ml-auto")
+                )
+            ], id="cities-flood-map-modal", size="xl", is_open=False)
         ], className="chart-container")
     
     @app.callback(

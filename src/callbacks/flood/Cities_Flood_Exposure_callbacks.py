@@ -3,9 +3,10 @@ Callbacks for Cities Flood Exposure visualization
 Multi-line chart showing flood exposure at city level for all cities across SSA
 """
 
-from dash import Input, Output
+from dash import Input, Output, State
 import plotly.graph_objects as go
 import pandas as pd
+import dash_leaflet as dl
 
 try:
     from ...utils.flood_data_loader import load_city_flood_exposure_data
@@ -13,6 +14,7 @@ try:
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.component_helpers import create_error_chart
     from ...utils.download_helpers import prepare_csv_download
+    from ...utils.data_loader import load_africapolis_centroids
     from config.settings import CHART_STYLES
 except ImportError:
     import sys, os
@@ -22,6 +24,7 @@ except ImportError:
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.component_helpers import create_error_chart
     from src.utils.download_helpers import prepare_csv_download
+    from src.utils.data_loader import load_africapolis_centroids
     from config.settings import CHART_STYLES
 
 
@@ -216,3 +219,96 @@ def register_cities_flood_exposure_callbacks(app):
         except Exception as e:
             print(f"Error preparing download: {str(e)}")
             return None
+    
+    @app.callback(
+        Output('cities-flood-map-modal', 'is_open'),
+        [Input('cities-flood-map-button', 'n_clicks'),
+         Input('close-cities-flood-map-button', 'n_clicks')],
+        [State('cities-flood-map-modal', 'is_open')],
+        prevent_initial_call=True
+    )
+    def toggle_cities_flood_map_modal(open_clicks, close_clicks, is_open):
+        """Toggle the city map modal open/closed"""
+        return not is_open
+    
+    @app.callback(
+        Output('cities-flood-map-container', 'children'),
+        [Input('cities-flood-map-modal', 'is_open'),
+         Input('main-country-filter', 'value')],
+        prevent_initial_call=True
+    )
+    def update_cities_flood_map(is_open, selected_country):
+        """Generate Leaflet map showing locations of all cities in the chart"""
+        if not is_open or not selected_country:
+            return []
+        
+        try:
+            # Load centroids data
+            centroids = load_africapolis_centroids()
+            
+            # Filter data for cities in the selected country
+            country_data = data[data['ISO3'] == selected_country].copy()
+            
+            if country_data.empty:
+                return []
+            
+            # Get unique city names (agglosName)
+            city_names = country_data['agglosName'].unique()
+            
+            # Filter centroids for these cities
+            city_centroids = centroids[centroids['agglosName'].isin(city_names)].copy()
+            
+            if city_centroids.empty:
+                return []
+            
+            # Create markers for each city
+            markers = []
+            for _, row in city_centroids.iterrows():
+                marker = dl.Marker(
+                    position=[row['Latitude'], row['Longitude']],
+                    children=[
+                        dl.Tooltip(row['agglosName']),
+                        dl.Popup(f"<b>{row['agglosName']}</b><br>Country: {row['ISO3']}")
+                    ]
+                )
+                markers.append(marker)
+            
+            # Calculate map center and zoom
+            if len(city_centroids) > 0:
+                center_lat = city_centroids['Latitude'].mean()
+                center_lon = city_centroids['Longitude'].mean()
+                
+                # Calculate zoom based on city spread
+                lat_range = city_centroids['Latitude'].max() - city_centroids['Latitude'].min()
+                lon_range = city_centroids['Longitude'].max() - city_centroids['Longitude'].min()
+                max_range = max(lat_range, lon_range)
+                
+                if max_range < 1:
+                    zoom = 9
+                elif max_range < 3:
+                    zoom = 8
+                elif max_range < 5:
+                    zoom = 7
+                elif max_range < 10:
+                    zoom = 6
+                else:
+                    zoom = 5
+            else:
+                center_lat, center_lon, zoom = 0, 20, 4
+            
+            # Create map
+            map_children = [
+                dl.TileLayer(),
+                dl.LayerGroup(children=markers)
+            ]
+            
+            return dl.Map(
+                children=map_children,
+                center=[center_lat, center_lon],
+                zoom=zoom,
+                style={'width': '100%', 'height': '100%'}
+            )
+            
+        except Exception as e:
+            print(f"Error generating cities flood map: {str(e)}")
+            return []

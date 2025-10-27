@@ -39,6 +39,7 @@
     color: #374151;
     margin-bottom: 0;
     white-space: nowrap;
+    margin-right: 0.75rem;
 }
 
 .filter-dropdown-container {
@@ -51,15 +52,29 @@
     padding: 0.5rem 0.75rem;
     border-radius: 0.5rem;
     border: 0px solid #e2e8f0;
+    min-width: 300px;
     margin-bottom: 0rem;
     display: flex;
     gap: 0.75rem;
 }
 
+/* Special filter container for metric selector with button on right */
+.filter-container-with-button {
+    background: #ffffff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 0px solid #e2e8f0;
+    min-width: 300px;
+    margin-bottom: 0rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .radio-buttons {
     display: flex;
     gap: 1rem;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
 }
 
@@ -87,4 +102,22 @@
 
 .radio-buttons label:hover {
     color: #002244;
+}
+
+/* Cities Growth specific styles */
+.cities-growth-metric-container {
+    background: #ffffff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 0px solid #e2e8f0;
+    min-width: 300px;
+    margin-bottom: 0rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cities-growth-metric-group {
+    display: flex;
+    align-items: center;
 }

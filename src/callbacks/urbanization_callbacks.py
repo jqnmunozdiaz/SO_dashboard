@@ -4,6 +4,7 @@ Coordinates all urbanization-related visualization callbacks
 """
 
 from dash import Input, Output, dcc, html
+import dash_bootstrap_components as dbc
 
 # Import individual callback modules
 from .urbanization.Urban_Population_Living_in_Slums_callbacks import register_urban_population_living_in_slums_callbacks
@@ -331,30 +332,35 @@ def register_callbacks(app):
             return html.Div([
                 # Metric selector (Built-up vs Population)
                 html.Div([
-                    html.Label('Metric:', className='filter-label'),
-                    dcc.RadioItems(
-                        id='cities-growth-metric-selector',
-                        options=[
-                            {'label': 'Built-up', 'value': 'BU'},
-                            {'label': 'Population', 'value': 'POP'}
-                        ],
-                        value='BU',
-                        className='radio-buttons',
-                        labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
-                    )
-                ], className='filter-container'),
+                    html.Div([
+                        html.Label('Metric:', className='filter-label'),
+                        dcc.RadioItems(
+                            id='cities-growth-metric-selector',
+                            options=[
+                                {'label': 'Built-up', 'value': 'BU'},
+                                {'label': 'Population', 'value': 'POP'}
+                            ],
+                            value='BU',
+                            className='radio-buttons',
+                            labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
+                        )
+                    ], className='cities-growth-metric-group'),
+                    dbc.Button("📍 Where are these cities?", id="show-city-map-button", color="info", className="download-data-button")
+                ], className='cities-growth-metric-container'),
                 # City selector
                 html.Div([
-                    html.Label('Cities:', className='filter-label'),
-                    dcc.Dropdown(
-                        id='cities-growth-city-selector',
-                        options=[],
-                        value=[],
-                        multi=True,
-                        placeholder='Select cities...',
-                        className='dropdown'
-                    )
-                ], className='filter-container'),
+                    html.Label('Cities:', className='dropdown-label'),
+                    html.Div([
+                        dcc.Dropdown(
+                            id='cities-growth-city-selector',
+                            options=[],
+                            value=[],
+                            multi=True,
+                            placeholder='Select cities...',
+                            className='city-dropdown'
+                        )
+                    ], className='dropdown-group')
+                ], className='city-selector-container'),
                 # Chart
                 dcc.Graph(id="cities-growth-chart"),
                 # Indicator note
@@ -364,7 +370,17 @@ def register_callbacks(app):
                         create_download_trigger_button('cities-growth-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
-                ], className="indicator-note-container")
+                ], className="indicator-note-container"),
+                # City Map Modal
+                dbc.Modal([
+                    dbc.ModalHeader(dbc.ModalTitle("City Locations")),
+                    dbc.ModalBody([
+                        html.Div(id="city-map-container", style={'height': '70vh'})
+                    ]),
+                    dbc.ModalFooter(
+                        dbc.Button("Close", id="close-city-map-button", className="ml-auto")
+                    )
+                ], id="city-map-modal", size="xl", is_open=False)
             ], className="chart-container")
         else:
             return html.Div("Select a chart type above")

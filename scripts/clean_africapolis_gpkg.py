@@ -25,7 +25,8 @@ from shapely.geometry import Point
 
 # Define file paths
 raw_file = os.path.join(project_root, 'data', 'raw', 'africapolis2023.gpkg')
-output_file = os.path.join(project_root, 'data', 'processed', 'africapolis2023_centroids.gpkg')
+output_gpkg = os.path.join(project_root, 'data', 'processed', 'africapolis2023_centroids.gpkg')
+output_csv = os.path.join(project_root, 'data', 'processed', 'africapolis2023_centroids.csv')
     
 gdf = gpd.read_file(raw_file)
 
@@ -36,20 +37,27 @@ ssa_iso3_codes = list(ssa_countries.keys())
 # Step 3: Filter for SSA countries only
 gdf_ssa = gdf[gdf['ISO3'].isin(ssa_iso3_codes)].copy()
 
-# Step 4: Keep only required columns
-required_columns = ['agglosID', 'agglosName', 'ISO3', 'Longitude', 'Latitude']
+# Step 4: Convert to WGS84 if needed and calculate centroids from actual geometries
+if gdf_ssa.crs != 'EPSG:4326':
+    print(f"Reprojecting from {gdf_ssa.crs} to EPSG:4326 (WGS84)")
+    gdf_ssa = gdf_ssa.to_crs('EPSG:4326')
+
+# Calculate centroids from actual geometries (not Longitude/Latitude columns)
+gdf_ssa['geometry'] = gdf_ssa.geometry.centroid
 
 # Keep only required columns
-gdf_clean = gdf_ssa[required_columns].copy()
+required_columns = ['agglosID', 'agglosName', 'ISO3']
+gdf_clean = gdf_ssa[required_columns + ['geometry']].copy()
 
-# Create geometry from Longitude and Latitude columns
-gdf_clean['geometry'] = gdf_clean.apply(lambda row: Point(row['Longitude'], row['Latitude']), axis=1)
-
-# Convert to GeoDataFrame and set CRS (assuming WGS84 for lat/lon)
+# Convert to GeoDataFrame with WGS84
 gdf_clean = gpd.GeoDataFrame(gdf_clean, geometry='geometry', crs='EPSG:4326')
 
-del gdf_clean['Longitude'], gdf_clean['Latitude']
-
 # Save to GPKG
-os.makedirs(os.path.dirname(output_file), exist_ok=True)
-gdf_clean.to_file(output_file, driver='GPKG')
+os.makedirs(os.path.dirname(output_gpkg), exist_ok=True)
+gdf_clean.to_file(output_gpkg, driver='GPKG')
+
+# Also save as CSV with lat/lon columns for easier dashboard loading
+gdf_csv = gdf_clean.copy()
+gdf_csv['Longitude'] = gdf_csv.geometry.x
+gdf_csv['Latitude'] = gdf_csv.geometry.y
+gdf_csv[['agglosID', 'agglosName', 'ISO3', 'Longitude', 'Latitude']].to_csv(output_csv, index=False)

@@ -1,6 +1,7 @@
 # Core Dash dependencies (Python 3.13 compatible)
 dash
 dash-bootstrap-components
+dash-leaflet
 plotly
 
 # Data processing

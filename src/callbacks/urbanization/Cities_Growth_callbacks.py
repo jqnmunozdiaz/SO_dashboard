@@ -3,12 +3,13 @@ Callbacks for Cities Growth (Built-up Expansion) visualization
 Shows 2020 absolute values and 2000-2020 CAGR for selected cities
 """
 
-from dash import Input, Output, State
+from dash import Input, Output, State, html
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import dash_leaflet as dl
 
 try:
-    from ...utils.data_loader import load_africapolis_ghsl_simple
+    from ...utils.data_loader import load_africapolis_ghsl_simple, load_africapolis_centroids
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.component_helpers import create_error_chart
     from ...utils.download_helpers import prepare_csv_download
@@ -16,7 +17,7 @@ try:
 except ImportError:
     import sys, os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.data_loader import load_africapolis_ghsl_simple
+    from src.utils.data_loader import load_africapolis_ghsl_simple, load_africapolis_centroids
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.component_helpers import create_error_chart
     from src.utils.download_helpers import prepare_csv_download
@@ -28,6 +29,7 @@ def register_cities_growth_callbacks(app):
     
     # Load static data once at registration time for performance
     data = load_africapolis_ghsl_simple()
+    centroids_data = load_africapolis_centroids()
     countries_dict = load_subsaharan_countries_and_regions_dict()
     
     @app.callback(
@@ -239,4 +241,92 @@ def register_cities_growth_callbacks(app):
         
         except Exception as e:
             print(f"Error preparing download: {str(e)}")
+            return None
+    
+    @app.callback(
+        Output('city-map-modal', 'is_open'),
+        [Input('show-city-map-button', 'n_clicks'),
+         Input('close-city-map-button', 'n_clicks')],
+        [State('city-map-modal', 'is_open')],
+        prevent_initial_call=True
+    )
+    def toggle_map_modal(show_clicks, close_clicks, is_open):
+        """Toggle the city map modal visibility"""
+        return not is_open
+    
+    @app.callback(
+        Output('city-map-container', 'children'),
+        [Input('city-map-modal', 'is_open')],
+        [State('main-country-filter', 'value'),
+         State('cities-growth-city-selector', 'value')],
+        prevent_initial_call=True
+    )
+    def update_city_map(is_open, selected_country, selected_cities):
+        """Generate Leaflet map with selected cities"""
+        if not is_open or not selected_country or not selected_cities:
+            return html.Div("No cities selected")
+        
+        try:
+            # Filter centroids for selected country and cities
+            filtered_centroids = centroids_data[
+                (centroids_data['ISO3'] == selected_country) & 
+                (centroids_data['agglosName'].isin(selected_cities))
+            ].copy()
+            
+            if filtered_centroids.empty:
+                return html.Div("No location data available for selected cities")
+            
+            # Calculate map center and zoom
+            center_lat = filtered_centroids['Latitude'].mean()
+            center_lon = filtered_centroids['Longitude'].mean()
+            
+            # Calculate appropriate zoom level based on city spread
+            lat_range = filtered_centroids['Latitude'].max() - filtered_centroids['Latitude'].min()
+            lon_range = filtered_centroids['Longitude'].max() - filtered_centroids['Longitude'].min()
+            max_range = max(lat_range, lon_range)
+            
+            # Determine zoom level
+            if max_range > 10:
+                zoom = 5
+            elif max_range > 5:
+                zoom = 6
+            elif max_range > 2:
+                zoom = 7
+            elif max_range > 1:
+                zoom = 8
+            else:
+                zoom = 9
+            
+            # Create markers for each city
+            markers = []
+            for _, row in filtered_centroids.iterrows():
+                marker = dl.Marker(
+                    position=[row['Latitude'], row['Longitude']],
+                    children=[
+                        dl.Tooltip(row['agglosName']),
+                        dl.Popup([
+                            html.H6(row['agglosName'], style={'marginBottom': '5px'}),
+                            html.P(f"Country: {countries_dict.get(row['ISO3'], row['ISO3'])}", 
+                                   style={'marginBottom': '0px', 'fontSize': '12px'})
+                        ])
+                    ]
+                )
+                markers.append(marker)
+            
+            # Create map
+            city_map = dl.Map(
+                children=[
+                    dl.TileLayer(url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                attribution='&copy; OpenStreetMap contributors'),
+                    dl.LayerGroup(markers)
+                ],
+                center=[center_lat, center_lon],
+                zoom=zoom,
+                style={'width': '100%', 'height': '70vh'}
+            )
+            
+            return city_map
+            
+        except Exception as e:
+            return html.Div(f"Error loading map: {str(e)}", style={'color': 'red'})
             return None

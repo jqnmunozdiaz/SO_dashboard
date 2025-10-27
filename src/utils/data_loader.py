@@ -319,6 +319,28 @@ def load_africapolis_ghsl_simple() -> pd.DataFrame:
         raise Exception(f"Error loading Africapolis GHSL simple data: {str(e)}")
 
 
+def load_africapolis_centroids() -> pd.DataFrame:
+    """
+    Load Africapolis city centroids with coordinates
+    
+    Returns:
+        DataFrame with columns: agglosID, agglosName, ISO3, Longitude, Latitude
+    """
+    # Get the absolute path to the project root directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.join(current_dir, '..', '..')
+    file_path = os.path.join(project_root, 'data', 'processed', 'africapolis2023_centroids.csv')
+    
+    try:
+        df = pd.read_csv(file_path)
+        return df
+        
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Africapolis centroids data file not found: {file_path}")
+    except Exception as e:
+        raise Exception(f"Error loading Africapolis centroids data: {str(e)}")
+
+
 def load_urban_density_data(file_path: Optional[str] = None) -> pd.DataFrame:
     """
     Load built-up per capita data aggregated by country and year.

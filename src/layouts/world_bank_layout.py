@@ -65,11 +65,11 @@ def create_world_bank_layout():
                     ),
                 ], className="contact-form-group"),
                 html.Div([
-                    html.Label("Email:", className="contact-form-label"),
+                    html.Label("Email (optional):", className="contact-form-label"),
                     dbc.Input(
                         id="contact-email",
                         type="email",
-                        placeholder="Enter your email",
+                        placeholder="Enter your email (optional)",
                         className="contact-form-input"
                     ),
                 ], className="contact-form-group"),

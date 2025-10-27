@@ -40,8 +40,11 @@ def register_contact_callbacks(app):
         
         # Close modal after successful submission
         if button_id == 'contact-submit-button':
-            # Validate form before closing
-            if name and email and message:
+            # Validate form before closing - only close if name and message are provided
+            if name and message:
+                # Also check email is valid if provided
+                if email and ('@' not in email or '.' not in email):
+                    return True  # Keep open if email is invalid
                 return False  # Close on successful submission
             return True  # Keep open if validation fails
         
@@ -70,16 +73,16 @@ def register_contact_callbacks(app):
         if n_clicks is None or n_clicks == 0:
             return '', 'contact-form-feedback', None, None, None
         
-        # Validate inputs
-        if not name or not email or not message:
+        # Validate required inputs (only name and message are required)
+        if not name or not message:
             return (
-                html.Span('Please fill in all fields.'),
+                html.Span('Please fill in your name and message.'),
                 'contact-form-feedback error',
                 name, email, message
             )
         
-        # Basic email validation
-        if '@' not in email or '.' not in email:
+        # Basic email validation only if email is provided
+        if email and ('@' not in email or '.' not in email):
             return (
                 html.Span('Please enter a valid email address.'),
                 'contact-form-feedback error',
@@ -91,7 +94,7 @@ def register_contact_callbacks(app):
             submission = {
                 'timestamp': datetime.utcnow().isoformat(),
                 'name': name,
-                'email': email,
+                'email': email if email else 'No email provided',
                 'message': message
             }
             
@@ -158,17 +161,21 @@ def send_via_formspree(submission):
         FORMSPREE_ENDPOINT = "https://formspree.io/f/xovpjdbq"
         
         # Formspree expects form data
+        # Only include email field if a valid email was provided
         data = {
             'name': submission['name'],
-            'email': submission['email'],
             'message': submission['message'],
             '_subject': f"Dashboard Contact: {submission['name']}",
         }
         
+        # Only add email if it was provided (not the placeholder text)
+        if submission['email'] != 'No email provided':
+            data['email'] = submission['email']
+        
         response = requests.post(FORMSPREE_ENDPOINT, data=data)
         
         if response.status_code == 200:
-            print(f"Formspree submission successful: {submission['email']}")
+            print(f"Formspree submission successful: {submission.get('name', 'Unknown')}")
             return True
         else:
             print(f"Formspree error {response.status_code}: {response.text}")

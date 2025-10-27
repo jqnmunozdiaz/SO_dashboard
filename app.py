@@ -9,6 +9,7 @@ import dash_bootstrap_components as dbc
 from src.layouts.world_bank_layout import create_world_bank_layout
 from src.callbacks import disaster_callbacks, urbanization_callbacks, flood_callbacks
 from src.callbacks.main_callbacks import register_main_callbacks
+from src.callbacks.contact_callbacks import register_contact_callbacks
 
 # Initialize the Dash app
 app = dash.Dash(
@@ -29,6 +30,7 @@ app.layout = create_world_bank_layout()
 
 # Register all callbacks
 register_main_callbacks(app)
+register_contact_callbacks(app)
 disaster_callbacks.register_callbacks(app)
 urbanization_callbacks.register_callbacks(app)
 flood_callbacks.register_callbacks(app)

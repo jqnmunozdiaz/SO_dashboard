@@ -10,6 +10,7 @@ from src.utils.ui_helpers import (
     create_city_platform_button,
     create_download_component,
 )
+import os
 
 
 def create_world_bank_layout():
@@ -30,6 +31,12 @@ def create_world_bank_layout():
                 html.Div(className="header-spacer"),
 
                 html.Div([
+                    html.Button(
+                        "Contact Us",
+                        id="contact-us-button",
+                        className="contact-us-button",
+                        n_clicks=0
+                    ),
                     html.Img(
                         src="/assets/images/wb-full-logo.png",
                         className="header-logo header-logo-wb",
@@ -43,6 +50,60 @@ def create_world_bank_layout():
                 ], className="header-logos"),
             ], className="header-inner"),
         ], className="header-container"),
+
+        # Contact Us Modal
+        dbc.Modal([
+            dbc.ModalHeader(dbc.ModalTitle("Contact Us")),
+            dbc.ModalBody([
+                html.Div([
+                    html.Label("Name:", className="contact-form-label"),
+                    dbc.Input(
+                        id="contact-name",
+                        type="text",
+                        placeholder="Enter your name",
+                        className="contact-form-input"
+                    ),
+                ], className="contact-form-group"),
+                html.Div([
+                    html.Label("Email:", className="contact-form-label"),
+                    dbc.Input(
+                        id="contact-email",
+                        type="email",
+                        placeholder="Enter your email",
+                        className="contact-form-input"
+                    ),
+                ], className="contact-form-group"),
+                html.Div([
+                    html.Label("Message:", className="contact-form-label"),
+                    dbc.Textarea(
+                        id="contact-message",
+                        placeholder="Enter your message or feedback",
+                        className="contact-form-textarea",
+                        style={"minHeight": "150px"}
+                    ),
+                ], className="contact-form-group"),
+                html.Div(id="contact-form-feedback", className="contact-form-feedback"),
+            ]),
+            dbc.ModalFooter([
+                dbc.Button(
+                    "Send",
+                    id="contact-submit-button",
+                    className="contact-submit-button",
+                    n_clicks=0
+                ),
+                dbc.Button(
+                    "Close",
+                    id="contact-close-button",
+                    className="contact-close-button",
+                    n_clicks=0
+                ),
+            ]),
+        ],
+        id="contact-modal",
+        is_open=False,
+        size="lg",
+        backdrop=True,
+        centered=True),
 
         # Main content
         html.Div([
@@ -142,6 +203,8 @@ def create_world_bank_layout():
                 create_download_component("precipitation-download"),
                 # Store for flood benchmark selections
                 dcc.Store(id='flood-benchmark-store', data=[]),
+                # Store for contact form submission status
+                dcc.Store(id='contact-form-store', data={}),
             ], style={"display": "none"}),
         ], className="main-content"),
     ], className="dashboard-container")

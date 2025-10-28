@@ -201,6 +201,7 @@ def create_world_bank_layout():
                 create_download_component("national-flood-exposure-population-relative-download"),
                 create_download_component("cities-flood-exposure-download"),
                 create_download_component("precipitation-download"),
+                create_download_component("urbanization-vs-climate-change-download"),
                 # Store for flood benchmark selections
                 dcc.Store(id='flood-benchmark-store', data=[]),
                 # Store for contact form submission status
@@ -286,6 +287,7 @@ def create_world_bank_flood_projections_tab_content():
                 className="sub-nav-tabs subtabs-container",
                 children=[
                     dbc.Tab(label="Changes in Extreme Precipitation", tab_id="precipitation", label_class_name="tab-blue"),
+                    dbc.Tab(label="Urbanization vs Climate Change", tab_id="urbanization-vs-climate", label_class_name="tab-blue"),
                 ],
             ),
             html.Div(id="flood-projections-content"),

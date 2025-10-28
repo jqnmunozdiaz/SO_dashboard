@@ -10,6 +10,7 @@ from .flood.National_Flood_Exposure_Population_callbacks import register_nationa
 from .flood.National_Flood_Exposure_Population_Relative_callbacks import register_national_flood_exposure_population_relative_callbacks
 from .flood.Cities_Flood_Exposure_callbacks import register_cities_flood_exposure_callbacks
 from .flood.Precipitation_callbacks import register_precipitation_callbacks
+from .flood.Urbanization_vs_Climate_Change_callbacks import register_urbanization_vs_climate_change_callbacks
 from .country_benchmark_callbacks import register_combined_benchmark_options_callback
 
 try:
@@ -74,6 +75,7 @@ def register_callbacks(app):
     register_national_flood_exposure_population_relative_callbacks(app)
     register_cities_flood_exposure_callbacks(app)
     register_precipitation_callbacks(app)
+    register_urbanization_vs_climate_change_callbacks(app)
     
     # Register combined benchmark dropdown callbacks
     register_combined_benchmark_options_callback(app, 'flood-combined-benchmark-selector')
@@ -313,6 +315,40 @@ def register_callbacks(app):
             ], className="indicator-note-container")
         ], className="chart-container")
     
+    def create_urbanization_vs_climate_change_tab_content():
+        """Helper function to create urbanization vs climate change comparison tab content"""
+        
+        # Data source note
+        data_source = "Fathom3 flood maps (2020), GHSL Built-up Surface (2023), UN World Population Prospects (2022), and IPCC climate scenarios."
+        note_prefix = "This chart compares built-up area exposed to flooding under different future scenarios. "
+        
+        note_text = [
+            html.B("Data Source: "), 
+            data_source,
+            html.Br(),
+            html.B("Note: "), 
+            note_prefix,
+            "Demographic scenarios (left group) show flood exposure changes based on population growth and urbanization, ",
+            "assuming constant built-up area per capita from 2020. ",
+            "Climate change scenarios (right group) show exposure changes from climate-driven flood pattern changes. ",
+            "The horizontal dashed line represents 2020 baseline conditions. ",
+            "Bars above this line indicate increased flood exposure."
+        ]
+        
+        return html.Div([
+            # Chart (no additional filters needed - uses main country filter)
+            dcc.Graph(id='urbanization-vs-climate-change-chart'),
+            
+            # Data source note
+            html.Div([
+                html.P(note_text, className="indicator-note"),
+                html.Div([
+                    create_download_trigger_button('urbanization-vs-climate-change-download'),
+                    create_methodological_note_button()
+                ], className="buttons-container")
+            ], className="indicator-note-container")
+        ], className="chart-container")
+    
     @app.callback(
         Output('flood-exposure-content', 'children'),
         Input('flood-exposure-subtabs', 'active_tab'),
@@ -342,6 +378,10 @@ def register_callbacks(app):
         if active_subtab == 'precipitation':
             # Precipitation patterns tab
             return create_precipitation_tab_content()
+        
+        elif active_subtab == 'urbanization-vs-climate':
+            # Urbanization vs Climate Change tab
+            return create_urbanization_vs_climate_change_tab_content()
         
         return html.Div("Select a subtab to view flood projection data")
     

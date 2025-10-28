@@ -393,8 +393,40 @@ def load_precipitation_data(var_name: str = '1day', file_path: Optional[str] = N
         raise Exception(f"Error loading precipitation data: {str(e)}")
 
 
+def load_flood_projections_data(file_path: Optional[str] = None) -> pd.DataFrame:
+    """
+    Load consolidated flood exposure projections data for all Sub-Saharan African countries
+    
+    Args:
+        file_path: Path to consolidated flood projections CSV file (optional)
+        
+    Returns:
+        DataFrame with flood projections data
+        Index: Country names
+        Columns include:
+        - BU_2020: Built-up area in 2020 (km²)
+        - 2020_{RP}: Built-up exposed to flooding in 2020 for return period RP
+        - {year}-SSP{scenario}_{RP}: Built-up exposed under climate scenario
+        - bupsc1_{percentile}_{RP}: Built-up exposed under urbanization scenario
+    """
+    if file_path is None:
+        # Get the absolute path to the project root directory
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.join(current_dir, '..', '..')
+        file_path = os.path.join(project_root, 'data', 'processed', 'ALL_SSA_BUexp_projected_consolidated.csv')
+    
+    try:
+        df = pd.read_csv(file_path, index_col=0)  # First column is country names
+        return df
+
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Flood projections data file not found: {file_path}")
+    except Exception as e:
+        raise Exception(f"Error loading flood projections data: {str(e)}")
+
+
 # Import centralized country utilities
 from .country_utils import get_subsaharan_countries, load_subsaharan_countries_dict, load_subsaharan_countries_and_regions_dict
 
 # Re-export for backward compatibility
-__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections', 'load_city_size_distribution', 'load_city_agglomeration_counts', 'load_population_data', 'load_jmp_water_data', 'load_jmp_sanitation_data', 'load_cities_growth_rate', 'load_urban_density_data', 'load_precipitation_data']
+__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections', 'load_city_size_distribution', 'load_city_agglomeration_counts', 'load_population_data', 'load_jmp_water_data', 'load_jmp_sanitation_data', 'load_cities_growth_rate', 'load_urban_density_data', 'load_precipitation_data', 'load_flood_projections_data']

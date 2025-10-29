@@ -7,7 +7,7 @@ import dash
 import dash_bootstrap_components as dbc
 
 from src.layouts.world_bank_layout import create_world_bank_layout
-from src.callbacks import disaster_callbacks, urbanization_callbacks, flood_callbacks
+from src.callbacks import disaster_callbacks, urbanization_callbacks, flood_callbacks, flood_projections_callbacks
 from src.callbacks.main_callbacks import register_main_callbacks
 from src.callbacks.contact_callbacks import register_contact_callbacks
 
@@ -34,6 +34,7 @@ register_contact_callbacks(app)
 disaster_callbacks.register_callbacks(app)
 urbanization_callbacks.register_callbacks(app)
 flood_callbacks.register_callbacks(app)
+flood_projections_callbacks.register_callbacks(app)
 
 if __name__ == '__main__':
     import os

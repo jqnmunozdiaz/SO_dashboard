@@ -39,13 +39,13 @@ This is a **Dash-based dashboard** for analyzing disaster risk management (DRM) 
    - Cities Distribution - city size distribution analysis
    - Cities Evolution - city growth over time
 
-3. **Exposure to Flood Hazard** - Fathom3 flood risk analysis with four subtabs:
-   - Built-up Absolute - total built-up area exposed to flooding
-   - Built-up Relative - percentage of built-up area exposed to flooding
-   - Population Absolute - total population exposed to flooding
-   - Population Relative - percentage of population exposed to flooding
+3. **Exposure to Flood Hazard** - Fathom3 flood risk analysis with five subtabs:
+   - National Flood Exposure - total built-up area exposed to flooding (dynamic exposure/measurement types)
+   - Cities Flood Exposure - flood exposure for major cities over time
 
-4. **Projections of Flood Risk** - (placeholder for future flood projections)
+4. **Projections of Flood Risk** - Future flood and climate scenarios with two subtabs:
+   - Changes in Extreme Precipitation - precipitation return period projections under climate scenarios
+   - Urbanization vs Climate Change - comparison of demographic vs climate-driven flood exposure changes
 
 ## Key Patterns & Conventions
 
@@ -226,10 +226,11 @@ Callbacks are organized by feature area with nested structure:
 disaster_callbacks.py     # Coordinates all disaster visualizations
 urbanization_callbacks.py # Coordinates all urbanization visualizations
 flood_callbacks.py        # Coordinates all flood exposure visualizations
+flood_projections_callbacks.py  # Coordinates all flood projections visualizations
 main_callbacks.py         # Handles main navigation and header updates
 country_benchmark_callbacks.py  # Populates country benchmark dropdowns
 
-# Individual visualization callbacks (in src/callbacks/disaster/, urbanization/, or flood/)
+# Individual visualization callbacks (in src/callbacks/disaster/, urbanization/, flood/, or flood_projections/)
 disaster/Frequency_by_Type_callbacks.py
 disaster/Disasters_by_Year_callbacks.py
 disaster/Total_Affected_Population_callbacks.py
@@ -245,14 +246,19 @@ flood/National_Flood_Exposure_callbacks.py
 flood/National_Flood_Exposure_Relative_callbacks.py
 flood/National_Flood_Exposure_Population_callbacks.py
 flood/National_Flood_Exposure_Population_Relative_callbacks.py
+flood/Cities_Flood_Exposure_callbacks.py
+flood_projections/Precipitation_callbacks.py
+flood_projections/Urbanization_vs_Climate_Change_callbacks.py
 
 # Registration in app.py (THIS IS THE ONLY PLACE CALLBACKS ARE REGISTERED)
-from src.callbacks import disaster_callbacks, urbanization_callbacks, flood_callbacks
+from src.callbacks import disaster_callbacks, urbanization_callbacks, flood_callbacks, flood_projections_callbacks
 from src.callbacks.main_callbacks import register_main_callbacks
 
 register_main_callbacks(app)
 disaster_callbacks.register_callbacks(app)
 urbanization_callbacks.register_callbacks(app)
+flood_callbacks.register_callbacks(app)
+flood_projections_callbacks.register_callbacks(app)
 flood_callbacks.register_callbacks(app)
 ```
 
@@ -567,9 +573,11 @@ Global regional benchmarks:
 │   │   ├── disaster/       # Individual disaster chart callbacks
 │   │   ├── urbanization/   # Individual urbanization chart callbacks
 │   │   ├── flood/          # Individual flood exposure chart callbacks
+│   │   ├── flood_projections/  # Individual flood projections chart callbacks
 │   │   ├── disaster_callbacks.py      # Disaster orchestrator
 │   │   ├── urbanization_callbacks.py  # Urbanization orchestrator
 │   │   ├── flood_callbacks.py         # Flood exposure orchestrator
+│   │   ├── flood_projections_callbacks.py  # Flood projections orchestrator
 │   │   ├── main_callbacks.py          # Navigation & header
 │   │   └── country_benchmark_callbacks.py  # Country dropdown population
 │   ├── layouts/
@@ -582,6 +590,9 @@ Global regional benchmarks:
 │       ├── country_utils.py           # Country filtering utilities
 │       ├── ui_helpers.py              # Reusable UI components
 │       ├── download_helpers.py        # Data export utilities
+│       ├── color_utils.py             # Disaster color configuration
+│       ├── flood_ui_helpers.py        # Flood-specific UI components
+│       └── precipitation_config.py    # Precipitation SSP color configuration
 │       ├── color_utils.py             # Disaster color configuration
 │       └── flood_ui_helpers.py        # Flood-specific UI components
 ├── assets/

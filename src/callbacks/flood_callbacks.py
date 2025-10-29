@@ -32,14 +32,14 @@ except ImportError:
 def register_callbacks(app):
     """Register all flood exposure callbacks"""
     
-    # Callback to filter country dropdown options based on active flood subtab
+    # Callback to filter country dropdown options based on active flood exposure subtab
     @app.callback(
         Output('main-country-filter', 'options', allow_duplicate=True),
         Input('flood-exposure-subtabs', 'active_tab'),
         prevent_initial_call=True
     )
-    def update_country_filter_options_flood(flood_subtab):
-        """Update country filter options for flood tabs - hide regional aggregates for Cities Flood Exposure"""
+    def update_country_filter_options_flood_exposure(flood_subtab):
+        """Update country filter options for flood exposure tabs - hide regional aggregates for Cities Flood Exposure"""
         try:
             # Get individual countries (without regional aggregates)
             countries = get_subsaharan_countries()
@@ -62,7 +62,43 @@ def register_callbacks(app):
                 return all_options
                 
         except Exception as e:
-            print(f"Error updating country filter options for flood: {str(e)}")
+            print(f"Error updating country filter options for flood exposure: {str(e)}")
+            # Fallback to individual countries only
+            countries = get_subsaharan_countries()
+            countries = sorted(countries, key=lambda x: x['name'])
+            return [{'label': country['name'], 'value': country['code']} for country in countries]
+    
+    # Callback to filter country dropdown options based on active flood projections subtab
+    @app.callback(
+        Output('main-country-filter', 'options', allow_duplicate=True),
+        Input('flood-projections-subtabs', 'active_tab'),
+        prevent_initial_call=True
+    )
+    def update_country_filter_options_flood_projections(projections_subtab):
+        """Update country filter options for flood projections tabs - hide regional aggregates for Urbanization vs Climate Change"""
+        try:
+            # Get individual countries (without regional aggregates)
+            countries = get_subsaharan_countries()
+            
+            # Sort countries alphabetically by name
+            countries = sorted(countries, key=lambda x: x['name'])
+            
+            # For Urbanization vs Climate Change, only show individual countries
+            if projections_subtab == 'urbanization-vs-climate':
+                return [{'label': country['name'], 'value': country['code']} for country in countries]
+            else:
+                # For other projections tabs (precipitation), include regional aggregates
+                regional_options = [
+                    {'label': 'Sub-Saharan Africa', 'value': 'SSA'},
+                    {'label': 'Eastern & Southern Africa', 'value': 'AFE'},
+                    {'label': 'Western & Central Africa', 'value': 'AFW'}
+                ]
+                all_options = [{'label': country['name'], 'value': country['code']} for country in countries]
+                all_options.extend(regional_options)
+                return all_options
+                
+        except Exception as e:
+            print(f"Error updating country filter options for flood projections: {str(e)}")
             # Fallback to individual countries only
             countries = get_subsaharan_countries()
             countries = sorted(countries, key=lambda x: x['name'])

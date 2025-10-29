@@ -11,6 +11,32 @@ def register_contact_callbacks(app):
     """Register callbacks for Contact Us modal and form submission"""
     
     @app.callback(
+        Output('disclaimer-modal', 'is_open'),
+        [Input('disclaimer-button', 'n_clicks'),
+         Input('disclaimer-close-button', 'n_clicks')],
+        [State('disclaimer-modal', 'is_open')],
+        prevent_initial_call=True
+    )
+    def toggle_disclaimer_modal(open_clicks, close_clicks, is_open):
+        """Toggle the disclaimer modal open/closed"""
+        from dash import callback_context
+        
+        if not callback_context.triggered:
+            return is_open
+        
+        button_id = callback_context.triggered[0]['prop_id'].split('.')[0]
+        
+        # Open modal when Disclaimer button clicked
+        if button_id == 'disclaimer-button':
+            return True
+        
+        # Close modal when Close button clicked
+        if button_id == 'disclaimer-close-button':
+            return False
+        
+        return is_open
+    
+    @app.callback(
         Output('contact-modal', 'is_open'),
         [Input('contact-us-button', 'n_clicks'),
          Input('contact-close-button', 'n_clicks'),

@@ -32,6 +32,12 @@ def create_world_bank_layout():
 
                 html.Div([
                     html.Button(
+                        "Disclaimer",
+                        id="disclaimer-button",
+                        className="contact-us-button",
+                        n_clicks=0
+                    ),
+                    html.Button(
                         "Contact Us",
                         id="contact-us-button",
                         className="contact-us-button",
@@ -100,6 +106,36 @@ def create_world_bank_layout():
             ]),
         ],
         id="contact-modal",
+        is_open=False,
+        size="lg",
+        backdrop=True,
+        centered=True),
+
+        # Disclaimer Modal
+        dbc.Modal([
+            dbc.ModalHeader(dbc.ModalTitle("Disclaimer")),
+            dbc.ModalBody([
+                html.P(
+                    "This work is a product of the staff of The World Bank with external contributions. "
+                    "The findings, interpretations, and conclusions expressed in this work do not necessarily "
+                    "reflect the views of The World Bank, its Board of Executive Directors, or the governments "
+                    "they represent. The World Bank does not guarantee the accuracy of the data included in this work. "
+                    "The boundaries, colors, denominations, and other information shown on any map in this work do not "
+                    "imply any judgment on the part of The World Bank concerning the legal status of any territory or "
+                    "the endorsement or acceptance of such boundaries.",
+                    style={'textAlign': 'justify', 'lineHeight': '1.6'}
+                )
+            ]),
+            dbc.ModalFooter([
+                dbc.Button(
+                    "Close",
+                    id="disclaimer-close-button",
+                    className="contact-close-button",
+                    n_clicks=0
+                ),
+            ]),
+        ],
+        id="disclaimer-modal",
         is_open=False,
         size="lg",
         backdrop=True,

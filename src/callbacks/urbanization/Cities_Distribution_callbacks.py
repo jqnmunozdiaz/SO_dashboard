@@ -127,7 +127,7 @@ def register_cities_distribution_callbacks(app):
             chart_title = html.H6([
                 html.B(country_name),
                 f' | Cities Distribution by Size ({selected_year})'
-            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            ], className='chart-title')
             
             fig.update_layout(
                 plot_bgcolor='white',

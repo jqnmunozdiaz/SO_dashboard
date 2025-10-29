@@ -105,7 +105,7 @@ def register_access_to_electricity_urban_callbacks(app):
             
             # Create separate title
             title_text = html.H6([html.B(title_suffix), f' | {chart_title}'], 
-                                style={'marginBottom': '1rem', 'color': '#2c3e50'})
+                                className='chart-title')
             
             # Update layout (without title)
             fig.update_layout(

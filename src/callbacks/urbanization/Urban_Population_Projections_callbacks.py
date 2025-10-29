@@ -198,7 +198,7 @@ def register_urban_population_projections_callbacks(app):
                 chart_title = html.H6([
                     html.B(country_name),
                     ' | Urban and Rural Population Growth Rate'
-                ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+                ], className='chart-title')
                 yaxis_config = dict(
                     title=yaxis_title,
                     tickformat='0.0f',  # Format as decimal with 1 place
@@ -209,7 +209,7 @@ def register_urban_population_projections_callbacks(app):
                 chart_title = html.H6([
                     html.B(country_name),
                     ' | Urban and Rural Population Projections'
-                ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+                ], className='chart-title')
                 yaxis_config = dict(
                     title=yaxis_title,
                     tickformat=None

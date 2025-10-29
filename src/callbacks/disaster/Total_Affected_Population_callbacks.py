@@ -112,14 +112,14 @@ def setup_total_affected_population_callbacks(app):
             chart_title = html.H6([
                 html.B(title_suffix),
                 f' | Total Affected Population by Year - Relative ({DATA_CONFIG["analysis_period"]})'
-            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            ], className='chart-title')
             hover_format = '%{y:.2f}%'
         else:
             y_label = 'Total Affected Population'
             chart_title = html.H6([
                 html.B(title_suffix),
                 f' | Total Affected Population by Year ({DATA_CONFIG["analysis_period"]})'
-            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            ], className='chart-title')
             hover_format = '%{y:,.0f}'
         
         # Create stacked bar chart with disaster type colors

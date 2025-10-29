@@ -126,7 +126,7 @@ def register_urban_density_callbacks(app):
             
             # Create separate title
             chart_title = html.H6([html.B(country_name), ' | Built-up per capita in Cities'], 
-                                 style={'marginBottom': '1rem', 'color': '#2c3e50'})
+                                 className='chart-title')
             
             fig.update_layout(
                 xaxis=dict(

@@ -96,7 +96,7 @@ def setup_frequency_by_type_callbacks(app):
             chart_title = html.H6([
                 html.B(title_suffix),
                 f' | Share of Disasters by Type ({DATA_CONFIG["analysis_period"]})'
-            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            ], className='chart-title')
             
             fig.update_layout(
                 plot_bgcolor='white',
@@ -129,7 +129,7 @@ def setup_frequency_by_type_callbacks(app):
             chart_title = html.H6([
                 html.B(title_suffix),
                 f' | Frequency of Disasters by Type ({DATA_CONFIG["analysis_period"]})'
-            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            ], className='chart-title')
             
             # Update layout styling
             fig.update_layout(

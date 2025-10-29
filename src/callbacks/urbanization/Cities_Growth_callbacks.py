@@ -170,7 +170,7 @@ def register_cities_growth_callbacks(app):
             chart_title = html.H6([
                 html.B(country_name),
                 f' | {title_suffix} Expansion'
-            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            ], className='chart-title')
             
             # Update layout
             fig.update_layout(

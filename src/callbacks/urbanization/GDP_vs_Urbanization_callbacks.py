@@ -95,7 +95,7 @@ def register_gdp_vs_urbanization_callbacks(app):
                             ))
             # Create separate title
             chart_title = html.H6([html.B(title_suffix), ' | GDP per Capita vs Urbanization Rate'], 
-                                 style={'marginBottom': '1rem', 'color': '#2c3e50'})
+                                 className='chart-title')
             
             fig.update_layout(
                 xaxis_title='Urbanization Rate (% of Population)',

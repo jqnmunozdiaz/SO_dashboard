@@ -67,12 +67,6 @@ def register_precipitation_callbacks(app):
             # Get unique return periods and sort them
             return_periods = sorted(country_data['RP'].unique())
             
-            # Pre-calculate y positions for annotations (before creating figure)
-            n_rows = len(return_periods)
-            v_spacing = 0.15
-            available_height = 1.0 - (n_rows - 1) * v_spacing
-            row_height = available_height / n_rows
-            
             # Create figure with subplots (one row per return period)
             from plotly.subplots import make_subplots
             fig = make_subplots(
@@ -191,8 +185,8 @@ def register_precipitation_callbacks(app):
             # Create title separately
             chart_title = html.H6([
                 html.B(country_name),
-                ' | Future Precipitation Patterns'
-            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+                ' | Future Extreme Precipitation Patterns (2050)'
+            ], className='chart-title')
             
             # Update layout
             fig.update_layout(

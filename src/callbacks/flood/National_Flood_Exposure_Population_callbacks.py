@@ -90,7 +90,7 @@ def register_national_flood_exposure_population_callbacks(app):
             
             # Create separate title
             chart_title = html.H6([html.B(country_name), ' | National Flood Exposure - Population'], 
-                                 style={'marginBottom': '1rem', 'color': '#2c3e50'})
+                                 className='chart-title')
             
             # Update layout (flood type is hardcoded to Fluvial & Pluvial (Defended))
             fig.update_layout(

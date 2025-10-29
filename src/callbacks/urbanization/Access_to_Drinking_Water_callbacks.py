@@ -80,7 +80,7 @@ def register_access_to_drinking_water_callbacks(app):
             
             # Create separate title
             title_text = html.H6([html.B(country_name), ' | Access to Drinking Water, Urban (% of Urban Population)'], 
-                                style={'marginBottom': '1rem', 'color': '#2c3e50'})
+                                className='chart-title')
             
             # Update layout
             fig.update_layout(

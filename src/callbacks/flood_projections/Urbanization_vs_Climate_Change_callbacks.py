@@ -174,7 +174,7 @@ def register_urbanization_vs_climate_change_callbacks(app):
             chart_title = html.H6([
                 html.B(country_name),
                 ' | Built-up Flood Exposure: Urbanization vs Climate Change'
-            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            ], className='chart-title')
             
             # Update overall layout
             fig.update_layout(

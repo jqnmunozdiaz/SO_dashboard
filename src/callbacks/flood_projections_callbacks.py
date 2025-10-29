@@ -82,6 +82,16 @@ def register_callbacks(app):
         return html.Div([
             # Title
             html.Div(id='precipitation-title', className='chart-title'),
+            # Explanatory text
+            html.Div([
+                html.P([
+                    "Heavy rainfall events will become more frequent and thus affect the already exposed population more often. ",
+                    "Flood hazard could evolve due to changing climate patterns, as climate models indicate an increase in the frequency of extreme precipitation events in the coming decades. ",
+                    "For instance, a heavy daily rainfall event which today has a 10% annual exceedance probability (or that will be exceeded once every 10 years on average), ",
+                    "will increase its exceedance probability to between 15% and 24% by 2050 due to climate change. ",
+                    "This corresponds to a national spatial average, and local changes may be heterogeneous."
+                ], className='chart-explanation')
+            ]),
             # Return period selector
             rp_selector,
             
@@ -97,6 +107,7 @@ def register_callbacks(app):
                 ], className="buttons-container")
             ], className="indicator-note-container")
         ], className="chart-container")
+        
     
     def create_urbanization_vs_climate_change_tab_content():
         """Helper function to create urbanization vs climate change comparison tab content"""

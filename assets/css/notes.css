@@ -1,3 +1,25 @@
+/* Chart Titles */
+.chart-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
+
+/* Explanatory text for charts */
+.chart-explanation {
+    font-size: 0.95rem;
+    color: #555555;
+    margin-bottom: 1.5rem;
+    margin-top: 0.5rem;
+    line-height: 1.65;
+    padding: 0.75rem 1rem;
+    background-color: #fafbfc;
+    border-left: 3px solid #a0aec0;
+    border-radius: 3px;
+}
+
 /* Indicator Notes - Data source and methodology notes */
 
 .indicator-note-container {

@@ -98,7 +98,7 @@ def setup_disasters_by_year_callbacks(app):
         chart_title = html.H6([
             html.B(title_suffix),
             f' | Number of Disasters by Year ({DATA_CONFIG["analysis_period"]})'
-        ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+        ], className='chart-title')
         
         # Update layout styling
         fig.update_layout(

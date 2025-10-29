@@ -128,7 +128,7 @@ def register_cities_growth_rate_callbacks(app):
             
             # Create separate title
             chart_title = html.H6([html.B(country_name), ' | Built-up and Population Growth Rate in Cities (2000-2020)'], 
-                                 style={'marginBottom': '1rem', 'color': '#2c3e50'})
+                                 className='chart-title')
             
             fig.update_layout(
                 xaxis=dict(

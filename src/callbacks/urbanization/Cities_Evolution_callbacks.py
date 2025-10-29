@@ -128,7 +128,7 @@ def register_cities_evolution_callbacks(app):
             
             # Create separate title
             chart_title = html.H6([html.B(country_name), ' | Urban Population by Individual Cities'], 
-                                 style={'marginBottom': '1rem', 'color': '#2c3e50'})
+                                 className='chart-title')
             
             fig.update_layout(
                 xaxis_title='Year',

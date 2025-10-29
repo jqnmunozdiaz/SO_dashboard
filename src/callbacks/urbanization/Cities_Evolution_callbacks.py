@@ -3,7 +3,7 @@ Callbacks for Cities Evolution stacked bar chart visualization
 Shows evolution of urban population across city size categories over time
 """
 
-from dash import Input, Output
+from dash import Input, Output, html
 import plotly.graph_objects as go
 
 from ...utils.data_loader import load_city_size_distribution
@@ -22,8 +22,9 @@ def register_cities_evolution_callbacks(app):
     
     @app.callback(
         [Output('cities-evolution-chart', 'figure'),
-         Output('cities-evolution-chart', 'style')],
-        [Input('main-country-filter', 'value')],
+         Output('cities-evolution-chart', 'style'),
+         Output('cities-evolution-title', 'children')],
+        Input('main-country-filter', 'value'),
         prevent_initial_call=False
     )
     def generate_cities_evolution_chart(selected_country):
@@ -125,8 +126,11 @@ def register_cities_evolution_callbacks(app):
             
             country_name = countries_dict.get(selected_country, selected_country)
             
+            # Create separate title
+            chart_title = html.H6([html.B(country_name), ' | Urban Population by Individual Cities'], 
+                                 style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            
             fig.update_layout(
-                title=f'<b>{country_name}</b> | Urban Population by Individual Cities',
                 xaxis_title='Year',
                 yaxis_title=yaxis_title,
                 barmode='stack',
@@ -165,11 +169,11 @@ def register_cities_evolution_callbacks(app):
                     tickformat=',.1f' if use_millions else ','
                 )
             )
-            
-            return fig, {'display': 'block'}
+            return fig, {'display': 'block'}, chart_title
             
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
     
     # Register download callback using the reusable helper
     create_simple_download_callback(

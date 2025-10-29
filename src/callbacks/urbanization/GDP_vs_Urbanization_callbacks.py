@@ -3,7 +3,7 @@ Callbacks for GDP vs Urbanization scatterplot visualization
 Shows scatterplot of GDP per capita (y) vs Urbanization Rate (x) for selected country and country benchmarks
 """
 
-from dash import Input, Output
+from dash import Input, Output, html
 import plotly.graph_objects as go
 import pandas as pd
 
@@ -29,7 +29,8 @@ def register_gdp_vs_urbanization_callbacks(app):
     
     @app.callback(
         [Output('gdp-vs-urbanization-chart', 'figure'),
-         Output('gdp-vs-urbanization-chart', 'style')],
+         Output('gdp-vs-urbanization-chart', 'style'),
+         Output('gdp-vs-urbanization-title', 'children')],
         [Input('main-country-filter', 'value'),
          Input('gdp-vs-urbanization-country-benchmark-selector', 'value'),
          Input('gdp-vs-urbanization-global-benchmark-selector', 'value')],
@@ -92,14 +93,16 @@ def register_gdp_vs_urbanization_callbacks(app):
                                 hovertemplate=f'<b>{global_names[region_code]}</b><br>Year: %{{text}}<br>Urbanization Rate: %{{x:.1f}}%<br>GDP per Capita: %{{y:,.0f}} PPP$<extra></extra>',
                                 text=merged_region['Year']
                             ))
+            # Create separate title
+            chart_title = html.H6([html.B(title_suffix), ' | GDP per Capita vs Urbanization Rate'], 
+                                 style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            
             fig.update_layout(
-                title=f'<b>{title_suffix}</b> | GDP per Capita vs Urbanization Rate',
                 xaxis_title='Urbanization Rate (% of Population)',
                 yaxis_title='GDP per Capita<br>(PPP, constant 2017 international $)',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
-                title_font_size=16,
                 showlegend=True,
                 legend=dict(
                     orientation="h",
@@ -127,10 +130,11 @@ def register_gdp_vs_urbanization_callbacks(app):
                 ),
                 margin=dict(b=80, t=100)
             )
-            return fig, {'display': 'block'}
+            return fig, {'display': 'block'}, chart_title
         except Exception as e:
             # Return error chart
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
     
     # Register download callback using the reusable helper
     create_multi_csv_download_callback(

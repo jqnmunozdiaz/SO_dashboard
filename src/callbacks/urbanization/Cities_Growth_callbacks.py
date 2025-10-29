@@ -62,7 +62,8 @@ def register_cities_growth_callbacks(app):
     
     @app.callback(
         [Output('cities-growth-chart', 'figure'),
-         Output('cities-growth-chart', 'style')],
+         Output('cities-growth-chart', 'style'),
+         Output('cities-growth-title', 'children')],
         [Input('main-country-filter', 'value'),
          Input('cities-growth-metric-selector', 'value'),
          Input('cities-growth-city-selector', 'value')],
@@ -165,9 +166,14 @@ def register_cities_growth_callbacks(app):
             
             country_name = countries_dict.get(selected_country, selected_country)
             
+            # Create title separately
+            chart_title = html.H6([
+                html.B(country_name),
+                f' | {title_suffix} Expansion'
+            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            
             # Update layout
             fig.update_layout(
-                title=f'<b>{country_name}</b> | {title_suffix} Expansion',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
@@ -206,10 +212,11 @@ def register_cities_growth_callbacks(app):
                 row=1, col=2
             )
             
-            return fig, {'display': 'block'}
+            return fig, {'display': 'block'}, chart_title
             
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
     
     # Register download callback using the reusable helper
     create_simple_download_callback(

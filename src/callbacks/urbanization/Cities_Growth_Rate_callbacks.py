@@ -3,7 +3,7 @@ Callbacks for Cities Growth Rate scatterplot visualization
 Shows population growth rate vs built-up area growth rate for cities (2000-2020)
 """
 
-from dash import Input, Output
+from dash import Input, Output, html
 import plotly.graph_objects as go
 
 from ...utils.data_loader import load_cities_growth_rate
@@ -22,7 +22,8 @@ def register_cities_growth_rate_callbacks(app):
     
     @app.callback(
         [Output('cities-growth-rate-chart', 'figure'),
-         Output('cities-growth-rate-chart', 'style')],
+         Output('cities-growth-rate-chart', 'style'),
+         Output('cities-growth-rate-title', 'children')],
         Input('main-country-filter', 'value'),
         prevent_initial_call=False
     )
@@ -125,8 +126,11 @@ def register_cities_growth_rate_callbacks(app):
             
             country_name = countries_dict.get(selected_country, selected_country)
             
+            # Create separate title
+            chart_title = html.H6([html.B(country_name), ' | Built-up and Population Growth Rate in Cities (2000-2020)'], 
+                                 style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            
             fig.update_layout(
-                title=f'<b>{country_name}</b> | Built-up and Population Growth Rate in Cities (2000-2020)',
                 xaxis=dict(
                     title='Population Growth Rate (%)',
                     showgrid=True,
@@ -163,11 +167,12 @@ def register_cities_growth_rate_callbacks(app):
                 height=600,
                 hovermode='closest'
             )
-            
-            return fig, {'display': 'block'}
+
+            return fig, {'display': 'block'}, chart_title
             
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
     
     # Register download callback using the reusable helper
     create_simple_download_callback(

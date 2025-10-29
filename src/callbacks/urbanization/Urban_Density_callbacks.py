@@ -3,7 +3,7 @@ Callbacks for Built-up per capita visualization
 Shows line chart of built-up area per person (m² per capita) in cities
 """
 
-from dash import Input, Output
+from dash import Input, Output, html
 import plotly.graph_objects as go
 import pandas as pd
 
@@ -55,7 +55,8 @@ def register_urban_density_callbacks(app):
 
     @app.callback(
         [Output('urban-density-chart', 'figure'),
-         Output('urban-density-chart', 'style')],
+         Output('urban-density-chart', 'style'),
+         Output('urban-density-title', 'children')],
         [
             Input('main-country-filter', 'value'),
             Input('urban-density-combined-benchmark-selector', 'value'),
@@ -123,8 +124,11 @@ def register_urban_density_callbacks(app):
 
             country_name = countries_dict.get(selected_country, selected_country)
             
+            # Create separate title
+            chart_title = html.H6([html.B(country_name), ' | Built-up per capita in Cities'], 
+                                 style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            
             fig.update_layout(
-                title=f'<b>{country_name}</b> | Built-up per capita in Cities',
                 xaxis=dict(
                     title='Year',
                     showgrid=True,
@@ -154,10 +158,11 @@ def register_urban_density_callbacks(app):
                 height=600,
             )
 
-            return fig, {'display': 'block'}
+            return fig, {'display': 'block'}, chart_title
 
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
 
     # Register download callback using the reusable helper
     create_simple_download_callback(

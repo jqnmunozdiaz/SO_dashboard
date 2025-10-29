@@ -115,21 +115,25 @@ def register_callbacks(app):
         # Determine which chart to render and download button based on exposure and measurement type
         if exposure_type == 'built_s' and measurement_type == 'absolute':
             chart_id = 'national-flood-exposure-chart'
+            title_id = 'national-flood-exposure-title'
             download_id = 'national-flood-exposure-download'
             data_source = "Fathom3 flood maps (2020) and GHSL Built-up Surface (2023)."
             note_prefix = "This chart shows the total built-up area exposed to flooding for different return periods. "
         elif exposure_type == 'built_s' and measurement_type == 'relative':
             chart_id = 'national-flood-exposure-relative-chart'
+            title_id = 'national-flood-exposure-relative-title'
             download_id = 'national-flood-exposure-relative-download'
             data_source = "Fathom3 flood maps (2020) and GHSL Built-up Surface (2023)."
             note_prefix = "This chart shows the percentage of total built-up area exposed to flooding for different return periods. Values represent the proportion of a country's built-up area that falls within flood-prone zones. "
         elif exposure_type == 'pop' and measurement_type == 'absolute':
             chart_id = 'national-flood-exposure-population-chart'
+            title_id = 'national-flood-exposure-population-title'
             download_id = 'national-flood-exposure-population-download'
             data_source = "Fathom3 flood maps (2020) and GHSL Population (2023)."
             note_prefix = "This chart shows the total population exposed to flooding for different return periods. "
         else:  # pop + relative
             chart_id = 'national-flood-exposure-population-relative-chart'
+            title_id = 'national-flood-exposure-population-relative-title'
             download_id = 'national-flood-exposure-population-relative-download'
             data_source = "Fathom3 flood maps (2020) and GHSL Population (2023)."
             note_prefix = "This chart shows the percentage of total population exposed to flooding for different return periods. Values represent the proportion of a country's population that falls within flood-prone zones. "
@@ -151,6 +155,8 @@ def register_callbacks(app):
         ]
         
         return html.Div([
+            # Title
+            html.Div(id=title_id, className='chart-title'),
             # Filters
             filters_container,
             # Chart
@@ -222,6 +228,9 @@ def register_callbacks(app):
         ]
         
         return html.Div([
+            # Title
+            html.Div(id='cities-flood-exposure-title', className='chart-title'),
+            
             # Filters
             filters_container,
             

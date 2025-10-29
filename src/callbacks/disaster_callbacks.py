@@ -33,6 +33,8 @@ def register_callbacks(app):
         """Render different disaster charts based on selected subtab with clear chart mapping"""
         if active_subtab == 'disaster-frequency':
             return html.Div([
+                # Title
+                html.Div(id='disaster-frequency-title', className='chart-title'),
                 # Display mode selector
                 html.Div([
                     html.Label("Display Mode:", className="filter-label"),
@@ -60,6 +62,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'disaster-timeline':
             return html.Div([
+                # Title
+                html.Div(id='disaster-timeline-title', className='chart-title'),
                 # Chart
                 dcc.Graph(id="disaster-timeline-chart"),
                 # Indicator note
@@ -73,6 +77,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'disaster-affected':
             return html.Div([
+                # Title
+                html.Div(id='disaster-affected-title', className='chart-title'),
                 # Display mode selector
                 create_absolute_relative_selector('disaster-affected-mode-selector'),
                 # Chart
@@ -88,6 +94,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'disaster-deaths':
             return html.Div([
+                # Title
+                html.Div(id='disaster-deaths-title', className='chart-title'),
                 # Display mode selector
                 create_absolute_relative_selector('disaster-deaths-mode-selector'),
                 # Chart

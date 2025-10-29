@@ -3,7 +3,7 @@ Callbacks for Urbanization vs Climate Change visualization
 Shows built-up exposure to flooding under different demographic and climate scenarios
 """
 
-from dash import Input, Output
+from dash import Input, Output, html
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -19,8 +19,9 @@ def register_urbanization_vs_climate_change_callbacks(app):
     
     @app.callback(
         [Output('urbanization-vs-climate-change-chart', 'figure'),
-         Output('urbanization-vs-climate-change-chart', 'style')],
-        [Input('main-country-filter', 'value')],
+         Output('urbanization-vs-climate-change-chart', 'style'),
+         Output('urbanization-vs-climate-change-title', 'children')],
+        Input('main-country-filter', 'value'),
         prevent_initial_call=False
     )
     def generate_urbanization_vs_climate_change_chart(selected_country):
@@ -158,6 +159,7 @@ def register_urbanization_vs_climate_change_callbacks(app):
                     ticktext=['2020', '', 'low\n95', 'low\n80', 'Mdn.', 'high\n80', 'high\n95', '', 
                              'SSP1\n2.6', 'SSP2\n4.5', 'SSP3\n7.0', 'SSP5\n8.5'],
                     tickfont=dict(size=10),
+                    range=[-0.5, 11.5],
                     row=row, col=1
                 )
                 
@@ -168,55 +170,65 @@ def register_urbanization_vs_climate_change_callbacks(app):
                     row=row, col=1
                 )
             
+            # Create title separately
+            chart_title = html.H6([
+                html.B(country_name),
+                ' | Built-up Flood Exposure: Urbanization vs Climate Change'
+            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            
             # Update overall layout
             fig.update_layout(
-                title=f'<b>{country_name}</b> | Built-up Flood Exposure: Urbanization vs Climate Change',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
                 showlegend=False,  # Remove legend to match matplotlib version
                 height=800,
-                margin=dict(t=100, b=80, l=80, r=40),
+                margin=dict(t=100, b=140, l=80, r=40),
                 hovermode='closest'
             )
             
-            # Add annotations for scenario group labels (only on top subplot)
-            annotations = [
+            # Add annotations for scenario group labels (below bottom subplot)
+            annotations = list(fig.layout.annotations)  # Preserve subplot titles
+            annotations.extend([
                 dict(
                     text='Current<br>conditions',
-                    xref='x', yref='paper',
-                    x=0, y=1.12,
-                    xanchor='center', yanchor='bottom',
+                    xref='x2', yref='paper',
+                    x=0, y=-0.07,
+                    xanchor='center', yanchor='top',
                     showarrow=False,
-                    font=dict(size=11)
+                    font=dict(size=11),
+                    xshift=0
                 ),
                 dict(
                     text='Demographic<br>scenarios',
-                    xref='x', yref='paper',
-                    x=4, y=1.12,
-                    xanchor='center', yanchor='bottom',
+                    xref='x2', yref='paper',
+                    x=4, y=-0.07,
+                    xanchor='center', yanchor='top',
                     showarrow=False,
-                    font=dict(size=11)
+                    font=dict(size=11),
+                    xshift=0
                 ),
                 dict(
                     text='Climate change<br>scenarios',
-                    xref='x', yref='paper',
-                    x=9.5, y=1.12,
-                    xanchor='center', yanchor='bottom',
+                    xref='x2', yref='paper',
+                    x=9.5, y=-0.07,
+                    xanchor='center', yanchor='top',
                     showarrow=False,
-                    font=dict(size=11)
+                    font=dict(size=11),
+                    xshift=0
                 )
-            ]
+            ])
             
             fig.update_layout(annotations=annotations)
             
             # Remove gridlines from x-axis, keep only y-axis
             fig.update_xaxes(showgrid=False)
             
-            return fig, {'display': 'block'}
+            return fig, {'display': 'block'}, chart_title
             
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
     
     # Create download callback
     create_simple_download_callback(

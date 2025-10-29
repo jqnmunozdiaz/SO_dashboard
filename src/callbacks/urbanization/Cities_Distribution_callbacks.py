@@ -3,7 +3,7 @@ Callbacks for Cities Distribution treemap visualization
 Shows distribution of urban population across city size categories using Plotly treemap
 """
 
-from dash import Input, Output
+from dash import Input, Output, html
 import plotly.graph_objects as go
 
 from ...utils.data_loader import load_city_size_distribution
@@ -22,7 +22,8 @@ def register_cities_distribution_callbacks(app):
     
     @app.callback(
         [Output('cities-distribution-chart', 'figure'),
-         Output('cities-distribution-chart', 'style')],
+         Output('cities-distribution-chart', 'style'),
+         Output('cities-distribution-title', 'children')],
         [
             Input('main-country-filter', 'value'),
             Input('cities-distribution-year-filter', 'value')
@@ -122,8 +123,13 @@ def register_cities_distribution_callbacks(app):
                         hoverinfo='skip'
                     ))
             
+            # Create title separately
+            chart_title = html.H6([
+                html.B(country_name),
+                f' | Cities Distribution by Size ({selected_year})'
+            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            
             fig.update_layout(
-                title=f'<b>{country_name}</b> | Cities Distribution by Size ({selected_year})',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
@@ -145,10 +151,11 @@ def register_cities_distribution_callbacks(app):
                 yaxis=dict(visible=False)
             )
             
-            return fig, {'display': 'block'}
+            return fig, {'display': 'block'}, chart_title
             
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
     
     # Register download callback using the reusable helper
     create_simple_download_callback(

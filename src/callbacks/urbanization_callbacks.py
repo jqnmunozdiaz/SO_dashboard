@@ -103,6 +103,8 @@ def register_callbacks(app):
         
         if active_subtab == 'urban-population-projections':
             return html.Div([
+                # Title
+                html.Div(id='urban-population-projections-title', className='chart-title'),
                 # Radio button to toggle between absolute values and growth rate
                 html.Div([
                     html.Label('Display Mode:', className='filter-label'),
@@ -130,6 +132,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'urbanization-rate':
             return html.Div([
+                # Title
+                html.Div(id='urbanization-rate-title', className='chart-title'),
                 # Combined benchmark selector
                 create_combined_benchmark_selector(
                     dropdown_id='urbanization-rate-combined-benchmark-selector',
@@ -148,6 +152,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'urban-density':
             return html.Div([
+                # Title
+                html.Div(id='urban-density-title', className='chart-title'),
                 # Combined benchmark selector
                 create_combined_benchmark_selector(
                     dropdown_id='urban-density-combined-benchmark-selector',
@@ -171,6 +177,8 @@ def register_callbacks(app):
         elif active_subtab == 'urban-population-slums':
             slums_note = notes_dict.get('EN.POP.SLUM.UR.ZS', '')
             return html.Div([
+                # Title
+                html.Div(id='urban-population-slums-title', className='chart-title'),
                 # Combined benchmark selector
                 create_combined_benchmark_selector(
                     dropdown_id='slums-combined-benchmark-selector',
@@ -189,6 +197,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'access-to-drinking-water':
             return html.Div([
+                # Title
+                html.Div(id='access-to-drinking-water-title', className='chart-title'),
                 # Chart
                 dcc.Graph(id="access-to-drinking-water-chart"),
                 # Indicator note
@@ -206,6 +216,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'access-to-sanitation':
             return html.Div([
+                # Title
+                html.Div(id='access-to-sanitation-title', className='chart-title'),
                 # Chart
                 dcc.Graph(id="access-to-sanitation-chart"),
                 # Indicator note
@@ -224,6 +236,8 @@ def register_callbacks(app):
         elif active_subtab == 'access-to-electricity-urban':
             electricity_note = notes_dict.get('EG.ELC.ACCS.UR.ZS', '')
             return html.Div([
+                # Title
+                html.Div(id='access-to-electricity-urban-title', className='chart-title'),
                 # Combined benchmark selector
                 create_combined_benchmark_selector(
                     dropdown_id='electricity-combined-benchmark-selector',
@@ -242,6 +256,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'gdp-vs-urbanization':
             return html.Div([
+                # Title
+                html.Div(id='gdp-vs-urbanization-title', className='chart-title'),
                 # Benchmark selectors (global and country benchmarks)
                 *create_benchmark_selectors(
                     regional_id='gdp-vs-urbanization-benchmark-selector',
@@ -265,6 +281,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'cities-distribution':
             return html.Div([
+                # Title
+                html.Div(id='cities-distribution-title', className='chart-title'),
                 # Year filter (slider)
                 html.Div([
                     html.Label("Year:", className="filter-label"),
@@ -295,6 +313,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'cities-evolution':
             return html.Div([
+                # Title
+                html.Div(id='cities-evolution-title', className='chart-title'),
                 # Chart
                 dcc.Graph(id="cities-evolution-chart"),
                 # Indicator note
@@ -308,6 +328,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'cities-growth-rate':
             return html.Div([
+                # Title
+                html.Div(id='cities-growth-rate-title', className='chart-title'),
                 # Chart
                 dcc.Graph(id="cities-growth-rate-chart"),
                 # Indicator note
@@ -321,6 +343,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'cities-growth':
             return html.Div([
+                # Title
+                html.Div(id='cities-growth-title', className='chart-title'),
                 # Metric selector (Built-up vs Population)
                 html.Div([
                     html.Div([

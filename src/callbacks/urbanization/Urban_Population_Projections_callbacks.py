@@ -4,7 +4,7 @@ Shows urban and rural population trends with uncertainty bands for selected coun
 Based on UN DESA World Population Prospects and World Urbanization Prospects data
 """
 
-from dash import Input, Output
+from dash import Input, Output, html
 import plotly.graph_objects as go
 import pandas as pd
 
@@ -24,7 +24,8 @@ def register_urban_population_projections_callbacks(app):
     
     @app.callback(
         [Output('urban-population-projections-chart', 'figure'),
-         Output('urban-population-projections-chart', 'style')],
+         Output('urban-population-projections-chart', 'style'),
+         Output('urban-population-projections-title', 'children')],
         [Input('main-country-filter', 'value'),
          Input('urban-population-projections-mode', 'value')],
         prevent_initial_call=False
@@ -193,8 +194,11 @@ def register_urban_population_projections_callbacks(app):
             
             # Update layout with appropriate y-axis title and formatting
             if display_mode == 'growth_rate':
-                yaxis_title = 'Growth Rate (%)'
-                chart_title = f'<b>{country_name}</b> | Urban and Rural Population Growth Rate'
+                yaxis_title = 'Population Growth Rate (%)'
+                chart_title = html.H6([
+                    html.B(country_name),
+                    ' | Urban and Rural Population Growth Rate'
+                ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
                 yaxis_config = dict(
                     title=yaxis_title,
                     tickformat='0.0f',  # Format as decimal with 1 place
@@ -202,14 +206,16 @@ def register_urban_population_projections_callbacks(app):
                 )
             else:
                 yaxis_title = 'Population (millions)'
-                chart_title = f'<b>{country_name}</b> | Urban and Rural Population Projections'
+                chart_title = html.H6([
+                    html.B(country_name),
+                    ' | Urban and Rural Population Projections'
+                ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
                 yaxis_config = dict(
                     title=yaxis_title,
                     tickformat=None
                 )
             
             fig.update_layout(
-                title=chart_title,
                 xaxis_title='Year',
                 yaxis=yaxis_config,
                 hovermode='x unified',
@@ -222,7 +228,6 @@ def register_urban_population_projections_callbacks(app):
                 ),
                 template='plotly_white',
                 font={'color': CHART_STYLES['colors']['primary']},
-                title_font=dict(size=16, color=CHART_STYLES['font']['color']),
                 margin=dict(l=60, r=20, t=80, b=60),
                 height=500
             )
@@ -257,10 +262,11 @@ def register_urban_population_projections_callbacks(app):
             if display_mode == 'growth_rate':
                 fig.add_hline(y=0, line_dash="dot", line_color="gray", opacity=0.5)
             
-            return fig, {'display': 'block'}
+            return fig, {'display': 'block'}, chart_title
             
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
     
     # Register download callback using the reusable helper
     create_simple_download_callback(

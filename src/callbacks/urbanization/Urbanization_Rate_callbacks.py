@@ -4,7 +4,7 @@ Shows line chart of urban population percentage over time for selected country w
 Based on UN DESA World Urbanization Prospects data
 """
 
-from dash import Input, Output
+from dash import Input, Output, html
 import plotly.graph_objects as go
 
 from ...utils.data_loader import load_undesa_urban_projections
@@ -26,7 +26,8 @@ def register_urbanization_rate_callbacks(app):
     
     @app.callback(
         [Output('urbanization-rate-chart', 'figure'),
-         Output('urbanization-rate-chart', 'style')],
+         Output('urbanization-rate-chart', 'style'),
+         Output('urbanization-rate-title', 'children')],
         [Input('main-country-filter', 'value'),
          Input('urbanization-rate-combined-benchmark-selector', 'value')],
         prevent_initial_call=False
@@ -177,15 +178,17 @@ def register_urbanization_rate_callbacks(app):
                                     showlegend=False
                                 ))
             
-            # Update layout
+            # Create separate title
+            chart_title = html.H6([html.B(title_suffix), ' | Urbanization Rate'], 
+                                 style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            
+            # Update layout (without title)
             fig.update_layout(
-                title=f'<b>{title_suffix}</b> | Urbanization Rate',
                 xaxis_title='Year',
                 yaxis_title='Urban Population<br>(% of Total Population)',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
-                title_font_size=16,
                 showlegend=True,
                 legend=dict(
                     orientation="h",
@@ -237,10 +240,11 @@ def register_urbanization_rate_callbacks(app):
                 yanchor="top",
                 xanchor="left"
             )
-            return fig, {'display': 'block'}
+            return fig, {'display': 'block'}, chart_title
             
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
     
     # Register download callback using the reusable helper
     create_simple_download_callback(

@@ -3,7 +3,7 @@ Callbacks for disaster frequency visualization - "Frequency by Type" subtab
 Shows bar chart of disaster event counts grouped by disaster type for selected country
 """
 
-from dash import Input, Output
+from dash import Input, Output, html
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
@@ -30,7 +30,8 @@ def setup_frequency_by_type_callbacks(app):
     
     @app.callback(
         [Output('disaster-frequency-chart', 'figure'),
-         Output('disaster-frequency-chart', 'style')],
+         Output('disaster-frequency-chart', 'style'),
+         Output('disaster-frequency-title', 'children')],
         [Input('main-country-filter', 'value'),
          Input('disaster-frequency-mode-selector', 'value')],
         prevent_initial_call=False
@@ -71,7 +72,8 @@ def setup_frequency_by_type_callbacks(app):
                     raise Exception("No country selected")
                 
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
         
         # If relative mode, create pie chart showing share of each hazard
         if display_mode == 'relative':
@@ -90,12 +92,16 @@ def setup_frequency_by_type_callbacks(app):
                 customdata=frequency_data['Event Count']
             )])
             
+            # Store title separately
+            chart_title = html.H6([
+                html.B(title_suffix),
+                f' | Share of Disasters by Type ({DATA_CONFIG["analysis_period"]})'
+            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            
             fig.update_layout(
-                title=f'<b>{title_suffix}</b> | Share of Disasters by Type ({DATA_CONFIG["analysis_period"]})',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': '#2c3e50'},
-                title_font_size=16,
                 showlegend=True,
                 legend=dict(
                     orientation="v",
@@ -111,7 +117,6 @@ def setup_frequency_by_type_callbacks(app):
                 frequency_data,
                 x='Disaster Type Wrapped',
                 y='Event Count',
-                title=f'<b>{title_suffix}</b> | Frequency of Disasters by Type ({DATA_CONFIG["analysis_period"]})',
                 labels={'Event Count': 'Number of Events', 'Disaster Type Wrapped': 'Disaster Type'},
                 color='Disaster Type',
                 color_discrete_map={
@@ -120,12 +125,17 @@ def setup_frequency_by_type_callbacks(app):
                 }
             )
             
+            # Store title separately
+            chart_title = html.H6([
+                html.B(title_suffix),
+                f' | Frequency of Disasters by Type ({DATA_CONFIG["analysis_period"]})'
+            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            
             # Update layout styling
             fig.update_layout(
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': '#2c3e50'},
-                title_font_size=16,
                 xaxis_tickangle=0,
                 showlegend=False,
                 xaxis=dict(
@@ -154,7 +164,7 @@ def setup_frequency_by_type_callbacks(app):
                 customdata=frequency_data['Disaster Type']
             )
         
-        return fig, {'display': 'block'}
+        return fig, {'display': 'block'}, chart_title
     
     # Register download callback using the reusable helper
     create_simple_download_callback(

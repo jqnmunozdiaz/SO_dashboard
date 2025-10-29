@@ -3,7 +3,7 @@ Callbacks for disaster deaths visualization - "Total Deaths" subtab
 Shows stacked bar chart of total deaths by disaster type in 5-year intervals for selected country
 """
 
-from dash import Input, Output
+from dash import Input, Output, html
 import plotly.express as px
 import pandas as pd
 
@@ -20,7 +20,8 @@ def setup_total_deaths_callbacks(app):
     
     @app.callback(
         [Output('disaster-deaths-chart', 'figure'),
-         Output('disaster-deaths-chart', 'style')],
+         Output('disaster-deaths-chart', 'style'),
+         Output('disaster-deaths-title', 'children')],
         [Input('main-country-filter', 'value'),
          Input('disaster-deaths-mode-selector', 'value')],
         prevent_initial_call=False
@@ -101,16 +102,23 @@ def setup_total_deaths_callbacks(app):
                     raise Exception("No country selected")
                     
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
         
         # Set labels based on display mode
         if display_mode == 'relative':
             y_label = 'Total Deaths (% of population)'
-            title_text = f'<b>{title_suffix}</b> | Total Deaths by Year - Relative ({DATA_CONFIG["analysis_period"]})'
+            chart_title = html.H6([
+                html.B(title_suffix),
+                f' | Total Deaths by Year - Relative ({DATA_CONFIG["analysis_period"]})'
+            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
             hover_format = '%{y:.4f}%'
         else:
             y_label = 'Total Deaths'
-            title_text = f'<b>{title_suffix}</b> | Total Deaths by Year ({DATA_CONFIG["analysis_period"]})'
+            chart_title = html.H6([
+                html.B(title_suffix),
+                f' | Total Deaths by Year ({DATA_CONFIG["analysis_period"]})'
+            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
             hover_format = '%{y:,.0f}'
         
         # Create stacked bar chart with disaster type colors
@@ -119,7 +127,6 @@ def setup_total_deaths_callbacks(app):
             x='Year',
             y='Total Deaths',
             color='Disaster Type',
-            title=title_text,
             labels={'Total Deaths': y_label, 'Year': 'Year'},
             color_discrete_map=DISASTER_COLORS,
             category_orders={'Year': sorted(deaths_data['Year'].unique())}
@@ -130,7 +137,6 @@ def setup_total_deaths_callbacks(app):
             plot_bgcolor='white',
             paper_bgcolor='white',
             font={'color': '#2c3e50'},
-            title_font_size=16,
             showlegend=True,
             legend=dict(
                 orientation="v",
@@ -169,7 +175,7 @@ def setup_total_deaths_callbacks(app):
             hovertemplate=f'<b>%{{fullData.name}}</b><br>Year: %{{x}}<br>Deaths: {hover_format}<extra></extra>'
         )
         
-        return fig, {'display': 'block'}
+        return fig, {'display': 'block'}, chart_title
     
     # Register download callback using the reusable helper
     create_simple_download_callback(

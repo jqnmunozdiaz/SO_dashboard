@@ -2,7 +2,7 @@
 Callbacks for National Flood Exposure (Population, Absolute) visualization
 """
 
-from dash import Input, Output
+from dash import Input, Output, html
 import plotly.graph_objects as go
 
 from ...utils.flood_data_loader import load_flood_exposure_data, filter_flood_data
@@ -24,7 +24,8 @@ def register_national_flood_exposure_population_callbacks(app):
     
     @app.callback(
         [Output('national-flood-exposure-population-chart', 'figure'),
-         Output('national-flood-exposure-population-chart', 'style')],
+         Output('national-flood-exposure-population-chart', 'style'),
+         Output('national-flood-exposure-population-title', 'children')],
         [Input('main-country-filter', 'value'),
          Input('flood-return-period-selector', 'value'),
          Input('flood-measurement-type-selector', 'value')],
@@ -87,11 +88,14 @@ def register_national_flood_exposure_population_callbacks(app):
                     hovertemplate=f'<b>{country_name}</b><br>Return Period: {labels.get(rp, rp)}<br>Population: %{{y:,.0f}}<extra></extra>'
                 ))
             
-            # Update layout (flood type hardcoded to Fluvial & Pluvial (Defended))
+            # Create separate title
+            chart_title = html.H6([html.B(country_name), ' | National Flood Exposure - Population'], 
+                                 style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            
+            # Update layout (flood type is hardcoded to Fluvial & Pluvial (Defended))
             fig.update_layout(
-                title=f'<b>{country_name}</b> | National Flood Exposure - Population<br><sub>Fluvial & Pluvial (Defended)</sub>',
                 xaxis_title='Year',
-                yaxis_title='Population',
+                yaxis_title='Population (persons)',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
@@ -124,10 +128,11 @@ def register_national_flood_exposure_population_callbacks(app):
                 )
             )
             
-            return fig, {'display': 'block'}
+            return fig, {'display': 'block'}, chart_title
             
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
     
     # Register download callback
     create_simple_download_callback(

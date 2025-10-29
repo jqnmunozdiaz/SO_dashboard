@@ -4,7 +4,7 @@ Shows stacked area chart of urban drinking water access categories over time for
 Data from JMP WASH database: At least basic, Limited (>30 mins), Unimproved, Surface water
 """
 
-from dash import Input, Output
+from dash import Input, Output, html
 import plotly.graph_objects as go
 
 
@@ -24,8 +24,9 @@ def register_access_to_drinking_water_callbacks(app):
     
     @app.callback(
         [Output('access-to-drinking-water-chart', 'figure'),
-         Output('access-to-drinking-water-chart', 'style')],
-        [Input('main-country-filter', 'value')],
+         Output('access-to-drinking-water-chart', 'style'),
+         Output('access-to-drinking-water-title', 'children')],
+        Input('main-country-filter', 'value'),
         prevent_initial_call=False
     )
     def generate_access_to_drinking_water_chart(selected_country):
@@ -77,15 +78,17 @@ def register_access_to_drinking_water_callbacks(app):
                         hovertemplate=f'<b>{hover_name}</b><br>Percentage: %{{y:.0%}}<extra></extra>'
                     ))
             
+            # Create separate title
+            title_text = html.H6([html.B(country_name), ' | Access to Drinking Water, Urban (% of Urban Population)'], 
+                                style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            
             # Update layout
             fig.update_layout(
-                title=f'<b>{country_name}</b> | Access to Drinking Water, Urban (% of Urban Population)<br>',
                 xaxis_title='Year',
                 yaxis_title='Access to Drinking Water<br>(% of Urban Population)',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
-                title_font_size=16,
                 showlegend=True,
                 legend=dict(
                     orientation="h",
@@ -114,11 +117,12 @@ def register_access_to_drinking_water_callbacks(app):
                 margin=dict(b=80, t=100),
                 hovermode='x unified'
             )
-            
-            return fig, {'display': 'block'}
+
+            return fig, {'display': 'block'}, title_text
             
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
     
     # Register download callback using the reusable helper
     create_simple_download_callback(

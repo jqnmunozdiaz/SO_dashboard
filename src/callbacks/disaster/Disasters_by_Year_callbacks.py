@@ -3,7 +3,7 @@ Callbacks for disaster timeline visualization - "Disasters by Year" subtab
 Shows stacked bar chart of disaster events grouped by 5-year intervals for selected country
 """
 
-from dash import Input, Output
+from dash import Input, Output, html
 import plotly.express as px
 import pandas as pd
 
@@ -20,7 +20,8 @@ def setup_disasters_by_year_callbacks(app):
     
     @app.callback(
         [Output('disaster-timeline-chart', 'figure'),
-         Output('disaster-timeline-chart', 'style')],
+         Output('disaster-timeline-chart', 'style'),
+         Output('disaster-timeline-title', 'children')],
         Input('main-country-filter', 'value'),
         prevent_initial_call=False
     )
@@ -79,7 +80,8 @@ def setup_disasters_by_year_callbacks(app):
                     raise Exception("No country selected")
                     
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
         
         # Create stacked bar chart with disaster type colors
         fig = px.bar(
@@ -87,18 +89,22 @@ def setup_disasters_by_year_callbacks(app):
             x='Year',
             y='Event Count',
             color='Disaster Type',
-            title=f'<b>{title_suffix}</b> | Number of Disasters by Year ({DATA_CONFIG["analysis_period"]})',
             labels={'Event Count': 'Number of Events', 'Year': 'Year'},
             color_discrete_map=DISASTER_COLORS,
             category_orders={'Year': sorted(timeline_data['Year'].unique())}
         )
+        
+        # Create title separately
+        chart_title = html.H6([
+            html.B(title_suffix),
+            f' | Number of Disasters by Year ({DATA_CONFIG["analysis_period"]})'
+        ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
         
         # Update layout styling
         fig.update_layout(
             plot_bgcolor='white',
             paper_bgcolor='white',
             font={'color': '#2c3e50'},
-            title_font_size=16,
             showlegend=True,
             legend=dict(
                 orientation="v",
@@ -134,7 +140,7 @@ def setup_disasters_by_year_callbacks(app):
             hovertemplate='<b>%{fullData.name}</b><br>Period: %{x}<br>Events: %{y}<extra></extra>'
         )
         
-        return fig, {'display': 'block'}
+        return fig, {'display': 'block'}, chart_title
     
     # Register download callback using the reusable helper
     create_simple_download_callback(

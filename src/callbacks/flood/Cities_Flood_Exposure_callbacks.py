@@ -3,9 +3,8 @@ Callbacks for Cities Flood Exposure visualization
 Multi-line chart showing flood exposure at city level for all cities across SSA
 """
 
-from dash import Input, Output, State
+from dash import Input, Output, State, html
 import plotly.graph_objects as go
-import pandas as pd
 import dash_leaflet as dl
 
 from ...utils.flood_data_loader import load_city_flood_exposure_data
@@ -27,7 +26,8 @@ def register_cities_flood_exposure_callbacks(app):
     
     @app.callback(
         [Output('cities-flood-exposure-chart', 'figure'),
-         Output('cities-flood-exposure-chart', 'style')],
+         Output('cities-flood-exposure-chart', 'style'),
+         Output('cities-flood-exposure-title', 'children')],
         [Input('main-country-filter', 'value'),
          Input('cities-flood-return-period-selector', 'value'),
          Input('cities-flood-exposure-type-selector', 'value'),
@@ -143,9 +143,12 @@ def register_cities_flood_exposure_callbacks(app):
                     hovertemplate=hover_template
                 ))
             
+            # Create separate title
+            title_text = html.H6([html.B(country_name), f' | Cities Flood Exposure - {chart_title_suffix}'], 
+                                style={'marginBottom': '1rem', 'color': '#2c3e50'})
+            
             # Update layout
             fig.update_layout(
-                title=f'<b>{country_name}</b> | Cities Flood Exposure - {chart_title_suffix}<br><sub>{return_period_labels[return_period]} Flood</sub>',
                 xaxis_title='Year',
                 yaxis_title=yaxis_title,
                 plot_bgcolor='white',
@@ -182,10 +185,11 @@ def register_cities_flood_exposure_callbacks(app):
                 )
             )
             
-            return fig, {'display': 'block'}
+            return fig, {'display': 'block'}, title_text
             
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
     
     # Register download callback
     create_simple_download_callback(

@@ -3,7 +3,7 @@ Callbacks for disaster affected population visualization - "Total Affected Popul
 Shows stacked bar chart of total affected population by disaster type in 5-year intervals for selected country
 """
 
-from dash import Input, Output
+from dash import Input, Output, html
 import plotly.express as px
 import pandas as pd
 
@@ -20,7 +20,8 @@ def setup_total_affected_population_callbacks(app):
     
     @app.callback(
         [Output('disaster-affected-chart', 'figure'),
-         Output('disaster-affected-chart', 'style')],
+         Output('disaster-affected-chart', 'style'),
+         Output('disaster-affected-title', 'children')],
         [Input('main-country-filter', 'value'),
          Input('disaster-affected-mode-selector', 'value')],
         prevent_initial_call=False
@@ -102,16 +103,23 @@ def setup_total_affected_population_callbacks(app):
                     raise Exception("No country selected")
                     
         except Exception as e:
-            return create_simple_error_message(str(e))
+            fig, style = create_simple_error_message(str(e))
+            return fig, style, ""
         
         # Set labels based on display mode
         if display_mode == 'relative':
             y_label = 'Total Affected (% of population)'
-            title_text = f'<b>{title_suffix}</b> | Total Affected Population by Year - Relative ({DATA_CONFIG["analysis_period"]})'
+            chart_title = html.H6([
+                html.B(title_suffix),
+                f' | Total Affected Population by Year - Relative ({DATA_CONFIG["analysis_period"]})'
+            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
             hover_format = '%{y:.2f}%'
         else:
             y_label = 'Total Affected Population'
-            title_text = f'<b>{title_suffix}</b> | Total Affected Population by Year ({DATA_CONFIG["analysis_period"]})'
+            chart_title = html.H6([
+                html.B(title_suffix),
+                f' | Total Affected Population by Year ({DATA_CONFIG["analysis_period"]})'
+            ], style={'marginBottom': '1rem', 'color': '#2c3e50'})
             hover_format = '%{y:,.0f}'
         
         # Create stacked bar chart with disaster type colors
@@ -120,7 +128,6 @@ def setup_total_affected_population_callbacks(app):
             x='Year',
             y='Total Affected',
             color='Disaster Type',
-            title=title_text,
             labels={'Total Affected': y_label, 'Year': 'Year'},
             color_discrete_map=DISASTER_COLORS,
             category_orders={'Year': sorted(affected_data['Year'].unique())}
@@ -131,7 +138,6 @@ def setup_total_affected_population_callbacks(app):
             plot_bgcolor='white',
             paper_bgcolor='white',
             font={'color': '#2c3e50'},
-            title_font_size=16,
             showlegend=True,
             legend=dict(
                 orientation="v",
@@ -170,7 +176,7 @@ def setup_total_affected_population_callbacks(app):
             hovertemplate=f'<b>%{{fullData.name}}</b><br>Year: %{{x}}<br>Affected: {hover_format}<extra></extra>'
         )
         
-        return fig, {'display': 'block'}
+        return fig, {'display': 'block'}, chart_title
     
     # Register download callback using the reusable helper
     create_simple_download_callback(

@@ -9,7 +9,6 @@ from .flood_projections.Precipitation_callbacks import register_precipitation_ca
 from .flood_projections.Urbanization_vs_Climate_Change_callbacks import register_urbanization_vs_climate_change_callbacks
 from ..utils.ui_helpers import create_download_trigger_button, create_methodological_note_button
 from ..utils.country_utils import get_subsaharan_countries
-from config.settings import CHART_STYLES
 
 
 def register_callbacks(app):
@@ -81,6 +80,8 @@ def register_callbacks(app):
         ]
         
         return html.Div([
+            # Title
+            html.Div(id='precipitation-title', className='chart-title'),
             # Return period selector
             rp_selector,
             
@@ -118,6 +119,8 @@ def register_callbacks(app):
         ]
         
         return html.Div([
+            # Title
+            html.Div(id='urbanization-vs-climate-change-title', className='chart-title'),
             # Chart (no additional filters needed - uses main country filter)
             dcc.Graph(id='urbanization-vs-climate-change-chart'),
             

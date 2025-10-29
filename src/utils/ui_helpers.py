@@ -5,17 +5,8 @@ UI component helpers for creating reusable dashboard components
 from dash import dcc, html
 import dash_bootstrap_components as dbc
 
-try:
-    from .benchmark_config import get_benchmark_options
-    from .GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_dropdown_options, get_all_global_benchmark_codes
-except ImportError:
-    # Fallback for direct execution
-    import sys
-    import os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-    from src.utils.benchmark_config import get_benchmark_options
-    from src.utils.GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_dropdown_options, get_all_global_benchmark_codes
-
+from .benchmark_config import get_benchmark_options
+from .GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_dropdown_options, get_all_global_benchmark_codes
 
 def create_benchmark_selectors(
     regional_id, 

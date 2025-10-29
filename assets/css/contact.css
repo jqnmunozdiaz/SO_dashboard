@@ -23,6 +23,14 @@
 }
 
 /* Contact Form Styling */
+.contact-intro-message {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+    font-style: italic;
+}
+
 .contact-form-group {
     margin-bottom: 1.25rem;
 }

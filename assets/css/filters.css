@@ -13,6 +13,21 @@
     padding: 0 0rem;
     align-items: center;
     border-bottom: 2px solid #e5e7eb;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.filter-spacer {
+    flex: 1;
+}
+
+/* Position city platform button absolutely to the right */
+.city-platform-button-container {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .filter-card {

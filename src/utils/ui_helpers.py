@@ -226,7 +226,7 @@ def create_city_platform_button(href: str = "https://www.google.com"):
             size="sm",
             className="download-data-button",
         )
-    ], href=href, target="_blank", rel="noopener noreferrer", className="download-button-container")
+    ], href=href, target="_blank", rel="noopener noreferrer", className="city-platform-button-container")
 
 
 def create_absolute_relative_selector(radio_id):

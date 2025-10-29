@@ -38,7 +38,7 @@ def create_world_bank_layout():
                         n_clicks=0
                     ),
                     html.Button(
-                        "Contact Us",
+                        "Contact Form",
                         id="contact-us-button",
                         className="contact-us-button",
                         n_clicks=0
@@ -59,8 +59,10 @@ def create_world_bank_layout():
 
         # Contact Us Modal
         dbc.Modal([
-            dbc.ModalHeader(dbc.ModalTitle("Contact Us")),
+            dbc.ModalHeader(dbc.ModalTitle("Contact Form")),
             dbc.ModalBody([
+                html.P("You can leave a message for questions, comments, feedback, or any other inquiries.", 
+                       className="contact-intro-message"),
                 html.Div([
                     html.Label("Name:", className="contact-form-label"),
                     dbc.Input(
@@ -149,13 +151,18 @@ def create_world_bank_layout():
                     html.Div([
                         html.H1("Disaster Risk & Urbanization Analytics Dashboard", className="hero-title"),
                         html.P("Sub-Saharan Africa", className="hero-subtitle"),
-                        html.P(
-                            "An interactive platform for analyzing historical disaster patterns, urbanization trends, and resilience indicators across Sub-Saharan Africa. This tool informs decision making for disaster preparedness and long-term risk reduction strategies.",
-                            className="hero-description",
-                        ),
-                        html.P("Select a country, explore the tabs, and interact with the dynamic figures.", className="hero-description"),
                         html.P([
-                            "To access subnational information, visit the ",
+                            html.B("This platform enables users to analyze disaster risk and urbanization trends across Sub-Saharan Africa. "),
+                            "Combining historical disaster data with urban growth projections and climate scenarios, it supports evidence-based "
+                            "planning for disaster risk reduction and sustainable urban development."
+                        ], className="hero-description"),
+                        html.P([
+                            html.B("Explore country-level trends in disaster impacts, urbanization patterns, flood exposure, and future climate risks. "),
+                            "The interactive visualizations enable to identify priorities "
+                            "and inform decisions for building resilient cities."
+                        ], className="hero-description"),
+                        html.P([
+                            "For detailed subnational analysis and city-specific data, visit the ",
                             html.A("city-level platform", href="https://www.google.com", target="_blank"),
                             "."
                         ], className="hero-description"),
@@ -163,10 +170,7 @@ def create_world_bank_layout():
 
                     html.Div([
                         html.Div(className="hero-map-image"),
-                        # City-level platform button positioned over the hero map
-                        html.Div(
-                            create_city_platform_button("https://www.google.com"), className="hero-map-action"
-                        ),
+                        # City-level platform button removed from here - moved to filter section
                     ], className="hero-map"),
                 ], className="hero-inner"),
             ], className="hero-section"),
@@ -190,6 +194,7 @@ def create_world_bank_layout():
                             ], className="filter-dropdown-container"),
                         ], className="filter-control-group"),
                     ], className="filter-card"),
+                    create_city_platform_button("https://www.google.com"),
                 ], className="filter-inner"),
             ], className="filter-section"),
 

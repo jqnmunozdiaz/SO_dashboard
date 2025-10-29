@@ -5,20 +5,11 @@ Handles the "Projections of Flood Risk" main tab
 
 from dash import Input, Output, html, dcc
 
-try:
-    from .flood_projections.Precipitation_callbacks import register_precipitation_callbacks
-    from .flood_projections.Urbanization_vs_Climate_Change_callbacks import register_urbanization_vs_climate_change_callbacks
-    from ..utils.ui_helpers import create_download_trigger_button, create_methodological_note_button
-    from ..utils.country_utils import get_subsaharan_countries
-    from config.settings import CHART_STYLES
-except ImportError:
-    import sys, os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-    from src.callbacks.flood_projections.Precipitation_callbacks import register_precipitation_callbacks
-    from src.callbacks.flood_projections.Urbanization_vs_Climate_Change_callbacks import register_urbanization_vs_climate_change_callbacks
-    from src.utils.ui_helpers import create_download_trigger_button, create_methodological_note_button
-    from src.utils.country_utils import get_subsaharan_countries
-    from config.settings import CHART_STYLES
+from .flood_projections.Precipitation_callbacks import register_precipitation_callbacks
+from .flood_projections.Urbanization_vs_Climate_Change_callbacks import register_urbanization_vs_climate_change_callbacks
+from ..utils.ui_helpers import create_download_trigger_button, create_methodological_note_button
+from ..utils.country_utils import get_subsaharan_countries
+from config.settings import CHART_STYLES
 
 
 def register_callbacks(app):

@@ -5,22 +5,12 @@ Callbacks for Future Precipitation Patterns visualization
 from dash import Input, Output
 import plotly.graph_objects as go
 
-try:
-    from ...utils.data_loader import load_precipitation_data
-    from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_simple_error_message
-    from ...utils.download_helpers import create_simple_download_callback
-    from ...utils.precipitation_config import SSP_COLORS
-    from config.settings import CHART_STYLES
-except ImportError:
-    import sys, os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.data_loader import load_precipitation_data
-    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_simple_error_message
-    from src.utils.download_helpers import create_simple_download_callback
-    from src.utils.precipitation_config import SSP_COLORS
-    from config.settings import CHART_STYLES
+from ...utils.data_loader import load_precipitation_data
+from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
+from ...utils.component_helpers import create_simple_error_message
+from ...utils.download_helpers import create_simple_download_callback
+from ...utils.precipitation_config import SSP_COLORS
+from config.settings import CHART_STYLES
 
 
 def register_precipitation_callbacks(app):

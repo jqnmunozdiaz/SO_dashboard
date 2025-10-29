@@ -7,31 +7,16 @@ from dash import Input, Output
 import plotly.graph_objects as go
 import pandas as pd
 
-try:
-    from ...utils.data_loader import load_urban_density_data
-    from ...utils.country_utils import (
-        load_subsaharan_countries_and_regions_dict,
-        load_wb_regional_classifications,
-        load_subsaharan_countries_dict,
-    )
-    from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
-    from ...utils.component_helpers import create_simple_error_message
-    from ...utils.download_helpers import prepare_csv_download, create_simple_download_callback
-    from config.settings import CHART_STYLES
-except ImportError:
-    import sys
-    import os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.data_loader import load_urban_density_data
-    from src.utils.country_utils import (
-        load_subsaharan_countries_and_regions_dict,
-        load_wb_regional_classifications,
-        load_subsaharan_countries_dict,
-    )
-    from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
-    from src.utils.component_helpers import create_simple_error_message
-    from src.utils.download_helpers import prepare_csv_download, create_simple_download_callback
-    from config.settings import CHART_STYLES
+from ...utils.data_loader import load_urban_density_data
+from ...utils.country_utils import (
+    load_subsaharan_countries_and_regions_dict,
+    load_wb_regional_classifications,
+    load_subsaharan_countries_dict,
+)
+from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
+from ...utils.component_helpers import create_simple_error_message
+from ...utils.download_helpers import create_simple_download_callback
+from config.settings import CHART_STYLES
 
 
 def register_urban_density_callbacks(app):

@@ -5,16 +5,8 @@ Provides reusable callback registration for populating country benchmark options
 
 from dash import Input, Output, State
 
-try:
-    from ..utils.country_utils import load_subsaharan_countries_dict
-    from ..utils.benchmark_config import get_benchmark_names
-except ImportError:
-    # Fallback for direct execution
-    import sys
-    import os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-    from src.utils.country_utils import load_subsaharan_countries_dict
-    from src.utils.benchmark_config import get_benchmark_names
+from ..utils.country_utils import load_subsaharan_countries_dict
+from ..utils.benchmark_config import get_benchmark_names
 
 
 def register_country_benchmark_options_callback(app, output_id):

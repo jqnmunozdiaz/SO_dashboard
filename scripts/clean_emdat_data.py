@@ -6,10 +6,6 @@ Processes the raw EM-DAT Excel file and creates a cleaned CSV for the dashboard
 import pandas as pd
 import numpy as np
 import os
-import warnings
-
-# Suppress pandas future warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Import centralized country utilities
 import sys

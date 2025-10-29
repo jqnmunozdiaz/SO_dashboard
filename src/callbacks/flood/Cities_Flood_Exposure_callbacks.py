@@ -8,24 +8,13 @@ import plotly.graph_objects as go
 import pandas as pd
 import dash_leaflet as dl
 
-try:
-    from ...utils.flood_data_loader import load_city_flood_exposure_data
-    from ...utils.flood_ui_helpers import get_city_colors
-    from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_simple_error_message
-    from ...utils.download_helpers import create_simple_download_callback
-    from ...utils.data_loader import load_africapolis_centroids
-    from config.settings import CHART_STYLES
-except ImportError:
-    import sys, os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.flood_data_loader import load_city_flood_exposure_data
-    from src.utils.flood_ui_helpers import get_city_colors
-    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_simple_error_message
-    from src.utils.download_helpers import create_simple_download_callback
-    from src.utils.data_loader import load_africapolis_centroids
-    from config.settings import CHART_STYLES
+from ...utils.flood_data_loader import load_city_flood_exposure_data
+from ...utils.flood_ui_helpers import get_city_colors
+from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
+from ...utils.component_helpers import create_simple_error_message
+from ...utils.download_helpers import create_simple_download_callback
+from ...utils.data_loader import load_africapolis_centroids
+from config.settings import CHART_STYLES
 
 
 def register_cities_flood_exposure_callbacks(app):

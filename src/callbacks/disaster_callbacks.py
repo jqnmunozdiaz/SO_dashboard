@@ -11,13 +11,7 @@ from .disaster.Disasters_by_Year_callbacks import setup_disasters_by_year_callba
 from .disaster.Total_Affected_Population_callbacks import setup_total_affected_population_callbacks
 from .disaster.Total_Deaths_callbacks import setup_total_deaths_callbacks
 
-try:
-    from ..utils.ui_helpers import create_download_trigger_button, create_methodological_note_button, create_absolute_relative_selector
-except ImportError:
-    import sys
-    import os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-    from src.utils.ui_helpers import create_methodological_note_button, create_absolute_relative_selector
+from ..utils.ui_helpers import create_download_trigger_button, create_methodological_note_button, create_absolute_relative_selector
 
 
 def register_callbacks(app):

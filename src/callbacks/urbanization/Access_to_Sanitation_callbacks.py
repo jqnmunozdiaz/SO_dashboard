@@ -6,27 +6,12 @@ Data from JMP WASH database: At least basic, Limited, Unimproved, Open defecatio
 
 from dash import Input, Output
 import plotly.graph_objects as go
-import warnings
 
-# Suppress pandas future warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
-
-try:
-    from ...utils.data_loader import load_jmp_sanitation_data
-    from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_simple_error_message
-    from ...utils.download_helpers import prepare_csv_download, create_simple_download_callback
-    from config.settings import CHART_STYLES
-except ImportError:
-    # Fallback for direct execution
-    import sys
-    import os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.data_loader import load_jmp_sanitation_data
-    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_simple_error_message
-    from src.utils.download_helpers import prepare_csv_download
-    from config.settings import CHART_STYLES
+from ...utils.data_loader import load_jmp_sanitation_data
+from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
+from ...utils.component_helpers import create_simple_error_message
+from ...utils.download_helpers import create_simple_download_callback
+from config.settings import CHART_STYLES
 
 
 def register_access_to_sanitation_callbacks(app):

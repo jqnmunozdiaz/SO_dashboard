@@ -7,30 +7,15 @@ from dash import Input, Output
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-import warnings
+
 import textwrap
 
-# Suppress pandas future warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
-
-try:
-    from ...utils.data_loader import load_emdat_data
-    from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.color_utils import get_disaster_color, DISASTER_COLORS
-    from ...utils.component_helpers import create_simple_error_message
-    from ...utils.download_helpers import prepare_csv_download, create_simple_download_callback
-    from config.settings import DATA_CONFIG
-except ImportError:
-    # Fallback for direct execution
-    import sys
-    import os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.data_loader import load_emdat_data
-    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.color_utils import get_disaster_color, DISASTER_COLORS
-    from src.utils.component_helpers import create_simple_error_message
-    from src.utils.download_helpers import prepare_csv_download
-    from config.settings import DATA_CONFIG
+from ...utils.data_loader import load_emdat_data
+from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
+from ...utils.color_utils import get_disaster_color, DISASTER_COLORS
+from ...utils.component_helpers import create_simple_error_message
+from ...utils.download_helpers import create_simple_download_callback
+from config.settings import DATA_CONFIG
 
 
 def wrap_text(text, width=15):

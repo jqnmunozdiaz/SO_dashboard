@@ -11,20 +11,11 @@ from .flood.National_Flood_Exposure_Population_Relative_callbacks import registe
 from .flood.Cities_Flood_Exposure_callbacks import register_cities_flood_exposure_callbacks
 from .country_benchmark_callbacks import register_combined_benchmark_options_callback
 
-try:
-    from ..utils.flood_ui_helpers import (create_return_period_selector, 
-                                           create_measurement_type_selector, create_exposure_type_selector,
-                                           create_city_return_period_selector)
-    from ..utils.ui_helpers import create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
-    from ..utils.country_utils import get_subsaharan_countries
-except ImportError:
-    import sys, os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-    from src.utils.flood_ui_helpers import (create_return_period_selector, 
-                                             create_measurement_type_selector, create_exposure_type_selector,
-                                             create_city_return_period_selector)
-    from src.utils.ui_helpers import create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
-    from src.utils.country_utils import get_subsaharan_countries
+from ..utils.flood_ui_helpers import (create_return_period_selector, 
+                                       create_measurement_type_selector, create_exposure_type_selector,
+                                       create_city_return_period_selector)
+from ..utils.ui_helpers import create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
+from ..utils.country_utils import get_subsaharan_countries
 
 
 def register_callbacks(app):

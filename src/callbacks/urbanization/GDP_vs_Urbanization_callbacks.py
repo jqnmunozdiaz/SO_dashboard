@@ -6,27 +6,13 @@ Shows scatterplot of GDP per capita (y) vs Urbanization Rate (x) for selected co
 from dash import Input, Output
 import plotly.graph_objects as go
 import pandas as pd
-import warnings
 
-warnings.simplefilter(action='ignore', category=FutureWarning)
-
-try:
-    from ...utils.data_loader import load_wdi_data
-    from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_simple_error_message
-    from ...utils.GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_colors, get_global_benchmark_names
-    from ...utils.download_helpers import prepare_multi_csv_download, create_multi_csv_download_callback
-    from config.settings import CHART_STYLES
-except ImportError:
-    import sys
-    import os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.data_loader import load_wdi_data
-    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_simple_error_message
-    from src.utils.GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_colors, get_global_benchmark_names
-    from src.utils.download_helpers import prepare_multi_csv_download, create_multi_csv_download_callback
-    from config.settings import CHART_STYLES
+from ...utils.data_loader import load_wdi_data
+from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
+from ...utils.component_helpers import create_simple_error_message
+from ...utils.GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_colors, get_global_benchmark_names
+from ...utils.download_helpers import create_multi_csv_download_callback
+from config.settings import CHART_STYLES
 
 GDP_INDICATOR = "NY.GDP.PCAP.PP.KD"
 URBAN_INDICATOR = "SP.URB.TOTL.IN.ZS"

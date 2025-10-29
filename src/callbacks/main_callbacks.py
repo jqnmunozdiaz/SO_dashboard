@@ -10,13 +10,7 @@ from src.layouts.world_bank_layout import (
     create_world_bank_flood_projections_tab_content
 )
 
-try:
-    from ..utils.country_utils import load_subsaharan_countries_and_regions_dict
-except ImportError:
-    import sys
-    import os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
+from ..utils.country_utils import load_subsaharan_countries_and_regions_dict
 
 
 def register_main_callbacks(app):

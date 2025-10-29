@@ -5,10 +5,6 @@ Processes the raw WDI CSV file and creates cleaned CSV files for each urbanizati
 
 import pandas as pd
 import os
-import warnings
-
-# Suppress pandas future warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Import centralized country utilities
 import sys

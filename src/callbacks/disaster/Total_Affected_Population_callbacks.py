@@ -7,23 +7,12 @@ from dash import Input, Output
 import plotly.express as px
 import pandas as pd
 
-try:
-    from ...utils.data_loader import load_emdat_data
-    from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.color_utils import DISASTER_COLORS
-    from ...utils.component_helpers import create_simple_error_message
-    from ...utils.download_helpers import create_simple_download_callback
-    from config.settings import DATA_CONFIG
-except ImportError:
-    # Fallback for direct execution
-    import sys
-    import os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.data_loader import load_emdat_data, load_population_data
-    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.color_utils import DISASTER_COLORS
-    from src.utils.component_helpers import create_simple_error_message
-    from config.settings import DATA_CONFIG
+from ...utils.data_loader import load_emdat_data, load_population_data
+from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
+from ...utils.color_utils import DISASTER_COLORS
+from ...utils.component_helpers import create_simple_error_message
+from ...utils.download_helpers import create_simple_download_callback
+from config.settings import DATA_CONFIG
 
 
 def setup_total_affected_population_callbacks(app):

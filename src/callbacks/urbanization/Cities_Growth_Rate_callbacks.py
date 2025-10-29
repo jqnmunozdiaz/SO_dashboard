@@ -6,23 +6,12 @@ Shows population growth rate vs built-up area growth rate for cities (2000-2020)
 from dash import Input, Output
 import plotly.graph_objects as go
 
-
-try:
-    from ...utils.data_loader import load_cities_growth_rate
-    from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_simple_error_message
-    from ...utils.download_helpers import prepare_csv_download, create_simple_download_callback
-    from ...utils.color_utils import CITY_SIZE_COLORS
-    from config.settings import CHART_STYLES
-except ImportError:
-    import sys, os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.data_loader import load_cities_growth_rate
-    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_simple_error_message
-    from src.utils.download_helpers import prepare_csv_download, create_simple_download_callback
-    from src.utils.color_utils import CITY_SIZE_COLORS
-    from config.settings import CHART_STYLES
+from ...utils.data_loader import load_cities_growth_rate
+from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
+from ...utils.component_helpers import create_simple_error_message
+from ...utils.download_helpers import create_simple_download_callback
+from ...utils.color_utils import CITY_SIZE_COLORS
+from config.settings import CHART_STYLES
 
 def register_cities_growth_rate_callbacks(app):
     """Register callbacks for Cities Growth Rate scatterplot chart"""

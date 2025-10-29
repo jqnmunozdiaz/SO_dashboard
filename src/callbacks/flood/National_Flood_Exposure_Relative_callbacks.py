@@ -5,26 +5,14 @@ Callbacks for National Flood Exposure (Built-up, Relative) visualization
 from dash import Input, Output
 import plotly.graph_objects as go
 
-try:
-    from ...utils.flood_data_loader import load_flood_exposure_data, filter_flood_data
-    from ...utils.flood_ui_helpers import get_return_period_labels
-    from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
-    from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_simple_error_message
-    from ...utils.download_helpers import create_simple_download_callback
-    from ...utils.color_utils import get_benchmark_country_color
-    from config.settings import CHART_STYLES
-except ImportError:
-    import sys, os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.flood_data_loader import load_flood_exposure_data, filter_flood_data
-    from src.utils.flood_ui_helpers import get_return_period_labels
-    from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
-    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_simple_error_message
-    from src.utils.download_helpers import create_simple_download_callback
-    from src.utils.color_utils import get_benchmark_country_color
-    from config.settings import CHART_STYLES
+from ...utils.flood_data_loader import load_flood_exposure_data, filter_flood_data
+from ...utils.flood_ui_helpers import get_return_period_labels
+from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
+from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
+from ...utils.component_helpers import create_simple_error_message
+from ...utils.download_helpers import create_simple_download_callback
+from ...utils.color_utils import get_benchmark_country_color
+from config.settings import CHART_STYLES
 
 
 def register_national_flood_exposure_relative_callbacks(app):

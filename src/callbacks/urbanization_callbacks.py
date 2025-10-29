@@ -21,18 +21,9 @@ from .urbanization.Cities_Growth_Rate_callbacks import register_cities_growth_ra
 from .urbanization.Cities_Growth_callbacks import register_cities_growth_callbacks
 from .country_benchmark_callbacks import register_country_benchmark_options_callback, register_combined_benchmark_options_callback
 
-try:
-    from ..utils.data_loader import load_urbanization_indicators_notes_dict
-    from ..utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
-    from ..utils.country_utils import get_subsaharan_countries
-except ImportError:
-    # Fallback for direct execution
-    import sys
-    import os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-    from src.utils.data_loader import load_urbanization_indicators_notes_dict
-    from src.utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_methodological_note_button
-    from src.utils.country_utils import get_subsaharan_countries
+from ..utils.data_loader import load_urbanization_indicators_notes_dict
+from ..utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
+from ..utils.country_utils import get_subsaharan_countries
 
 
 def register_callbacks(app):

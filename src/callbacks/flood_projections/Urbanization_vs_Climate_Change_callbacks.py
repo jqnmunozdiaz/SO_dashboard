@@ -7,20 +7,11 @@ from dash import Input, Output
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-try:
-    from ...utils.data_loader import load_flood_projections_data
-    from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_simple_error_message
-    from ...utils.download_helpers import create_simple_download_callback
-    from config.settings import CHART_STYLES
-except ImportError:
-    import sys, os
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    from src.utils.data_loader import load_flood_projections_data
-    from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_simple_error_message
-    from src.utils.download_helpers import create_simple_download_callback
-    from config.settings import CHART_STYLES
+from ...utils.data_loader import load_flood_projections_data
+from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
+from ...utils.component_helpers import create_simple_error_message
+from ...utils.download_helpers import create_simple_download_callback
+from config.settings import CHART_STYLES
 
 
 def register_urbanization_vs_climate_change_callbacks(app):

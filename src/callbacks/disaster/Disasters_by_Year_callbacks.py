@@ -5,6 +5,7 @@ Shows stacked bar chart of disaster events grouped by 5-year intervals for selec
 
 from dash import Input, Output
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 import warnings
 
@@ -15,7 +16,7 @@ try:
     from ...utils.data_loader import load_emdat_data
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.color_utils import DISASTER_COLORS
-    from ...utils.component_helpers import create_error_chart
+    from ...utils.component_helpers import create_simple_error_message
     from ...utils.download_helpers import prepare_csv_download
     from config.settings import DATA_CONFIG
 except ImportError:
@@ -26,7 +27,7 @@ except ImportError:
     from src.utils.data_loader import load_emdat_data
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.color_utils import DISASTER_COLORS
-    from src.utils.component_helpers import create_error_chart
+    from src.utils.component_helpers import create_simple_error_message
     from src.utils.download_helpers import prepare_csv_download
     from config.settings import DATA_CONFIG
 
@@ -35,7 +36,8 @@ def setup_disasters_by_year_callbacks(app):
     """Setup callbacks for the 'Disasters by Year' timeline chart"""
     
     @app.callback(
-        Output('disaster-timeline-chart', 'figure'),
+        [Output('disaster-timeline-chart', 'figure'),
+         Output('disaster-timeline-chart', 'style')],
         Input('main-country-filter', 'value'),
         prevent_initial_call=False
     )
@@ -94,14 +96,7 @@ def setup_disasters_by_year_callbacks(app):
                     raise Exception("No country selected")
                     
         except Exception as e:
-            # Return error chart
-            return create_error_chart(
-                error_message=f"Error loading data: {str(e)}",
-                chart_type='bar',
-                xaxis_title='Year',
-                yaxis_title='Number of Events',
-                title='Disasters by Year'
-            )
+            return create_simple_error_message(str(e))
         
         # Create stacked bar chart with disaster type colors
         fig = px.bar(
@@ -156,7 +151,7 @@ def setup_disasters_by_year_callbacks(app):
             hovertemplate='<b>%{fullData.name}</b><br>Period: %{x}<br>Events: %{y}<extra></extra>'
         )
         
-        return fig
+        return fig, {'display': 'block'}
     
     @app.callback(
         Output('disaster-timeline-download', 'data'),

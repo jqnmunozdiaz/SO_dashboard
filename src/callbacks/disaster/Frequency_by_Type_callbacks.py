@@ -17,7 +17,7 @@ try:
     from ...utils.data_loader import load_emdat_data
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.color_utils import get_disaster_color, DISASTER_COLORS
-    from ...utils.component_helpers import create_error_chart
+    from ...utils.component_helpers import create_simple_error_message
     from ...utils.download_helpers import prepare_csv_download
     from config.settings import DATA_CONFIG
 except ImportError:
@@ -28,7 +28,7 @@ except ImportError:
     from src.utils.data_loader import load_emdat_data
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.color_utils import get_disaster_color, DISASTER_COLORS
-    from src.utils.component_helpers import create_error_chart
+    from src.utils.component_helpers import create_simple_error_message
     from src.utils.download_helpers import prepare_csv_download
     from config.settings import DATA_CONFIG
 
@@ -44,7 +44,8 @@ def setup_frequency_by_type_callbacks(app):
     """Setup callbacks for the 'Frequency by Type' disaster chart"""
     
     @app.callback(
-        Output('disaster-frequency-chart', 'figure'),
+        [Output('disaster-frequency-chart', 'figure'),
+         Output('disaster-frequency-chart', 'style')],
         [Input('main-country-filter', 'value'),
          Input('disaster-frequency-mode-selector', 'value')],
         prevent_initial_call=False
@@ -85,15 +86,7 @@ def setup_frequency_by_type_callbacks(app):
                     raise Exception("No country selected")
                 
         except Exception as e:
-            # Return error chart using shared utility
-            chart_type = 'pie' if display_mode == 'relative' else 'bar'
-            return create_error_chart(
-                error_message=f"Error loading data: {str(e)}",
-                chart_type=chart_type,
-                xaxis_title='Disaster Type',
-                yaxis_title='Number of Events',
-                title='Frequency of Disasters by Type'
-            )
+            return create_simple_error_message(str(e))
         
         # If relative mode, create pie chart showing share of each hazard
         if display_mode == 'relative':
@@ -176,7 +169,7 @@ def setup_frequency_by_type_callbacks(app):
                 customdata=frequency_data['Disaster Type']
             )
         
-        return fig
+        return fig, {'display': 'block'}
     
     @app.callback(
         Output('disaster-frequency-download', 'data'),

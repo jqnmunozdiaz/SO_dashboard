@@ -4,6 +4,35 @@ Shared utility functions for creating consistent chart components
 
 import plotly.graph_objects as go
 
+
+def create_simple_error_message(error_message):
+    """
+    Create a clean figure displaying only an error message without any chart elements
+    
+    Args:
+        error_message: Error message to display (e.g., "No country selected")
+        
+    Returns:
+        tuple: (plotly.graph_objects.Figure, dict) - Figure with error message and display style
+    """
+    fig = go.Figure()
+    fig.add_annotation(
+        text=error_message,
+        xref="paper", yref="paper",
+        x=0.5, y=0.5,
+        xanchor='center', yanchor='middle',
+        showarrow=False,
+        font=dict(size=18)
+    )
+    fig.update_layout(
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        xaxis={'visible': False},
+        yaxis={'visible': False}
+    )
+    return fig, {'display': 'block'}
+
+
 def create_empty_chart(chart_type='bar', title="No Data Available", xaxis_title="", yaxis_title="", yaxis_range=None):
     """
     Create an empty chart with consistent styling for error states

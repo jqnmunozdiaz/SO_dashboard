@@ -136,7 +136,7 @@ def create_world_bank_layout():
             ]),
         ],
         id="disclaimer-modal",
-        is_open=False,
+        is_open=True,
         size="lg",
         backdrop=True,
         centered=True),
@@ -242,6 +242,8 @@ def create_world_bank_layout():
                 dcc.Store(id='flood-benchmark-store', data=[]),
                 # Store for contact form submission status
                 dcc.Store(id='contact-form-store', data={}),
+                # Store to track if disclaimer was shown this session
+                dcc.Store(id='disclaimer-session-store', data=None, storage_type='session'),
             ], style={"display": "none"}),
         ], className="main-content"),
     ], className="dashboard-container")

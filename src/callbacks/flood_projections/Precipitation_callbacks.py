@@ -231,10 +231,9 @@ def register_precipitation_callbacks(app):
     @app.callback(
         Output('precipitation-download', 'data'),
         Input('precipitation-download-button', 'n_clicks'),
-        Input('main-country-filter', 'value'),
         prevent_initial_call=True
     )
-    def download_precipitation_data(n_clicks, selected_country):
+    def download_precipitation_data(n_clicks):
         """Download precipitation data as CSV"""
         if n_clicks is None or n_clicks == 0:
             return None

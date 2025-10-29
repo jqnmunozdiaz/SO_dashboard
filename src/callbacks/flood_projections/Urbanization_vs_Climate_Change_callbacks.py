@@ -6,7 +6,6 @@ Shows built-up exposure to flooding under different demographic and climate scen
 from dash import Input, Output
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import pandas as pd
 
 try:
     from ...utils.data_loader import load_flood_projections_data
@@ -235,12 +234,11 @@ def register_urbanization_vs_climate_change_callbacks(app):
     
     @app.callback(
         Output('urbanization-vs-climate-change-download', 'data'),
-        [Input('urbanization-vs-climate-change-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value')],
+        Input('urbanization-vs-climate-change-download-button', 'n_clicks'),
         prevent_initial_call=True
     )
-    def download_urbanization_vs_climate_change_data(n_clicks, selected_country):
-        """Download flood projections data for selected country"""
+    def download_urbanization_vs_climate_change_data(n_clicks):
+        """Download flood projections data for all countries"""
         if n_clicks is None or n_clicks == 0:
             return None
         

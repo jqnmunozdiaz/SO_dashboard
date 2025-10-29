@@ -10,6 +10,22 @@ from datetime import datetime
 def register_contact_callbacks(app):
     """Register callbacks for Contact Us modal and form submission"""
     
+    # Open disclaimer once per browser session
+    @app.callback(
+        [Output('disclaimer-modal', 'is_open', allow_duplicate=True),
+         Output('disclaimer-session-store', 'data')],
+        Input('disclaimer-session-store', 'data'),
+        State('disclaimer-modal', 'is_open'),
+        prevent_initial_call='initial_duplicate'
+    )
+    def show_disclaimer_once_per_session(session_data, current_open):
+        """On first load of a session, keep disclaimer open and mark as shown; otherwise keep it closed."""
+        # If we've already shown it this session, ensure it's closed
+        if isinstance(session_data, dict) and session_data.get('shown'):
+            return False, session_data
+        # First load in this session: keep whatever initial state the layout set (True) and record as shown
+        return current_open, {'shown': True}
+    
     @app.callback(
         Output('disclaimer-modal', 'is_open'),
         [Input('disclaimer-button', 'n_clicks'),

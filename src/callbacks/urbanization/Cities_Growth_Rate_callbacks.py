@@ -10,8 +10,8 @@ import plotly.graph_objects as go
 try:
     from ...utils.data_loader import load_cities_growth_rate
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_error_chart
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.component_helpers import create_simple_error_message
+    from ...utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from ...utils.color_utils import CITY_SIZE_COLORS
     from config.settings import CHART_STYLES
 except ImportError:
@@ -19,8 +19,8 @@ except ImportError:
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_cities_growth_rate
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_error_chart
-    from src.utils.download_helpers import prepare_csv_download
+    from src.utils.component_helpers import create_simple_error_message
+    from src.utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from src.utils.color_utils import CITY_SIZE_COLORS
     from config.settings import CHART_STYLES
 
@@ -32,7 +32,8 @@ def register_cities_growth_rate_callbacks(app):
     countries_dict = load_subsaharan_countries_and_regions_dict()
     
     @app.callback(
-        Output('cities-growth-rate-chart', 'figure'),
+        [Output('cities-growth-rate-chart', 'figure'),
+         Output('cities-growth-rate-chart', 'style')],
         Input('main-country-filter', 'value'),
         prevent_initial_call=False
     )
@@ -174,34 +175,15 @@ def register_cities_growth_rate_callbacks(app):
                 hovermode='closest'
             )
             
-            return fig
+            return fig, {'display': 'block'}
             
         except Exception as e:
-            return create_error_chart(
-                error_message=f"Error loading data: {str(e)}",
-                chart_type='scatter',
-                xaxis_title='Population Growth Rate (%)',
-                yaxis_title='Built-up Area Growth Rate (%)',
-                title='Built-up and Urbanization Growth Rate in Cities (2000-2020)'
-            )
+            return create_simple_error_message(str(e))
     
-    @app.callback(
-        Output('cities-growth-rate-download', 'data'),
-        Input('cities-growth-rate-download-button', 'n_clicks'),
-        prevent_initial_call=True
+    # Register download callback using the reusable helper
+    create_simple_download_callback(
+        app,
+        'cities-growth-rate-download',
+        lambda: data,
+        'cities_growth_rates_2000_2020'
     )
-    def download_cities_growth_rate_data(n_clicks):
-        """Download cities growth rate data as CSV"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            # Load full dataset (pre-loaded)
-            
-            filename = "africapolis_ghsl2023_cagr_2000_2020"
-            
-            return prepare_csv_download(data, filename)
-        
-        except Exception as e:
-            print(f"Error preparing download: {str(e)}")
-            return None

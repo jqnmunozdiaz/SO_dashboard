@@ -10,8 +10,8 @@ try:
     from ...utils.flood_ui_helpers import get_return_period_labels
     from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_error_chart
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.component_helpers import create_simple_error_message
+    from ...utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from ...utils.color_utils import get_benchmark_country_color
     from config.settings import CHART_STYLES
 except ImportError:
@@ -21,8 +21,8 @@ except ImportError:
     from src.utils.flood_ui_helpers import get_return_period_labels
     from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_error_chart
-    from src.utils.download_helpers import prepare_csv_download
+    from src.utils.component_helpers import create_simple_error_message
+    from src.utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from src.utils.color_utils import get_benchmark_country_color
     from config.settings import CHART_STYLES
 
@@ -36,7 +36,8 @@ def register_national_flood_exposure_population_relative_callbacks(app):
     benchmark_colors_dict = get_benchmark_colors()
     
     @app.callback(
-        Output('national-flood-exposure-population-relative-chart', 'figure'),
+        [Output('national-flood-exposure-population-relative-chart', 'figure'),
+         Output('national-flood-exposure-population-relative-chart', 'style')],
         [Input('main-country-filter', 'value'),
          Input('flood-return-period-selector', 'value'),
          Input('flood-combined-benchmark-selector', 'value'),
@@ -67,7 +68,7 @@ def register_national_flood_exposure_population_relative_callbacks(app):
             
             # Handle no country selected
             if not selected_country:
-                raise Exception("Please select a country to view flood exposure data")
+                raise Exception("No country selected")
             
             # Handle no return periods selected
             if not selected_return_periods:
@@ -202,31 +203,15 @@ def register_national_flood_exposure_population_relative_callbacks(app):
                 )
             )
             
-            return fig
+            return fig, {'display': 'block'}
             
         except Exception as e:
-            return create_error_chart(
-                error_message=f"Error loading flood exposure data: {str(e)}",
-                chart_type='line',
-                xaxis_title='Year',
-                yaxis_title='Population (%)',
-                title='National Flood Exposure - Population (Relative)'
-            )
+            return create_simple_error_message(str(e))
     
-    @app.callback(
-        Output('national-flood-exposure-population-relative-download', 'data'),
-        Input('national-flood-exposure-population-relative-download-button', 'n_clicks'),
-        prevent_initial_call=True
+    # Register download callback using the reusable helper
+    create_simple_download_callback(
+        app,
+        'national-flood-exposure-population-relative-download',
+        lambda: flood_data,  # Pre-loaded data captured in closure
+        'national_flood_exposure_population_relative'
     )
-    def download_national_flood_exposure_population_relative_data(n_clicks):
-        """Download flood exposure population data as CSV"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            # Load full dataset (pre-loaded)
-            filename = "national_flood_exposure_population_relative"
-            return prepare_csv_download(flood_data, filename)
-        except Exception as e:
-            print(f"Error preparing download: {str(e)}")
-            return None

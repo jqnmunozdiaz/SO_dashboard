@@ -10,16 +10,16 @@ from plotly.subplots import make_subplots
 try:
     from ...utils.data_loader import load_flood_projections_data
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_error_chart
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.component_helpers import create_simple_error_message
+    from ...utils.download_helpers import create_simple_download_callback
     from config.settings import CHART_STYLES
 except ImportError:
     import sys, os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_flood_projections_data
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_error_chart
-    from src.utils.download_helpers import prepare_csv_download
+    from src.utils.component_helpers import create_simple_error_message
+    from src.utils.download_helpers import create_simple_download_callback
     from config.settings import CHART_STYLES
 
 
@@ -27,7 +27,8 @@ def register_urbanization_vs_climate_change_callbacks(app):
     """Register callbacks for Urbanization vs Climate Change chart"""
     
     @app.callback(
-        Output('urbanization-vs-climate-change-chart', 'figure'),
+        [Output('urbanization-vs-climate-change-chart', 'figure'),
+         Output('urbanization-vs-climate-change-chart', 'style')],
         [Input('main-country-filter', 'value')],
         prevent_initial_call=False
     )
@@ -43,7 +44,7 @@ def register_urbanization_vs_climate_change_callbacks(app):
             
             # Validate country selection
             if not selected_country:
-                raise Exception("Please select a country to view flood projections")
+                raise Exception("No country selected")
             
             # Get country name for title
             country_name = countries_dict.get(selected_country, selected_country)
@@ -221,32 +222,15 @@ def register_urbanization_vs_climate_change_callbacks(app):
             # Remove gridlines from x-axis, keep only y-axis
             fig.update_xaxes(showgrid=False)
             
-            return fig
+            return fig, {'display': 'block'}
             
         except Exception as e:
-            return create_error_chart(
-                error_message=f"Error loading data: {str(e)}",
-                chart_type='bar',
-                title='Built-up Flood Exposure: Urbanization vs Climate Change',
-                xaxis_title='Scenarios',
-                yaxis_title='Built-up exposed to floods (km²)'
-            )
+            return create_simple_error_message(str(e))
     
-    @app.callback(
-        Output('urbanization-vs-climate-change-download', 'data'),
-        Input('urbanization-vs-climate-change-download-button', 'n_clicks'),
-        prevent_initial_call=True
+    # Create download callback
+    create_simple_download_callback(
+        app,
+        'urbanization-vs-climate-change-download',
+        lambda: load_flood_projections_data(),
+        'urbanization_vs_climate_flood_exposure'
     )
-    def download_urbanization_vs_climate_change_data(n_clicks):
-        """Download flood projections data for all countries"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            data = load_flood_projections_data()
-            filename = "flood_projections_all_countries"            
-            return prepare_csv_download(data, filename)
-            
-        except Exception as e:
-            print(f"Error downloading urbanization vs climate change data: {str(e)}")
-            return None

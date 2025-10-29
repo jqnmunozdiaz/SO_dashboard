@@ -12,11 +12,11 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 try:
-    from ...utils.data_loader import load_emdat_data, load_population_data
+    from ...utils.data_loader import load_emdat_data
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.color_utils import DISASTER_COLORS
-    from ...utils.component_helpers import create_error_chart
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.component_helpers import create_simple_error_message
+    from ...utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from config.settings import DATA_CONFIG
 except ImportError:
     # Fallback for direct execution
@@ -26,7 +26,7 @@ except ImportError:
     from src.utils.data_loader import load_emdat_data, load_population_data
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.color_utils import DISASTER_COLORS
-    from src.utils.component_helpers import create_error_chart
+    from src.utils.component_helpers import create_simple_error_message
     from src.utils.download_helpers import prepare_csv_download
     from config.settings import DATA_CONFIG
 
@@ -35,7 +35,8 @@ def setup_total_deaths_callbacks(app):
     """Setup callbacks for the 'Total Deaths' disaster chart"""
     
     @app.callback(
-        Output('disaster-deaths-chart', 'figure'),
+        [Output('disaster-deaths-chart', 'figure'),
+         Output('disaster-deaths-chart', 'style')],
         [Input('main-country-filter', 'value'),
          Input('disaster-deaths-mode-selector', 'value')],
         prevent_initial_call=False
@@ -84,6 +85,8 @@ def setup_total_deaths_callbacks(app):
                 # If relative mode, normalize by population
                 if display_mode == 'relative':
                     try:
+                        if not selected_country:
+                            raise Exception("No country selected")
                         # Load population data for selected country
                         pop_data = load_population_data(selected_country)
                         
@@ -98,7 +101,7 @@ def setup_total_deaths_callbacks(app):
                         deaths_data['Total Deaths'] = (deaths_data['Total Deaths'] / deaths_data['population']) * 100
                         
                     except Exception as e:
-                        raise Exception(f"Relative chart not available: {str(e)}")
+                        return create_simple_error_message(str(e))
                 
                 # Sort by year in ascending order
                 deaths_data = deaths_data.sort_values('Year')
@@ -114,14 +117,7 @@ def setup_total_deaths_callbacks(app):
                     raise Exception("No country selected")
                     
         except Exception as e:
-            # Return error chart using shared utility
-            y_label = 'Total Deaths (% of population)' if display_mode == 'relative' else 'Total Deaths'
-            return create_error_chart(
-                error_message=str(e),
-                chart_type='bar',
-                xaxis_title='Year',
-                yaxis_title=y_label
-            )
+            return create_simple_error_message(str(e))
         
         # Set labels based on display mode
         if display_mode == 'relative':
@@ -189,26 +185,12 @@ def setup_total_deaths_callbacks(app):
             hovertemplate=f'<b>%{{fullData.name}}</b><br>Year: %{{x}}<br>Deaths: {hover_format}<extra></extra>'
         )
         
-        return fig
+        return fig, {'display': 'block'}
     
-    @app.callback(
-        Output('disaster-deaths-download', 'data'),
-        Input('disaster-deaths-download-button', 'n_clicks'),
-        prevent_initial_call=True
+    # Register download callback using the reusable helper
+    create_simple_download_callback(
+        app,
+        'disaster-deaths-download',
+        lambda: load_emdat_data(),
+        'african_disasters_emdat'
     )
-    def download_disaster_deaths_data(n_clicks):
-        """Download EM-DAT disaster data as CSV"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            # Load full dataset (raw data, no filtering)
-            emdat_data = load_emdat_data()
-            
-            filename = "african_disasters_emdat"
-            
-            return prepare_csv_download(emdat_data, filename)
-        
-        except Exception as e:
-            print(f"Error preparing download: {str(e)}")
-            return None

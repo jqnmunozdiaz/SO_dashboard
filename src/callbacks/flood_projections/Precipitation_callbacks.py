@@ -8,8 +8,8 @@ import plotly.graph_objects as go
 try:
     from ...utils.data_loader import load_precipitation_data
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_error_chart
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.component_helpers import create_simple_error_message
+    from ...utils.download_helpers import create_simple_download_callback
     from ...utils.precipitation_config import SSP_COLORS
     from config.settings import CHART_STYLES
 except ImportError:
@@ -17,8 +17,8 @@ except ImportError:
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_precipitation_data
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_error_chart
-    from src.utils.download_helpers import prepare_csv_download
+    from src.utils.component_helpers import create_simple_error_message
+    from src.utils.download_helpers import create_simple_download_callback
     from src.utils.precipitation_config import SSP_COLORS
     from config.settings import CHART_STYLES
 
@@ -30,7 +30,8 @@ def register_precipitation_callbacks(app):
     countries_dict = load_subsaharan_countries_and_regions_dict()
     
     @app.callback(
-        Output('precipitation-chart', 'figure'),
+        [Output('precipitation-chart', 'figure'),
+         Output('precipitation-chart', 'style')],
         [Input('main-country-filter', 'value'),
          Input('precipitation-rp-selector', 'value')],
         prevent_initial_call=False
@@ -54,7 +55,7 @@ def register_precipitation_callbacks(app):
             
             # Handle no country selected
             if not selected_country:
-                raise Exception("Please select a country to view precipitation patterns")
+                raise Exception("No country selected")
             
             # Filter data for selected country and year
             country_data = data[(data['ISO3'] == selected_country) & (data['year'] == fyear)]
@@ -219,31 +220,15 @@ def register_precipitation_callbacks(app):
                 hovermode='closest'
             )
 
-            return fig
+            return fig, {'display': 'block'}
             
         except Exception as e:
-            return create_error_chart(
-                error_message=f"Error loading precipitation data: {str(e)}",
-                chart_type='scatter',
-                title='Future Precipitation Patterns'
-            )
+            return create_simple_error_message(str(e))
     
-    @app.callback(
-        Output('precipitation-download', 'data'),
-        Input('precipitation-download-button', 'n_clicks'),
-        prevent_initial_call=True
+    # Create download callback
+    create_simple_download_callback(
+        app,
+        'precipitation-download',
+        lambda: load_precipitation_data('1day'),
+        'future_precipitation_patterns'
     )
-    def download_precipitation_data(n_clicks):
-        """Download precipitation data as CSV"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            # Load full dataset
-            data = load_precipitation_data('1day')  
-            filename = f"precipitation_patterns"    
-            return prepare_csv_download(data, filename)
-            
-        except Exception as e:
-            print(f"Error preparing precipitation download: {str(e)}")
-            return None

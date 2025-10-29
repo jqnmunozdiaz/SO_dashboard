@@ -15,8 +15,8 @@ try:
         load_subsaharan_countries_dict,
     )
     from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
-    from ...utils.component_helpers import create_error_chart
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.component_helpers import create_simple_error_message
+    from ...utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from config.settings import CHART_STYLES
 except ImportError:
     import sys
@@ -29,8 +29,8 @@ except ImportError:
         load_subsaharan_countries_dict,
     )
     from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
-    from src.utils.component_helpers import create_error_chart
-    from src.utils.download_helpers import prepare_csv_download
+    from src.utils.component_helpers import create_simple_error_message
+    from src.utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from config.settings import CHART_STYLES
 
 
@@ -69,7 +69,8 @@ def register_urban_density_callbacks(app):
         return subset[['year', 'built_up_per_capita_m2']]
 
     @app.callback(
-        Output('urban-density-chart', 'figure'),
+        [Output('urban-density-chart', 'figure'),
+         Output('urban-density-chart', 'style')],
         [
             Input('main-country-filter', 'value'),
             Input('urban-density-combined-benchmark-selector', 'value'),
@@ -168,28 +169,15 @@ def register_urban_density_callbacks(app):
                 height=600,
             )
 
-            return fig
+            return fig, {'display': 'block'}
 
         except Exception as e:
-            return create_error_chart(
-                error_message=f"Error loading data: {str(e)}",
-                chart_type='line',
-                xaxis_title='Year',
-                yaxis_title='Built-up per capita (m²/person)',
-                title='Built-up per capita in Cities',
-            )
+            return create_simple_error_message(str(e))
 
-    @app.callback(
-        Output('urban-density-download', 'data'),
-        Input('urban-density-download-button', 'n_clicks'),
-        prevent_initial_call=True,
+    # Register download callback using the reusable helper
+    create_simple_download_callback(
+        app,
+        'urban-density-download',
+        lambda: density_data_cache,
+        'built_up_per_capita_cities'
     )
-    def download_urban_density_data(n_clicks):
-        if not n_clicks:
-            return None
-        try:
-            # Use pre-loaded data
-            return prepare_csv_download(density_data_cache, 'urban_density_by_country_year')
-        except Exception as e:
-            print(f"Error preparing urban density download: {str(e)}")
-            return None

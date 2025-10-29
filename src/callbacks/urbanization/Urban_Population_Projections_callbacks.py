@@ -15,8 +15,8 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 try:
     from ...utils.data_loader import load_undesa_urban_projections, load_undesa_urban_growth_rates
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_error_chart
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.component_helpers import create_simple_error_message
+    from ...utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from config.settings import CHART_STYLES
 except ImportError:
     # Fallback for direct execution
@@ -25,8 +25,8 @@ except ImportError:
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_undesa_urban_projections, load_undesa_urban_growth_rates
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_error_chart
-    from src.utils.download_helpers import prepare_csv_download
+    from src.utils.component_helpers import create_simple_error_message
+    from src.utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from config.settings import CHART_STYLES
 
 def register_urban_population_projections_callbacks(app):
@@ -38,7 +38,8 @@ def register_urban_population_projections_callbacks(app):
     countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
     
     @app.callback(
-        Output('urban-population-projections-chart', 'figure'),
+        [Output('urban-population-projections-chart', 'figure'),
+         Output('urban-population-projections-chart', 'style')],
         [Input('main-country-filter', 'value'),
          Input('urban-population-projections-mode', 'value')],
         prevent_initial_call=False
@@ -271,40 +272,15 @@ def register_urban_population_projections_callbacks(app):
             if display_mode == 'growth_rate':
                 fig.add_hline(y=0, line_dash="dot", line_color="gray", opacity=0.5)
             
-            return fig
+            return fig, {'display': 'block'}
             
         except Exception as e:
-            # Return error chart using shared utility
-            return create_error_chart(
-                error_message=f"Error loading data: {str(e)}",
-                chart_type='scatter',
-                xaxis_title='Year',
-                yaxis_title='Population (millions)',
-                title='Urban and Rural Population Projections'
-            )
+            return create_simple_error_message(str(e))
     
-    @app.callback(
-        Output('urban-population-projections-download', 'data'),
-        [Input('urban-population-projections-download-button', 'n_clicks'),
-         Input('urban-population-projections-mode', 'value')],
-        prevent_initial_call=True
+    # Register download callback using the reusable helper
+    create_simple_download_callback(
+        app,
+        'urban-population-projections-download',
+        lambda: undesa_projections,
+        'undesa_urban_population_projections'
     )
-    def download_urban_population_projections_data(n_clicks, display_mode):
-        """Download urban population projections data as CSV based on display mode"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            # Load appropriate dataset based on display mode (pre-loaded)
-            if display_mode == 'growth_rate':
-                undesa_data = undesa_growth_rates
-                filename = "UNDESA_urban_growth_rates_consolidated"
-            else:
-                undesa_data = undesa_projections
-                filename = "UNDESA_urban_projections_consolidated"
-            
-            return prepare_csv_download(undesa_data, filename)
-        
-        except Exception as e:
-            print(f"Error preparing download: {str(e)}")
-            return None

@@ -12,8 +12,8 @@ try:
     from ...utils.flood_data_loader import load_city_flood_exposure_data
     from ...utils.flood_ui_helpers import get_city_colors
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_error_chart
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.component_helpers import create_simple_error_message
+    from ...utils.download_helpers import create_simple_download_callback
     from ...utils.data_loader import load_africapolis_centroids
     from config.settings import CHART_STYLES
 except ImportError:
@@ -22,8 +22,8 @@ except ImportError:
     from src.utils.flood_data_loader import load_city_flood_exposure_data
     from src.utils.flood_ui_helpers import get_city_colors
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_error_chart
-    from src.utils.download_helpers import prepare_csv_download
+    from src.utils.component_helpers import create_simple_error_message
+    from src.utils.download_helpers import create_simple_download_callback
     from src.utils.data_loader import load_africapolis_centroids
     from config.settings import CHART_STYLES
 
@@ -37,7 +37,8 @@ def register_cities_flood_exposure_callbacks(app):
     city_colors = get_city_colors()
     
     @app.callback(
-        Output('cities-flood-exposure-chart', 'figure'),
+        [Output('cities-flood-exposure-chart', 'figure'),
+         Output('cities-flood-exposure-chart', 'style')],
         [Input('main-country-filter', 'value'),
          Input('cities-flood-return-period-selector', 'value'),
          Input('cities-flood-exposure-type-selector', 'value'),
@@ -65,7 +66,7 @@ def register_cities_flood_exposure_callbacks(app):
             
             # Handle no country selected
             if not selected_country:
-                raise Exception("Please select a country to view city flood exposure data")
+                raise Exception("No country selected")
             
             # Filter data for selected country
             country_data = data[data['ISO3'] == selected_country].copy()
@@ -192,33 +193,18 @@ def register_cities_flood_exposure_callbacks(app):
                 )
             )
             
-            return fig
+            return fig, {'display': 'block'}
             
         except Exception as e:
-            return create_error_chart(
-                error_message=f"Error loading city flood exposure data: {str(e)}",
-                chart_type='line',
-                xaxis_title='Year',
-                yaxis_title='Flood Exposure',
-                title='Cities Flood Exposure'
-            )
+            return create_simple_error_message(str(e))
     
-    @app.callback(
-        Output('cities-flood-exposure-download', 'data'),
-        Input('cities-flood-exposure-download-button', 'n_clicks'),
-        prevent_initial_call=True
+    # Register download callback
+    create_simple_download_callback(
+        app,
+        'cities-flood-exposure-download',
+        lambda: data,
+        'cities_flood_exposure'
     )
-    def download_cities_flood_exposure_data(n_clicks):
-        """Download all city flood exposure data across SSA as CSV"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            # Return all cities across all SSA countries
-            return prepare_csv_download(data, "cities_flood_exposure_all_ssa")
-        except Exception as e:
-            print(f"Error preparing download: {str(e)}")
-            return None
     
     @app.callback(
         Output('cities-flood-map-modal', 'is_open'),

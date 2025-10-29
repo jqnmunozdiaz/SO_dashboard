@@ -9,18 +9,18 @@ import plotly.graph_objects as go
 try:
     from ...utils.data_loader import load_city_size_distribution
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from ...utils.color_utils import CITY_SIZE_COLORS
-    from ...utils.component_helpers import create_error_chart
+    from ...utils.component_helpers import create_simple_error_message
     from config.settings import CHART_STYLES
 except ImportError:
     import sys, os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_city_size_distribution
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.download_helpers import prepare_csv_download
+    from src.utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from src.utils.color_utils import CITY_SIZE_COLORS
-    from src.utils.component_helpers import create_error_chart
+    from src.utils.component_helpers import create_simple_error_message
     from config.settings import CHART_STYLES
 
 def register_cities_distribution_callbacks(app):
@@ -31,7 +31,8 @@ def register_cities_distribution_callbacks(app):
     countries_dict = load_subsaharan_countries_and_regions_dict()
     
     @app.callback(
-        Output('cities-distribution-chart', 'figure'),
+        [Output('cities-distribution-chart', 'figure'),
+         Output('cities-distribution-chart', 'style')],
         [
             Input('main-country-filter', 'value'),
             Input('cities-distribution-year-filter', 'value')
@@ -154,30 +155,15 @@ def register_cities_distribution_callbacks(app):
                 yaxis=dict(visible=False)
             )
             
-            return fig
+            return fig, {'display': 'block'}
             
         except Exception as e:
-            return create_error_chart(
-                error_message=f"Error loading data: {str(e)}",
-                chart_type='bar',
-                title='Cities Distribution by Size',
-                xaxis_title='',
-                yaxis_title=''
-            )
+            return create_simple_error_message(str(e))
     
-    @app.callback(
-        Output('cities-distribution-download', 'data'),
-        Input('cities-distribution-download-button', 'n_clicks'),
-        prevent_initial_call=True
+    # Register download callback using the reusable helper
+    create_simple_download_callback(
+        app,
+        'cities-distribution-download',
+        lambda: data,
+        'cities_size_distribution'
     )
-    def download_cities_distribution_data(n_clicks):
-        """Download city size distribution data as CSV"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            return prepare_csv_download(data, "cities_individual")
-        
-        except Exception as e:
-            print(f"Error preparing download: {str(e)}")
-            return None

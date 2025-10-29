@@ -14,8 +14,8 @@ try:
     from ...utils.data_loader import load_wdi_data, load_urbanization_indicators_dict
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
-    from ...utils.component_helpers import create_error_chart
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.component_helpers import create_simple_error_message
+    from ...utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from config.settings import CHART_STYLES
 except ImportError:
     # Fallback for direct execution
@@ -25,7 +25,7 @@ except ImportError:
     from src.utils.data_loader import load_wdi_data, load_urbanization_indicators_dict
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
-    from src.utils.component_helpers import create_error_chart
+    from src.utils.component_helpers import create_simple_error_message
     from src.utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 
@@ -41,7 +41,8 @@ def register_urban_population_living_in_slums_callbacks(app):
     benchmark_names = get_benchmark_names()
     
     @app.callback(
-        Output('urban-population-slums-chart', 'figure'),
+        [Output('urban-population-slums-chart', 'figure'),
+         Output('urban-population-slums-chart', 'style')],
         [Input('main-country-filter', 'value'),
          Input('slums-combined-benchmark-selector', 'value')],
         prevent_initial_call=False
@@ -164,35 +165,15 @@ def register_urban_population_living_in_slums_callbacks(app):
                 margin=dict(b=80, t=100)
             )
             
-            return fig
+            return fig, {'display': 'block'}
             
         except Exception as e:
-            return create_error_chart(
-                error_message=f"Error loading data: {str(e)}",
-                chart_type='line',
-                xaxis_title='Year',
-                yaxis_title='Population Living in Slums<br>(% of Urban Population)',
-                yaxis_range=[0, 100],
-                title='Urban Population Living in Slums'
-            )
+            return create_simple_error_message(str(e))
     
-    @app.callback(
-        Output('urban-population-slums-download', 'data'),
-        Input('urban-population-slums-download-button', 'n_clicks'),
-        prevent_initial_call=True
+    # Register download callback using the reusable helper
+    create_simple_download_callback(
+        app,
+        'urban-population-slums-download',
+        lambda: slums_data,
+        'urban_population_slums'
     )
-    def download_urban_population_slums_data(n_clicks):
-        """Download WDI slums data as CSV"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            # Load full dataset (pre-loaded)
-            
-            filename = "urban_population_slums_EN.POP.SLUM.UR.ZS"
-            
-            return prepare_csv_download(slums_data, filename)
-        
-        except Exception as e:
-            print(f"Error preparing download: {str(e)}")
-            return None

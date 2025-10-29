@@ -14,8 +14,8 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 try:
     from ...utils.data_loader import load_jmp_water_data
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_error_chart
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.component_helpers import create_simple_error_message
+    from ...utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from config.settings import CHART_STYLES
 except ImportError:
     # Fallback for direct execution
@@ -24,8 +24,8 @@ except ImportError:
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_jmp_water_data
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_error_chart
-    from src.utils.download_helpers import prepare_csv_download
+    from src.utils.component_helpers import create_simple_error_message
+    from src.utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from config.settings import CHART_STYLES
 
 
@@ -37,16 +37,16 @@ def register_access_to_drinking_water_callbacks(app):
     countries_dict = load_subsaharan_countries_and_regions_dict()
     
     @app.callback(
-        Output('access-to-drinking-water-chart', 'figure'),
+        [Output('access-to-drinking-water-chart', 'figure'),
+         Output('access-to-drinking-water-chart', 'style')],
         [Input('main-country-filter', 'value')],
         prevent_initial_call=False
     )
     def generate_access_to_drinking_water_chart(selected_country):
         """Generate stacked area chart showing drinking water access categories over time"""
         try:
-            # Load JMP water data (pre-loaded)
-            
-            # Load country mapping for ISO code to full name conversion (pre-loaded)
+            if not selected_country:
+                raise Exception("No country selected")
             
             if water_data.empty:
                 raise Exception("No data available")
@@ -129,31 +129,15 @@ def register_access_to_drinking_water_callbacks(app):
                 hovermode='x unified'
             )
             
-            return fig
+            return fig, {'display': 'block'}
             
         except Exception as e:
-            return create_error_chart(
-                error_message=f"Error loading data: {str(e)}",
-                chart_type='line',
-                xaxis_title='Year',
-                yaxis_title='Access to Drinking Water<br>(% of Urban Population)',
-                yaxis_range=[0, 100],
-                title='Access to Drinking Water, Urban (% of Urban Population)'
-            )
+            return create_simple_error_message(str(e))
     
-    @app.callback(
-        Output('access-to-drinking-water-download', 'data'),
-        Input('access-to-drinking-water-download-button', 'n_clicks'),
-        prevent_initial_call=True
+    # Register download callback using the reusable helper
+    create_simple_download_callback(
+        app,
+        'access-to-drinking-water-download',
+        lambda: water_data,
+        'access_to_drinking_water_urban'
     )
-    def download_access_to_drinking_water_data(n_clicks):
-        """Download JMP drinking water data as CSV"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            return prepare_csv_download(water_data, "access_to_drinking_water_urban_jmp_wash")
-        
-        except Exception as e:
-            print(f"Error preparing download: {str(e)}")
-            return None

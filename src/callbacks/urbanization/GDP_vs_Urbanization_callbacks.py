@@ -13,9 +13,9 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 try:
     from ...utils.data_loader import load_wdi_data
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_error_chart
+    from ...utils.component_helpers import create_simple_error_message
     from ...utils.GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_colors, get_global_benchmark_names
-    from ...utils.download_helpers import prepare_multi_csv_download
+    from ...utils.download_helpers import prepare_multi_csv_download, create_multi_csv_download_callback
     from config.settings import CHART_STYLES
 except ImportError:
     import sys
@@ -23,9 +23,9 @@ except ImportError:
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_wdi_data
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_error_chart
+    from src.utils.component_helpers import create_simple_error_message
     from src.utils.GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_colors, get_global_benchmark_names
-    from src.utils.download_helpers import prepare_multi_csv_download
+    from src.utils.download_helpers import prepare_multi_csv_download, create_multi_csv_download_callback
     from config.settings import CHART_STYLES
 
 GDP_INDICATOR = "NY.GDP.PCAP.PP.KD"
@@ -42,7 +42,8 @@ def register_gdp_vs_urbanization_callbacks(app):
     global_names = get_global_benchmark_names()
     
     @app.callback(
-        Output('gdp-vs-urbanization-chart', 'figure'),
+        [Output('gdp-vs-urbanization-chart', 'figure'),
+         Output('gdp-vs-urbanization-chart', 'style')],
         [Input('main-country-filter', 'value'),
          Input('gdp-vs-urbanization-country-benchmark-selector', 'value'),
          Input('gdp-vs-urbanization-global-benchmark-selector', 'value')],
@@ -140,36 +141,18 @@ def register_gdp_vs_urbanization_callbacks(app):
                 ),
                 margin=dict(b=80, t=100)
             )
-            return fig
+            return fig, {'display': 'block'}
         except Exception as e:
             # Return error chart
-            return create_error_chart(
-                error_message=f"Error loading data: {str(e)}",
-                chart_type='scatter',
-                xaxis_title='Urbanization Rate (% of Population)',
-                yaxis_title='GDP per Capita<br>(PPP, constant 2017 international $)',
-                yaxis_range=[0, None],
-                title='GDP per Capita vs Urbanization Rate'
-            )
+            return create_simple_error_message(str(e))
     
-    @app.callback(
-        Output('gdp-vs-urbanization-download', 'data'),
-        Input('gdp-vs-urbanization-download-button', 'n_clicks'),
-        prevent_initial_call=True
+    # Register download callback using the reusable helper
+    create_multi_csv_download_callback(
+        app,
+        'gdp-vs-urbanization-download',
+        lambda: {
+            f'gdp_per_capita_{GDP_INDICATOR}': gdp_df,
+            f'urbanization_rate_{URBAN_INDICATOR}': urb_df
+        },
+        'gdp_urbanization'
     )
-    def download_gdp_vs_urbanization_data(n_clicks):
-        """Download GDP and urbanization data as ZIP with two CSV files"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            # Create dictionary of dataframes
-            dataframes_dict = {
-                f'gdp_per_capita_{GDP_INDICATOR}': gdp_df,
-                f'urbanization_rate_{URBAN_INDICATOR}': urb_df
-            }
-            return prepare_multi_csv_download(dataframes_dict, "gdp_urbanization")
-        
-        except Exception as e:
-            print(f"Error preparing download: {str(e)}")
-            return None

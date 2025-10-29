@@ -15,8 +15,8 @@ try:
     from ...utils.data_loader import load_undesa_urban_projections
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
-    from ...utils.component_helpers import create_error_chart
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.component_helpers import create_simple_error_message
+    from ...utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from config.settings import CHART_STYLES
 except ImportError:
     # Fallback for direct execution
@@ -26,7 +26,7 @@ except ImportError:
     from src.utils.data_loader import load_undesa_urban_projections
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.benchmark_config import get_benchmark_colors, get_benchmark_names
-    from src.utils.component_helpers import create_error_chart
+    from src.utils.component_helpers import create_simple_error_message
     from src.utils.download_helpers import prepare_csv_download
     from config.settings import CHART_STYLES
 
@@ -41,7 +41,8 @@ def register_urbanization_rate_callbacks(app):
     benchmark_names = get_benchmark_names()
     
     @app.callback(
-        Output('urbanization-rate-chart', 'figure'),
+        [Output('urbanization-rate-chart', 'figure'),
+         Output('urbanization-rate-chart', 'style')],
         [Input('main-country-filter', 'value'),
          Input('urbanization-rate-combined-benchmark-selector', 'value')],
         prevent_initial_call=False
@@ -57,15 +58,7 @@ def register_urbanization_rate_callbacks(app):
             # Load country and region mapping for ISO code to full name conversion (pre-loaded)
             
             if undesa_data.empty:
-                # Return empty chart if no data
-                return create_error_chart(
-                    error_message="No data available",
-                    chart_type='line',
-                    xaxis_title='Year',
-                    yaxis_title='Urban Population (% of Total Population)',
-                    yaxis_range=[0, 100],
-                    title='Urbanization Rate'
-                )
+                return create_simple_error_message("No data available")
             
             # Filter for urban proportion data only
             urban_prop_data = undesa_data[undesa_data['indicator'] == 'wup_urban_prop'].copy()
@@ -260,36 +253,15 @@ def register_urbanization_rate_callbacks(app):
                 yanchor="top",
                 xanchor="left"
             )
-            return fig
+            return fig, {'display': 'block'}
             
         except Exception as e:
-            # Return error chart
-            return create_error_chart(
-                error_message=f"Error loading data: {str(e)}",
-                chart_type='line',
-                xaxis_title='Year',
-                yaxis_title='Urban Population<br>(% of Total Population)',
-                yaxis_range=[0, 100],
-                title='Urbanization Rate'
-            )
+            return create_simple_error_message(str(e))
     
-    @app.callback(
-        Output('urbanization-rate-download', 'data'),
-        Input('urbanization-rate-download-button', 'n_clicks'),
-        prevent_initial_call=True
+    # Register download callback using the reusable helper
+    create_simple_download_callback(
+        app,
+        'urbanization-rate-download',
+        lambda: undesa_data,
+        'undesa_urbanization_rate'
     )
-    def download_urbanization_rate_data(n_clicks):
-        """Download UN DESA urbanization rate data as CSV"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            # Load full dataset (pre-loaded)
-            
-            filename = "urbanization_rate"
-            
-            return prepare_csv_download(undesa_data, filename)
-        
-        except Exception as e:
-            print(f"Error preparing download: {str(e)}")
-            return None

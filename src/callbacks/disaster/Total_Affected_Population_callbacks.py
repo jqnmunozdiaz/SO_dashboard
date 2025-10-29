@@ -6,17 +6,13 @@ Shows stacked bar chart of total affected population by disaster type in 5-year 
 from dash import Input, Output
 import plotly.express as px
 import pandas as pd
-import warnings
-
-# Suppress pandas future warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
 
 try:
-    from ...utils.data_loader import load_emdat_data, load_population_data
+    from ...utils.data_loader import load_emdat_data
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
     from ...utils.color_utils import DISASTER_COLORS
-    from ...utils.component_helpers import create_error_chart
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.component_helpers import create_simple_error_message
+    from ...utils.download_helpers import create_simple_download_callback
     from config.settings import DATA_CONFIG
 except ImportError:
     # Fallback for direct execution
@@ -26,8 +22,7 @@ except ImportError:
     from src.utils.data_loader import load_emdat_data, load_population_data
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
     from src.utils.color_utils import DISASTER_COLORS
-    from src.utils.component_helpers import create_error_chart
-    from src.utils.download_helpers import prepare_csv_download
+    from src.utils.component_helpers import create_simple_error_message
     from config.settings import DATA_CONFIG
 
 
@@ -35,7 +30,8 @@ def setup_total_affected_population_callbacks(app):
     """Setup callbacks for the 'Total Affected Population' disaster chart"""
     
     @app.callback(
-        Output('disaster-affected-chart', 'figure'),
+        [Output('disaster-affected-chart', 'figure'),
+         Output('disaster-affected-chart', 'style')],
         [Input('main-country-filter', 'value'),
          Input('disaster-affected-mode-selector', 'value')],
         prevent_initial_call=False
@@ -84,6 +80,9 @@ def setup_total_affected_population_callbacks(app):
                 # If relative mode, normalize by population
                 if display_mode == 'relative':
                     try:
+                        if not selected_country:
+                            raise Exception("No country selected")
+
                         # Load population data for selected country
                         pop_data = load_population_data(selected_country)
                         
@@ -98,7 +97,7 @@ def setup_total_affected_population_callbacks(app):
                         affected_data['Total Affected'] = (affected_data['Total Affected'] / affected_data['population']) * 100
                         
                     except Exception as e:
-                        raise Exception(f"Relative chart not available: {str(e)}")
+                        return create_simple_error_message(str(e))
                 
                 # Sort by year in ascending order
                 affected_data = affected_data.sort_values('Year')
@@ -114,15 +113,7 @@ def setup_total_affected_population_callbacks(app):
                     raise Exception("No country selected")
                     
         except Exception as e:
-            # Return error chart using shared utility
-            y_label = 'Total Affected Population (% of population)' if display_mode == 'relative' else 'Total Affected Population'
-            return create_error_chart(
-                error_message=f"Error loading data: {str(e)}",
-                chart_type='bar',
-                xaxis_title='Year',
-                yaxis_title=y_label,
-                title='Total Affected Population by Year'
-            )
+            return create_simple_error_message(str(e))
         
         # Set labels based on display mode
         if display_mode == 'relative':
@@ -190,29 +181,14 @@ def setup_total_affected_population_callbacks(app):
             hovertemplate=f'<b>%{{fullData.name}}</b><br>Year: %{{x}}<br>Affected: {hover_format}<extra></extra>'
         )
         
-        return fig
+        return fig, {'display': 'block'}
     
-    @app.callback(
-        Output('disaster-affected-download', 'data'),
-        Input('disaster-affected-download-button', 'n_clicks'),
-        prevent_initial_call=True
+    # Register download callback using the reusable helper
+    create_simple_download_callback(
+        app,
+        'disaster-affected-download',
+        lambda: load_emdat_data(),
+        'african_disasters_emdat'
     )
-    def download_disaster_affected_data(n_clicks):
-        """Download EM-DAT disaster data as CSV"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            # Load full dataset (raw data, no filtering)
-            emdat_data = load_emdat_data()
-            
-            filename = "african_disasters_emdat"
-            
-            return prepare_csv_download(emdat_data, filename)
-        
-        except Exception as e:
-            print(f"Error preparing download: {str(e)}")
-            return None
-    
     
     

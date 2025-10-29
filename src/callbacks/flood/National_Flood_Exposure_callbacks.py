@@ -9,8 +9,8 @@ try:
     from ...utils.flood_data_loader import load_flood_exposure_data, filter_flood_data
     from ...utils.flood_ui_helpers import get_return_period_colors, get_return_period_labels
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_error_chart
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.component_helpers import create_simple_error_message
+    from ...utils.download_helpers import create_simple_download_callback
     from config.settings import CHART_STYLES
 except ImportError:
     import sys, os
@@ -18,8 +18,8 @@ except ImportError:
     from src.utils.flood_data_loader import load_flood_exposure_data, filter_flood_data
     from src.utils.flood_ui_helpers import get_return_period_colors, get_return_period_labels
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_error_chart
-    from src.utils.download_helpers import prepare_csv_download
+    from src.utils.component_helpers import create_simple_error_message
+    from src.utils.download_helpers import create_simple_download_callback
     from config.settings import CHART_STYLES
 
 
@@ -33,7 +33,8 @@ def register_national_flood_exposure_callbacks(app):
     labels = get_return_period_labels()
     
     @app.callback(
-        Output('national-flood-exposure-chart', 'figure'),
+        [Output('national-flood-exposure-chart', 'figure'),
+         Output('national-flood-exposure-chart', 'style')],
         [Input('main-country-filter', 'value'),
          Input('flood-return-period-selector', 'value'),
          Input('flood-measurement-type-selector', 'value')],
@@ -58,7 +59,7 @@ def register_national_flood_exposure_callbacks(app):
             
             # Handle no country selected
             if not selected_country:
-                raise Exception("Please select a country to view flood exposure data")
+                raise Exception("No country selected")
             
             # Filter data
             country_data = filter_flood_data(data, selected_country, selected_flood_type)
@@ -68,8 +69,6 @@ def register_national_flood_exposure_callbacks(app):
             
             # Get country name for title
             country_name = countries_dict.get(selected_country, selected_country)
-            
-            # Get color and label mappings (pre-loaded)
             
             # Create figure
             fig = go.Figure()
@@ -137,29 +136,15 @@ def register_national_flood_exposure_callbacks(app):
                 )
             )
             
-            return fig
+            return fig, {'display': 'block'}
             
         except Exception as e:
-            return create_error_chart(
-                error_message=f"Error loading flood exposure data: {str(e)}",
-                chart_type='line',
-                xaxis_title='Year',
-                yaxis_title='Built-up Area (km²)',
-                title='National Flood Exposure - Built-up Area'
-            )
+            return create_simple_error_message(str(e))
     
-    @app.callback(
-        Output('national-flood-exposure-download', 'data'),
-        Input('national-flood-exposure-download-button', 'n_clicks'),
-        prevent_initial_call=True
+    # Register download callback
+    create_simple_download_callback(
+        app,
+        'national-flood-exposure-download',
+        lambda: data,
+        'national_flood_exposure_built_up'
     )
-    def download_national_flood_exposure_data(n_clicks):
-        """Download flood exposure data as CSV"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            return prepare_csv_download(data, "national_flood_exposure_built_up")
-        except Exception as e:
-            print(f"Error preparing download: {str(e)}")
-            return None

@@ -11,16 +11,16 @@ import dash_leaflet as dl
 try:
     from ...utils.data_loader import load_africapolis_ghsl_simple, load_africapolis_centroids
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from ...utils.component_helpers import create_error_chart
-    from ...utils.download_helpers import prepare_csv_download
+    from ...utils.component_helpers import create_simple_error_message
+    from ...utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from config.settings import CHART_STYLES
 except ImportError:
     import sys, os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.data_loader import load_africapolis_ghsl_simple, load_africapolis_centroids
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
-    from src.utils.component_helpers import create_error_chart
-    from src.utils.download_helpers import prepare_csv_download
+    from src.utils.component_helpers import create_simple_error_message
+    from src.utils.download_helpers import prepare_csv_download, create_simple_download_callback
     from config.settings import CHART_STYLES
 
 
@@ -70,7 +70,8 @@ def register_cities_growth_callbacks(app):
             return [], []
     
     @app.callback(
-        Output('cities-growth-chart', 'figure'),
+        [Output('cities-growth-chart', 'figure'),
+         Output('cities-growth-chart', 'style')],
         [Input('main-country-filter', 'value'),
          Input('cities-growth-metric-selector', 'value'),
          Input('cities-growth-city-selector', 'value')],
@@ -91,7 +92,7 @@ def register_cities_growth_callbacks(app):
         try:
             # Handle no country selected
             if not selected_country:
-                raise Exception("Please select a country to view cities data")
+                raise Exception("No country selected")
             
             # Handle no cities selected
             if not selected_cities or len(selected_cities) == 0:
@@ -214,34 +215,18 @@ def register_cities_growth_callbacks(app):
                 row=1, col=2
             )
             
-            return fig
+            return fig, {'display': 'block'}
             
         except Exception as e:
-            return create_error_chart(
-                error_message=f"Error loading data: {str(e)}",
-                chart_type='bar',
-                xaxis_title='Value',
-                yaxis_title='City',
-                title='Built-up Expansion'
-            )
+            return create_simple_error_message(str(e))
     
-    @app.callback(
-        Output('cities-growth-download', 'data'),
-        Input('cities-growth-download-button', 'n_clicks'),
-        prevent_initial_call=True
+    # Register download callback using the reusable helper
+    create_simple_download_callback(
+        app,
+        'cities-growth-download',
+        lambda: data,
+        'cities_built_up_growth'
     )
-    def download_cities_growth_data(n_clicks):
-        """Download cities growth data as CSV"""
-        if n_clicks is None or n_clicks == 0:
-            return None
-        
-        try:
-            filename = "africapolis_ghsl_simple"
-            return prepare_csv_download(data, filename)
-        
-        except Exception as e:
-            print(f"Error preparing download: {str(e)}")
-            return None
     
     @app.callback(
         Output('city-map-modal', 'is_open'),

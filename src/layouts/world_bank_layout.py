@@ -202,9 +202,6 @@ def create_world_bank_layout():
                 create_download_component("cities-flood-exposure-download"),
                 create_download_component("precipitation-download"),
                 create_download_component("urbanization-vs-climate-change-download"),
-                # Hidden download trigger buttons (for callback validation)
-                html.Button(id='urbanization-vs-climate-change-download-button', style={'display': 'none'}),
-                html.Button(id='precipitation-download-button', style={'display': 'none'}),
                 # Store for flood benchmark selections
                 dcc.Store(id='flood-benchmark-store', data=[]),
                 # Store for contact form submission status

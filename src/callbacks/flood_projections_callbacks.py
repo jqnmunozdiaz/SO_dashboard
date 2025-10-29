@@ -35,7 +35,7 @@ def register_callbacks(app):
         prevent_initial_call=True
     )
     def update_country_filter_options_flood_projections(projections_subtab):
-        """Update country filter options for flood projections tabs - hide regional aggregates for Urbanization vs Climate Change"""
+        """Update country filter options for flood projections tabs - hide regional aggregates for all flood projection subtabs"""
         try:
             # Get individual countries (without regional aggregates)
             countries = get_subsaharan_countries()
@@ -43,19 +43,8 @@ def register_callbacks(app):
             # Sort countries alphabetically by name
             countries = sorted(countries, key=lambda x: x['name'])
             
-            # For Urbanization vs Climate Change, only show individual countries
-            if projections_subtab == 'urbanization-vs-climate':
-                return [{'label': country['name'], 'value': country['code']} for country in countries]
-            else:
-                # For other projections tabs (precipitation), include regional aggregates
-                regional_options = [
-                    {'label': 'Sub-Saharan Africa', 'value': 'SSA'},
-                    {'label': 'Eastern & Southern Africa', 'value': 'AFE'},
-                    {'label': 'Western & Central Africa', 'value': 'AFW'}
-                ]
-                all_options = [{'label': country['name'], 'value': country['code']} for country in countries]
-                all_options.extend(regional_options)
-                return all_options
+            # For all flood projections tabs, only show individual countries (no regional aggregates)
+            return [{'label': country['name'], 'value': country['code']} for country in countries]
                 
         except Exception as e:
             print(f"Error updating country filter options for flood projections: {str(e)}")
@@ -159,12 +148,19 @@ def register_callbacks(app):
     def render_flood_projections_chart(active_subtab):
         """Render the appropriate flood projections visualization"""
         
-        if active_subtab == 'precipitation':
-            # Precipitation patterns tab
-            return create_precipitation_tab_content()
+        # Create both tab contents
+        precipitation_content = create_precipitation_tab_content()
+        urbanization_vs_climate_content = create_urbanization_vs_climate_change_tab_content()
         
-        elif active_subtab == 'urbanization-vs-climate':
-            # Urbanization vs Climate Change tab
-            return create_urbanization_vs_climate_change_tab_content()
-        
-        return html.Div("Select a subtab to view flood projection data")
+        # Return both, but only display the active one
+        return html.Div([
+            html.Div(
+                precipitation_content,
+                style={'display': 'block' if active_subtab == 'precipitation' else 'none'}
+            ),
+            html.Div(
+                urbanization_vs_climate_content,
+                style={'display': 'block' if active_subtab == 'urbanization-vs-climate' else 'none'}
+            )
+        ])
+

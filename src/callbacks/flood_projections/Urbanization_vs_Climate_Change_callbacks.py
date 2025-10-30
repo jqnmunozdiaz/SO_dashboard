@@ -105,7 +105,7 @@ def register_urbanization_vs_climate_change_callbacks(app):
                 )
                 
                 # Add demographic scenario bars
-                demo_labels = ['low\n95', 'low\n80', 'Mdn.', 'high\n80', 'high\n95']
+                demo_labels = ['low\n95', 'low\n80', 'Median', 'high\n80', 'high\n95']
                 demo_keys = ['lower95', 'lower80', 'median', 'upper80', 'upper95']
                 
                 for j, (label, key) in enumerate(zip(demo_labels, demo_keys)):
@@ -156,7 +156,7 @@ def register_urbanization_vs_climate_change_callbacks(app):
                 fig.update_xaxes(
                     tickmode='array',
                     tickvals=list(range(0, 12)),
-                    ticktext=['2020', '', 'low\n95', 'low\n80', 'Mdn.', 'high\n80', 'high\n95', '', 
+                    ticktext=['2020', '', 'low\n95', 'low\n80', 'Median', 'high\n80', 'high\n95', '', 
                              'SSP1\n2.6', 'SSP2\n4.5', 'SSP3\n7.0', 'SSP5\n8.5'],
                     tickfont=dict(size=10),
                     range=[-0.5, 11.5],

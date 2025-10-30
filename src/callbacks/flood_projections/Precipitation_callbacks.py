@@ -185,7 +185,7 @@ def register_precipitation_callbacks(app):
             # Create title separately
             chart_title = html.H6([
                 html.B(country_name),
-                ' | Extreme Precipitation Events in 2050'
+                ' | Extreme Daily Precipitation Events in 2050'
             ], className='chart-title')
             
             # Update layout

@@ -145,7 +145,7 @@ def register_callbacks(app):
             html.Br(),
             html.B("Note: "), 
             note_prefix,
-            "A 1-in-100 year flood has a 1% probability of occurring in any given year and typically affects "
+            "Data comprises fluvial and pluvial floods. A 1-in-100 year flood has a 1% probability of occurring in any given year and typically affects "
             "larger areas than more frequent floods. ",
             html.A("Learn more about flood return periods", 
                    href="https://www.gfdrr.org/en/100-year-flood", 
@@ -210,7 +210,7 @@ def register_callbacks(app):
         
         # Data source note
         data_source = "Fathom3 flood maps (2020), GHSL Built-up Surface and Population (2023), and Africapolis city boundaries."
-        note_prefix = "This chart shows flood exposure over time for cities in the selected country. Each line represents a different city. "
+        note_prefix = "This chart shows flood exposure over time for cities in the selected country. Data comprises fluvial and pluvial floods. Each line represents a different city. "
         
         note_text = [
             html.B("Data Source: "), 

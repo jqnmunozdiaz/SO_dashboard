@@ -206,7 +206,7 @@ def create_world_bank_layout():
                             dbc.Tab(label="Historical Disasters", tab_id="disasters"),
                             dbc.Tab(label="Urbanization Trends", tab_id="urbanization"),
                             dbc.Tab(label="Exposure to Flood Hazard", tab_id="flood-exposure"),
-                            dbc.Tab(label="Projections of Flood Risk", tab_id="flood-projections"),
+                            dbc.Tab(label="Future Precipitation Extremes and Flood Exposure", tab_id="flood-projections"),
                         ],
                         id="main-tabs",
                         active_tab="disasters",
@@ -326,11 +326,12 @@ def create_world_bank_flood_projections_tab_content():
         html.Div([
             dbc.Tabs(
                 id="flood-projections-subtabs",
-                active_tab="precipitation",
+                active_tab="overview",
                 className="sub-nav-tabs subtabs-container",
                 children=[
+                    dbc.Tab(label="Overview", tab_id="overview", label_class_name="tab-blue"),
                     dbc.Tab(label="Changes in Extreme Precipitation", tab_id="precipitation", label_class_name="tab-blue"),
-                    dbc.Tab(label="Urbanization vs Climate Change", tab_id="urbanization-vs-climate", label_class_name="tab-blue"),
+                    dbc.Tab(label="Urbanization and Climate Change", tab_id="urbanization-vs-climate", label_class_name="tab-blue"),
                 ],
             ),
             html.Div(id="flood-projections-content"),

@@ -125,7 +125,8 @@ def register_national_flood_exposure_population_callbacks(app):
                     zeroline=True,
                     zerolinewidth=1,
                     zerolinecolor='#e5e7eb'
-                )
+                ),
+                margin=dict(t=40, b=0, l=80, r=150),
             )
             
             return fig, {'display': 'block'}, chart_title

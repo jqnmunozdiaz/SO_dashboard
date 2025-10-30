@@ -113,6 +113,7 @@ def register_national_flood_exposure_callbacks(app):
                     bordercolor='#e5e7eb',
                     borderwidth=0
                 ),
+                margin=dict(t=40, b=0, l=80, r=150),
                 xaxis=dict(
                     showgrid=True,
                     gridwidth=1,

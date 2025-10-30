@@ -4,7 +4,10 @@ Orchestrator for flood exposure callbacks
 
 from dash import Input, Output, State, html, dcc, no_update
 import dash_bootstrap_components as dbc
-from .flood.National_Flood_Exposure_Consolidated_callbacks import register_national_flood_exposure_consolidated_callbacks
+from .flood.National_Flood_Exposure_callbacks import register_national_flood_exposure_callbacks
+from .flood.National_Flood_Exposure_Relative_callbacks import register_national_flood_exposure_relative_callbacks
+from .flood.National_Flood_Exposure_Population_callbacks import register_national_flood_exposure_population_callbacks
+from .flood.National_Flood_Exposure_Population_Relative_callbacks import register_national_flood_exposure_population_relative_callbacks
 from .flood.Cities_Flood_Exposure_callbacks import register_cities_flood_exposure_callbacks
 from .country_benchmark_callbacks import register_combined_benchmark_options_callback
 
@@ -55,7 +58,10 @@ def register_callbacks(app):
             return [{'label': country['name'], 'value': country['code']} for country in countries]
     
     # Register individual chart callbacks
-    register_national_flood_exposure_consolidated_callbacks(app)
+    register_national_flood_exposure_callbacks(app)
+    register_national_flood_exposure_relative_callbacks(app)
+    register_national_flood_exposure_population_callbacks(app)
+    register_national_flood_exposure_population_relative_callbacks(app)
     register_cities_flood_exposure_callbacks(app)
     
     # Register combined benchmark dropdown callbacks
@@ -189,7 +195,7 @@ def register_callbacks(app):
             ),
             html.Div(
                 dbc.Button("📍 Where are these cities?", id="cities-flood-map-button", color="info", className="download-data-button"),
-                style={'display': 'flex', 'align-items': 'flex-end', 'padding-bottom': '0.5rem'}
+                style={'flex': '1', 'marginLeft': '1rem'}
             )
         ], style={'display': 'flex', 'gap': '1rem', 'flex-wrap': 'wrap', 'justify-content': 'space-between'})
         

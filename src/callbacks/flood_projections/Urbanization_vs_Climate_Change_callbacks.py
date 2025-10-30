@@ -183,35 +183,64 @@ def register_urbanization_vs_climate_change_callbacks(app):
                 font={'color': CHART_STYLES['colors']['primary']},
                 showlegend=False,  # Remove legend to match matplotlib version
                 height=800,
-                margin=dict(t=100, b=140, l=80, r=40),
+                margin=dict(t=50, b=80, l=80, r=40),
                 hovermode='closest'
             )
             
-            # Add annotations for scenario group labels (below bottom subplot)
+            # Add annotations for scenario group labels (below both subplots)
             annotations = list(fig.layout.annotations)  # Preserve subplot titles
             annotations.extend([
+                # Annotations for first subplot (10-year return period)
                 dict(
-                    text='Current<br>conditions',
-                    xref='x2', yref='paper',
-                    x=0, y=-0.07,
+                    text='Current conditions',
+                    xref='x1', yref='paper',
+                    x=0, y=0.54,
                     xanchor='center', yanchor='top',
                     showarrow=False,
                     font=dict(size=11),
                     xshift=0
                 ),
                 dict(
-                    text='Demographic<br>scenarios',
-                    xref='x2', yref='paper',
-                    x=4, y=-0.07,
+                    text='Demographic scenarios',
+                    xref='x1', yref='paper',
+                    x=4, y=0.54,
                     xanchor='center', yanchor='top',
                     showarrow=False,
                     font=dict(size=11),
                     xshift=0
                 ),
                 dict(
-                    text='Climate change<br>scenarios',
+                    text='Climate change scenarios',
+                    xref='x1', yref='paper',
+                    x=9.5, y=0.54,
+                    xanchor='center', yanchor='top',
+                    showarrow=False,
+                    font=dict(size=11),
+                    xshift=0
+                ),
+                # Annotations for second subplot (100-year return period)
+                dict(
+                    text='Current conditions',
                     xref='x2', yref='paper',
-                    x=9.5, y=-0.07,
+                    x=0, y=-0.03,
+                    xanchor='center', yanchor='top',
+                    showarrow=False,
+                    font=dict(size=11),
+                    xshift=0
+                ),
+                dict(
+                    text='Demographic scenarios',
+                    xref='x2', yref='paper',
+                    x=4, y=-0.03,
+                    xanchor='center', yanchor='top',
+                    showarrow=False,
+                    font=dict(size=11),
+                    xshift=0
+                ),
+                dict(
+                    text='Climate change scenarios',
+                    xref='x2', yref='paper',
+                    x=9.5, y=-0.03,
                     xanchor='center', yanchor='top',
                     showarrow=False,
                     font=dict(size=11),

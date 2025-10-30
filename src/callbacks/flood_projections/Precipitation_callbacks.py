@@ -203,7 +203,7 @@ def register_precipitation_callbacks(app):
                     x=1.02,
                     font=dict(size=10)
                 ),
-                margin=dict(l=140, r=120, t=80, b=80),  # Adjust right margin for legend space, reduce bottom margin
+                margin=dict(l=140, r=120, t=50, b=0),  # Adjust right margin for legend space, reduce bottom margin
                 hovermode='closest'
             )
 

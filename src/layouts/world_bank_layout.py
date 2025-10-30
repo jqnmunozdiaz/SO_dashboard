@@ -163,7 +163,7 @@ def create_world_bank_layout():
                         ], className="hero-description"),
                         html.P([
                             "For detailed subnational analysis and city-specific data, visit the ",
-                            html.A("city-level platform", href="https://www.google.com", target="_blank"),
+                            html.A("city-level platform", href="https://www.google.com", target="_blank", style={'color': "#358EDD", 'text-decoration': 'none', 'font-weight': 'bold'}),
                             "."
                         ], className="hero-description"),
                     ], className="hero-content"),

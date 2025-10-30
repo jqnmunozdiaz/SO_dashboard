@@ -164,6 +164,7 @@ def register_cities_growth_rate_callbacks(app):
                     bordercolor="#e2e8f0",
                     borderwidth=0
                 ),
+                margin=dict(t=40, b=80, l=80, r=150),
                 height=600,
                 hovermode='closest'
             )

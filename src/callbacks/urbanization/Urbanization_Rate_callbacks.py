@@ -213,7 +213,7 @@ def register_urbanization_rate_callbacks(app):
                     gridcolor='#e5e7eb',
                     zeroline=False
                 ),
-                margin=dict(b=80, t=100)
+                margin=dict(b=0, t=60)
             )
             
             # Add vertical line at 2025 to separate historical from projections

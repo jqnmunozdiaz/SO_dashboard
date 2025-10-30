@@ -150,7 +150,7 @@ def register_cities_evolution_callbacks(app):
                     borderwidth=0
                 ),
                 height=600,
-                margin=dict(r=250, l=80, t=80, b=80),
+                margin=dict(r=250, l=80, t=50, b=0),
                 xaxis=dict(
                     showgrid=False,
                     showline=True,

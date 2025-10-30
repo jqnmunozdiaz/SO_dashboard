@@ -255,19 +255,43 @@ def register_callbacks(app):
                 ], className="indicator-note-container")
             ], className="chart-container")
         elif active_subtab == 'gdp-vs-urbanization':
+            # Get global benchmark codes with exclusions
+            from ..utils.GLOBAL_BENCHMARK_CONFIG import get_global_benchmark_dropdown_options, get_all_global_benchmark_codes
+            
+            all_codes = get_all_global_benchmark_codes()
+            exclude_from_default = ['AFE', 'AFW']
+            default_codes = [code for code in all_codes if code not in exclude_from_default]
+            
             return html.Div([
                 # Title
                 html.Div(id='gdp-vs-urbanization-title', className='chart-title'),
-                # Benchmark selectors (global and country benchmarks)
-                *create_benchmark_selectors(
-                    regional_id='gdp-vs-urbanization-benchmark-selector',
-                    country_id='gdp-vs-urbanization-country-benchmark-selector',
-                    global_id='gdp-vs-urbanization-global-benchmark-selector',
-                    include_regional=False,
-                    include_country=True,
-                    include_global=True,
-                    exclude_from_default=['AFE', 'AFW']  # Exclude subregions from default selection
-                ),
+                # Benchmark selectors (stacked vertically)
+                html.Div([
+                    # Global benchmark selector
+                    html.Div([
+                        html.Label("Regional Benchmarks:", className="dropdown-label"),
+                        dcc.Dropdown(
+                            id='gdp-vs-urbanization-global-benchmark-selector',
+                            options=get_global_benchmark_dropdown_options(),
+                            value=default_codes,
+                            multi=True,
+                            placeholder="Select regions to compare...",
+                            className="country-benchmark-dropdown"
+                        )
+                    ], style={'display': 'flex', 'alignItems': 'center', 'gap': '0.75rem', 'marginBottom': '1rem'}),
+                    # Country benchmark selector
+                    html.Div([
+                        html.Label("Country Benchmarks:", className="dropdown-label"),
+                        dcc.Dropdown(
+                            id='gdp-vs-urbanization-country-benchmark-selector',
+                            options=[],  # Will be populated by callback
+                            value=[],
+                            multi=True,
+                            placeholder="Select countries to compare...",
+                            className="country-benchmark-dropdown"
+                        )
+                    ], style={'display': 'flex', 'alignItems': 'center', 'gap': '0.96rem', 'marginBottom': '0rem'})
+                ], style={'marginBottom': '0.5rem'}),
                 # Chart
                 dcc.Graph(id="gdp-vs-urbanization-chart"),
                 # Indicator note

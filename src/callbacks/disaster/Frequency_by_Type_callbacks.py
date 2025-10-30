@@ -153,7 +153,7 @@ def setup_frequency_by_type_callbacks(app):
                     zerolinewidth=1,
                     zerolinecolor='#e5e7eb'
                 ),
-                margin=dict(b=100)
+                margin=dict(b=0)
             )
             
             # Update bar styling

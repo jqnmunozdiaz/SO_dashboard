@@ -242,10 +242,7 @@ urbanization/Access_to_Electricity_Urban_callbacks.py
 urbanization/GDP_vs_Urbanization_callbacks.py
 urbanization/Cities_Distribution_callbacks.py
 urbanization/Cities_Evolution_callbacks.py
-flood/National_Flood_Exposure_callbacks.py
-flood/National_Flood_Exposure_Relative_callbacks.py
-flood/National_Flood_Exposure_Population_callbacks.py
-flood/National_Flood_Exposure_Population_Relative_callbacks.py
+flood/National_Flood_Exposure_Consolidated_callbacks.py  # Handles all 4 combinations (built_s/pop × absolute/relative)
 flood/Cities_Flood_Exposure_callbacks.py
 flood_projections/Precipitation_callbacks.py
 flood_projections/Urbanization_vs_Climate_Change_callbacks.py

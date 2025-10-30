@@ -134,7 +134,7 @@ def register_cities_distribution_callbacks(app):
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
                 height=600,
-                margin=dict(t=80, l=20, r=20, b=20),
+                margin=dict(t=0, l=20, r=20, b=0),
                 showlegend=True,
                 legend=dict(
                     title=dict(text='Size Categories'),

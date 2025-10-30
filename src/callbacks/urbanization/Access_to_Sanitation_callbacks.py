@@ -114,7 +114,7 @@ def register_access_to_sanitation_callbacks(app):
                     gridcolor='#e5e7eb',
                     zeroline=False
                 ),
-                margin=dict(b=80, t=100),
+                margin=dict(b=0, t=60),
                 hovermode='x unified'
             )
             return fig, {'display': 'block'}, title_text

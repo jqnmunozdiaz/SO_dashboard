@@ -128,7 +128,7 @@ def register_gdp_vs_urbanization_callbacks(app):
                     zeroline=False,
                     ticksuffix='%'
                 ),
-                margin=dict(b=80, t=100)
+                margin=dict(b=30, t=60)
             )
             return fig, {'display': 'block'}, chart_title
         except Exception as e:

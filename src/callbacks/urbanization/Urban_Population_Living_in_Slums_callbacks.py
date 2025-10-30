@@ -149,7 +149,7 @@ def register_urban_population_living_in_slums_callbacks(app):
                     gridcolor='#e5e7eb',
                     zeroline=False
                 ),
-                margin=dict(b=80, t=100)
+                margin=dict(b=0, t=60)
             )
 
             return fig, {'display': 'block'}, title_text

@@ -154,6 +154,7 @@ def register_urban_density_callbacks(app):
                     x=0.5,
                     bgcolor='rgba(255,255,255,0.8)',
                 ),
+                margin=dict(t=40, b=80, l=80, r=80),
                 hovermode='x unified',
                 height=600,
             )

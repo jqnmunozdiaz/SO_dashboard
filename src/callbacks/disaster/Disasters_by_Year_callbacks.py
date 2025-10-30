@@ -130,7 +130,7 @@ def setup_disasters_by_year_callbacks(app):
                 zerolinewidth=1,
                 zerolinecolor='#e5e7eb'
             ),
-            margin=dict(b=100, r=150)  # Extra margin for legend
+            margin=dict(b=0, r=150)  # Extra margin for legend
         )
         
         # Update bar styling

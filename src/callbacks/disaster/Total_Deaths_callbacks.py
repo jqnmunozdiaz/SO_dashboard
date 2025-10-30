@@ -165,7 +165,7 @@ def setup_total_deaths_callbacks(app):
                 ticksuffix='%' if display_mode == 'relative' else '',
                 range=[0, max(deaths_data['Total Deaths'].max() * 1.1, 0.001)] if display_mode == 'relative' else None
             ),
-            margin=dict(b=100, r=150)  # Extra margin for legend
+            margin=dict(b=0, r=150)  # Extra margin for legend
         )
         
         # Update bar styling with appropriate hover template

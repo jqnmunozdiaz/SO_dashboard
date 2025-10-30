@@ -1,0 +1,55 @@
+# Python cache and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation that's not needed at runtime
+docs/
+*.md
+!README.md
+
+# Test files
+tests/
+*.txt.bak
+
+# Local development
+.env
+.env.local
+
+# Build scripts for other platforms
+build.sh
+start.sh
+run.bat
+
+# Platform-specific configs (keep only Dockerfile and fly.toml)
+Procfile
+render.yaml
+vercel.json
+
+# Raw data files (only keep processed data)
+data/raw/

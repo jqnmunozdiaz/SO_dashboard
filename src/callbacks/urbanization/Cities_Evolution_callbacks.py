@@ -127,7 +127,7 @@ def register_cities_evolution_callbacks(app):
             country_name = countries_dict.get(selected_country, selected_country)
             
             # Create separate title
-            chart_title = html.H6([html.B(country_name), ' | Urban Population by Individual Cities'], 
+            chart_title = html.H6([html.B(country_name), ' | Evolution of Urban Population over Time across Cities'], 
                                  className='chart-title')
             
             fig.update_layout(

@@ -126,7 +126,7 @@ def register_cities_distribution_callbacks(app):
             # Create title separately
             chart_title = html.H6([
                 html.B(country_name),
-                f' | Cities Distribution by Size ({selected_year})'
+                f' | Distribution of Urban Population in Cities by Size ({selected_year})'
             ], className='chart-title')
             
             fig.update_layout(

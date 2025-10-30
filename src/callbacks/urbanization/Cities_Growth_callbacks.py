@@ -107,7 +107,7 @@ def register_cities_growth_callbacks(app):
                 col_2020 = 'BU_2020'
                 col_cagr = 'BU_CAGR_2000_2020'
                 metric_name = 'Built-up'
-                unit_2020 = 'sq. km'
+                unit_2020 = 'km²'
                 unit_cagr = '%'
                 title_suffix = 'Built-up Area'
             else:  # POP
@@ -179,7 +179,7 @@ def register_cities_growth_callbacks(app):
                 font={'color': CHART_STYLES['colors']['primary']},
                 height=max(400, len(selected_cities) * 60),  # Dynamic height based on number of cities
                 showlegend=False,
-                margin=dict(l=150, r=150, t=100, b=50)
+                margin=dict(l=150, r=150, t=0, b=50)
             )
             
             # Update x-axes
@@ -191,7 +191,7 @@ def register_cities_growth_callbacks(app):
             )
             
             fig.update_xaxes(
-                title_text=f'Annual growth rate ({unit_cagr})',
+                title_text=f'Annual Growth Rate ({unit_cagr})',
                 showgrid=True,
                 gridcolor='#e5e7eb',
                 ticksuffix='%',

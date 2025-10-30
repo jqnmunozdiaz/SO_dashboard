@@ -123,7 +123,7 @@ def register_callbacks(app):
                 dcc.Graph(id="urban-population-projections-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "UN DESA (World Population Prospects & World Urbanization Prospects).", html.Br(), html.B("Note:"), " Uncertainty bands show 95% and 80% confidence intervals for future projections. The 2025 value corresponds to an estimate based on UN DESA datasets."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "Computed using UN DESA datasets (World Population Prospects 2024 & World Urbanization Prospects 2018).", html.Br(), html.B("Note:"), " Uncertainty bands show 95% and 80% confidence intervals for future projections. The 2025 value corresponds to an estimation based on UN DESA datasets. Growth rates correspond to Compound Annual Growth Rates (CAGR)."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('urban-population-projections-download'),
                         create_methodological_note_button()
@@ -143,7 +143,7 @@ def register_callbacks(app):
                 dcc.Graph(id="urbanization-rate-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects.", html.Br(), html.B("Note:"), " Percentage of population living in urban areas. Shows historical trends and future projections of urbanization levels. The 2025 value corresponds to an estimate based on UN DESA datasets."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Percentage of population living in urban areas. Shows historical trends and future projections of urbanization levels. The 2025 value corresponds to an estimation based on UN DESA datasets."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('urbanization-rate-download'),
                         create_methodological_note_button()
@@ -164,7 +164,7 @@ def register_callbacks(app):
                 # Indicator note
                 html.Div([
                     html.P([
-                        html.B("Data Source: "), "Africapolis & GHSL 2023 (processed).",
+                        html.B("Data Source: "), "Africapolis & GHSL 2023.",
                         html.Br(),
                         html.B("Note:"), " Computed as total built-up area divided by population in cities as defined by Africapolis. Regional benchmarks aggregate populations and built-up areas before calculating per capita values."
                     ], className="indicator-note"),
@@ -296,7 +296,7 @@ def register_callbacks(app):
                 dcc.Graph(id="gdp-vs-urbanization-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "World Bank World Development Indicators.", html.Br(), html.B("Note:"), " Urban population refers to people living in urban areas as defined by national statistical offices. The data are collected by the UN Population Division. Cross-country comparisons should be made with caution since this data does not rely on an internationally harmonized definition of urban areas. Aggregation of urban and rural population may not add up to total population because of different country coverage. Gross domestic product (GDP) is expressed in constant international dollars, converted by purchasing power parities (PPPs). PPPs account for the different price levels across countries and thus PPP-based comparisons of economic output are more appropriate for comparing the output of economies and the average material well-being of their inhabitants than exchange-rate based comparisons."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "World Bank World Development Indicators (WDI).", html.Br(), html.B("Note:"), " Urban population refers to people living in urban areas as defined by national statistical offices. The data are collected by the UN Population Division. Cross-country comparisons should be made with caution since this data does not rely on an internationally harmonized definition of urban areas. Gross domestic product (GDP) is expressed in constant international dollars, converted by purchasing power parities (PPPs) which account for the different price levels across countries."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('gdp-vs-urbanization-download'),
                         create_methodological_note_button()
@@ -328,7 +328,7 @@ def register_callbacks(app):
                 dcc.Graph(id="cities-distribution-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Distribution of urban population across city size categories for selected year."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Distribution of urban population across city size categories for selected year. The source of information for this analysis (UN DESA) is different than the one used in other city charts (Africapolis and GHSL2023), so users should be cautious when comparing results."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('cities-distribution-download'),
                         create_methodological_note_button()
@@ -343,7 +343,7 @@ def register_callbacks(app):
                 dcc.Graph(id="cities-evolution-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Urban population evolution showing individual cities stacked and colored by size category."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Urban population evolution showing individual cities stacked and colored by size category. The source of information for this analysis (UN DESA) is different than the one used in other city charts (Africapolis and GHSL2023), so users should be cautious when comparing results."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('cities-evolution-download'),
                         create_methodological_note_button()
@@ -358,7 +358,7 @@ def register_callbacks(app):
                 dcc.Graph(id="cities-growth-rate-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "Africapolis & GHSL 2023.", html.Br(), html.B("Note:"), " Scatterplot showing the relationship between population CAGR (Compound Annual Growth Rate) and built-up area CAGR for cities between 2000 and 2020. Points above the diagonal line (y=x) indicate cities where built-up area expanded faster than population, while points below indicate population growth outpaced built-up growth rate."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "Africapolis & GHSL 2023.", html.Br(), html.B("Note:"), " Scatterplot showing the relationship between population CAGR (Compound Annual Growth Rate) and built-up area CAGR for cities between 2000 and 2020. Points above the diagonal line (y=x) indicate cities where built-up area expanded faster than population, while points below indicate population growth outpaced built-up growth rate. "], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('cities-growth-rate-download'),
                         create_methodological_note_button()

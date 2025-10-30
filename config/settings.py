@@ -15,7 +15,7 @@ DASHBOARD_CONFIG = {
 DATA_CONFIG = {
     'emdat_start_year': 1976,  # Starting year for EM-DAT analysis
     'emdat_end_year': 2025,    # Ending year for EM-DAT analysis
-    'analysis_period': '1976 - Present'
+    'analysis_period': '1976 - 2025'
 }
 
 # Chart styling

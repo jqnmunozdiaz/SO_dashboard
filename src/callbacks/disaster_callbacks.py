@@ -41,8 +41,8 @@ def register_callbacks(app):
                     dcc.RadioItems(
                         id='disaster-frequency-mode-selector',
                         options=[
-                            {'label': ' Absolute (count)', 'value': 'absolute'},
-                            {'label': ' Relative (share in %)', 'value': 'relative'}
+                            {'label': ' Absolute', 'value': 'absolute'},
+                            {'label': ' Relative', 'value': 'relative'}
                         ],
                         value='absolute',
                         className='radio-buttons',

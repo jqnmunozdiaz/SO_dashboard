@@ -187,7 +187,7 @@ def register_callbacks(app):
                         src="/assets/images/flood_risk.svg",
                         style={'width': '100%', 'height': '100%', 'objectFit': 'contain'}
                     )
-                ], style={'width': '350px', 'minWidth': '350px', 'height': '350px', 'display': 'flex', 'alignItems': 'center', 'justifyContent': 'center', 'padding': '1rem'})
+                ], style={'width': '450px', 'minWidth': '450px', 'height': '450px', 'display': 'flex', 'alignItems': 'center', 'justifyContent': 'center', 'padding': '1rem'})
             ], style={'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'flex-start', 'marginBottom': '2rem', 'gap': '2rem'}),
             
             # Urbanization section - full width
@@ -213,7 +213,7 @@ def register_callbacks(app):
         """Helper function to create urbanization vs climate change comparison tab content"""
         
         # Data source note
-        data_source = "Fathom3 flood maps (2020), GHSL Built-up Surface (2023), UN World Population Prospects (2022), and IPCC climate scenarios."
+        data_source = "Fathom3 flood maps (2020), GHSL Built-up Surface (2023), and UN World Population Prospects (2022)."
         note_prefix = "This chart compares built-up area exposed to flooding (fluvial and pluvial) under different future scenarios. "
         
         note_text = [

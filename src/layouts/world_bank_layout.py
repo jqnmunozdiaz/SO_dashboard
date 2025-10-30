@@ -43,16 +43,17 @@ def create_world_bank_layout():
                         className="contact-us-button",
                         n_clicks=0
                     ),
-                    html.Img(
-                        src="/assets/images/wb-full-logo.png",
-                        className="header-logo header-logo-wb",
-                        alt="World Bank Logo",
-                    ),
-                    html.Img(
-                        src="/assets/images/gfdrr-logo.png",
-                        className="header-logo",
-                        alt="GFDRR Logo",
-                    ),
+                    # Placeholder for logos - currently commented out
+                    # html.Img(
+                    #     src="/assets/images/wb-full-logo.png",
+                    #     className="header-logo header-logo-wb",
+                    #     alt="World Bank Logo",
+                    # ),
+                    # html.Img(
+                    #     src="/assets/images/gfdrr-logo.png",
+                    #     className="header-logo",
+                    #     alt="GFDRR Logo",
+                    # ),
                 ], className="header-logos"),
             ], className="header-inner"),
         ], className="header-container"),
@@ -329,7 +330,7 @@ def create_world_bank_flood_projections_tab_content():
                 active_tab="overview",
                 className="sub-nav-tabs subtabs-container",
                 children=[
-                    dbc.Tab(label="Overview", tab_id="overview", label_class_name="tab-blue"),
+                    dbc.Tab(label="Overview", tab_id="overview", label_class_name="tab-gray"),
                     dbc.Tab(label="Changes in Extreme Precipitation", tab_id="precipitation", label_class_name="tab-blue"),
                     dbc.Tab(label="Urbanization and Climate Change", tab_id="urbanization-vs-climate", label_class_name="tab-blue"),
                 ],

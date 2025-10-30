@@ -71,3 +71,27 @@
     font-weight: 500 !important;
     box-shadow: 0 2px 8px rgba(249, 115, 22, 0.25) !important;
 }
+
+/* ============================================
+   GRAY THEME - Overview/General info
+   ============================================ */
+
+.tab-gray {
+    background: #f3f4f6 !important;
+    border-color: #9ca3af !important;
+    color: #374151 !important;
+}
+
+.tab-gray:hover {
+    background: #e5e7eb !important;
+    border-color: #6b7280 !important;
+    color: #1f2937 !important;
+}
+
+.tab-gray.active {
+    color: #1f2937 !important;
+    background: #d1d5db !important;
+    border-color: #6b7280 !important;
+    font-weight: 500 !important;
+    box-shadow: 0 2px 8px rgba(107, 114, 128, 0.25) !important;
+}

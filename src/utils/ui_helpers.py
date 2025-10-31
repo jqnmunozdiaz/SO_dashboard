@@ -200,7 +200,7 @@ def create_methodological_note_button():
     )
 
 
-def create_city_platform_button(href: str = "https://www.google.com"):
+def create_city_platform_button(href: str = "https://urban-risk-observatory.web.app/"):
     """
     Create a styled action button that links to an external city-level platform.
 

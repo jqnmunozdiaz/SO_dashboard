@@ -153,7 +153,7 @@ def create_world_bank_layout():
                         html.H1("Disaster Risk & Urbanization Analytics Dashboard", className="hero-title"),
                         html.P("Sub-Saharan Africa", className="hero-subtitle"),
                         html.P([
-                            html.B("This platform enables users to analyze disaster risk and urbanization trends across Sub-Saharan Africa. "),
+                            html.B("Test This platform enables users to analyze disaster risk and urbanization trends across Sub-Saharan Africa. "),
                             "Combining historical disaster data with urban growth projections and climate scenarios, it supports evidence-based "
                             "planning for disaster risk reduction and sustainable urban development."
                         ], className="hero-description"),

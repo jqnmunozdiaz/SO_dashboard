@@ -328,7 +328,7 @@ def register_callbacks(app):
                 dcc.Graph(id="cities-distribution-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Distribution of urban population across city size categories for selected year. The source of information for this analysis (UN DESA) is different than the one used in other city charts (Africapolis and GHSL2023), so users should be cautious when comparing results."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "Africapolis 2024.", html.Br(), html.B("Note:"), " Distribution of urban population across city size categories for selected year."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('cities-distribution-download'),
                         create_methodological_note_button()
@@ -343,7 +343,7 @@ def register_callbacks(app):
                 dcc.Graph(id="cities-evolution-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Urban population evolution showing individual cities stacked and colored by size category. The source of information for this analysis (UN DESA) is different than the one used in other city charts (Africapolis and GHSL2023), so users should be cautious when comparing results."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "Africapolis 2024.", html.Br(), html.B("Note:"), " Urban population evolution showing individual cities stacked and colored by size category."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('cities-evolution-download'),
                         create_methodological_note_button()

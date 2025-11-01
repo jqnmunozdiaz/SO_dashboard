@@ -21,7 +21,6 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(project_root)
 
 from src.utils.country_utils import load_subsaharan_countries_dict
-from shapely.geometry import Point
 
 # Define file paths
 raw_file = os.path.join(project_root, 'data', 'raw', 'africapolis2023.gpkg')
@@ -61,3 +60,4 @@ gdf_csv = gdf_clean.copy()
 gdf_csv['Longitude'] = gdf_csv.geometry.x
 gdf_csv['Latitude'] = gdf_csv.geometry.y
 gdf_csv[['agglosID', 'agglosName', 'ISO3', 'Longitude', 'Latitude']].to_csv(output_csv, index=False)
+

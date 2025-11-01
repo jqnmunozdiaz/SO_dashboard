@@ -171,28 +171,6 @@ def load_city_size_distribution() -> pd.DataFrame:
         raise Exception(f"Error loading city size distribution data: {str(e)}")
 
 
-def load_city_agglomeration_counts() -> pd.DataFrame:
-    """
-    Load number of agglomerations by city size category for Sub-Saharan African countries
-    
-    Returns:
-        DataFrame with columns: Country Code, Country Name, Size Category, Year, Number of Agglomerations
-    """
-    # Get the absolute path to the project root directory
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.join(current_dir, '..', '..')
-    file_path = os.path.join(project_root, 'data', 'processed', 'city_agglomeration_counts.csv')
-    
-    try:
-        df = pd.read_csv(file_path)
-        return df
-        
-    except FileNotFoundError:
-        raise FileNotFoundError(f"City agglomeration counts data file not found: {file_path}")
-    except Exception as e:
-        raise Exception(f"Error loading city agglomeration counts data: {str(e)}")
-
-
 def load_population_data(country_iso: str) -> pd.DataFrame:
     """
     Load total population data for a specific country from WPP 2024

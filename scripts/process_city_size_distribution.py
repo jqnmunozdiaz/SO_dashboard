@@ -149,7 +149,7 @@ def process_individual_cities():
     result_df = result_df.sort_values(['Country Code', 'City Name', 'Year'])
     
     # Save to processed folder
-    output_path = 'data/processed/cities_individual.csv'
+    output_path = 'data/processed/cities_individual_UNDESA.csv'
     result_df.to_csv(output_path, index=False)
     
     print(f"\n✓ Processed individual cities data with reconciliation")

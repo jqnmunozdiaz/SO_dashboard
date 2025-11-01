@@ -37,6 +37,6 @@ steps:
 images:
   - 'gcr.io/$PROJECT_ID/so-dashboard'
 
+timeout: '1200s'
 options:
   machineType: 'E2_HIGHCPU_8'
-  timeout: '1200s'

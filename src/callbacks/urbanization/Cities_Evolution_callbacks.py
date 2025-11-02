@@ -4,7 +4,7 @@ Shows evolution of urban population across city size categories over time
 """
 
 from dash import Input, Output, html
-import plotly.graph_objects as go
+import plotly.express as px
 
 from ...utils.data_loader import load_city_size_distribution
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
@@ -39,80 +39,72 @@ def register_cities_evolution_callbacks(app):
             if filtered_data.empty:
                 raise Exception(f"No data available for {countries_dict.get(selected_country, selected_country)}")
 
-            # Get unique years and sort them
-            years = sorted(filtered_data['Year'].unique())
+            # Prepare data for Plotly Express
+            filtered_data = filtered_data.copy()
             
             # Calculate total max population to determine if we should use millions
-            max_population = 0
-            for year in years:
-                year_total = filtered_data[filtered_data['Year'] == year]['Population'].sum() * 1000
-                if year_total > max_population:
-                    max_population = year_total
-            
-            # Determine if we should display in millions
-            use_millions = max_population >= 1000000
-            population_divisor = 1000000 if use_millions else 1
+            max_population = (filtered_data['Population'].sum() * 1000)
+            use_millions = max_population >= 1e6
+            population_divisor = 1e6 if use_millions else 1
             yaxis_title = 'Urban Population (Millions)' if use_millions else 'Urban Population'
             
-            # Create stacked bar chart - bars ordered by size category for each year
-            fig = go.Figure()
-                       
-            # For each year, we need to add cities in order by size category
-            for year in years:
-                year_data = filtered_data[filtered_data['Year'] == year]
-                
-                # Sort cities by size category for this year, then by population within category
-                cities_by_category_this_year = {}
-                for category in CITY_SIZE_CATEGORIES_ORDERED:
-                    category_data = year_data[year_data['Size Category'] == category]
-                    # Sort by population (ascending) within this category so largest cities are on top
-                    category_data_sorted = category_data.sort_values('Population', ascending=True)
-                    cities_in_category = category_data_sorted['City Name'].tolist()
-                    cities_by_category_this_year[category] = cities_in_category
-                
-                # Add bars for this year, ordered by size category (then by population within category)
-                for size_category in CITY_SIZE_CATEGORIES_ORDERED:
-                    for city_name in cities_by_category_this_year[size_category]:
-                        city_data = year_data[year_data['City Name'] == city_name]
-                        
-                        if not city_data.empty:
-                            pop_value = city_data.iloc[0]['Population'] * 1000 / population_divisor
-                            year_size_category = city_data.iloc[0]['Size Category']
-                            color = CITY_SIZE_COLORS.get(year_size_category, '#95a5a6')
-                            
-                            # Format hover text
-                            if use_millions:
-                                pop_text = f'{pop_value:.2f}M'
-                            else:
-                                pop_text = f'{pop_value:,.0f}'
-                            
-                            hover_text = (
-                                f'<b>{city_name}</b><br>' +
-                                f'Size: {year_size_category}<br>' +
-                                f'Population: {pop_text}<br>' +
-                                '<extra></extra>'
-                            )
-                            
-                            fig.add_trace(go.Bar(
-                                name=city_name,
-                                x=[year],
-                                y=[pop_value],
-                                marker_color=color,
-                                hovertemplate=hover_text,
-                                legendgroup=year_size_category,
-                                showlegend=False
-                            ))
+            # Add display population column
+            filtered_data['Population_Display'] = filtered_data['Population'] * 1000 / population_divisor
             
-            # Add invisible traces for legend (one for each size category in order)
-            for category in reversed(CITY_SIZE_CATEGORIES_ORDERED):
-                fig.add_trace(go.Bar(
-                    name=category,
-                    x=[None],
-                    y=[None],
-                    marker_color=CITY_SIZE_COLORS.get(category, '#95a5a6'),
-                    showlegend=True,
-                    legendgroup=category
-                ))
+            # For stacking order: In Plotly Express, category_orders determines trace order
+            # First category in category_orders list = BOTTOM of stack
+            # Last category in category_orders list = TOP of stack
+            # We want: Gray at bottom, Red at top
+            # So category_orders should be: Gray -> Green -> Blue -> Yellow -> Orange -> Red
+            
+            # Sort data by population ASCENDING within each category
+            # In stacked bars, first rows in DataFrame = bottom of segment, last rows = top of segment
+            # So population ascending means smallest cities render first (bottom), largest render last (top)
+            filtered_data = filtered_data.sort_values(
+                ['Year', 'Size Category', 'Population'], 
+                ascending=[True, True, True]  # Population ascending = largest cities render last (on top within category)
+            )
+            
+            # Create stacked bar chart with Plotly Express
+            fig = px.bar(
+                filtered_data,
+                x='Year',
+                y='Population_Display',
+                color='Size Category',
+                hover_data={
+                    'City Name': True,
+                    'Size Category': True,
+                    'Population_Display': False,  # We'll format this manually
+                    'Year': False
+                },
+                color_discrete_map=CITY_SIZE_COLORS,
+                # category_orders controls stacking: first item = bottom, last item = top
+                # Use normal order (smallest to largest) so Red (10M+) is at top
+                category_orders={'Size Category': CITY_SIZE_CATEGORIES_ORDERED}
+            )
+            
+            # Reverse the legend order to show Red at top, Gray at bottom
+            fig.update_layout(legend={'traceorder': 'reversed'})
+            
+            # Customize hover template with properly formatted population
+            if use_millions:
+                # Format as millions with 2 decimal places, no rounding
+                hover_template = (
+                    '<b>%{customdata[0]}</b><br>' +
+                    'Size: %{customdata[1]}<br>' +
+                    'Population: %{y:.2f}M<br>' +
+                    '<extra></extra>'
+                )
+            else:
+                # Format with thousands separator
+                hover_template = (
+                    '<b>%{customdata[0]}</b><br>' +
+                    'Size: %{customdata[1]}<br>' +
+                    'Population: %{y:,.0f}<br>' +
+                    '<extra></extra>'
+                )
+            
+            fig.update_traces(hovertemplate=hover_template)
             
             country_name = countries_dict.get(selected_country, selected_country)
             
@@ -120,6 +112,7 @@ def register_cities_evolution_callbacks(app):
             chart_title = html.H6([html.B(country_name), ' | Evolution of Urban Population over Time across Cities'], 
                                  className='chart-title')
             
+            # Update layout to match World Bank styling
             fig.update_layout(
                 xaxis_title='Year',
                 yaxis_title=yaxis_title,
@@ -147,7 +140,8 @@ def register_cities_evolution_callbacks(app):
                     linewidth=1,
                     linecolor='#e2e8f0',
                     tickmode='linear',
-                    dtick=5
+                    dtick=5,
+                    type='linear'  # Ensure years are treated as continuous
                 ),
                 yaxis=dict(
                     showgrid=True,
@@ -159,6 +153,7 @@ def register_cities_evolution_callbacks(app):
                     tickformat=',.1f' if use_millions else ','
                 )
             )
+            
             return fig, {'display': 'block'}, chart_title
             
         except Exception as e:

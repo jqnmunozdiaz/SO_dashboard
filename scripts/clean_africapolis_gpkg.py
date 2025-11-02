@@ -45,7 +45,7 @@ if gdf_ssa.crs != 'EPSG:4326':
 gdf_ssa['geometry'] = gdf_ssa.geometry.centroid
 
 # Keep only required columns
-required_columns = ['agglosID', 'agglosName', 'ISO3']
+required_columns = ['agglosID', 'agglosName', 'ISO3', 'Pop2020']
 gdf_clean = gdf_ssa[required_columns + ['geometry']].copy()
 
 # Convert to GeoDataFrame with WGS84

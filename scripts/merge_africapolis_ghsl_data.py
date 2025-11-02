@@ -85,11 +85,11 @@ def calculate_cagr(group, year1, year2):
         cagr_built = None
     
     return pd.Series({
-        'pop_2010': start_pop,
-        'pop_2020': end_pop,
+        f'pop_{str(year1)}': start_pop,
+        f'pop_{str(year2)}': end_pop,
         'pop_cagr': cagr_pop,
-        'built_up_2010': start_built,
-        'built_up_2020': end_built,
+        f'built_up_{str(year1)}': start_built,
+        f'built_up_{str(year2)}': end_built,
         'built_up_cagr': cagr_built
     })
 

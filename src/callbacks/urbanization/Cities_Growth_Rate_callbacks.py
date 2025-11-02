@@ -10,7 +10,7 @@ from ...utils.data_loader import load_cities_growth_rate
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
 from ...utils.component_helpers import create_simple_error_message
 from ...utils.download_helpers import create_simple_download_callback
-from ...utils.color_utils import CITY_SIZE_COLORS
+from ...utils.color_utils import CITY_SIZE_COLORS, CITY_SIZE_CATEGORIES_ORDERED
 from config.settings import CHART_STYLES
 
 def register_cities_growth_rate_callbacks(app):
@@ -43,21 +43,11 @@ def register_cities_growth_rate_callbacks(app):
             filtered_data['pop_cagr_pct'] = filtered_data['pop_cagr'] * 100
             filtered_data['built_up_cagr_pct'] = filtered_data['built_up_cagr'] * 100
             
-            # Define size categories in order (for legend consistency)
-            size_categories_ordered = [
-                '10 million or more',
-                '5 to 10 million',
-                '1 to 5 million',
-                '500 000 to 1 million',
-                '300 000 to 500 000',
-                'Fewer than 300 000'
-            ]
-            
             # Create figure
             fig = go.Figure()
             
-            # Add scatter traces for each size category
-            for category in size_categories_ordered:
+            # Add scatter traces for each size category (reversed for largest first in legend)
+            for category in reversed(CITY_SIZE_CATEGORIES_ORDERED):
                 category_data = filtered_data[filtered_data['size_category'] == category]
                 
                 if not category_data.empty:

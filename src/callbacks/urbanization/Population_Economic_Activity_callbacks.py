@@ -52,7 +52,7 @@ def register_population_economic_activity_callbacks(app):
             
             # Construct image paths
             project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-            pop_image_path = os.path.join(project_root, 'data', 'processed', 'gdp_pop_raster_images', f'{selected_country}_Population_2020.png')
+            pop_image_path = os.path.join(project_root, 'data', 'processed', 'gdp_pop_raster_images', f'{selected_country}_POP_2020.png')
             gdp_image_path = os.path.join(project_root, 'data', 'processed', 'gdp_pop_raster_images', f'{selected_country}_GDP_2020.png')
             
             # Check if images exist

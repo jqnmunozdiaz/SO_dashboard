@@ -1,6 +1,0 @@
-google-cloud-run
-google-api-core
-google-auth
-requests
-protobuf
-functions-framework

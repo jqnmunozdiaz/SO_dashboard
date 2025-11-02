@@ -32,6 +32,17 @@ CITY_SIZE_COLORS = {
     'Fewer than 300 000': '#95a5a6'        # Gray
 }
 
+# City size categories in order (smallest to largest)
+# Used for consistent ordering across visualizations
+CITY_SIZE_CATEGORIES_ORDERED = [
+    'Fewer than 300 000',
+    '300 000 to 500 000',
+    '500 000 to 1 million',
+    '1 to 5 million',
+    '5 to 10 million',
+    '10 million or more'
+]
+
 def get_disaster_color(disaster_type: str, colors_dict: Dict[str, str] = None) -> str:
     """
     Get color for a specific disaster type

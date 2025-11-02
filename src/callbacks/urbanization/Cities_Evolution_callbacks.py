@@ -10,7 +10,7 @@ from ...utils.data_loader import load_city_size_distribution
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
 from ...utils.component_helpers import create_simple_error_message
 from ...utils.download_helpers import create_simple_download_callback
-from ...utils.color_utils import CITY_SIZE_COLORS
+from ...utils.color_utils import CITY_SIZE_COLORS, CITY_SIZE_CATEGORIES_ORDERED
 from config.settings import CHART_STYLES
 
 def register_cities_evolution_callbacks(app):
@@ -54,16 +54,6 @@ def register_cities_evolution_callbacks(app):
             population_divisor = 1000000 if use_millions else 1
             yaxis_title = 'Urban Population (Millions)' if use_millions else 'Urban Population'
             
-            # Define size categories in order (smallest to largest for bottom-to-top stacking)
-            size_categories_ordered = [
-                'Fewer than 300 000',
-                '300 000 to 500 000',
-                '500 000 to 1 million',
-                '1 to 5 million',
-                '5 to 10 million',
-                '10 million or more'
-            ]
-            
             # Create stacked bar chart - bars ordered by size category for each year
             fig = go.Figure()
                        
@@ -73,7 +63,7 @@ def register_cities_evolution_callbacks(app):
                 
                 # Sort cities by size category for this year, then by population within category
                 cities_by_category_this_year = {}
-                for category in size_categories_ordered:
+                for category in CITY_SIZE_CATEGORIES_ORDERED:
                     category_data = year_data[year_data['Size Category'] == category]
                     # Sort by population (ascending) within this category so largest cities are on top
                     category_data_sorted = category_data.sort_values('Population', ascending=True)
@@ -81,7 +71,7 @@ def register_cities_evolution_callbacks(app):
                     cities_by_category_this_year[category] = cities_in_category
                 
                 # Add bars for this year, ordered by size category (then by population within category)
-                for size_category in size_categories_ordered:
+                for size_category in CITY_SIZE_CATEGORIES_ORDERED:
                     for city_name in cities_by_category_this_year[size_category]:
                         city_data = year_data[year_data['City Name'] == city_name]
                         
@@ -114,7 +104,7 @@ def register_cities_evolution_callbacks(app):
                             ))
             
             # Add invisible traces for legend (one for each size category in order)
-            for category in reversed(size_categories_ordered):
+            for category in reversed(CITY_SIZE_CATEGORIES_ORDERED):
                 fig.add_trace(go.Bar(
                     name=category,
                     x=[None],

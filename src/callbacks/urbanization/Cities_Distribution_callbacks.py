@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 from ...utils.data_loader import load_city_size_distribution
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
 from ...utils.download_helpers import create_simple_download_callback
-from ...utils.color_utils import CITY_SIZE_COLORS
+from ...utils.color_utils import CITY_SIZE_COLORS, CITY_SIZE_CATEGORIES_ORDERED
 from ...utils.component_helpers import create_simple_error_message
 from config.settings import CHART_STYLES
 
@@ -48,16 +48,6 @@ def register_cities_distribution_callbacks(app):
             if filtered_data.empty:
                 raise Exception(f'No data available for {country_name} in {selected_year}')
             
-            # Define size categories in order (for legend display and sorting)
-            size_categories_ordered = [
-                '10 million or more',
-                '5 to 10 million',
-                '1 to 5 million',
-                '500 000 to 1 million',
-                '300 000 to 500 000',
-                'Fewer than 300 000'
-            ]
-            
             # Prepare data for treemap
             filtered_data['Population_Actual'] = filtered_data['Population'] * 1000  # Convert from thousands
             
@@ -65,8 +55,8 @@ def register_cities_distribution_callbacks(app):
             total_pop = filtered_data['Population_Actual'].sum()
             filtered_data['Percentage'] = (filtered_data['Population_Actual'] / total_pop * 100).round(1)
             
-            # Create category order mapping for sorting
-            category_order = {cat: i for i, cat in enumerate(size_categories_ordered)}
+            # Create category order mapping for sorting (largest first for treemap)
+            category_order = {cat: i for i, cat in enumerate(reversed(CITY_SIZE_CATEGORIES_ORDERED))}
             filtered_data['Category_Order'] = filtered_data['Size Category'].map(category_order)
             
             # Sort by category order (largest first), then by population descending within each category
@@ -107,8 +97,8 @@ def register_cities_distribution_callbacks(app):
                 sort=False
             ))
             
-            # Add invisible scatter traces for legend (one per size category)
-            for category in size_categories_ordered:
+            # Add invisible scatter traces for legend (one per size category, largest first)
+            for category in reversed(CITY_SIZE_CATEGORIES_ORDERED):
                 if category in filtered_data['Size Category'].values:
                     fig.add_trace(go.Scatter(
                         x=[None],

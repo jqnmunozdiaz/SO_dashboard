@@ -294,6 +294,7 @@ def create_world_bank_urbanization_tab_content():
                         dbc.Tab(label="Built-up and Population Growth Rate in Cities", tab_id="cities-growth-rate", label_class_name="tab-orange"),
                         dbc.Tab(label="Cities Growth", tab_id="cities-growth", label_class_name="tab-orange"),
                         dbc.Tab(label="Built-up per capita in Cities", tab_id="urban-density", label_class_name="tab-orange"),
+                        dbc.Tab(label="Population & Economic Activity", tab_id="population-economic-activity", label_class_name="tab-orange"),
                     ],
                     id="urbanization-subtabs",
                     active_tab="urban-population-projections",

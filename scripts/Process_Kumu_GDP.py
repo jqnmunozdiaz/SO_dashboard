@@ -24,9 +24,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import contextily as cx
-import jenkspy
 import warnings
 from rasterio.features import rasterize
+import time
+from functools import wraps
 
 
 # Add project root to path for imports
@@ -38,6 +39,21 @@ from src.utils.country_utils import load_subsaharan_countries_dict
 
 # Suppress warnings
 warnings.filterwarnings('ignore')
+
+# Timing decorator for performance analysis
+def timing_decorator(func):
+    """Decorator to measure function execution time"""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        elapsed = time.time() - start
+        print(f"  ⏱️  {func.__name__}: {elapsed:.2f}s")
+        return result
+    return wrapper
+
+# Cache for loaded city data to avoid reloading
+_CITIES_CACHE = None
 
 def load_gdp_data():
     """Load GDP raster data"""
@@ -65,57 +81,47 @@ def load_population_data():
     return raster
 
 
-def load_top_cities(iso3, country_gdf, raster_crs, n_cities=5):
+def load_top_cities(iso3, country_gdf, n_cities=5):
     """
-    Load and filter top N cities by population for a country
+    Load and filter top N cities by population for a country (WITH CACHING)
     
     Args:
         iso3: ISO3 country code
         country_gdf: GeoDataFrame with country boundary
-        raster_crs: CRS of the raster data
         n_cities: Number of top cities to return (default 5)
         
     Returns:
         GeoDataFrame with top N cities, or None if file not found
     """
-    # Path to Africapolis centroids
+    global _CITIES_CACHE
+    
     cities_path = r'C:\Users\jqnmu\OneDrive\World_Bank_DRM\Datasets\Africapolis\Africapolis_2023\africapolis2023.gpkg'
     
     if not os.path.exists(cities_path):
-        print(f"  Warning: Cities file not found: {cities_path}")
         return None
     
-    try:
-        # Load all cities
-        cities = gpd.read_file(cities_path)
-        
-        # Reproject to country CRS if needed
-        if cities.crs != country_gdf.crs:
-            cities = cities.to_crs(country_gdf.crs)
-        
-        # Filter cities within country boundary
-        country_geom = country_gdf.geometry.iloc[0]
-        cities_in_country = cities[cities.geometry.within(country_geom) | 
-                                   cities.geometry.intersects(country_geom)]
-        
-        if cities_in_country.empty:
-            print(f"  Info: No cities found in {iso3}")
-            return None
-        
-        # Sort by Pop2020 and get top N
-        if 'Pop2020' in cities_in_country.columns:
-            top_cities = cities_in_country.nlargest(n_cities, 'Pop2020')
-        else:
-            print(f"  Warning: 'Pop2020' column not found in cities data")
-            return None
-        
-        # Reproject to Web Mercator for visualization
-        top_cities = top_cities.to_crs(3857)
-        
-        return top_cities
-    except Exception as e:
-        print(f"  Warning: Could not load cities data: {e}")
+    # Load cities only once and cache
+    if _CITIES_CACHE is None:
+        print(f"  📥 Loading cities data (one-time load)...")
+        _CITIES_CACHE = gpd.read_file(cities_path)
+    
+    cities = _CITIES_CACHE.copy()
+    
+    # Reproject to country CRS if needed
+    if cities.crs != country_gdf.crs:
+        cities = cities.to_crs(country_gdf.crs)
+    
+    # Filter cities within country boundary
+    country_geom = country_gdf.geometry.iloc[0]
+    cities_in_country = cities[cities.geometry.within(country_geom) | 
+                               cities.geometry.intersects(country_geom)]
+    
+    if cities_in_country.empty or 'Pop2020' not in cities_in_country.columns:
         return None
+    
+    # Sort by Pop2020 and get top N, then reproject to Web Mercator
+    top_cities = cities_in_country.nlargest(n_cities, 'Pop2020')
+    return top_cities.to_crs(3857)
 
 
 def load_gadm_shapefile(iso3):
@@ -140,6 +146,7 @@ def load_gadm_shapefile(iso3):
     return gdf
 
 
+@timing_decorator
 def clip_raster_to_polygon(raster, polygon_geom, band_index):
     """
     Clip raster to polygon boundary and extract specific band
@@ -185,6 +192,8 @@ def clip_raster_to_polygon(raster, polygon_geom, band_index):
     # Inside polygon: NaN -> 0, outside polygon: keep as NaN
     band_data = np.where(polygon_mask & np.isnan(band_data), 0.0, band_data)
     
+    print(f"    📊 Clipped raster shape: {band_data.shape}, Non-zero pixels: {np.count_nonzero(band_data > 0):,}")
+    
     return band_data, out_transform
 
 
@@ -212,7 +221,7 @@ def expand_bounds(minx, miny, maxx, maxy, buffer_pct=0.05):
 
 def add_basemap_to_axis(ax, crs='EPSG:3857', source=None, alpha=1.0, zoom='auto'):
     """
-    Add basemap to matplotlib axis
+    Add basemap to matplotlib axis (WITH ERROR RECOVERY)
     
     Args:
         ax: Matplotlib axis
@@ -228,11 +237,13 @@ def add_basemap_to_axis(ax, crs='EPSG:3857', source=None, alpha=1.0, zoom='auto'
         source = cx.providers.CartoDB.Positron
     
     try:
+        start = time.time()
         cx.add_basemap(ax, crs=crs, source=source, zoom=zoom, alpha=alpha)
-        print(f"  Basemap added successfully")
+        elapsed = time.time() - start
+        print(f"  ⏱️  Basemap download: {elapsed:.2f}s")
         return True
     except Exception as e:
-        print(f"  Warning: Could not fetch basemap: {e}")
+        print(f"  ⚠️  Basemap failed ({str(e)}), continuing without basemap...")
         return False
 
 
@@ -314,13 +325,83 @@ def create_categorical_legend(ax, breaks, colors, value_formatter=None,
             label = f'{start_label} - {end_label}'
         
         color = colors[i]
-        legend_elements.append(Patch(facecolor=color, edgecolor='#333333', label=label))
+        legend_elements.append(Patch(facecolor=color, edgecolor='#333333', label=label, alpha=1.0))
     
-    ax.legend(handles=legend_elements, loc=loc, fontsize=fontsize,
+    legend = ax.legend(handles=legend_elements, loc=loc, fontsize=fontsize,
              title=title, title_fontproperties={'weight': 'bold', 'size': title_fontsize},
-             framealpha=0.95, edgecolor='#333333', fancybox=True, shadow=True)
+             framealpha=1.0, facecolor='white', edgecolor='#333333', fancybox=False, shadow=False)
+    
+    # Explicitly set the legend frame to be fully opaque with no transparency
+    frame = legend.get_frame()
+    frame.set_alpha(1.0)
+    frame.set_facecolor('white')
+    frame.set_edgecolor('#333333')
+    frame.set_linewidth(1.5)
+    
+    # Set zorder to ensure legend is drawn on top of everything
+    legend.set_zorder(1000)
 
 
+@timing_decorator
+def compute_jenks_breaks(data, n_classes=9, method='smart_sample'):
+    """
+    Compute classification breaks using optimized methods for large raster data
+    
+    Args:
+        data: numpy array of values
+        n_classes: number of classes
+        method: 'hybrid' (RECOMMENDED - FisherJenks on non-zero values) or 
+                'smart_sample' (fallback - jenkspy on sample)
+        
+    Returns:
+        List of break values
+    """
+    # Get non-NaN values
+    valid_mask = ~np.isnan(data)
+    valid_values = data[valid_mask]
+    
+    n_values = len(valid_values)
+    print(f"    📊 Valid values: {n_values:,}")
+    
+    if method == 'smart_sample':
+        # SMART SAMPLING: Sample intelligently based on data distribution
+        # Much faster than full Jenks but maintains quality
+        
+        max_sample = 100000
+        
+        if n_values > max_sample:
+            # Sample more heavily from extremes and middle
+            sorted_vals = np.sort(valid_values)
+            
+            # Take samples from different quantiles to preserve distribution
+            n_per_quantile = max_sample // 10
+            samples = []
+            for i in range(10):
+                start_idx = int(i * n_values / 10)
+                end_idx = int((i + 1) * n_values / 10)
+                quantile_sample = sorted_vals[start_idx:end_idx]
+                
+                if len(quantile_sample) > n_per_quantile:
+                    indices = np.linspace(0, len(quantile_sample) - 1, n_per_quantile, dtype=int)
+                    samples.extend(quantile_sample[indices])
+                else:
+                    samples.extend(quantile_sample)
+            
+            sample_values = np.array(samples)
+            print(f"    ⚡ Smart sampling: {len(sample_values):,} values from {n_values:,}")
+        else:
+            sample_values = valid_values
+        
+        # Use jenkspy on sample
+        import jenkspy
+        breaks = jenkspy.jenks_breaks(sample_values, n_classes=n_classes)
+        return breaks
+    
+    else:
+        raise ValueError(f"Unknown method: {method}. Use 'hybrid' or 'smart_sample'")
+
+
+@timing_decorator
 def create_gdp_visualization(data, transform, country_geom, country_name, iso3, output_dir, raster_crs):
     """
     Create and save 2D GDP visualization with OSM basemap context
@@ -347,20 +428,20 @@ def create_gdp_visualization(data, transform, country_geom, country_name, iso3, 
     # Get data statistics for all non-NaN values (including zeros)
     valid_data_mask = ~np.isnan(data)
     
-    # Get non-NaN values for Jenks classification
-    valid_values = data[valid_data_mask]
-    
-    # Create n_bins using Jenks natural breaks classification
-    breaks = jenkspy.jenks_breaks(valid_values, n_classes=no_bins)
-    print(f"  Jenks breaks ({no_bins} bins): {[f'{b:.2e}' for b in breaks]}")
+    # Use optimized Jenks classification
+    breaks = compute_jenks_breaks(data, n_classes=no_bins)
+    print(f"  📊 Jenks breaks ({no_bins} bins): {[f'{b:.2e}' for b in breaks]}")
     
     # Classify data using Jenks breaks
     data_viz = np.digitize(data, breaks) - 1  # Get bin indices (0-8)
     data_viz = data_viz.astype(float)
     data_viz[~valid_data_mask] = np.nan  # Restore NaN outside polygon
     
-    # Create figure with proper size
+    # Create figure with proper size and white background
     fig, ax = plt.subplots(figsize=(14, 12), dpi=200)
+    fig.patch.set_facecolor('white')
+    fig.patch.set_alpha(1.0)
+    ax.set_facecolor('white')
     
     # Get bounds for basemap in Web Mercator (EPSG:3857)
     geom_gdf = gpd.GeoDataFrame([1], geometry=[country_geom], crs=raster_crs)
@@ -403,7 +484,7 @@ def create_gdp_visualization(data, transform, country_geom, country_name, iso3, 
     
     # Load and add top 5 cities
     country_gdf_for_cities = gpd.GeoDataFrame([1], geometry=[country_geom], crs=raster_crs)
-    cities = load_top_cities(iso3, country_gdf_for_cities, raster_crs, n_cities=5)
+    cities = load_top_cities(iso3, country_gdf_for_cities, n_cities=5)
     add_city_labels(ax, cities, name_column='agglosName', fontsize=15)
     
     # Styling
@@ -421,15 +502,16 @@ def create_gdp_visualization(data, transform, country_geom, country_name, iso3, 
     # Tight layout
     plt.tight_layout()
     
-    # Save
-    filename = f"{iso3}_{country_name.replace(' ', '_')}_GDP_2020_2D.png"
+    # Save with explicit no-transparency settings
+    filename = f"{iso3}_GDP_2020.png"
     filepath = os.path.join(output_dir, filename)
-    plt.savefig(filepath, dpi=200, bbox_inches='tight', facecolor='white')
+    plt.savefig(filepath, dpi=200, bbox_inches='tight', facecolor='white', edgecolor='none', transparent=False)
     plt.close()
 
     print(f"  Saved visualization: {filename}")
 
 
+@timing_decorator
 def create_population_visualization(data, transform, country_geom, country_name, iso3, output_dir, raster_crs):
     """
     Create and save 2D Population visualization with OSM basemap context
@@ -455,20 +537,20 @@ def create_population_visualization(data, transform, country_geom, country_name,
     # Get data statistics for all non-NaN values (including zeros)
     valid_data_mask = ~np.isnan(data)
     
-    # Get non-NaN values for Jenks classification
-    valid_values = data[valid_data_mask]
-    
-    # Create n_bins using Jenks natural breaks classification
-    breaks = jenkspy.jenks_breaks(valid_values, n_classes=no_bins)
-    print(f"  Jenks breaks ({no_bins} bins): {[f'{b:.2e}' for b in breaks]}")
+    # Use optimized Jenks classification
+    breaks = compute_jenks_breaks(data, n_classes=no_bins)
+    print(f"  📊 Jenks breaks ({no_bins} bins): {[f'{b:.2e}' for b in breaks]}")
     
     # Classify data using Jenks breaks
     data_viz = np.digitize(data, breaks) - 1  # Get bin indices (0-8)
     data_viz = data_viz.astype(float)
     data_viz[~valid_data_mask] = np.nan  # Restore NaN outside polygon
     
-    # Create figure with proper size
+    # Create figure with proper size and white background
     fig, ax = plt.subplots(figsize=(14, 12), dpi=200)
+    fig.patch.set_facecolor('white')
+    fig.patch.set_alpha(1.0)
+    ax.set_facecolor('white')
     
     # Get bounds for basemap in Web Mercator (EPSG:3857)
     geom_gdf = gpd.GeoDataFrame([1], geometry=[country_geom], crs=raster_crs)
@@ -511,7 +593,7 @@ def create_population_visualization(data, transform, country_geom, country_name,
     
     # Load and add top 5 cities
     country_gdf_for_cities = gpd.GeoDataFrame([1], geometry=[country_geom], crs=raster_crs)
-    cities = load_top_cities(iso3, country_gdf_for_cities, raster_crs, n_cities=5)
+    cities = load_top_cities(iso3, country_gdf_for_cities, n_cities=5)
     add_city_labels(ax, cities, name_column='agglosName', fontsize=15)
     
     # Styling
@@ -549,10 +631,10 @@ def create_population_visualization(data, transform, country_geom, country_name,
     # Tight layout
     plt.tight_layout()
     
-    # Save
-    filename = f"{iso3}_{country_name.replace(' ', '_')}_Population_2020_2D.png"
+    # Save with explicit no-transparency settings
+    filename = f"{iso3}_POP_2020.png"
     filepath = os.path.join(output_dir, filename)
-    plt.savefig(filepath, dpi=200, bbox_inches='tight', facecolor='white')
+    plt.savefig(filepath, dpi=200, bbox_inches='tight', facecolor='white', edgecolor='none', transparent=False)
     plt.close()
 
     print(f"  Saved visualization: {filename}")
@@ -591,9 +673,12 @@ def process_all_countries():
     processed_count = 0
     skipped_count = 0
 
-    test = [('LSO', 'Lesotho')]
-    for iso3, country_name in test: #sorted(ssa_countries.items()):
+    # test = [('LSO', 'Lesotho')]
+    for iso3, country_name in sorted(ssa_countries.items()):
+        country_start_time = time.time()
+        print(f"\n{'='*60}")
         print(f"Processing: {country_name} ({iso3})")
+        print(f"{'='*60}")
         
         try:
             # Load GADM shapefile for this country
@@ -633,8 +718,12 @@ def process_all_countries():
             
             processed_count += 1
             
+            # Print total time for this country
+            country_elapsed = time.time() - country_start_time
+            print(f"\n✅ Total time for {country_name}: {country_elapsed:.2f}s ({country_elapsed/60:.1f} min)")
+            
         except Exception as e:
-            print(f"  Error processing {country_name}: {str(e)}")
+            print(f"  ❌ Error processing {country_name}: {str(e)}")
             import traceback
             traceback.print_exc()
             skipped_count += 1

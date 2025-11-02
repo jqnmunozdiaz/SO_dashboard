@@ -19,6 +19,7 @@ from .urbanization.Cities_Evolution_callbacks import register_cities_evolution_c
 from .urbanization.Urban_Density_callbacks import register_urban_density_callbacks
 from .urbanization.Cities_Growth_Rate_callbacks import register_cities_growth_rate_callbacks
 from .urbanization.Cities_Growth_callbacks import register_cities_growth_callbacks
+from .urbanization.Population_Economic_Activity_callbacks import register_population_economic_activity_callbacks
 from .country_benchmark_callbacks import register_country_benchmark_options_callback, register_combined_benchmark_options_callback
 
 from ..utils.data_loader import load_urbanization_indicators_notes_dict
@@ -42,6 +43,7 @@ def register_callbacks(app):
     register_cities_evolution_callbacks(app)
     register_cities_growth_rate_callbacks(app)
     register_cities_growth_callbacks(app)
+    register_population_economic_activity_callbacks(app)
     
     # Register combined benchmark dropdown callbacks (countries + regions in one dropdown)
     register_combined_benchmark_options_callback(app, 'slums-combined-benchmark-selector', default_regional_codes=['SSA'])
@@ -68,8 +70,8 @@ def register_callbacks(app):
             # Sort countries alphabetically by name
             countries = sorted(countries, key=lambda x: x['name'])
             
-            # For Cities Distribution, Cities Evolution, Cities Growth Rate, and Cities Growth, only show individual countries
-            if urbanization_subtab in ['cities-distribution', 'cities-evolution', 'cities-growth-rate', 'cities-growth']:
+            # For Cities Distribution, Cities Evolution, Cities Growth Rate, Cities Growth, and Population & Economic Activity, only show individual countries
+            if urbanization_subtab in ['cities-distribution', 'cities-evolution', 'cities-growth-rate', 'cities-growth', 'population-economic-activity']:
                 return [{'label': country['name'], 'value': country['code']} for country in countries]
             else:
                 # For other subtabs, include regional aggregates
@@ -436,6 +438,20 @@ def register_callbacks(app):
                         dbc.Button("Close", id="close-city-map-button", className="ml-auto")
                     )
                 ], id="city-map-modal", size="xl", is_open=False)
+            ], className="chart-container")
+        elif active_subtab == 'population-economic-activity':
+            return html.Div([
+                # Title
+                html.Div(id='population-economic-activity-title', className='chart-title'),
+                # Side-by-side images container
+                html.Div(id='population-economic-activity-container'),
+                # Indicator note
+                html.Div([
+                    html.P([html.B("Data Source: "), "Population data from WorldPop 2020, GDP data from Kummu et al. 2025 (", html.A("https://doi.org/10.1038/s41597-025-04487-x", href="https://doi.org/10.1038/s41597-025-04487-x", target="_blank"), ").", html.Br(), html.B("Note:"), " Spatial distribution of population and economic activity (GDP) at 1km resolution for the year 2020. These maps show the concentration of people and economic output across the country."], className="indicator-note"),
+                    html.Div([
+                        create_methodological_note_button()
+                    ], className="buttons-container")
+                ], className="indicator-note-container")
             ], className="chart-container")
         else:
             return html.Div("Select a chart type above")

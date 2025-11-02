@@ -26,7 +26,7 @@ import matplotlib.colors as mcolors
 import contextily as cx
 import jenkspy
 import warnings
-from matplotlib.patches import Patch
+from rasterio.features import rasterize
 
 
 # Add project root to path for imports
@@ -39,13 +39,25 @@ from src.utils.country_utils import load_subsaharan_countries_dict
 # Suppress warnings
 warnings.filterwarnings('ignore')
 
-
 def load_gdp_data():
     """Load GDP raster data"""
     
     # Path to raster file - using high-resolution 30 arcsec raster
     raster_path = os.path.join(project_root, 'data', 'raw', 'GDP_Kummu', 
                                'rast_gdpTot_1990_2020_30arcsec.tif')
+    
+    # Open raster data
+    raster = rasterio.open(raster_path)
+    
+    return raster
+
+
+def load_population_data():
+    """Load population raster data"""
+    
+    # Path to raster file - 1km resolution population data for 2020
+    raster_path = os.path.join(project_root, 'data', 'raw', 'GDP_Kummu', 
+                               'global_pop_2020_CN_1km_R2025A_UA_v1.tif')
     
     # Open raster data
     raster = rasterio.open(raster_path)
@@ -128,72 +140,6 @@ def load_gadm_shapefile(iso3):
     return gdf
 
 
-def get_2020_band_index(raster):
-    """
-    Get the band index for 2020 data
-    
-    Args:
-        raster: Rasterio dataset
-        
-    Returns:
-        Band index for 2020 (1-indexed for rasterio)
-    """
-    # High-resolution raster has bands: 1990, 1995, 2000, 2005, 2010, 2015, 2020
-    # Band 7 is 2020
-    band_index = 7
-    
-    if band_index > raster.count:
-        raise ValueError(f"Band {band_index} exceeds total bands {raster.count}")
-    
-    return band_index
-
-
-def save_clipped_raster(data, transform, raster_crs, iso3, country_name, output_dir):
-    """
-    Save clipped raster as GeoTIFF
-    
-    Args:
-        data: GDP data array (2D)
-        transform: Rasterio affine transform for the clipped raster
-        raster_crs: CRS of the raster data
-        iso3: ISO3 country code
-        country_name: Name of country
-        output_dir: Directory to save raster
-    """
-    raster_filename = f"{iso3}_{country_name.replace(' ', '_')}_GDP_2020.tif"
-    raster_filepath = os.path.join(output_dir, raster_filename)
-    
-    try:
-        # Remove existing file if it exists
-        if os.path.exists(raster_filepath):
-            try:
-                os.remove(raster_filepath)
-            except PermissionError:
-                print(f"  Warning: Could not overwrite {raster_filename} (file may be open)")
-                import time
-                raster_filename = f"{iso3}_{country_name.replace(' ', '_')}_GDP_2020_{int(time.time())}.tif"
-                raster_filepath = os.path.join(output_dir, raster_filename)
-        
-        with rasterio.open(
-            raster_filepath,
-            'w',
-            driver='GTiff',
-            height=data.shape[0],
-            width=data.shape[1],
-            count=1,
-            dtype=data.dtype,
-            crs=raster_crs,
-            transform=transform,
-            nodata=np.nan,
-            compress='lzw'
-        ) as dst:
-            dst.write(data, 1)
-        
-        print(f"  Saved raster: {raster_filename}")
-    except Exception as e:
-        print(f"  Warning: Could not save raster: {e}")
-
-
 def clip_raster_to_polygon(raster, polygon_geom, band_index):
     """
     Clip raster to polygon boundary and extract specific band
@@ -224,8 +170,6 @@ def clip_raster_to_polygon(raster, polygon_geom, band_index):
     # Within the polygon: convert NaN to 0 (missing data becomes 0)
     # Outside the polygon: keep as NaN (for transparency)
     # Create a mask of the polygon interior
-    from rasterio.features import rasterize
-    from rasterio.transform import array_bounds
     
     # Get the shape and create a mask
     height, width = band_data.shape
@@ -316,12 +260,6 @@ def add_city_labels(ax, cities_gdf, name_column='agglosName', fontsize=15,
         # Get city name from specified column or fallback options
         if name_column in row.index:
             city_name = row[name_column]
-        elif 'CITY_NAME' in row.index:
-            city_name = row['CITY_NAME']
-        elif 'NAME' in row.index:
-            city_name = row['NAME']
-        else:
-            city_name = f"City {idx}"
         
         ax.annotate(city_name, xy=(x, y), xytext=(5, 5), 
                    textcoords='offset points',
@@ -492,11 +430,139 @@ def create_gdp_visualization(data, transform, country_geom, country_name, iso3, 
     print(f"  Saved visualization: {filename}")
 
 
+def create_population_visualization(data, transform, country_geom, country_name, iso3, output_dir, raster_crs):
+    """
+    Create and save 2D Population visualization with OSM basemap context
+    
+    Args:
+        data: Population data array (2D)
+        transform: Rasterio affine transform for the clipped raster
+        country_geom: Shapely geometry for country polygon
+        country_name: Name of country
+        iso3: ISO3 code
+        output_dir: Directory to save image
+        raster_crs: CRS of the raster data
+    """
+    # Check if data has any valid values
+    valid_mask = data > 0
+    if not np.any(valid_mask):
+        print(f"  Warning: No valid population data for {country_name}")
+        return
+    
+    # Configuration
+    no_bins = 9
+    
+    # Get data statistics for all non-NaN values (including zeros)
+    valid_data_mask = ~np.isnan(data)
+    
+    # Get non-NaN values for Jenks classification
+    valid_values = data[valid_data_mask]
+    
+    # Create n_bins using Jenks natural breaks classification
+    breaks = jenkspy.jenks_breaks(valid_values, n_classes=no_bins)
+    print(f"  Jenks breaks ({no_bins} bins): {[f'{b:.2e}' for b in breaks]}")
+    
+    # Classify data using Jenks breaks
+    data_viz = np.digitize(data, breaks) - 1  # Get bin indices (0-8)
+    data_viz = data_viz.astype(float)
+    data_viz[~valid_data_mask] = np.nan  # Restore NaN outside polygon
+    
+    # Create figure with proper size
+    fig, ax = plt.subplots(figsize=(14, 12), dpi=200)
+    
+    # Get bounds for basemap in Web Mercator (EPSG:3857)
+    geom_gdf = gpd.GeoDataFrame([1], geometry=[country_geom], crs=raster_crs)
+    geom_web = geom_gdf.to_crs(3857)
+    minx, miny, maxx, maxy = geom_web.total_bounds
+    
+    # Expand bounds to show neighboring countries
+    minx, miny, maxx, maxy = expand_bounds(minx, miny, maxx, maxy, buffer_pct=0.05)
+    
+    # Set axis limits first (required for contextily)
+    ax.set_xlim(minx, maxx)
+    ax.set_ylim(miny, maxy)
+    ax.set_aspect('equal')
+    
+    # Add basemap BEFORE plotting data (so it's underneath)
+    add_basemap_to_axis(ax)
+    
+    # Create custom colormap for n_bins (discrete classification) - same as GDP
+    colors = ['#FFFEF5', '#FFF5C0', '#FFEB8B', '#FFD560', '#FFAF48', 
+              '#F57C56', '#E24952', '#C1254E', '#8B1538']  # 9 colors for up to 9 bins
+    colors = colors[:no_bins]  # Use only as many colors as bins
+    cmap = mcolors.ListedColormap(colors)
+    cmap.set_bad(alpha=0)  # Transparent only for NaN (outside polygon)
+    
+    # Create discrete normalization for n_bins
+    norm = mcolors.BoundaryNorm(boundaries=np.arange(-0.5, no_bins + 0.5, 1), ncolors=no_bins)
+    
+    # Compute extent in Web Mercator for plotting
+    west, south, east, north = transform_bounds(raster_crs, 'EPSG:3857', 
+                                                  *rasterio.transform.array_bounds(
+                                                      data.shape[0], data.shape[1], transform))
+    extent = [west, east, south, north]
+    
+    # Plot Population data with Jenks classification
+    im = ax.imshow(data_viz, extent=extent, origin='upper', 
+                   cmap=cmap, norm=norm, alpha=1, interpolation='none')
+    
+    # Add country boundary
+    geom_web.boundary.plot(ax=ax, color="#4A4A4A", linewidth=2, alpha=1.0, zorder=10)
+    
+    # Load and add top 5 cities
+    country_gdf_for_cities = gpd.GeoDataFrame([1], geometry=[country_geom], crs=raster_crs)
+    cities = load_top_cities(iso3, country_gdf_for_cities, raster_crs, n_cities=5)
+    add_city_labels(ax, cities, name_column='agglosName', fontsize=15)
+    
+    # Styling
+    ax.axis('off')
+    
+    # Custom value formatter for population
+    def population_formatter(start_val, end_val):
+        """Format population values in thousands (K) or millions (M)"""
+        if start_val >= 1e6:
+            start_label = f'{start_val/1e6:.1f}M'
+        elif start_val >= 1e3:
+            start_label = f'{start_val/1e3:.1f}K'
+        else:
+            start_label = f'{start_val:.0f}'
+        
+        if end_val >= 1e6:
+            end_label = f'{end_val/1e6:.1f}M'
+        elif end_val >= 1e3:
+            end_label = f'{end_val/1e3:.1f}K'
+        else:
+            end_label = f'{end_val:.0f}'
+        
+        return f'{start_label} - {end_label}'
+    
+    # Create categorical legend
+    create_categorical_legend(
+        ax, breaks, colors,
+        value_formatter=population_formatter,
+        title='2020 Population',
+        loc='upper left',
+        fontsize=13,
+        title_fontsize=14
+    )
+    
+    # Tight layout
+    plt.tight_layout()
+    
+    # Save
+    filename = f"{iso3}_{country_name.replace(' ', '_')}_Population_2020_2D.png"
+    filepath = os.path.join(output_dir, filename)
+    plt.savefig(filepath, dpi=200, bbox_inches='tight', facecolor='white')
+    plt.close()
+
+    print(f"  Saved visualization: {filename}")
+
+
 def process_all_countries():
     """Main processing function"""
     
     print("=" * 80)
-    print("Processing Kummu GDP Data for Sub-Saharan African Countries")
+    print("Processing GDP and Population Data for Sub-Saharan African Countries")
     print("=" * 80)
     
     # Create output directory
@@ -509,10 +575,13 @@ def process_all_countries():
     print(f"Processing {len(ssa_countries)} Sub-Saharan African countries\n")
     
     # Load GDP raster
-    raster = load_gdp_data()
+    gdp_raster = load_gdp_data()
     
-    # Get 2020 band index
-    band_2020 = get_2020_band_index(raster)
+    # Load Population raster
+    pop_raster = load_population_data()
+    
+    # Get 2020 band index for GDP (population has only 1 band)
+    band_2020 = 7
     
     # Process each country
     print("\n" + "=" * 80)
@@ -523,39 +592,57 @@ def process_all_countries():
     skipped_count = 0
 
     test = [('LSO', 'Lesotho')]
-    for iso3, country_name in test: # sorted(ssa_countries.items())
+    for iso3, country_name in test: #sorted(ssa_countries.items()):
         print(f"Processing: {country_name} ({iso3})")
         
         try:
             # Load GADM shapefile for this country
             country_gdf = load_gadm_shapefile(iso3)
             
-            # Reproject to raster CRS if needed
-            if country_gdf.crs != raster.crs:
-                print(f"  Reprojecting from {country_gdf.crs} to {raster.crs}")
-                country_gdf = country_gdf.to_crs(raster.crs)
+            # === Process GDP Data ===
+            # Reproject to GDP raster CRS if needed
+            gdp_country_gdf = country_gdf.copy()
+            if gdp_country_gdf.crs != gdp_raster.crs:
+                print(f"  Reprojecting GDP from {gdp_country_gdf.crs} to {gdp_raster.crs}")
+                gdp_country_gdf = gdp_country_gdf.to_crs(gdp_raster.crs)
             
-            # Get the geometry (first feature - should be only one for admin level 0)
-            geom = country_gdf.geometry.iloc[0]
+            # Get the geometry
+            gdp_geom = gdp_country_gdf.geometry.iloc[0]
             
-            # Clip raster to country boundary for 2020
-            gdp_data, out_transform = clip_raster_to_polygon(raster, geom, band_2020)
+            # Clip GDP raster to country boundary for 2020
+            gdp_data, gdp_transform = clip_raster_to_polygon(gdp_raster, gdp_geom, band_2020)
+                        
+            # Create GDP visualization
+            create_gdp_visualization(gdp_data, gdp_transform, gdp_geom, country_name, iso3, output_dir, gdp_raster.crs)
             
-            # Save raster
-            save_clipped_raster(gdp_data, out_transform, raster.crs, iso3, country_name, output_dir)
+            # === Process Population Data ===
+            # Reproject to population raster CRS if needed
+            pop_country_gdf = country_gdf.copy()
+            if pop_country_gdf.crs != pop_raster.crs:
+                print(f"  Reprojecting Population from {pop_country_gdf.crs} to {pop_raster.crs}")
+                pop_country_gdf = pop_country_gdf.to_crs(pop_raster.crs)
             
-            # Create visualization
-            create_gdp_visualization(gdp_data, out_transform, geom, country_name, iso3, output_dir, raster.crs)
+            # Get the geometry
+            pop_geom = pop_country_gdf.geometry.iloc[0]
+            
+            # Clip population raster to country boundary (single band, so band_index=1)
+            pop_data, pop_transform = clip_raster_to_polygon(pop_raster, pop_geom, band_index=1)
+            
+            # Create population visualization
+            create_population_visualization(pop_data, pop_transform, pop_geom, country_name, iso3, output_dir, pop_raster.crs)
             
             processed_count += 1
             
         except Exception as e:
             print(f"  Error processing {country_name}: {str(e)}")
+            import traceback
+            traceback.print_exc()
             skipped_count += 1
             continue
     
-    # Close raster
-    raster.close()
+    # Close rasters
+    gdp_raster.close()
+    pop_raster.close()
     
     # Summary
     print("\n" + "=" * 80)

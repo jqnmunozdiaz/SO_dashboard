@@ -100,13 +100,13 @@ def register_population_economic_activity_callbacks(app):
             return html.Div([
                 html.Div([
                     html.Div([
-                        html.H4(f"{country_name} - Population Distribution (2020)", 
-                                style={'textAlign': 'center', 'marginBottom': '1rem', 'color': '#1F2937'}),
+                        html.H6([html.B(country_name), ' | Population Distribution (2020)'], 
+                                className='chart-title'),
                         pop_component
                     ], style={'width': '48%', 'display': 'inline-block', 'verticalAlign': 'top', 'padding': '1rem'}),
                     html.Div([
-                        html.H4(f"{country_name} - GDP Distribution (2020)", 
-                                style={'textAlign': 'center', 'marginBottom': '1rem', 'color': '#1F2937'}),
+                        html.H6([html.B(country_name), ' | GDP Distribution (2020)'], 
+                                className='chart-title'),
                         gdp_component
                     ], style={'width': '48%', 'display': 'inline-block', 'verticalAlign': 'top', 'padding': '1rem'})
                 ], style={'display': 'flex', 'justifyContent': 'space-between', 'gap': '2%'})

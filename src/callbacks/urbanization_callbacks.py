@@ -23,7 +23,7 @@ from .urbanization.Population_Economic_Activity_callbacks import register_popula
 from .country_benchmark_callbacks import register_country_benchmark_options_callback, register_combined_benchmark_options_callback
 
 from ..utils.data_loader import load_urbanization_indicators_notes_dict
-from ..utils.ui_helpers import create_benchmark_selectors, create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
+from ..utils.ui_helpers import create_combined_benchmark_selector, create_download_trigger_button, create_methodological_note_button
 from ..utils.country_utils import get_subsaharan_countries
 
 

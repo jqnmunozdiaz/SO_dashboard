@@ -655,8 +655,8 @@ def process_all_countries():
     processed_count = 0
     skipped_count = 0
 
-    # test = [('LSO', 'Lesotho')]
-    for iso3, country_name in sorted(ssa_countries.items()):
+    test = [('BEN', 'Benin')]
+    for iso3, country_name in test:#sorted(ssa_countries.items()):
         country_start_time = time.time()
         print(f"\n{'='*60}")
         print(f"Processing: {country_name} ({iso3})")

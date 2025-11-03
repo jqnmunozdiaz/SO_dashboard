@@ -197,26 +197,7 @@ def clip_raster_to_polygon(raster, polygon_geom, band_index):
     return band_data, out_transform
 
 
-def expand_bounds(minx, miny, maxx, maxy, buffer_pct=0.05):
-    """
-    Expand geographic bounds by a percentage buffer
-    
-    Args:
-        minx, miny, maxx, maxy: Original bounds
-        buffer_pct: Percentage to expand (default 0.05 = 5%)
-        
-    Returns:
-        Tuple of expanded (minx, miny, maxx, maxy)
-    """
-    width = maxx - minx
-    height = maxy - miny
-    buffer = max(width, height) * buffer_pct
-    return (
-        minx - buffer,
-        miny - buffer,
-        maxx + buffer,
-        maxy + buffer
-    )
+
 
 
 def add_basemap_to_axis(ax, crs='EPSG:3857', source=None, alpha=1.0, zoom='auto'):
@@ -279,8 +260,8 @@ def add_city_labels(ax, cities_gdf, name_column='agglosName', fontsize=15,
 
 
 def create_categorical_legend(ax, breaks, colors, value_formatter=None, 
-                             title='Value Range', loc='upper left', 
-                             fontsize=13, title_fontsize=14):
+                             title='Value Range', loc='lower center', 
+                             fontsize=13, title_fontsize=14, ncol=3, bbox_to_anchor=(0.5, -0.15)):
     """
     Create categorical legend with value ranges
     
@@ -290,9 +271,11 @@ def create_categorical_legend(ax, breaks, colors, value_formatter=None,
         colors: List of colors for each bin
         value_formatter: Function to format values (optional)
         title: Legend title
-        loc: Legend location (default 'upper left')
+        loc: Legend location (default 'lower center')
         fontsize: Font size for labels (default 13)
         title_fontsize: Font size for title (default 14)
+        ncol: Number of columns (default 3)
+        bbox_to_anchor: Position anchor for legend (default (0.5, -0.15))
     """
     from matplotlib.patches import Patch
     
@@ -329,7 +312,8 @@ def create_categorical_legend(ax, breaks, colors, value_formatter=None,
     
     legend = ax.legend(handles=legend_elements, loc=loc, fontsize=fontsize,
              title=title, title_fontproperties={'weight': 'bold', 'size': title_fontsize},
-             framealpha=1.0, facecolor='white', edgecolor='#333333', fancybox=False, shadow=False)
+             framealpha=1.0, facecolor='white', edgecolor='#333333', fancybox=False, shadow=False,
+             ncol=ncol, bbox_to_anchor=bbox_to_anchor, borderaxespad=0)
     
     # Explicitly set the legend frame to be fully opaque with no transparency
     frame = legend.get_frame()
@@ -423,7 +407,7 @@ def create_gdp_visualization(data, transform, country_geom, country_name, iso3, 
         return
     
     # Configuration
-    no_bins = 9
+    no_bins = 8
     
     # Get data statistics for all non-NaN values (including zeros)
     valid_data_mask = ~np.isnan(data)
@@ -448,9 +432,6 @@ def create_gdp_visualization(data, transform, country_geom, country_name, iso3, 
     geom_web = geom_gdf.to_crs(3857)
     minx, miny, maxx, maxy = geom_web.total_bounds
     
-    # Expand bounds to show neighboring countries
-    minx, miny, maxx, maxy = expand_bounds(minx, miny, maxx, maxy, buffer_pct=0.05)
-    
     # Set axis limits first (required for contextily)
     ax.set_xlim(minx, maxx)
     ax.set_ylim(miny, maxy)
@@ -461,7 +442,7 @@ def create_gdp_visualization(data, transform, country_geom, country_name, iso3, 
     
     # Create custom colormap for n_bins (discrete classification)
     colors = ['#FFFEF5', '#FFF5C0', '#FFEB8B', '#FFD560', '#FFAF48', 
-              '#F57C56', '#E24952', '#C1254E', '#8B1538']  # 9 colors for up to 9 bins
+              '#F57C56', '#E24952', '#C1254E', '#8B1538']  # 9 colors for up to 8 bins
     colors = colors[:no_bins]  # Use only as many colors as bins
     cmap = mcolors.ListedColormap(colors)
     cmap.set_bad(alpha=0)  # Transparent only for NaN (outside polygon)
@@ -490,16 +471,18 @@ def create_gdp_visualization(data, transform, country_geom, country_name, iso3, 
     # Styling
     ax.axis('off')
     
-    # Create categorical legend
+    # Create categorical legend (bottom outside, multiple columns)
     create_categorical_legend(
         ax, breaks, colors,
-        title='2020 GDP\n(USD, 2017 PPP)',
-        loc='upper left',
-        fontsize=13,
-        title_fontsize=14
+        title='2020 GDP (USD, 2017 PPP)',
+        loc='lower center',
+        fontsize=11,
+        title_fontsize=13,
+        ncol=4,
+        bbox_to_anchor=(0.5, -0.05)
     )
     
-    # Tight layout
+    # Tight layout with space for legend
     plt.tight_layout()
     
     # Save with explicit no-transparency settings
@@ -532,7 +515,7 @@ def create_population_visualization(data, transform, country_geom, country_name,
         return
     
     # Configuration
-    no_bins = 9
+    no_bins = 8
     
     # Get data statistics for all non-NaN values (including zeros)
     valid_data_mask = ~np.isnan(data)
@@ -557,9 +540,6 @@ def create_population_visualization(data, transform, country_geom, country_name,
     geom_web = geom_gdf.to_crs(3857)
     minx, miny, maxx, maxy = geom_web.total_bounds
     
-    # Expand bounds to show neighboring countries
-    minx, miny, maxx, maxy = expand_bounds(minx, miny, maxx, maxy, buffer_pct=0.05)
-    
     # Set axis limits first (required for contextily)
     ax.set_xlim(minx, maxx)
     ax.set_ylim(miny, maxy)
@@ -570,7 +550,7 @@ def create_population_visualization(data, transform, country_geom, country_name,
     
     # Create custom colormap for n_bins (discrete classification) - same as GDP
     colors = ['#FFFEF5', '#FFF5C0', '#FFEB8B', '#FFD560', '#FFAF48', 
-              '#F57C56', '#E24952', '#C1254E', '#8B1538']  # 9 colors for up to 9 bins
+              '#F57C56', '#E24952', '#C1254E', '#8B1538']  # 9 colors for up to 8 bins
     colors = colors[:no_bins]  # Use only as many colors as bins
     cmap = mcolors.ListedColormap(colors)
     cmap.set_bad(alpha=0)  # Transparent only for NaN (outside polygon)
@@ -618,17 +598,19 @@ def create_population_visualization(data, transform, country_geom, country_name,
         
         return f'{start_label} - {end_label}'
     
-    # Create categorical legend
+    # Create categorical legend (bottom outside, multiple columns)
     create_categorical_legend(
         ax, breaks, colors,
         value_formatter=population_formatter,
         title='2020 Population',
-        loc='upper left',
-        fontsize=13,
-        title_fontsize=14
+        loc='lower center',
+        fontsize=11,
+        title_fontsize=13,
+        ncol=4,
+        bbox_to_anchor=(0.5, -0.05)
     )
     
-    # Tight layout
+    # Tight layout with space for legend
     plt.tight_layout()
     
     # Save with explicit no-transparency settings

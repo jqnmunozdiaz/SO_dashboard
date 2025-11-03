@@ -5,6 +5,7 @@ Main application entry point for the Dash application.
 
 import dash
 import dash_bootstrap_components as dbc
+from flask import redirect, request
 
 from src.layouts.world_bank_layout import create_world_bank_layout
 from src.callbacks import disaster_callbacks, urbanization_callbacks, flood_callbacks, flood_projections_callbacks
@@ -21,6 +22,28 @@ app = dash.Dash(
     assets_folder='assets',
     suppress_callback_exceptions=True
 )
+
+# Add middleware for HTTPS redirect and www to non-www redirect
+@app.server.before_request
+def before_request():
+    """Force HTTPS and redirect www to non-www in production"""
+    import os
+    env = os.environ.get('ENVIRONMENT', '').lower()
+    
+    # Only apply redirects in production
+    if env == 'production':
+        # Get the forwarded protocol (Cloud Run sets this)
+        forwarded_proto = request.headers.get('X-Forwarded-Proto', 'http')
+        host = request.headers.get('Host', '')
+        
+        # Redirect www to non-www
+        if host.startswith('www.'):
+            new_host = host[4:]  # Remove 'www.'
+            return redirect(f'https://{new_host}{request.path}', code=301)
+        
+        # Redirect HTTP to HTTPS
+        if forwarded_proto == 'http':
+            return redirect(f'https://{host}{request.path}', code=301)
 
 # Set the title
 app.title = "Sub-Saharan Africa DRM Dashboard"

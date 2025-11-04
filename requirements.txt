@@ -17,8 +17,14 @@ python-dotenv
 # Data sources and APIs
 requests
 
-# Optional packages (install separately if needed)
+# 3D visualization
+# pydeck
+# rasterio
 # geopandas
+# Pillow
+# selenium  # For automated screenshot export
+
+# Optional packages (install separately if needed)
 # folium
 # shapely
 # scipy

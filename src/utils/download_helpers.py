@@ -6,6 +6,7 @@ Provides reusable utilities for generating CSV downloads from dashboard data
 from dash import dcc, Input, Output
 import io
 import zipfile
+import os
 
 
 def prepare_csv_download(df, filename):
@@ -154,3 +155,31 @@ def create_multi_csv_download_callback(app, download_id, dataframes_dict_loader,
             return None
     
     return download_multi_csv_data
+
+
+def prepare_images_zip_download(image_paths_dict, zip_filename):
+    """
+    Prepare multiple image files for download as a ZIP file
+    
+    Args:
+        image_paths_dict (dict): Dictionary mapping filenames (with extension) to file paths
+        zip_filename (str): Name for the ZIP file without extension
+        
+    Returns:
+        dict: Download data dictionary for dcc.send_bytes
+    """
+    # Create a bytes buffer for the ZIP file
+    zip_buffer = io.BytesIO()
+    
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        for filename, filepath in image_paths_dict.items():
+            # Check if file exists
+            if os.path.exists(filepath):
+                # Read the image file and add to ZIP
+                with open(filepath, 'rb') as img_file:
+                    zip_file.writestr(filename, img_file.read())
+            else:
+                print(f"Warning: Image file not found: {filepath}")
+    
+    zip_buffer.seek(0)
+    return dcc.send_bytes(zip_buffer.getvalue(), f"{zip_filename}.zip")

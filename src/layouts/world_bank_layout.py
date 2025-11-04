@@ -237,6 +237,7 @@ def create_world_bank_layout():
                 create_download_component("cities-growth-rate-download"),
                 create_download_component("cities-growth-download"),
                 create_download_component("urban-density-download"),
+                create_download_component("population-economic-activity-download"),
                 create_download_component("national-flood-exposure-download"),
                 create_download_component("national-flood-exposure-relative-download"),
                 create_download_component("national-flood-exposure-population-download"),

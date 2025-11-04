@@ -9,10 +9,12 @@ import base64
 
 try:
     from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
+    from ...utils.download_helpers import prepare_images_zip_download
 except ImportError:
     import sys
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from src.utils.country_utils import load_subsaharan_countries_and_regions_dict
+    from src.utils.download_helpers import prepare_images_zip_download
 
 
 def load_image_as_base64(image_path):
@@ -118,3 +120,44 @@ def register_population_economic_activity_callbacks(app):
                 html.P(f"Error loading data: {str(e)}",
                        style={'textAlign': 'center', 'color': '#EF4444', 'padding': '2rem'})
             ])
+    
+    @app.callback(
+        Output('population-economic-activity-download', 'data'),
+        [Input('population-economic-activity-download-button', 'n_clicks'),
+         Input('main-country-filter', 'value')],
+        prevent_initial_call=True
+    )
+    def download_population_economic_activity_images(n_clicks, selected_country):
+        """Download both population and GDP images as a ZIP file"""
+        if n_clicks is None or n_clicks == 0:
+            return None
+        
+        try:
+            countries_dict = load_subsaharan_countries_and_regions_dict()
+            
+            if not selected_country:
+                print("No country selected for download")
+                return None
+            
+            # Get country name for filename
+            country_name = countries_dict.get(selected_country, selected_country)
+            
+            # Construct image paths
+            project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+            pop_image_path = os.path.join(project_root, 'data', 'processed', 'gdp_pop_raster_images', f'{selected_country}_POP_2020.png')
+            gdp_image_path = os.path.join(project_root, 'data', 'processed', 'gdp_pop_raster_images', f'{selected_country}_GDP_2020.png')
+            
+            # Prepare images dictionary with descriptive filenames
+            images_dict = {
+                f'{selected_country}_{country_name.replace(" ", "_")}_Population_2020.png': pop_image_path,
+                f'{selected_country}_{country_name.replace(" ", "_")}_GDP_2020.png': gdp_image_path
+            }
+            
+            # Create ZIP filename
+            zip_filename = f'{selected_country}_{country_name.replace(" ", "_")}_Population_GDP_2020'
+            
+            return prepare_images_zip_download(images_dict, zip_filename)
+            
+        except Exception as e:
+            print(f"Error preparing download: {str(e)}")
+            return None

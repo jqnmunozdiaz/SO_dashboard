@@ -1,0 +1,9 @@
+# robots.txt for Sub-Saharan Africa DRM Dashboard
+
+User-agent: *
+Allow: /
+Disallow: /assets/documents/
+Disallow: /_dash-*
+
+# Sitemap
+Sitemap: https://urbanization-risk-dashboard.site/sitemap.xml

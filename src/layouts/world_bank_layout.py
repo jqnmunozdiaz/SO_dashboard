@@ -44,16 +44,16 @@ def create_world_bank_layout():
                         n_clicks=0
                     ),
                     # Placeholder for logos - currently commented out
-                    # html.Img(
-                    #     src="/assets/images/wb-full-logo.png",
-                    #     className="header-logo header-logo-wb",
-                    #     alt="World Bank Logo",
-                    # ),
-                    # html.Img(
-                    #     src="/assets/images/gfdrr-logo.png",
-                    #     className="header-logo",
-                    #     alt="GFDRR Logo",
-                    # ),
+                    html.Img(
+                        src="/assets/images/wb-full-logo.png",
+                        className="header-logo header-logo-wb",
+                        alt="World Bank Logo",
+                    ),
+                    html.Img(
+                        src="/assets/images/gfdrr-logo.png",
+                        className="header-logo",
+                        alt="GFDRR Logo",
+                    ),
                 ], className="header-logos"),
             ], className="header-inner"),
         ], className="header-container"),

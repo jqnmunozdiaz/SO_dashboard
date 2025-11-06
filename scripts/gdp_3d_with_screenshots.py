@@ -41,53 +41,53 @@ WAIT_TIME = 5  # Seconds to wait for map to load
 # Adjust zoom, pitch, bearing, elevation_scale, latitude, longitude, and image dimensions per country as needed
 # If latitude/longitude not specified, will use mean of data points
 COUNTRY_SETTINGS = {
-    'AGO': {'zoom': 5.7, 'pitch': 50, 'bearing': 10, 'elevation_scale': 300, 'width': 1560, 'height': 1080},
-    'BDI': {'zoom': 8, 'pitch': 50, 'bearing': 10, 'elevation_scale': 100, 'width': 1280, 'height': 1080},
-    'BEN': {'zoom': 6.7, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1080, 'height': 1080},
+    # 'AGO': {'zoom': 5.7, 'pitch': 50, 'bearing': 10, 'elevation_scale': 300, 'width': 1560, 'height': 1080},
+    # 'BDI': {'zoom': 8, 'pitch': 50, 'bearing': 10, 'elevation_scale': 100, 'width': 1280, 'height': 1080},
+    # 'BEN': {'zoom': 6.7, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1080, 'height': 1080},
     'BFA': {'zoom': 6.7, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1720, 'height': 1080},
-    'BWA': {'zoom': 6, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1720, 'height': 1080},
-    'CAF': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'CIV': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'CMR': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 100, 'width': 1920, 'height': 1080},
-    'COD': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 300, 'width': 1920, 'height': 1080},
-    'COG': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'COM': {'zoom': 9.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 30, 'width': 1720, 'height': 1080},
-    'CPV': {'zoom': 8.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1720, 'height': 1080},
-    'ERI': {'zoom': 7.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'ETH': {'zoom': 5.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'GAB': {'zoom': 6.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'GHA': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'GIN': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'GMB': {'zoom': 8.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'GNB': {'zoom': 7.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'GNQ': {'zoom': 7.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'KEN': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'LBR': {'zoom': 7.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'LSO': {'zoom': 7.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'MDG': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'MLI': {'zoom': 5.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'MOZ': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'MRT': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'MUS': {'zoom': 9.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'MWI': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'NAM': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'NER': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'NGA': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'RWA': {'zoom': 8.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'SDN': {'zoom': 5.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'SEN': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'SLE': {'zoom': 7.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'SOM': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'SSD': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'STP': {'zoom': 9.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'SWZ': {'zoom': 8.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'TCD': {'zoom': 5.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'TGO': {'zoom': 7.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'TZA': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'UGA': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'ZAF': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'ZMB': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
-    'ZWE': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'BWA': {'zoom': 6, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1720, 'height': 1080},
+    # 'CAF': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'CIV': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'CMR': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 100, 'width': 1920, 'height': 1080},
+    # 'COD': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 300, 'width': 1920, 'height': 1080},
+    # 'COG': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'COM': {'zoom': 9.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 30, 'width': 1720, 'height': 1080},
+    # 'CPV': {'zoom': 8.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1720, 'height': 1080},
+    # 'ERI': {'zoom': 7.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'ETH': {'zoom': 5.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'GAB': {'zoom': 6.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'GHA': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'GIN': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'GMB': {'zoom': 8.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'GNB': {'zoom': 7.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'GNQ': {'zoom': 7.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'KEN': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'LBR': {'zoom': 7.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'LSO': {'zoom': 7.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'MDG': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'MLI': {'zoom': 5.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'MOZ': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'MRT': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'MUS': {'zoom': 9.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'MWI': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'NAM': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'NER': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'NGA': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'RWA': {'zoom': 8.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'SDN': {'zoom': 5.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'SEN': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'SLE': {'zoom': 7.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'SOM': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'SSD': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'STP': {'zoom': 9.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'SWZ': {'zoom': 8.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'TCD': {'zoom': 5.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'TGO': {'zoom': 7.0, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'TZA': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'UGA': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'ZAF': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'ZMB': {'zoom': 5.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
+    # 'ZWE': {'zoom': 6.5, 'pitch': 50, 'bearing': 10, 'elevation_scale': 250, 'width': 1920, 'height': 1080},
 }
 
 COUNTRIES = ['BEN']  # Test with just Benin first
@@ -99,6 +99,18 @@ def load_gdp_data():
                                'rast_gdpTot_1990_2020_30arcsec.tif')
     raster = rasterio.open(raster_path)
     print(f"GDP Raster loaded: {raster.count} bands, CRS: {raster.crs}")
+    return raster
+
+def load_population_data():
+    """Load population raster data"""
+    
+    # Path to raster file - 1km resolution population data for 2020
+    raster_path = os.path.join(project_root, 'data', 'raw', 'GDP_Kummu', 
+                               'global_pop_2020_CN_1km_R2025A_UA_v1.tif')
+    
+    # Open raster data
+    raster = rasterio.open(raster_path)
+    
     return raster
 
 
@@ -142,7 +154,7 @@ def clip_raster_to_polygon(raster, polygon_geom, band_index):
     return band_data, out_transform
 
 
-def raster_to_dataframe(data, transform, downsample=1):
+def raster_to_dataframe(data, transform, downsample=1, data_type='gdp'):
     """Convert raster data to DataFrame with lat/lon coordinates"""
     height, width = data.shape
     
@@ -161,16 +173,18 @@ def raster_to_dataframe(data, transform, downsample=1):
     df = pd.DataFrame({
         'lon': lon,
         'lat': lat,
-        'values': values
+        data_type: values,  # Raw value for tooltip (gdp or population)
+        'values': values  # Will be normalized for visualization
     })
 
     df = df[df['values'].notna()] 
-    df['values'] = df['values'] / df['values'].max()
+    max_val = df['values'].max()
+    df['values'] = df['values'] / max_val
 
-    return df
+    return df, max_val
 
 
-def create_column_visualization(df, country_name, iso3, settings, map_style=MAP_STYLE):
+def create_column_visualization(df, country_name, iso3, settings, map_style=MAP_STYLE, max_val=None, data_type='gdp'):
     """Create 3D column visualization with basemap context"""
     
     # Use custom lat/lon if provided, otherwise use mean of data points
@@ -204,22 +218,27 @@ def create_column_visualization(df, country_name, iso3, settings, map_style=MAP_
         'HexagonLayer',
         data=df,
         get_position='[lon, lat]',
-        get_elevation_weight='values',  # Use GDP value as weight
-        elevation_aggregation='SUM',  # Sum GDP values in each hexagon
-        get_color_weight='values',  # Color also based on GDP
+        get_elevation_weight='values',  # Use raw value as weight for tooltip
+        elevation_aggregation='SUM',  # Sum values in each hexagon
+        get_color_weight='values',  # Color based on normalized values
         color_aggregation='SUM',
-        elevation_scale=settings['elevation_scale'],  # Country-specific height scaling
+        elevation_scale=settings['elevation_scale'], # * max_val,  # Adjust scale for raw values
         radius=1000,  # Hexagon radius in meters
         extruded=True,
         pickable=True,
         auto_highlight=True,
-        color_range=color_range_hexagons
+        color_range=color_range_hexagons,
+        opacity=0.4  # Add transparency to see basemap
     )
     
+    # Capitalize label for tooltip
+    label = data_type.upper() if data_type == 'gdp' else data_type.capitalize()
+    
     deck = pdk.Deck(
-        layers=[column_layer],  # Border layer first (underneath)
+        layers=[column_layer],
         initial_view_state=view_state,
-        map_style=map_style
+        map_style=map_style,
+        tooltip={'html': f'<b>{label}:</b> {{elevationValue }}', 'style': {'color': 'white'}}
     )
     
     return deck
@@ -273,7 +292,9 @@ def main():
     
     ssa_countries = load_subsaharan_countries_dict()
     
+    # Load both GDP and population rasters
     gdp_raster = load_gdp_data()
+    pop_raster = load_population_data()
     
     for iso3 in COUNTRIES:
         country_name = ssa_countries.get(iso3, iso3)
@@ -290,31 +311,46 @@ def main():
             continue
         
         country_gdf = load_gadm_shapefile(iso3)
+        country_geom = country_gdf.geometry.iloc[0]
         
-        gdp_country_gdf = country_gdf.copy()
+        # Process GDP
+        print(f"\n  Processing GDP...")
+        gdp_data, gdp_transform = clip_raster_to_polygon(gdp_raster, country_geom, BAND_INDEX)
+        gdp_df, gdp_max_val = raster_to_dataframe(gdp_data, gdp_transform, data_type='gdp')
+        gdp_deck = create_column_visualization(gdp_df, country_name, iso3, settings, max_val=gdp_max_val, data_type='gdp')
         
-        gdp_geom = gdp_country_gdf.geometry.iloc[0]
+        # Save GDP HTML
+        gdp_html_filename = f'{iso3}_gdp_3d.html'
+        gdp_html_path = os.path.join(html_dir, gdp_html_filename)
+        gdp_deck.to_html(gdp_html_path)
+        print(f"  GDP HTML saved: {gdp_html_path}")
         
-        gdp_data, gdp_transform = clip_raster_to_polygon(gdp_raster, gdp_geom, BAND_INDEX)
-        df = raster_to_dataframe(gdp_data, gdp_transform)
-        deck = create_column_visualization(df, country_name, iso3, settings)
+        # Export GDP to PNG
+        gdp_img_filename = f'{iso3}_GDP_2020.png'
+        gdp_img_path = os.path.join(img_dir, gdp_img_filename)
+        export_to_png_selenium(gdp_html_path, gdp_img_path, width=settings['width'], height=settings['height'])
         
-        # Save HTML
-        html_filename = f'{iso3}_gdp_3d.html'
-        html_path = os.path.join(html_dir, html_filename)
-        deck.to_html(html_path)
-        print(f"  HTML saved: {html_path}")
+        # Process Population
+        print(f"\n  Processing Population...")
+        pop_data, pop_transform = clip_raster_to_polygon(pop_raster, country_geom, 1)  # Population has only 1 band
+        pop_df, pop_max_val = raster_to_dataframe(pop_data, pop_transform, data_type='population')
+        pop_deck = create_column_visualization(pop_df, country_name, iso3, settings, max_val=pop_max_val, data_type='population')
         
-        # Export to PNG using Selenium
-        img_filename = f'{iso3}_GDP_2020.png'
-        img_path = os.path.join(img_dir, img_filename)
+        # Save Population HTML
+        pop_html_filename = f'{iso3}_population_3d.html'
+        pop_html_path = os.path.join(html_dir, pop_html_filename)
+        pop_deck.to_html(pop_html_path)
+        print(f"  Population HTML saved: {pop_html_path}")
         
-        success = export_to_png_selenium(html_path, img_path, width=settings['width'], height=settings['height'])
-        os.remove(html_path)
-        if success:
-            print(f"\n✓ Completed: {country_name}")
+        # Export Population to PNG
+        pop_img_filename = f'{iso3}_Population_2020.png'
+        pop_img_path = os.path.join(img_dir, pop_img_filename)
+        export_to_png_selenium(pop_html_path, pop_img_path, width=settings['width'], height=settings['height'])
+        
+        print(f"\n✓ Completed: {country_name}")
     
     gdp_raster.close()
+    pop_raster.close()
     
 if __name__ == "__main__":
     main()

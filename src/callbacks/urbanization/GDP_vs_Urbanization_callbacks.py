@@ -59,7 +59,7 @@ def register_gdp_vs_urbanization_callbacks(app):
                         name=name,
                         line=dict(color=color, width=3, dash=dash) if dash else dict(color=color, width=3),
                         marker=dict(size=6, color=color),
-                        hovertemplate=f'<b>{name}</b><br>Year: %{{text}}<br>Urbanization Rate: %{{x:.1f}}%<br>GDP per Capita: %{{y:,.0f}} PPP$<extra></extra>',
+                        hovertemplate=f'<b>{name}</b><br>Year: %{{text}}<br>Urbanization Level: %{{x:.1f}}%<br>GDP per Capita: %{{y:,.0f}} PPP$<extra></extra>',
                         text=merged['Year']
                     ) )
             # Main country
@@ -90,15 +90,15 @@ def register_gdp_vs_urbanization_callbacks(app):
                                 name=f"{global_names[region_code]}",
                                 line=dict(color=global_colors[region_code], width=2, dash='dash'),
                                 marker=dict(size=4, color=global_colors[region_code]),
-                                hovertemplate=f'<b>{global_names[region_code]}</b><br>Year: %{{text}}<br>Urbanization Rate: %{{x:.1f}}%<br>GDP per Capita: %{{y:,.0f}} PPP$<extra></extra>',
+                                hovertemplate=f'<b>{global_names[region_code]}</b><br>Year: %{{text}}<br>Urbanization Level: %{{x:.1f}}%<br>GDP per Capita: %{{y:,.0f}} PPP$<extra></extra>',
                                 text=merged_region['Year']
                             ))
             # Create separate title
-            chart_title = html.H6([html.B(title_suffix), ' | GDP per Capita vs Urbanization Rate'], 
+            chart_title = html.H6([html.B(title_suffix), ' | GDP per Capita vs Urbanization Level'], 
                                  className='chart-title')
             
             fig.update_layout(
-                xaxis_title='Urbanization Rate (% of Population)',
+                xaxis_title='Urbanization Level (Share of the population residing in urban areas, %)',
                 yaxis_title='GDP per Capita<br>(PPP, constant 2017 international $)',
                 plot_bgcolor='white',
                 paper_bgcolor='white',

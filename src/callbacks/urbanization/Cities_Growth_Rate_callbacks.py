@@ -1,10 +1,11 @@
 """
 Callbacks for Cities Growth Rate scatterplot visualization
-Shows population growth rate vs built-up area growth rate for cities (2000-2020)
+Shows population growth rate vs built-up area growth rate for cities (2015-2020)
 """
 
 from dash import Input, Output, html
 import plotly.graph_objects as go
+import pandas as pd
 
 from ...utils.data_loader import load_cities_growth_rate
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
@@ -40,8 +41,8 @@ def register_cities_growth_rate_callbacks(app):
                 raise Exception(f"No data available for {countries_dict.get(selected_country, selected_country)}")
             
             # Convert CAGR from decimal to percentage
-            filtered_data['pop_cagr_pct'] = filtered_data['pop_cagr'] * 100
-            filtered_data['built_up_cagr_pct'] = filtered_data['built_up_cagr'] * 100
+            filtered_data['pop_cagr_pct'] = filtered_data['worldpop_pop_cagr_2015_2020'] * 100
+            filtered_data['built_up_cagr_pct'] = filtered_data['worldpop_built_cagr_2015_2020'] * 100
             
             # Create figure
             fig = go.Figure()
@@ -55,13 +56,13 @@ def register_cities_growth_rate_callbacks(app):
                     # Scale from ~4 to ~28 pixels based on population size for better visual distinction
                     min_size = 4
                     max_size = 28
-                    pop_min = filtered_data['pop_2020'].min()
-                    pop_max = filtered_data['pop_2020'].max()
+                    pop_min = filtered_data['africapolis_pop_2020'].min()
+                    pop_max = filtered_data['africapolis_pop_2020'].max()
                     
                     if pop_max > pop_min:
                         # Logarithmic scaling to handle wide range of population sizes
                         sizes = []
-                        for pop in category_data['pop_2020']:
+                        for pop in category_data['africapolis_pop_2020']:
                             # Use log scale, but ensure minimum size for small cities
                             log_size = min_size + (max_size - min_size) * (pop - pop_min) / (pop_max - pop_min)
                             sizes.append(max(min_size, min(max_size, log_size)))
@@ -72,10 +73,9 @@ def register_cities_growth_rate_callbacks(app):
                     hover_texts = []
                     for _, row in category_data.iterrows():
                         hover_texts.append(
-                            f"<b>{row['agglosName']}</b><br>" +
-                            f"Population 2020: {row['pop_2020']:,.0f}<br>" +
-                            f"Population Growth Rate: {row['pop_cagr_pct']:.2f}%<br>" +
-                            f"Built-up Growth Rate: {row['built_up_cagr_pct']:.2f}%<br>" +
+                            f"<b>{row['Agglomeration_Name']}</b><br>" +
+                            f"Population Growth Rate (2015-2020): {row['pop_cagr_pct']:.2f}%<br>" +
+                            f"Built-up Growth Rate (2015-2020): {row['built_up_cagr_pct']:.2f}%<br>" +
                             f"Size Category: {row['size_category']}<br>"
                         )
                     
@@ -117,7 +117,7 @@ def register_cities_growth_rate_callbacks(app):
             country_name = countries_dict.get(selected_country, selected_country)
             
             # Create separate title
-            chart_title = html.H6([html.B(country_name), ' | Built-up and Population Growth Rate in Cities (2000-2020)'], 
+            chart_title = html.H6([html.B(country_name), ' | Built-up and Population Growth Rate in Cities (2015-2020)'], 
                                  className='chart-title')
             
             fig.update_layout(
@@ -170,5 +170,5 @@ def register_cities_growth_rate_callbacks(app):
         app,
         'cities-growth-rate-download',
         lambda: data,
-        'cities_growth_rates_2000_2020'
+        'cities_growth_rates_2015_2020'
     )

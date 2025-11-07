@@ -249,19 +249,40 @@ def load_jmp_sanitation_data() -> pd.DataFrame:
 
 def load_cities_growth_rate() -> pd.DataFrame:
     """
-    Load Africapolis-GHSL2023 city growth rate data (2000-2020)
+    Load agglomeration population and built-up growth rate data (2015-2020)
     
     Returns:
-        DataFrame with columns: ISO3, agglosID, agglosName, pop_2010, pop_2020, pop_cagr, 
-                                built_up_2010, built_up_2020, built_up_cagr, size_category
+        DataFrame with columns: unique_id, ISO3, Country, Agglomeration_Name, 
+                                africapolis_pop_2020, worldpop_pop_cagr_2015_2020, 
+                                worldpop_built_cagr_2015_2020, and size_category
     """
     # Get the absolute path to the project root directory
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.join(current_dir, '..', '..')
-    file_path = os.path.join(project_root, 'data', 'processed', 'africapolis_ghsl2023_cagr_2000_2020.csv')
+    file_path = os.path.join(project_root, 'data', 'processed', 'agglomeration_population_builtup_merged.csv')
     
     try:
         df = pd.read_csv(file_path)
+        
+        # Add size category based on africapolis_pop_2020
+        def categorize_city_size(pop):
+            if pd.isna(pop) or pop == 0:
+                return 'Fewer than 300 000'
+            elif pop >= 10000000:
+                return '10 million or more'
+            elif pop >= 5000000:
+                return '5 to 10 million'
+            elif pop >= 1000000:
+                return '1 to 5 million'
+            elif pop >= 500000:
+                return '500 000 to 1 million'
+            elif pop >= 300000:
+                return '300 000 to 500 000'
+            else:
+                return 'Fewer than 300 000'
+        
+        df['size_category'] = df['africapolis_pop_2020'].apply(categorize_city_size)
+        
         return df
         
     except FileNotFoundError:

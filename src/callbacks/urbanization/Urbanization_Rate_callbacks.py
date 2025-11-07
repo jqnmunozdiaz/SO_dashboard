@@ -1,5 +1,5 @@
 """
-Callbacks for Urbanization Rate visualization
+Callbacks for Urbanization Level visualization
 Shows line chart of urban population percentage over time for selected country with regional benchmarks
 Based on UN DESA World Urbanization Prospects data
 """
@@ -71,7 +71,7 @@ def register_urbanization_rate_callbacks(app):
                             mode='lines',
                             name=country_name,
                             line=dict(color='#295e84', width=3),
-                            hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>',
+                            hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Level: %{{y:.1f}}%<extra></extra>',
                             showlegend=True
                         ))
 
@@ -83,7 +83,7 @@ def register_urbanization_rate_callbacks(app):
                             mode='lines',
                             name=country_name,
                             line=dict(color='#295e84', width=3, dash='dash'),
-                            hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>',
+                            hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Level: %{{y:.1f}}%<extra></extra>',
                             showlegend=False
                         ))
 
@@ -117,7 +117,7 @@ def register_urbanization_rate_callbacks(app):
                                     mode='lines',
                                     name=region_name,
                                     line=dict(color=region_color, width=2),
-                                    hovertemplate=f'<b>{region_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>',
+                                    hovertemplate=f'<b>{region_name}</b><br>Year: %{{x}}<br>Urbanization Level: %{{y:.1f}}%<extra></extra>',
                                     showlegend=True
                                 ))
                             
@@ -129,7 +129,7 @@ def register_urbanization_rate_callbacks(app):
                                     mode='lines',
                                     name=region_name,
                                     line=dict(color=region_color, width=2, dash='dash'),
-                                    hovertemplate=f'<b>{region_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>',
+                                    hovertemplate=f'<b>{region_name}</b><br>Year: %{{x}}<br>Urbanization Level: %{{y:.1f}}%<extra></extra>',
                                     showlegend=False
                                 ))
             
@@ -161,7 +161,7 @@ def register_urbanization_rate_callbacks(app):
                                     name=country_name,
                                     line=dict(color=color, width=2),
                                     marker=dict(size=4, color=color),
-                                    hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>',
+                                    hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Level: %{{y:.1f}}%<extra></extra>',
                                     showlegend=True
                                 ))
                             
@@ -174,12 +174,12 @@ def register_urbanization_rate_callbacks(app):
                                     name=country_name,
                                     line=dict(color=color, width=2, dash='dot'),
                                     marker=dict(size=4, color=color),
-                                    hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Rate: %{{y:.1f}}%<extra></extra>',
+                                    hovertemplate=f'<b>{country_name}</b><br>Year: %{{x}}<br>Urbanization Level: %{{y:.1f}}%<extra></extra>',
                                     showlegend=False
                                 ))
             
             # Create separate title
-            chart_title = html.H6([html.B(title_suffix), ' | Urbanization Rate'], 
+            chart_title = html.H6([html.B(title_suffix), ' | Urbanization Level'], 
                                  className='chart-title')
             
             # Update layout (without title)

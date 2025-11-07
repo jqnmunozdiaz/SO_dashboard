@@ -247,7 +247,7 @@ def load_jmp_sanitation_data() -> pd.DataFrame:
         raise Exception(f"Error loading JMP sanitation data: {str(e)}")
 
 
-def load_cities_growth_rate() -> pd.DataFrame:
+def load_cities_growth_rate(year1, year2) -> pd.DataFrame:
     """
     Load Africapolis-GHSL2023 city growth rate data (2000-2020)
     
@@ -258,8 +258,8 @@ def load_cities_growth_rate() -> pd.DataFrame:
     # Get the absolute path to the project root directory
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.join(current_dir, '..', '..')
-    file_path = os.path.join(project_root, 'data', 'processed', 'africapolis_ghsl2023_cagr_2000_2020.csv')
-    
+    file_path = os.path.join(project_root, 'data', 'processed', f'africapolis_ghsl2023_cagr_{year1}_{year2}.csv')
+
     try:
         df = pd.read_csv(file_path)
         return df

@@ -3,7 +3,7 @@ Callbacks for Population & Economic Activity visualization
 Shows side-by-side raster images of population and GDP distribution
 """
 
-from dash import Input, Output, html
+from dash import Input, Output, State, html
 import os
 import base64
 
@@ -123,8 +123,8 @@ def register_population_economic_activity_callbacks(app):
     
     @app.callback(
         Output('population-economic-activity-download', 'data'),
-        [Input('population-economic-activity-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value')],
+        Input('population-economic-activity-download-button', 'n_clicks'),
+        State('main-country-filter', 'value'),
         prevent_initial_call=True
     )
     def download_population_economic_activity_images(n_clicks, selected_country):

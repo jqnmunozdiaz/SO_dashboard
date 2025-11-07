@@ -46,7 +46,7 @@ df = df.rename(columns={'ghsl_year': 'year','ghsl_total_pop_#': 'pop', 'ghsl_tot
 
 df = df.dropna()
 
-year1 = 2000
+year1 = 2015
 year2 = 2020
 df = df[df['year'].isin([year1, year2])]
 

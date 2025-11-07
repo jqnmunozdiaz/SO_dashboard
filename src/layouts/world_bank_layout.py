@@ -284,7 +284,7 @@ def create_world_bank_urbanization_tab_content():
                 dbc.Tabs(
                     [
                         dbc.Tab(label="Population", tab_id="urban-population-projections", label_class_name="tab-blue"),
-                        dbc.Tab(label="Urbanization Rate", tab_id="urbanization-rate", label_class_name="tab-blue"),
+                        dbc.Tab(label="Urbanization Level", tab_id="urbanization-rate", label_class_name="tab-blue"),
                         dbc.Tab(label="GDP vs Urbanization", tab_id="gdp-vs-urbanization", label_class_name="tab-blue"),
                         dbc.Tab(label="Population Living in Slums", tab_id="urban-population-slums", label_class_name="tab-blue"),
                         dbc.Tab(label="Access to Drinking Water", tab_id="access-to-drinking-water", label_class_name="tab-green"),

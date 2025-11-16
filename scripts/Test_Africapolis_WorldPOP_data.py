@@ -18,7 +18,11 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 africapolis_gpkg = os.path.join(project_root, 'data', 'raw', 'Africapolis_GIS_2024.gpkg')
 agglomeration_csv = os.path.join(project_root, 'data', 'raw', 'data_worldpopg2_fathom3_nov2025', 'agglomeration_population_stats.csv')
 agglomeration_builtup_csv = os.path.join(project_root, 'data', 'raw', 'data_worldpopg2_fathom3_nov2025', 'agglomeration_builtup_stats.csv')
-output_file = os.path.join(project_root, 'data', 'processed', 'africapolis_2020_agglomeration_merged.csv')
+output_file = os.path.join(project_root, 'data', 'processed', 'africapolis_2025_agglomeration_merged.csv')
+
+# Years for comparison
+year1 = 2015
+year2 = 2020
 
 def create_cagr_distribution_plot(df, cagr_column, title_suffix="", output_filename=None):
     """
@@ -136,21 +140,21 @@ agglomeration_builtup_df = pd.read_csv(agglomeration_builtup_csv)
 # Get unique ISO3 codes sorted alphabetically
 countries = sorted(agglomeration_df['ISO3'].unique())
 
-# Step 1: Filter Africapolis for Select_Geometry_Year == 2020
-africapolis_2020 = africapolis_gdf[africapolis_gdf['Select_Geometry_Year'] == 2020].copy()
+# Step 1: Filter Africapolis for Select_Geometry_Year == 2025
+africapolis_year2 = africapolis_gdf[africapolis_gdf['Select_Geometry_Year'] == year2].copy()
 
 # Step 2: Create ID column by concatenating ISO3 and Agglomeration_ID
 required_cols = ['ISO3', 'Agglomeration_ID']
-missing_cols = [col for col in required_cols if col not in africapolis_2020.columns]
+missing_cols = [col for col in required_cols if col not in africapolis_year2.columns]
 
-africapolis_2020 = africapolis_2020[africapolis_2020['ISO3'].isin(countries)].copy()
+africapolis_year2 = africapolis_year2[africapolis_year2['ISO3'].isin(countries)].copy()
 
 # Create the ID column
-africapolis_2020['unique_id'] = africapolis_2020['ISO3'] + '_' + africapolis_2020['Agglomeration_ID'].astype(int).astype(str)
+africapolis_year2['unique_id'] = africapolis_year2['ISO3'] + '_' + africapolis_year2['Agglomeration_ID'].astype(int).astype(str)
 
 # Step 3: Merge with agglomeration data
 merged_df = pd.merge(
-    africapolis_2020,
+    africapolis_year2,
     agglomeration_df,
     on='unique_id',
     how='outer',  # Keep all records from both datasets
@@ -160,7 +164,7 @@ merged_df = pd.merge(
 # Step 4: Merge with builtup data
 merged_df = pd.merge(
     merged_df,
-    agglomeration_builtup_df[['unique_id', 'worldpop_built_cagr_2015_2020']],  # Only merge the builtup CAGR column
+    agglomeration_builtup_df[['unique_id', f'worldpop_built_cagr_{year1}_{year2}']],  # Only merge the builtup CAGR column
     on='unique_id',
     how='left',  # Left join to keep all existing records
     suffixes=('', '_builtup')
@@ -173,40 +177,39 @@ merged_df = merged_df[[
     'Agglomeration_ID',
     'Agglomeration_Name_africapolis',
     'ISO3_africapolis',
-    'Population_2015',
-    'Population_2020',
-    'worldpop_pop_2015',
-    'worldpop_pop_2020',
-    'worldpop_pop_cagr_2015_2020',
-    'worldpop_built_cagr_2015_2020'
+    f'Population_{year1}',
+    f'Population_{year2}',
+    f'worldpop_pop_{year1}',
+    f'worldpop_pop_{year2}',
+    f'worldpop_pop_cagr_{year1}_{year2}',
+    f'worldpop_built_cagr_{year1}_{year2}'
 ]]
 
 # Remove cities where Population_2015 == 0, then rename population columns
-merged_df = merged_df[merged_df['Population_2015'].fillna(0) != 0].copy()
-
-merged_df = merged_df.rename(columns={'Population_2015': 'africapolis_pop_2015', 'Population_2020': 'africapolis_pop_2020'})
+merged_df = merged_df[merged_df[f'Population_{year1}'].fillna(0) != 0].copy()
+merged_df = merged_df.rename(columns={f'Population_{year1}': f'africapolis_pop_{year1}', f'Population_{year2}': f'africapolis_pop_{year2}'})
 
 merged_df.to_csv(output_file, index=False)
 
 df = merged_df
 
 # Ensure numeric types
-df['africapolis_pop_2015'] = pd.to_numeric(df['africapolis_pop_2015'], errors='coerce')
-df['africapolis_pop_2020'] = pd.to_numeric(df['africapolis_pop_2020'], errors='coerce')
+df[f'africapolis_pop_{year1}'] = pd.to_numeric(df[f'africapolis_pop_{year1}'], errors='coerce')
+df[f'africapolis_pop_{year2}'] = pd.to_numeric(df[f'africapolis_pop_{year2}'], errors='coerce')
 
 # Compute 5-year CAGR (2015 -> 2020) safely (as fractional growth, e.g. 0.02 == 2%)
-periods = 5
-valid = (df['africapolis_pop_2015'] > 0) & (df['africapolis_pop_2020'] > 0)
-df.loc[valid, 'africapolis_pop_cagr_2015_2020'] = (
-    (df.loc[valid, 'africapolis_pop_2020'] / df.loc[valid, 'africapolis_pop_2015']) ** (1 / periods) - 1
+periods = year2 - year1
+valid = (df[f'africapolis_pop_{year1}'] > 0) & (df[f'africapolis_pop_{year2}'] > 0)
+df.loc[valid, f'africapolis_pop_cagr_{year1}_{year2}'] = (
+    (df.loc[valid, f'africapolis_pop_{year2}'] / df.loc[valid, f'africapolis_pop_{year1}']) ** (1 / periods) - 1
 )
-df.loc[~valid, 'africapolis_pop_cagr_2015_2020'] = np.nan
+df.loc[~valid, f'africapolis_pop_cagr_{year1}_{year2}'] = np.nan
 
 #%% [Visualization Section]
 # Create visualization for worldpop_pop_cagr_2015_2020
 fig1 = create_cagr_distribution_plot(
     df,
-    'worldpop_pop_cagr_2015_2020',
+    f'worldpop_pop_cagr_{year1}_{year2}',
     title_suffix="(WorldPop Data)",
     output_filename='worldpop_population_cagr_distributions_by_country_with_variability'
 )
@@ -216,7 +219,7 @@ plt.show()
 # Create visualization for africapolis_pop_cagr_2015_2020
 fig2 = create_cagr_distribution_plot(
     df,
-    'africapolis_pop_cagr_2015_2020',
+    f'africapolis_pop_cagr_{year1}_{year2}',
     title_suffix="(Africapolis Data)",
     output_filename='africapolis_population_cagr_distributions_by_country_with_variability'
 )
@@ -226,7 +229,7 @@ plt.show()
 # Create visualization for worldpop_built_cagr_2015_2020
 fig3 = create_cagr_distribution_plot(
     df,
-    'worldpop_built_cagr_2015_2020',
+    f'worldpop_built_cagr_{year1}_{year2}',
     title_suffix="(Built-up Area Growth)",
     output_filename='worldpop_builtup_cagr_distributions_by_country_with_variability'
 )

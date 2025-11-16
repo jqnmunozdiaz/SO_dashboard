@@ -4,6 +4,7 @@ Main application entry point for the Dash application.
 """
 
 import dash
+import time
 import dash_bootstrap_components as dbc
 from flask import redirect, request, send_from_directory
 import os
@@ -13,7 +14,8 @@ from src.callbacks import disaster_callbacks, urbanization_callbacks, flood_call
 from src.callbacks.main_callbacks import register_main_callbacks
 from src.callbacks.contact_callbacks import register_contact_callbacks
 
-# Initialize the Dash app
+# Initialize the Dash app and start timing for cold start measurement
+_startup_t0 = time.time()
 app = dash.Dash(
     __name__,
     external_stylesheets=[
@@ -108,6 +110,10 @@ disaster_callbacks.register_callbacks(app)
 urbanization_callbacks.register_callbacks(app)
 flood_callbacks.register_callbacks(app)
 flood_projections_callbacks.register_callbacks(app)
+
+# Print startup duration (helps estimate Cloud Run cold start time)
+_startup_seconds = time.time() - _startup_t0
+print(f"[startup] App initialization complete in {_startup_seconds:.2f}s")
 
 if __name__ == '__main__':
     import os

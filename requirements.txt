@@ -4,5 +4,4 @@ dash-bootstrap-components
 dash-leaflet
 plotly
 pandas
-numpy
 requests

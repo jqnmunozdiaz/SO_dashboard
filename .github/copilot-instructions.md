@@ -631,10 +631,10 @@ Global regional benchmarks:
 
 ## Deployment Context
 
-- **Render.com**: Uses `render.yaml` with build command `./build.sh`
-- **Heroku**: Uses `Procfile` with `web: python app.py`
-- **Environment Variables**: `PORT` (defaults to 8050), `ENVIRONMENT` (dev/production)
-- **Python Version**: 3.10+ (see `runtime.txt`)
+- **Google Cloud Run**: Built and deployed via Cloud Build using `cloudbuild.yaml` (image caching, dual tagging to `:latest` and `:$COMMIT_SHA`, deploy pinned `:$COMMIT_SHA`).
+- **Service Configuration**: Key settings managed in Cloud Run (region, min/max instances, memory/CPU, concurrency, timeout). App binds to `0.0.0.0` and reads `PORT`.
+- **Environment Variables**: `PORT` (defaults to 8050 when local), `ENVIRONMENT` (dev/production).
+- **Python Version**: 3.10+ (see `runtime.txt`).
 
 ## Dependencies
 

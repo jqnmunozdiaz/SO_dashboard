@@ -38,34 +38,35 @@
 
 ## Production Deployment
 
-### Option 1: Heroku Deployment
+### Option 1: Google Cloud Run (recommended)
 
-1. **Install Heroku CLI** and login:
-   ```bash
-   heroku login
-   ```
+Using Cloud Build trigger:
+- Push to `main`. Cloud Build builds and deploys using `cloudbuild.yaml` (image caching, immutable tag, and Cloud Run deploy are handled automatically).
 
-2. **Create a Procfile:**
-   ```
-   web: python app.py
-   ```
+Manual deploy from local:
+```bash
+PROJECT_ID=wbso-dashboard
+REGION=us-central1
+IMAGE=gcr.io/$PROJECT_ID/so-dashboard
+TAG=$(git rev-parse --short HEAD)
 
-3. **Update app.py for production:**
-   ```python
-   if __name__ == '__main__':
-       app.run_server(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 8050)))
-   ```
+docker build -t $IMAGE:$TAG -t $IMAGE:latest .
+docker push $IMAGE:$TAG
+docker push $IMAGE:latest
 
-4. **Deploy:**
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   heroku create your-app-name
-   git push heroku main
-   ```
+gcloud run deploy so-dashboard \
+  --image=$IMAGE:$TAG \
+  --region=$REGION \
+  --platform=managed \
+  --allow-unauthenticated \
+  --min-instances=0
+```
 
-### Option 2: Docker Deployment
+Notes:
+- Ensure `gcloud auth configure-docker` is set for your registry.
+- Memory/CPU, concurrency, and scaling are managed via Cloud Run service settings.
+
+### Option 2: Docker (generic)
 
 1. **Create Dockerfile:**
    ```dockerfile

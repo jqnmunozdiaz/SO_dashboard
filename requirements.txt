@@ -1,35 +1,8 @@
-# Core Dash dependencies (Python 3.13 compatible)
+# Minimal dependencies to run the dashboard
 dash
 dash-bootstrap-components
 dash-leaflet
 plotly
-
-# Data processing
 pandas
 numpy
-
-# Web framework
-flask
-
-# Configuration management
-python-dotenv
-
-# Data sources and APIs
 requests
-
-# 3D visualization
-# pydeck
-# rasterio
-# geopandas
-# Pillow
-# selenium  # For automated screenshot export
-
-# Optional packages (install separately if needed)
-# folium
-# shapely
-# scipy
-# scikit-learn
-# sqlalchemy
-# pytest
-# black
-# flake8

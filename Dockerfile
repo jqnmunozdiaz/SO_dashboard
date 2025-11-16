@@ -1,20 +1,22 @@
-# Use Python 3.11 to match Render deployment
+# Python 3.11 slim base image
 FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    && rm -rf /var/lib/apt/lists/*
+# No system build tools needed (keeps image small and speeds build)
 
 # Copy requirements first for better caching
 COPY requirements.txt .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Speed up installs and prefer wheels when available
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+RUN pip install --no-cache-dir --prefer-binary -r requirements.txt
 
 # Copy application code
 COPY . .
@@ -23,12 +25,12 @@ COPY . .
 RUN useradd -m -u 1000 dashuser && chown -R dashuser:dashuser /app
 USER dashuser
 
-# Expose port (Fly.io uses PORT env var)
+# Expose app port (Cloud Run sets PORT env var)
 EXPOSE 8080
 
 # Set environment variables
-ENV PYTHONUNBUFFERED=1
 ENV ENVIRONMENT=production
+ENV PORT=8080
 
 # Run the application
 CMD ["python", "app.py"]

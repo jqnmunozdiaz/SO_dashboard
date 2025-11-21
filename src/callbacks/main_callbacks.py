@@ -7,7 +7,9 @@ from src.layouts.world_bank_layout import (
     create_world_bank_disaster_tab_content, 
     create_world_bank_urbanization_tab_content,
     create_world_bank_flood_exposure_tab_content,
-    create_world_bank_flood_projections_tab_content
+    create_world_bank_flood_projections_tab_content,
+    create_dashboard_layout,
+    create_methodological_note_layout
 )
 
 from ..utils.country_utils import load_subsaharan_countries_and_regions_dict
@@ -16,6 +18,17 @@ from ..utils.country_utils import load_subsaharan_countries_and_regions_dict
 def register_main_callbacks(app):
     """Register main navigation callbacks"""
     
+    @app.callback(
+        Output('page-content', 'children'),
+        Input('url', 'pathname')
+    )
+    def display_page(pathname):
+        """Render page content based on URL"""
+        if pathname == '/methodological-note':
+            return create_methodological_note_layout()
+        else:
+            return create_dashboard_layout()
+
     @app.callback(
         Output('dynamic-header-title', 'children'),
         Input('main-country-filter', 'value')

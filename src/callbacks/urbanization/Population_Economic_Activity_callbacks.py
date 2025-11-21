@@ -121,10 +121,11 @@ def register_population_economic_activity_callbacks(app):
                        style={'textAlign': 'center', 'color': '#EF4444', 'padding': '2rem'})
             ])
     
+    # Download callback for population and economic activity images
     @app.callback(
         Output('population-economic-activity-download', 'data'),
-        Input('population-economic-activity-download-button', 'n_clicks'),
-        State('main-country-filter', 'value'),
+        [Input('population-economic-activity-download-button', 'n_clicks'),
+         State('main-country-filter', 'value')],
         prevent_initial_call=True
     )
     def download_population_economic_activity_images(n_clicks, selected_country):

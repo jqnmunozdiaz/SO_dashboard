@@ -38,10 +38,11 @@ This is a **Dash-based dashboard** for analyzing disaster risk management (DRM) 
    - GDP vs Urbanization - scatterplot with country and global benchmarks
    - Cities Distribution - city size distribution analysis
    - Cities Evolution - city growth over time
+   - Population & Economic Activity - side-by-side raster images of population and GDP distribution with ZIP download
 
 3. **Exposure to Flood Hazard** - Fathom3 flood risk analysis with five subtabs:
    - National Flood Exposure - total built-up area exposed to flooding (dynamic exposure/measurement types)
-   - Cities Flood Exposure - flood exposure for major cities over time
+   - Cities Flood Exposure - side-by-side bar charts showing 2020 exposure and 2015-2020 CAGR with interactive map and city selector
 
 4. **Projections of Flood Risk** - Future flood and climate scenarios with two subtabs:
    - Changes in Extreme Precipitation - precipitation return period projections under climate scenarios

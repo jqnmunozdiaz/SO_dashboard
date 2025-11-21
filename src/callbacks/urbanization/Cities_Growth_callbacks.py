@@ -1,6 +1,6 @@
 """
 Callbacks for Cities Growth (Built-up Expansion) visualization
-Shows 2020 absolute values and 2000-2020 CAGR for selected cities
+Shows year2 absolute values and year1-year2 CAGR for selected cities
 """
 
 from dash import Input, Output, State, html
@@ -8,20 +8,44 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import dash_leaflet as dl
 
-from ...utils.data_loader import load_africapolis_ghsl_simple, load_africapolis_centroids
+from ...utils.data_loader import load_africapolis_centroids, load_cities_growth_rate
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
 from ...utils.component_helpers import create_simple_error_message
 from ...utils.download_helpers import create_simple_download_callback
 from config.settings import CHART_STYLES
 
+'''
+KeyError: 'worldpop_built_km2_2025'
+Cities Growth: 
+Population : Africapolis
+built-up: World pop (romain a deja evnoye les donnees, mais dois rajouter worldpop_built_cagr_2015_2020 pour 2020-2025) avec les AOIs actualisees
+
+I use false data for now! worldpop_built_km2_2015	worldpop_built_km2_2020	worldpop_built_cagr_2015_2020
+
+'''
 
 def register_cities_growth_callbacks(app):
     """Register callbacks for Cities Growth chart"""
     
     # Load static data once at registration time for performance
-    data = load_africapolis_ghsl_simple()
+    data_or = load_cities_growth_rate()
+
     centroids_data = load_africapolis_centroids()
     countries_dict = load_subsaharan_countries_and_regions_dict()
+    
+    year1 = 2020
+    year2 = 2025
+    
+    data = data_or.copy()
+    
+    # !!!! FIX THIS
+    data[f'BU_{year1}'] = data[f'worldpop_built_km2_2015'] 
+    data[f'BU_{year2}'] = data[f'worldpop_built_km2_2020']
+    data[f'BU_CAGR_{year1}_{year2}'] = data[f'worldpop_built_cagr_2015_2020'] * 100
+    
+    data[f'POP_{year1}'] = data[f'africapolis_pop_{year1}']
+    data[f'POP_{year2}'] = data[f'africapolis_pop_{year2}']
+    data[f'POP_CAGR_{year1}_{year2}'] = data[f'africapolis_pop_cagr_{year1}_{year2}'] * 100
     
     @app.callback(
         Output('cities-growth-city-selector', 'options'),
@@ -30,7 +54,7 @@ def register_cities_growth_callbacks(app):
         prevent_initial_call=False
     )
     def update_city_options(selected_country):
-        """Populate city dropdown based on selected country, sorted by 2020 population"""
+        """Populate city dropdown based on selected country, sorted by year2 population"""
         try:
             if not selected_country:
                 return [], []
@@ -41,18 +65,18 @@ def register_cities_growth_callbacks(app):
             if country_data.empty:
                 return [], []
             
-            # Sort by 2020 population (descending) for getting top 5
-            country_data_sorted = country_data.sort_values('POP_2020', ascending=False)
+            # Sort by year2 population (descending) for getting top 5
+            country_data_sorted = country_data.sort_values(f'POP_{year2}', ascending=False)
             
             # Create options for all cities sorted alphabetically
-            country_data_alpha = country_data.sort_values('agglosName')
+            country_data_alpha = country_data.sort_values('Agglomeration_Name')
             options = [
-                {'label': row['agglosName'], 'value': row['agglosName']}
+                {'label': row['Agglomeration_Name'], 'value': row['Agglomeration_Name']}
                 for _, row in country_data_alpha.iterrows()
             ]
             
             # Pre-select top 5 cities by population
-            top_5_cities = country_data_sorted.head(5)['agglosName'].tolist()
+            top_5_cities = country_data_sorted.head(5)['Agglomeration_Name'].tolist()
             
             return options, top_5_cities
             
@@ -71,7 +95,7 @@ def register_cities_growth_callbacks(app):
     )
     def generate_cities_growth_chart(selected_country, selected_metric, selected_cities):
         """
-        Generate side-by-side horizontal bar charts showing 2020 values and CAGR
+        Generate side-by-side horizontal bar charts showing year2 values and CAGR
         
         Args:
             selected_country: ISO3 country code
@@ -93,28 +117,28 @@ def register_cities_growth_callbacks(app):
             # Filter for selected country and cities
             filtered_data = data[
                 (data['ISO3'] == selected_country) & 
-                (data['agglosName'].isin(selected_cities))
+                (data['Agglomeration_Name'].isin(selected_cities))
             ].copy()
             
             if filtered_data.empty:
                 raise Exception(f"No data available for selected cities")
             
-            # Sort by 2020 population (descending) to maintain consistent ordering
-            filtered_data = filtered_data.sort_values('POP_2020', ascending=True)
+            # Sort by year2 population (descending) to maintain consistent ordering
+            filtered_data = filtered_data.sort_values(f'POP_{year2}', ascending=True)
             
             # Determine which columns to use based on metric
             if selected_metric == 'BU':
-                col_2020 = 'BU_2020'
-                col_cagr = 'BU_CAGR_2000_2020'
+                col_year2 = f'BU_{year2}'
+                col_cagr = f'BU_CAGR_{year1}_{year2}'
                 metric_name = 'Built-up'
-                unit_2020 = 'km²'
+                unit_year2 = 'km²'
                 unit_cagr = '%'
                 title_suffix = 'Built-up Area'
             else:  # POP
-                col_2020 = 'POP_2020'
-                col_cagr = 'POP_CAGR_2000_2020'
+                col_year2 = f'POP_{year2}'
+                col_cagr = f'POP_CAGR_{year1}_{year2}'
                 metric_name = 'Population'
-                unit_2020 = ''
+                unit_year2 = ''
                 unit_cagr = '%'
                 title_suffix = 'Population'
             
@@ -122,8 +146,8 @@ def register_cities_growth_callbacks(app):
             fig = make_subplots(
                 rows=1, cols=2,
                 subplot_titles=(
-                    f'2020',
-                    f'2000-2020'
+                    f'{year2}',
+                    f'{year1}-{year2}'
                 ),
                 horizontal_spacing=0.15,
                 specs=[[{"type": "bar"}, {"type": "bar"}]]
@@ -132,17 +156,17 @@ def register_cities_growth_callbacks(app):
             # Define orange color for bars
             bar_color = '#e67e22'  # Orange color
             
-            # Left chart: 2020 absolute values
+            # Left chart: year2 absolute values
             fig.add_trace(
                 go.Bar(
-                    y=filtered_data['agglosName'],
-                    x=filtered_data[col_2020],
+                    y=filtered_data['Agglomeration_Name'],
+                    x=filtered_data[col_year2],
                     orientation='h',
                     marker=dict(color=bar_color),
-                    text=filtered_data[col_2020].apply(lambda x: f'{x:.0f}' if selected_metric == 'BU' else f'{x:,.0f}'),
+                    text=filtered_data[col_year2].apply(lambda x: f'{x:.0f}' if selected_metric == 'BU' else f'{x:,.0f}'),
                     textposition='auto',
                     textfont=dict(size=10),
-                    hovertemplate='<b>%{y}</b><br>' + f'{metric_name}: %{{x:,.2f}} {unit_2020}<extra></extra>',
+                    hovertemplate='<b>%{y}</b><br>' + f'{metric_name}: %{{x:,.2f}} {unit_year2}<extra></extra>',
                     showlegend=False
                 ),
                 row=1, col=1
@@ -151,7 +175,7 @@ def register_cities_growth_callbacks(app):
             # Right chart: CAGR values
             fig.add_trace(
                 go.Bar(
-                    y=filtered_data['agglosName'],
+                    y=filtered_data['Agglomeration_Name'],
                     x=filtered_data[col_cagr],
                     orientation='h',
                     marker=dict(color=bar_color),
@@ -184,7 +208,7 @@ def register_cities_growth_callbacks(app):
             
             # Update x-axes
             fig.update_xaxes(
-                title_text=f'Total {metric_name} ({unit_2020})' if unit_2020 else f'Total {metric_name}',
+                title_text=f'Total {metric_name} ({unit_year2})' if unit_year2 else f'Total {metric_name}',
                 showgrid=True,
                 gridcolor='#e5e7eb',
                 row=1, col=1
@@ -253,7 +277,7 @@ def register_cities_growth_callbacks(app):
             # Filter centroids for selected country and cities
             filtered_centroids = centroids_data[
                 (centroids_data['ISO3'] == selected_country) & 
-                (centroids_data['agglosName'].isin(selected_cities))
+                (centroids_data['Agglomeration_Name'].isin(selected_cities))
             ].copy()
             
             if filtered_centroids.empty:
@@ -286,9 +310,9 @@ def register_cities_growth_callbacks(app):
                 marker = dl.Marker(
                     position=[row['Latitude'], row['Longitude']],
                     children=[
-                        dl.Tooltip(row['agglosName']),
+                        dl.Tooltip(row['Agglomeration_Name']),
                         dl.Popup([
-                            html.H6(row['agglosName'], style={'marginBottom': '5px'}),
+                            html.H6(row['Agglomeration_Name'], style={'marginBottom': '5px'}),
                             html.P(f"Country: {countries_dict.get(row['ISO3'], row['ISO3'])}", 
                                    style={'marginBottom': '0px', 'fontSize': '12px'})
                         ])

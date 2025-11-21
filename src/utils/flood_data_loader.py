@@ -97,7 +97,7 @@ def filter_flood_data(df, iso3_code, flood_type=None):
 
 def load_city_flood_exposure_data():
     """
-    Load city-level flood exposure data from africapolis_fathom_ghsl_merged_5citiespercountry.csv
+    Load city-level flood exposure data from agglomeration_population_builtup_merged.csv
     
     Returns:
         DataFrame with city-level flood exposure data including:
@@ -109,7 +109,7 @@ def load_city_flood_exposure_data():
     """
     project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     file_path = os.path.join(project_root, 'data', 'processed', 
-                             'africapolis_fathom_ghsl_merged_5citiespercountry.csv')
+                             'agglomeration_population_builtup_merged.csv')
     
     df = pd.read_csv(file_path)
     return df

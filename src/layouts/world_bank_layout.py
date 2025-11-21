@@ -13,7 +13,7 @@ from src.utils.ui_helpers import (
 import os
 
 
-def create_world_bank_layout():
+def create_dashboard_layout():
     """Create the World Bank-styled main dashboard layout"""
 
     return html.Div([
@@ -256,6 +256,66 @@ def create_world_bank_layout():
     ], className="dashboard-container")
 
 
+def create_methodological_note_layout():
+    """Create the layout for the Methodological Note page"""
+    
+    # Read the markdown file
+    try:
+        with open('assets/documents/Methodological_Note.md', 'r', encoding='utf-8') as f:
+            markdown_content = f.read()
+    except Exception as e:
+        markdown_content = f"# Error Loading Methodological Note\n\nCould not load the file. Error: {str(e)}"
+
+    return html.Div([
+        # Header (Simplified version of the main header)
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.H2(
+                        "Sub-Saharan Africa DRM Dashboard | Methodological Note",
+                        className="header-title",
+                    )
+                ], className="header-title-container"),
+
+                html.Div(className="header-spacer"),
+
+                html.Div([
+                    dcc.Link(
+                        html.Button(
+                            "Back to Dashboard",
+                            className="contact-us-button",
+                        ),
+                        href="/",
+                        style={"text-decoration": "none"}
+                    ),
+                ], className="header-logos"),
+            ], className="header-inner"),
+        ], className="header-container"),
+
+        # Content
+        html.Div([
+            html.Div([
+                dcc.Markdown(
+                    markdown_content,
+                    className="methodological-note-content",
+                    dangerously_allow_html=True
+                )
+            ], className="note-container", style={"maxWidth": "1200px", "margin": "0 auto", "padding": "2rem", "backgroundColor": "white", "borderRadius": "8px", "boxShadow": "0 2px 4px rgba(0,0,0,0.1)"})
+        ], className="main-content", style={"paddingTop": "2rem", "paddingBottom": "4rem", "backgroundColor": "#f8f9fa"}),
+        
+    ], className="dashboard-container")
+
+
+def create_world_bank_layout():
+    """
+    Root layout that handles routing between Dashboard and Methodological Note
+    """
+    return html.Div([
+        dcc.Location(id='url', refresh=False),
+        html.Div(id='page-content')
+    ])
+
+
 def create_world_bank_disaster_tab_content():
     return html.Div([
         html.Div([
@@ -286,15 +346,15 @@ def create_world_bank_urbanization_tab_content():
                         dbc.Tab(label="Population", tab_id="urban-population-projections", label_class_name="tab-blue"),
                         dbc.Tab(label="Urbanization Level", tab_id="urbanization-rate", label_class_name="tab-blue"),
                         dbc.Tab(label="GDP vs Urbanization", tab_id="gdp-vs-urbanization", label_class_name="tab-blue"),
+                        dbc.Tab(label="Built-up per capita", tab_id="urban-density", label_class_name="tab-blue"),
                         dbc.Tab(label="Population Living in Slums", tab_id="urban-population-slums", label_class_name="tab-blue"),
                         dbc.Tab(label="Access to Drinking Water", tab_id="access-to-drinking-water", label_class_name="tab-green"),
                         dbc.Tab(label="Access to Sanitation", tab_id="access-to-sanitation", label_class_name="tab-green"),
                         dbc.Tab(label="Access to Electricity", tab_id="access-to-electricity-urban", label_class_name="tab-green"),
                         dbc.Tab(label="Cities Distribution", tab_id="cities-distribution", label_class_name="tab-orange"),
                         dbc.Tab(label="Cities Evolution", tab_id="cities-evolution", label_class_name="tab-orange"),
-                        dbc.Tab(label="Built-up and Population Growth Rate in Cities", tab_id="cities-growth-rate", label_class_name="tab-orange"),
+                        dbc.Tab(label="Built-up per capita in Cities", tab_id="cities-growth-rate", label_class_name="tab-orange"),
                         dbc.Tab(label="Cities Growth", tab_id="cities-growth", label_class_name="tab-orange"),
-                        dbc.Tab(label="Built-up per capita in Cities", tab_id="urban-density", label_class_name="tab-orange"),
                         dbc.Tab(label="Population & Economic Activity", tab_id="population-economic-activity", label_class_name="tab-orange"),
                     ],
                     id="urbanization-subtabs",

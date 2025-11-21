@@ -3,7 +3,7 @@
 ## Local Development
 
 ### Prerequisites
-- Python 3.8 or higher
+- Python 3.10 or higher
 - Git (optional, for version control)
 
 ### Setup Instructions
@@ -29,7 +29,7 @@
 
 5. **Run the dashboard:**
    ```bash
-   python run.py
+   python app.py
    ```
    Or on Windows: double-click `run.bat`
 
@@ -38,57 +38,11 @@
 
 ## Production Deployment
 
-### Option 1: Google Cloud Run (recommended)
+### Render.com (Recommended)
 
-Using Cloud Build trigger:
-- Push to `main`. Cloud Build builds and deploys using `cloudbuild.yaml` (image caching, immutable tag, and Cloud Run deploy are handled automatically).
+See [RENDER_DEPLOY.md](RENDER_DEPLOY.md) for detailed instructions.
 
-Manual deploy from local:
-```bash
-PROJECT_ID=wbso-dashboard
-REGION=us-central1
-IMAGE=gcr.io/$PROJECT_ID/so-dashboard
-TAG=$(git rev-parse --short HEAD)
-
-docker build -t $IMAGE:$TAG -t $IMAGE:latest .
-docker push $IMAGE:$TAG
-docker push $IMAGE:latest
-
-gcloud run deploy so-dashboard \
-  --image=$IMAGE:$TAG \
-  --region=$REGION \
-  --platform=managed \
-  --allow-unauthenticated \
-  --min-instances=0
-```
-
-Notes:
-- Ensure `gcloud auth configure-docker` is set for your registry.
-- Memory/CPU, concurrency, and scaling are managed via Cloud Run service settings.
-
-### Option 2: Docker (generic)
-
-1. **Create Dockerfile:**
-   ```dockerfile
-   FROM python:3.9-slim
-   
-   WORKDIR /app
-   COPY requirements.txt .
-   RUN pip install -r requirements.txt
-   
-   COPY . .
-   
-   EXPOSE 8050
-   CMD ["python", "app.py"]
-   ```
-
-2. **Build and run:**
-   ```bash
-   docker build -t drm-dashboard .
-   docker run -p 8050:8050 drm-dashboard
-   ```
-
-### Option 3: Server Deployment (Ubuntu/CentOS)
+### Generic Server Deployment (Ubuntu/CentOS)
 
 1. **Install dependencies:**
    ```bash
@@ -118,6 +72,8 @@ Notes:
    WorkingDirectory=/var/www/drm-dashboard
    ExecStart=/var/www/drm-dashboard/venv/bin/python app.py
    Restart=always
+   Environment="PORT=8050"
+   Environment="ENVIRONMENT=production"
    
    [Install]
    WantedBy=multi-user.target
@@ -147,73 +103,25 @@ Notes:
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` and update with your configuration:
+Create a `.env` file or set these in your deployment environment:
 
-```bash
-cp .env.example .env
-```
-
-Edit `.env` with your settings:
-- API keys for data sources
-- Database connection strings
-- Dashboard configuration
+- `ENVIRONMENT`: Set to `production` to disable debug mode.
+- `PORT`: The port the app should listen on (default: 8050).
+- `PYTHON_VERSION`: 3.10.0 or higher.
 
 ## Data Setup
 
-1. **Download sample data:**
-   ```bash
-   python scripts/download_data.py
-   ```
+The dashboard relies on processed data in the `data/processed/` directory. Ensure these files are present in your deployment.
 
-2. **Process data:**
-   ```bash
-   python scripts/data_processing.py
-   ```
-
-3. **Verify data files exist in:**
-   - `data/processed/disasters.csv`
-   - `data/processed/urbanization.csv`
-   - `data/processed/flood_risk.csv`
+1. **EM-DAT Data:** `data/processed/african_disasters_emdat.csv`
+2. **WDI Data:** `data/processed/wdi/*.csv`
+3. **Urban Projections:** `data/processed/UNDESA_Country/*.csv`
+4. **Flood Data:** `data/processed/flood/*.csv`
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Import errors:** Make sure all dependencies are installed
-2. **Data not loading:** Check that processed data files exist
-3. **Port already in use:** Change the port in `app.py` or environment variables
-4. **Memory issues:** Increase server memory for large datasets
-
-### Performance Optimization
-
-1. **Enable caching:**
-   ```python
-   from flask_caching import Cache
-   cache = Cache(app.server, config={'CACHE_TYPE': 'simple'})
-   ```
-
-2. **Optimize data loading:**
-   - Use parquet files instead of CSV for large datasets
-   - Implement data pagination
-   - Add database indexing
-
-3. **Static file serving:**
-   - Use CDN for assets
-   - Enable gzip compression
-   - Optimize images
-
-## Monitoring
-
-Consider adding monitoring with:
-- Application Performance Monitoring (APM) tools
-- Error tracking (Sentry)
-- Log aggregation (ELK stack)
-- Health check endpoints
-
-## Security
-
-1. **HTTPS:** Always use HTTPS in production
-2. **Environment variables:** Never commit sensitive data
-3. **Access control:** Implement authentication if needed
-4. **Input validation:** Sanitize user inputs
-5. **Regular updates:** Keep dependencies updated
+1. **Import errors:** Make sure all dependencies are installed (`pip install -r requirements.txt`).
+2. **Data not loading:** Check that processed data files exist in the correct paths.
+3. **Port already in use:** Change the port in `app.py` or environment variables.

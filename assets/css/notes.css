@@ -37,3 +37,56 @@
     border-radius: 4px;
     line-height: 1.35;
 }
+
+/* Methodological Note Page Styles */
+.methodological-note-content {
+    font-family: 'Open Sans', sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+.methodological-note-content h1 {
+    color: #002244; /* World Bank Blue */
+    border-bottom: 2px solid #009FDA; /* World Bank Light Blue */
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.methodological-note-content h2 {
+    color: #002244;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.methodological-note-content h3 {
+    color: #009FDA;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.2rem;
+}
+
+.methodological-note-content ul {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.methodological-note-content li {
+    margin-bottom: 0.5rem;
+}
+
+.methodological-note-content a {
+    color: #009FDA;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.methodological-note-content a:hover {
+    text-decoration: underline;
+}
+
+.methodological-note-content hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 2rem 0;
+}

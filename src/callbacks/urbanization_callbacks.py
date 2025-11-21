@@ -379,18 +379,18 @@ def register_callbacks(app):
             return html.Div([
                 # Title
                 html.Div(id='cities-growth-title', className='chart-title'),
-                # Deprecation notice
-                # html.Div([
-                #     html.P([
-                #         html.I(className='fas fa-exclamation-triangle', style={'color': '#f39c12', 'margin-right': '8px'}),
-                #         html.B("Note: "),
-                #         "This figure uses an outdated data source and will be updated in November 2025 for consistency with other figures."
-                #     ], style={'background-color': '#fff3cd', 'border-left': '4px solid #f39c12', 'padding': '12px', 'margin-bottom': '16px', 'border-radius': '4px'})
-                # ]),
+                # Note about data update
+                html.Div([
+                    html.P([
+                        html.I(className='fas fa-exclamation-triangle', style={'color': '#f39c12', 'margin-right': '8px'}),
+                        html.B("Note: "),
+                        "This tab will be updated with BU data for 2025."
+                    ], style={'background-color': '#fff3cd', 'border-left': '4px solid #f39c12', 'padding': '12px', 'margin-bottom': '16px', 'border-radius': '4px'})
+                ]),
                 # Metric selector (Built-up vs Population)
                 html.Div([
                     html.Div([
-                        html.Label('Metric: This tab needs to be updated with BU data for 2025', className='filter-label'),
+                        html.Label('Metric:', className='filter-label'),
                         dcc.RadioItems(
                             id='cities-growth-metric-selector',
                             options=[

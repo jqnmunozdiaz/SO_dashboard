@@ -17,7 +17,7 @@ from .urbanization.GDP_vs_Urbanization_callbacks import register_gdp_vs_urbaniza
 from .urbanization.Cities_Distribution_callbacks import register_cities_distribution_callbacks
 from .urbanization.Cities_Evolution_callbacks import register_cities_evolution_callbacks
 from .urbanization.Urban_Density_callbacks import register_urban_density_callbacks
-from .urbanization.Cities_Growth_Rate_callbacks import register_cities_growth_rate_callbacks
+from .urbanization.Cities_builtup_per_capita import register_cities_growth_rate_callbacks
 from .urbanization.Cities_Growth_callbacks import register_cities_growth_callbacks
 from .urbanization.Population_Economic_Activity_callbacks import register_population_economic_activity_callbacks
 from .country_benchmark_callbacks import register_country_benchmark_options_callback, register_combined_benchmark_options_callback
@@ -390,7 +390,7 @@ def register_callbacks(app):
                 # Metric selector (Built-up vs Population)
                 html.Div([
                     html.Div([
-                        html.Label('Metric:', className='filter-label'),
+                        html.Label('Metric: This tab needs to be updated with BU data for 2025', className='filter-label'),
                         dcc.RadioItems(
                             id='cities-growth-metric-selector',
                             options=[

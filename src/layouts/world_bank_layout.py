@@ -13,7 +13,7 @@ from src.utils.ui_helpers import (
 import os
 
 
-def create_world_bank_layout():
+def create_dashboard_layout():
     """Create the World Bank-styled main dashboard layout"""
 
     return html.Div([
@@ -254,6 +254,66 @@ def create_world_bank_layout():
             ], style={"display": "none"}),
         ], className="main-content"),
     ], className="dashboard-container")
+
+
+def create_methodological_note_layout():
+    """Create the layout for the Methodological Note page"""
+    
+    # Read the markdown file
+    try:
+        with open('assets/documents/Methodological_Note.md', 'r', encoding='utf-8') as f:
+            markdown_content = f.read()
+    except Exception as e:
+        markdown_content = f"# Error Loading Methodological Note\n\nCould not load the file. Error: {str(e)}"
+
+    return html.Div([
+        # Header (Simplified version of the main header)
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.H2(
+                        "Sub-Saharan Africa DRM Dashboard | Methodological Note",
+                        className="header-title",
+                    )
+                ], className="header-title-container"),
+
+                html.Div(className="header-spacer"),
+
+                html.Div([
+                    dcc.Link(
+                        html.Button(
+                            "Back to Dashboard",
+                            className="contact-us-button",
+                        ),
+                        href="/",
+                        style={"text-decoration": "none"}
+                    ),
+                ], className="header-logos"),
+            ], className="header-inner"),
+        ], className="header-container"),
+
+        # Content
+        html.Div([
+            html.Div([
+                dcc.Markdown(
+                    markdown_content,
+                    className="methodological-note-content",
+                    dangerously_allow_html=True
+                )
+            ], className="note-container", style={"maxWidth": "1200px", "margin": "0 auto", "padding": "2rem", "backgroundColor": "white", "borderRadius": "8px", "boxShadow": "0 2px 4px rgba(0,0,0,0.1)"})
+        ], className="main-content", style={"paddingTop": "2rem", "paddingBottom": "4rem", "backgroundColor": "#f8f9fa"}),
+        
+    ], className="dashboard-container")
+
+
+def create_world_bank_layout():
+    """
+    Root layout that handles routing between Dashboard and Methodological Note
+    """
+    return html.Div([
+        dcc.Location(id='url', refresh=False),
+        html.Div(id='page-content')
+    ])
 
 
 def create_world_bank_disaster_tab_content():

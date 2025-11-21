@@ -1,20 +1,20 @@
 """
 Callbacks for Cities Flood Exposure visualization
-Multi-line chart showing flood exposure at city level for all cities across SSA
+Side-by-side bar charts showing 2020 flood exposure and 2015-2020 CAGR for cities
 """
 
 from dash import Input, Output, State, html
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import dash_leaflet as dl
+import pandas as pd
 
 from ...utils.flood_data_loader import load_city_flood_exposure_data
-from ...utils.flood_ui_helpers import get_city_colors
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
 from ...utils.component_helpers import create_simple_error_message
 from ...utils.download_helpers import create_simple_download_callback
 from ...utils.data_loader import load_africapolis_centroids
 from config.settings import CHART_STYLES
-
 
 def register_cities_flood_exposure_callbacks(app):
     """Register callbacks for Cities Flood Exposure chart"""
@@ -22,7 +22,43 @@ def register_cities_flood_exposure_callbacks(app):
     # Load static data once at registration time for performance
     data = load_city_flood_exposure_data()
     countries_dict = load_subsaharan_countries_and_regions_dict()
-    city_colors = get_city_colors()
+    
+    @app.callback(
+        Output('cities-flood-exposure-city-selector', 'options'),
+        Output('cities-flood-exposure-city-selector', 'value'),
+        Input('main-country-filter', 'value'),
+        prevent_initial_call=False
+    )
+    def update_city_options(selected_country):
+        """Populate city dropdown based on selected country, sorted by 2020 population"""
+        try:
+            if not selected_country:
+                return [], []
+            
+            # Filter for selected country
+            country_data = data[data['ISO3'] == selected_country].copy()
+            
+            if country_data.empty:
+                return [], []
+            
+            # Sort by 2020 population (descending) for getting top 5
+            country_data_sorted = country_data.sort_values('africapolis_pop_2020', ascending=False)
+            
+            # Create options for all cities sorted alphabetically
+            country_data_alpha = country_data.sort_values('Agglomeration_Name')
+            options = [
+                {'label': row['Agglomeration_Name'], 'value': row['Agglomeration_Name']}
+                for _, row in country_data_alpha.iterrows()
+            ]
+            
+            # Pre-select top 5 cities by population
+            top_5_cities = country_data_sorted.head(5)['Agglomeration_Name'].tolist()
+            
+            return options, top_5_cities
+            
+        except Exception as e:
+            print(f"Error updating city options: {str(e)}")
+            return [], []
     
     @app.callback(
         [Output('cities-flood-exposure-chart', 'figure'),
@@ -31,162 +67,212 @@ def register_cities_flood_exposure_callbacks(app):
         [Input('main-country-filter', 'value'),
          Input('cities-flood-return-period-selector', 'value'),
          Input('cities-flood-exposure-type-selector', 'value'),
-         Input('cities-flood-measurement-type-selector', 'value')],
+         Input('cities-flood-measurement-type-selector', 'value'),
+         Input('cities-flood-exposure-city-selector', 'value')],
         prevent_initial_call=False
     )
-    def generate_cities_flood_exposure_chart(selected_country, return_period, exposure_type, measurement_type):
+    def generate_cities_flood_exposure_chart(selected_country, return_period, exposure_type, measurement_type, selected_cities):
         """
-        Generate multi-line chart showing flood exposure over time for all cities in selected country
+        Generate side-by-side horizontal bar charts showing 2020 flood exposure and 2015-2020 CAGR
         
         Args:
             selected_country: ISO3 country code
-            return_period: Return period ('1in5', '1in10', '1in100')
-            exposure_type: 'built_s' (built-up area) or 'pop' (population)
+            return_period: Return period ('10' or '100')
+            exposure_type: 'pop' (population) or 'built' (built-up area)
             measurement_type: 'absolute' or 'relative'
+            selected_cities: List of selected city names
             
         Returns:
-            Plotly figure object
+            Plotly figure with two subplots
         """
         try:
             # Set defaults
-            return_period = return_period or '1in100'
-            exposure_type = exposure_type or 'built_s'
+            return_period = return_period or '100'
+            exposure_type = exposure_type or 'built'
             measurement_type = measurement_type or 'absolute'
             
             # Handle no country selected
             if not selected_country:
                 raise Exception("No country selected")
             
-            # Filter data for selected country
-            country_data = data[data['ISO3'] == selected_country].copy()
+            # Handle no cities selected
+            if not selected_cities or len(selected_cities) == 0:
+                raise Exception("Please select at least one city from the dropdown")
             
-            if country_data.empty:
-                raise Exception(f"No city flood exposure data available for selected country")
+            # Filter data for selected country and cities
+            filtered_data = data[
+                (data['ISO3'] == selected_country) & 
+                (data['Agglomeration_Name'].isin(selected_cities))
+            ].copy()
+            
+            if filtered_data.empty:
+                raise Exception(f"No data available for selected cities")
+            
+            # Sort by 2020 population (ascending for horizontal bars - largest at top)
+            filtered_data = filtered_data.sort_values('africapolis_pop_2020', ascending=True)
             
             # Get country name for title
             country_name = countries_dict.get(selected_country, selected_country)
             
-            # Determine which column to plot based on exposure type, measurement type, and return period
-            if exposure_type == 'built_s':
+            # Determine column names and labels based on exposure type and measurement type
+            if exposure_type == 'pop':
+                col_2020 = f'pop_ftm3_fluvial_pluvial_flood_rp{return_period}_2020'
+                col_cagr = f'pop_ftm3_fluvial_pluvial_flood_rp{return_period}_cagr_2015_2020'
+                col_total = 'africapolis_pop_2020'
+                metric_name = 'Population'
+                
                 if measurement_type == 'absolute':
-                    column_map = {
-                        '1in5': 'BU_1in5',
-                        '1in10': 'BU_1in10',
-                        '1in100': 'BU_1in100'
-                    }
-                    yaxis_title = 'Built-up Area Exposed (km²)'
-                    chart_title_suffix = 'Built-up Area'
+                    unit_2020 = ''
+                    title_suffix = 'Population Exposed to Floods'
                 else:  # relative
-                    column_map = {
-                        '1in5': 'BU_1in5_pct',
-                        '1in10': 'BU_1in10_pct',
-                        '1in100': 'BU_1in100_pct'
-                    }
-                    yaxis_title = 'Built-up Area Exposed (%)'
-                    chart_title_suffix = 'Built-up Area (%)'
-            else:  # pop
+                    unit_2020 = '%'
+                    title_suffix = 'Population Exposed to Floods (%)'
+            else:  # built
+                col_2020 = f'built_ftm3_fluvial_pluvial_flood_rp{return_period}_2020'
+                col_cagr = f'built_ftm3_fluvial_pluvial_flood_rp{return_period}_cagr_2015_2020'
+                col_total = 'worldpop_built_km2_2020'
+                metric_name = 'Built-up Area'
+                
                 if measurement_type == 'absolute':
-                    column_map = {
-                        '1in5': 'POP_1in5',
-                        '1in10': 'POP_1in10',
-                        '1in100': 'POP_1in100'
-                    }
-                    yaxis_title = 'Population Exposed'
-                    chart_title_suffix = 'Population'
+                    unit_2020 = 'km²'
+                    title_suffix = 'Built-up Area Exposed to Floods'
                 else:  # relative
-                    column_map = {
-                        '1in5': 'POP_1in5_pct',
-                        '1in10': 'POP_1in10_pct',
-                        '1in100': 'POP_1in100_pct'
-                    }
-                    yaxis_title = 'Population Exposed (%)'
-                    chart_title_suffix = 'Population (%)'
+                    unit_2020 = '%'
+                    title_suffix = 'Built-up Area Exposed to Floods (%)'
             
-            value_column = column_map[return_period]
+            # Check if columns exist
+            if col_2020 not in filtered_data.columns or col_cagr not in filtered_data.columns:
+                raise Exception(f"Data not available for selected flood type and return period")
             
-            # Return period labels for subtitle
-            return_period_labels = {
-                '1in5': '1-in-5 year',
-                '1in10': '1-in-10 year',
-                '1in100': '1-in-100 year'
-            }
+            # Calculate values for left chart
+            if measurement_type == 'relative':
+                # Calculate percentage: (exposed / total) * 100
+                filtered_data['left_values'] = (filtered_data[col_2020] / filtered_data[col_total]) * 100
+            else:
+                # Use absolute values
+                filtered_data['left_values'] = filtered_data[col_2020]
             
-            # Create figure
-            fig = go.Figure()
+            # CAGR values (convert from decimal to percentage)
+            filtered_data['cagr_values'] = filtered_data[col_cagr] * 100
             
-            # Get unique cities and assign colors
-            cities = country_data.sort_values('Agglomeration_Name')['Agglomeration_Name'].unique()
+            # Handle missing CAGR values
+            filtered_data['cagr_display'] = filtered_data['cagr_values'].apply(
+                lambda x: 'N/A' if pd.isna(x) else f'{x:.1f}%'
+            )
             
-            # Add line for each city
-            for idx, city_name in enumerate(cities):
-                city_data = country_data[country_data['Agglomeration_Name'] == city_name].sort_values('ghsl_year')
-                
-                # Use modulo to cycle through colors if more than 10 cities
-                color = city_colors[idx % len(city_colors)]
-                
-                # Format hover template based on measurement type
-                if measurement_type == 'absolute':
-                    if exposure_type == 'built_s':
-                        hover_template = f'<b>{city_name}</b><br>Built-up Area: %{{y:.2f}} km²<extra></extra>'
-                    else:
-                        hover_template = f'<b>{city_name}</b><br>Population: %{{y:,.0f}}<extra></extra>'
-                else:
-                    hover_template = f'<b>{city_name}</b><br>Percentage: %{{y:.2f}}%<extra></extra>'
-                
-                fig.add_trace(go.Scatter(
-                    x=city_data['ghsl_year'],
-                    y=city_data[value_column],
-                    mode='lines+markers',
-                    name=city_name,
-                    line=dict(color=color, width=2.5),
-                    marker=dict(size=8),
-                    hovertemplate=hover_template
-                ))
+            # Create subplots: 2 columns, 1 row
+            fig = make_subplots(
+                rows=1, cols=2,
+                subplot_titles=(
+                    f'2020',
+                    f'2015-2020'
+                ),
+                horizontal_spacing=0.15,
+                specs=[[{"type": "bar"}, {"type": "bar"}]]
+            )
             
-            # Create separate title
-            title_text = html.H6([html.B(country_name), f' | Cities Flood Exposure - {chart_title_suffix}'], 
-                                className='chart-title')
+            # Define orange color for bars
+            bar_color = '#e67e22'  # Orange color
+            
+            # Left chart: 2020 absolute or relative values
+            if measurement_type == 'absolute':
+                if exposure_type == 'pop':
+                    text_format = filtered_data['left_values'].apply(lambda x: f'{x:,.0f}')
+                    hover_template = '<b>%{y}</b><br>' + f'{metric_name}: %{{x:,.0f}} {unit_2020}<extra></extra>'
+                else:  # built
+                    text_format = filtered_data['left_values'].apply(lambda x: f'{x:.2f}')
+                    hover_template = '<b>%{y}</b><br>' + f'{metric_name}: %{{x:.2f}} {unit_2020}<extra></extra>'
+            else:  # relative
+                text_format = filtered_data['left_values'].apply(lambda x: f'{x:.1f}%')
+                hover_template = '<b>%{y}</b><br>' + f'{metric_name}: %{{x:.1f}}{unit_2020}<extra></extra>'
+            
+            fig.add_trace(
+                go.Bar(
+                    y=filtered_data['Agglomeration_Name'],
+                    x=filtered_data['left_values'],
+                    orientation='h',
+                    marker=dict(color=bar_color),
+                    text=text_format,
+                    textposition='auto',
+                    textfont=dict(size=10),
+                    hovertemplate=hover_template,
+                    showlegend=False
+                ),
+                row=1, col=1
+            )
+            
+            # Right chart: CAGR values
+            # Filter out N/A values for plotting, but show them in hover
+            cagr_x_values = filtered_data['cagr_values'].fillna(0)  # Replace NaN with 0 for plotting
+            
+            fig.add_trace(
+                go.Bar(
+                    y=filtered_data['Agglomeration_Name'],
+                    x=cagr_x_values,
+                    orientation='h',
+                    marker=dict(color=bar_color),
+                    text=filtered_data['cagr_display'],
+                    textposition='auto',
+                    textfont=dict(size=10),
+                    hovertemplate='<b>%{y}</b><br>Annual growth rate: %{text}<extra></extra>',
+                    showlegend=False
+                ),
+                row=1, col=2
+            )
+            
+            # Create title separately
+            chart_title = html.H6([
+                html.B(country_name),
+                f' | {title_suffix}'
+            ], className='chart-title')
             
             # Update layout
             fig.update_layout(
-                xaxis_title='Year',
-                yaxis_title=yaxis_title,
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
-                hovermode='x unified',
-                legend=dict(
-                    title='City',
-                    orientation='v',
-                    yanchor='top',
-                    y=1,
-                    xanchor='left',
-                    x=1.02,
-                    bgcolor='rgba(255, 255, 255, 0.8)',
-                    bordercolor='#e5e7eb',
-                    borderwidth=0
-                ),
-                margin=dict(t=40, b=0, l=80, r=150),
-                xaxis=dict(
-                    showgrid=True,
-                    gridwidth=1,
-                    gridcolor='#e5e7eb',
-                    dtick=5  # Show every 5 years
-                ),
-                yaxis=dict(
-                    showgrid=True,
-                    gridwidth=1,
-                    gridcolor='#e5e7eb',
-                    rangemode='tozero',
-                    zeroline=True,
-                    zerolinewidth=1,
-                    zerolinecolor='#e5e7eb',
-                    # tickformat='.2f' if measurement_type == 'relative' else None,
-                    ticksuffix='%' if measurement_type == 'relative' else None
-                )
+                height=max(400, len(selected_cities) * 60),  # Dynamic height based on number of cities
+                showlegend=False,
+                margin=dict(l=150, r=150, t=0, b=50)
             )
             
-            return fig, {'display': 'block'}, title_text
+            # Update x-axes
+            if measurement_type == 'absolute':
+                left_title = f'{metric_name} Exposed ({unit_2020})' if unit_2020 else f'{metric_name} Exposed'
+            else:
+                left_title = f'{metric_name} Exposed (%)'
+            
+            fig.update_xaxes(
+                title_text=left_title,
+                showgrid=True,
+                gridcolor='#e5e7eb',
+                ticksuffix='%' if measurement_type == 'relative' else None,
+                row=1, col=1
+            )
+            
+            fig.update_xaxes(
+                title_text='Annual Growth Rate (%)',
+                showgrid=True,
+                gridcolor='#e5e7eb',
+                ticksuffix='%',
+                row=1, col=2
+            )
+            
+            # Update y-axes (hide y-axis titles, keep labels)
+            fig.update_yaxes(
+                title_text='',
+                showgrid=False,
+                row=1, col=1
+            )
+            
+            fig.update_yaxes(
+                title_text='',
+                showgrid=False,
+                showticklabels=False,  # Hide labels on right chart since they're duplicated
+                row=1, col=2
+            )
+            
+            return fig, {'display': 'block'}, chart_title
             
         except Exception as e:
             fig, style = create_simple_error_message(str(e))
@@ -214,28 +300,32 @@ def register_cities_flood_exposure_callbacks(app):
     @app.callback(
         Output('cities-flood-map-container', 'children'),
         [Input('cities-flood-map-modal', 'is_open'),
-         Input('main-country-filter', 'value')],
+         Input('main-country-filter', 'value'),
+         Input('cities-flood-exposure-city-selector', 'value')],
         prevent_initial_call=True
     )
-    def update_cities_flood_map(is_open, selected_country):
-        """Generate Leaflet map showing locations of all cities in the chart"""
-        if not is_open or not selected_country:
+    def update_cities_flood_map(is_open, selected_country, selected_cities):
+        """Generate Leaflet map showing locations of selected cities"""
+        if not is_open or not selected_country or not selected_cities:
             return []
         
         try:
             # Load centroids data
             centroids = load_africapolis_centroids()
             
-            # Filter data for cities in the selected country
-            country_data = data[data['ISO3'] == selected_country].copy()
+            # Filter data for selected cities only
+            country_data = data[
+                (data['ISO3'] == selected_country) & 
+                (data['Agglomeration_Name'].isin(selected_cities))
+            ].copy()
             
             if country_data.empty:
                 return []
             
-            # Get unique city names (Agglomeration_Name)
+            # Get unique city names from selected cities
             city_names = country_data['Agglomeration_Name'].unique()
             
-            # Filter centroids for these cities
+            # Filter centroids for these selected cities
             city_centroids = centroids[centroids['Agglomeration_Name'].isin(city_names)].copy()
             
             if city_centroids.empty:

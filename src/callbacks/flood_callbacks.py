@@ -174,11 +174,11 @@ def register_callbacks(app):
     def create_cities_flood_exposure_tab_content():
         """Helper function to create cities flood exposure tab content"""
         
-        # Create filters layout - simpler than national (no benchmarks)
-        # Top row: Exposure type (left) and Measurement type (right)
-        top_row = html.Div([
+        # Create filters layout - similar to Cities Growth pattern
+        # Row 1: Exposure type (left) and Measurement type (right)
+        row1 = html.Div([
             html.Div(
-                create_exposure_type_selector('cities-flood-exposure-type-selector', default_value='built_s'),
+                create_exposure_type_selector('cities-flood-exposure-type-selector', default_value='built', use_city_values=True),
                 style={'flex': '1', 'min-width': '300px'}
             ),
             html.Div(
@@ -187,21 +187,37 @@ def register_callbacks(app):
             )
         ], style={'display': 'flex', 'gap': '1rem', 'flex-wrap': 'wrap'})
         
-        # Bottom row: Return period selector (left) and map button (right)
-        bottom_row = html.Div([
+        # Row 2: Return period selector
+        row2 = html.Div([
             html.Div(
                 create_city_return_period_selector('cities-flood-return-period-selector'),
                 style={'flex': '1', 'min-width': '300px'}
-            ),
+            )
+        ], style={'display': 'flex', 'gap': '1rem', 'flex-wrap': 'wrap'})
+        
+        # Row 3: City selector dropdown and map button on same row
+        row3 = html.Div([
+            html.Div([
+                html.Label('Select Cities:', className='filter-label'),
+                dcc.Dropdown(
+                    id='cities-flood-exposure-city-selector',
+                    options=[],
+                    value=[],
+                    multi=True,
+                    placeholder='Select cities to compare...',
+                    className='custom-dropdown'
+                )
+            ], style={'flex': '2', 'min-width': '300px'}),
             html.Div(
                 dbc.Button("📍 Where are these cities?", id="cities-flood-map-button", color="info", className="download-data-button"),
-                style={'flex': '1', 'marginLeft': '1rem'}
+                style={'display': 'flex', 'align-items': 'flex-end', 'padding-bottom': '0.25rem'}
             )
-        ], style={'display': 'flex', 'gap': '1rem', 'flex-wrap': 'wrap', 'justify-content': 'space-between'})
+        ], style={'display': 'flex', 'gap': '1rem', 'flex-wrap': 'wrap', 'align-items': 'flex-end'})
         
         filters_container = html.Div([
-            top_row, 
-            bottom_row
+            row1, 
+            row2,
+            row3
         ], style={'display': 'flex', 'flex-direction': 'column', 'gap': '1rem'})
         
         # Chart and download IDs
@@ -209,8 +225,8 @@ def register_callbacks(app):
         download_id = 'cities-flood-exposure-download'
         
         # Data source note
-        data_source = "Fathom3 flood maps (2020), GHSL Built-up Surface and Population (2023), and Africapolis city boundaries."
-        note_prefix = "This chart shows flood exposure over time for cities in the selected country. Data comprises fluvial and pluvial floods. Each line represents a different city. "
+        data_source = "Fathom3 flood maps, WorldPop Built-up Surface (2025), Africapolis Population (2025), and Africapolis city boundaries."
+        note_prefix = "This chart shows 2020 flood exposure values (left) and annual growth rates between 2015-2020 (right) for selected cities. Data comprises fluvial and pluvial floods. "
         
         note_text = [
             html.B("Data Source: "), 
@@ -218,7 +234,7 @@ def register_callbacks(app):
             html.Br(),
             html.B("Note: "), 
             note_prefix,
-            "The data includes up to 5 major cities per country. ",
+            "CAGR (Compound Annual Growth Rate) measures the annual growth rate of flood exposure. ",
             "A 1-in-100 year flood has a 1% probability of occurring in any given year. ",
             html.A("Learn more about flood return periods", 
                    href="https://www.gfdrr.org/en/100-year-flood", 

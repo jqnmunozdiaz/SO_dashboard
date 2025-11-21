@@ -181,12 +181,12 @@ def create_download_component(download_id):
 
 def create_methodological_note_button():
     """
-    Create a methodological note download button component
+    Create a methodological note button component that links to the note page
     
     Returns:
-        html.A: Methodological note button as a download link
+        dcc.Link: Methodological note button as a link
     """
-    return html.A([
+    return dcc.Link([
         dbc.Button(
             [html.I(className="fas fa-file-alt me-2"), "Methodological Note"],
             color="primary",
@@ -194,8 +194,7 @@ def create_methodological_note_button():
             className="download-data-button",
         )
     ], 
-    href="/assets/documents/SSA DRM Dashboard - Methodological Note.docx",
-    download="SSA_DRM_Dashboard_Methodological_Note.docx",
+    href="/methodological-note",
     className="download-button-container"
     )
 

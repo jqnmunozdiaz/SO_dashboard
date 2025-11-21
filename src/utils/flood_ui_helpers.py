@@ -127,25 +127,34 @@ def create_measurement_type_selector(component_id, default_value='absolute'):
     ], className='filter-container')
 
 
-def create_exposure_type_selector(component_id, default_value='built_s'):
+def create_exposure_type_selector(component_id, default_value='built_s', use_city_values=False):
     """
     Create a radio button selector for exposure type (Built-up vs Population)
     
     Args:
         component_id: Unique ID for the component
-        default_value: Default exposure type ('built_s' or 'pop')
+        default_value: Default exposure type ('built_s'/'built' or 'pop')
+        use_city_values: If True, use 'built' and 'pop'; if False, use 'built_s' and 'pop'
         
     Returns:
         html.Div containing the exposure type selector
     """
+    if use_city_values:
+        options = [
+            {'label': 'Built-up Area', 'value': 'built'},
+            {'label': 'Population', 'value': 'pop'}
+        ]
+    else:
+        options = [
+            {'label': 'Built-up Area', 'value': 'built_s'},
+            {'label': 'Population', 'value': 'pop'}
+        ]
+    
     return html.Div([
         html.Label('Exposure Type:', className='filter-label'),
         dcc.RadioItems(
             id=component_id,
-            options=[
-                {'label': 'Built-up Area', 'value': 'built_s'},
-                {'label': 'Population', 'value': 'pop'}
-            ],
+            options=options,
             value=default_value,
             className='radio-buttons',
             labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
@@ -191,11 +200,10 @@ def create_city_return_period_selector(component_id):
         dcc.RadioItems(
             id=component_id,
             options=[
-                {'label': ' 1-in-5 year', 'value': '1in5'},
-                {'label': ' 1-in-10 year', 'value': '1in10'},
-                {'label': ' 1-in-100 year', 'value': '1in100'}
+                {'label': ' 1-in-10 year', 'value': '10'},
+                {'label': ' 1-in-100 year', 'value': '100'}
             ],
-            value='1in100',  # Default to 1-in-100 year
+            value='100',  # Default to 1-in-100 year
             className='radio-buttons',
             inline=True,
             labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}

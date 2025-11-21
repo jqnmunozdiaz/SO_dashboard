@@ -58,9 +58,10 @@ Added **Urban Density** visualization as a new blue subtab in the Urbanization T
 
 ### 6. CSS Styling
 **File**: `assets/css/tabs-theme.css`
-- Blue styling automatically applies to tabs 1-3 via nth-child selectors
-- Urban Density inherits styling: light blue background (#dbeafe), dark blue active state (#3b82f6)
-- Consistent with Urban Population and Urbanization Rate tabs
+- Uses class-based styling (`.tab-blue`) for consistent coloring.
+- Urban Density inherits styling: light blue background (#dbeafe), dark blue active state (#3b82f6).
+- Consistent with Urban Population and Urbanization Rate tabs.
+
 
 ## Data Sources
 - **Africapolis 2023**: City-level population estimates (1975-2020)

@@ -270,6 +270,15 @@ create_download_button('urban-pop-download')
   - Filters by country, country benchmarks, and global benchmarks
   - Includes metadata sheet with indicator codes
 
+**Population & Economic Activity**
+- File: `src/callbacks/urbanization/Population_Economic_Activity_callbacks.py`
+- Data: Raster images for Population and GDP
+- Callback: `download_population_economic_activity_images`
+- Features:
+  - Downloads 2 PNG images in ZIP
+  - Filters by country
+  - Uses `State` for country filter to prevent auto-download
+
 ## File Structure
 
 ```

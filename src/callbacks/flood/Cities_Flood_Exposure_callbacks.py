@@ -115,11 +115,11 @@ def register_cities_flood_exposure_callbacks(app):
             fig = go.Figure()
             
             # Get unique cities and assign colors
-            cities = country_data.sort_values('agglosName')['agglosName'].unique()
+            cities = country_data.sort_values('Agglomeration_Name')['Agglomeration_Name'].unique()
             
             # Add line for each city
             for idx, city_name in enumerate(cities):
-                city_data = country_data[country_data['agglosName'] == city_name].sort_values('ghsl_year')
+                city_data = country_data[country_data['Agglomeration_Name'] == city_name].sort_values('ghsl_year')
                 
                 # Use modulo to cycle through colors if more than 10 cities
                 color = city_colors[idx % len(city_colors)]
@@ -232,11 +232,11 @@ def register_cities_flood_exposure_callbacks(app):
             if country_data.empty:
                 return []
             
-            # Get unique city names (agglosName)
-            city_names = country_data['agglosName'].unique()
+            # Get unique city names (Agglomeration_Name)
+            city_names = country_data['Agglomeration_Name'].unique()
             
             # Filter centroids for these cities
-            city_centroids = centroids[centroids['agglosName'].isin(city_names)].copy()
+            city_centroids = centroids[centroids['Agglomeration_Name'].isin(city_names)].copy()
             
             if city_centroids.empty:
                 return []
@@ -247,8 +247,8 @@ def register_cities_flood_exposure_callbacks(app):
                 marker = dl.Marker(
                     position=[row['Latitude'], row['Longitude']],
                     children=[
-                        dl.Tooltip(row['agglosName']),
-                        dl.Popup(f"<b>{row['agglosName']}</b><br>Country: {row['ISO3']}")
+                        dl.Tooltip(row['Agglomeration_Name']),
+                        dl.Popup(f"<b>{row['Agglomeration_Name']}</b><br>Country: {row['ISO3']}")
                     ]
                 )
                 markers.append(marker)

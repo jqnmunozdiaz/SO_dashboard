@@ -168,7 +168,7 @@ def register_callbacks(app):
                     html.P([
                         html.B("Data Source: "), "Africapolis & GHSL 2023.",
                         html.Br(),
-                        html.B("Note:"), " Computed as total built-up area divided by population in cities as defined by Africapolis. Regional benchmarks aggregate populations and built-up areas before calculating per capita values."
+                        html.B("Note:"), " Computed as total built-up area divided by population in cities as defined by Africapolis. Regional benchmarks aggregate populations and built-up areas before calculating per capita values. These numbers differ from city-level estimates because this figure uses the GHSL dataset to provide a consistent time series."
                     ], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('urban-density-download'),
@@ -357,18 +357,18 @@ def register_callbacks(app):
                 # Title
                 html.Div(id='cities-growth-rate-title', className='chart-title'),
                 # Deprecation notice
-                html.Div([
-                    html.P([
-                        html.I(className='fas fa-exclamation-triangle', style={'color': '#f39c12', 'margin-right': '8px'}),
-                        html.B("Note: "),
-                        "This figure uses an outdated data source and will be updated in November 2025 for consistency with other figures."
-                    ], style={'background-color': '#fff3cd', 'border-left': '4px solid #f39c12', 'padding': '12px', 'margin-bottom': '16px', 'border-radius': '4px'})
-                ]),
+                # html.Div([
+                #     html.P([
+                #         html.I(className='fas fa-exclamation-triangle', style={'color': '#f39c12', 'margin-right': '8px'}),
+                #         html.B("Note: "),
+                #         "This figure uses an outdated data source and will be updated in November 2025 for consistency with other figures."
+                #     ], style={'background-color': '#fff3cd', 'border-left': '4px solid #f39c12', 'padding': '12px', 'margin-bottom': '16px', 'border-radius': '4px'})
+                # ]),
                 # Chart
                 dcc.Graph(id="cities-growth-rate-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "Africapolis & GHSL 2023.", html.Br(), html.B("Note:"), " Scatterplot showing the relationship between population CAGR (Compound Annual Growth Rate) and built-up area CAGR for cities between 2000 and 2020. Points above the diagonal line (y=x) indicate cities where built-up area expanded faster than population, while points below indicate population growth outpaced built-up growth rate. "], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "Africapolis & WorldPop.", html.Br(), html.B("Note:"), " Scatterplot showing the relationship between built-up per capita and population for cities. X-axis in log scale."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('cities-growth-rate-download'),
                         create_methodological_note_button()
@@ -380,13 +380,13 @@ def register_callbacks(app):
                 # Title
                 html.Div(id='cities-growth-title', className='chart-title'),
                 # Deprecation notice
-                html.Div([
-                    html.P([
-                        html.I(className='fas fa-exclamation-triangle', style={'color': '#f39c12', 'margin-right': '8px'}),
-                        html.B("Note: "),
-                        "This figure uses an outdated data source and will be updated in November 2025 for consistency with other figures."
-                    ], style={'background-color': '#fff3cd', 'border-left': '4px solid #f39c12', 'padding': '12px', 'margin-bottom': '16px', 'border-radius': '4px'})
-                ]),
+                # html.Div([
+                #     html.P([
+                #         html.I(className='fas fa-exclamation-triangle', style={'color': '#f39c12', 'margin-right': '8px'}),
+                #         html.B("Note: "),
+                #         "This figure uses an outdated data source and will be updated in November 2025 for consistency with other figures."
+                #     ], style={'background-color': '#fff3cd', 'border-left': '4px solid #f39c12', 'padding': '12px', 'margin-bottom': '16px', 'border-radius': '4px'})
+                # ]),
                 # Metric selector (Built-up vs Population)
                 html.Div([
                     html.Div([
@@ -422,7 +422,7 @@ def register_callbacks(app):
                 dcc.Graph(id="cities-growth-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "Africapolis & GHSL 2023.", html.Br(), html.B("Note:"), " Shows absolute values in 2020 and Compound Annual Growth Rate (CAGR) between 2000 and 2020 for selected cities."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "Africapolis & WorldPop.", html.Br(), html.B("Note:"), " Shows absolute values in 2025 and Compound Annual Growth Rate (CAGR) between 2020 and 2025 for selected cities."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('cities-growth-download'),
                         create_methodological_note_button()

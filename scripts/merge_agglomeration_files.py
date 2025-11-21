@@ -25,7 +25,7 @@ common_cols = set(df_pop.columns) & set(df_builtup.columns)
 # Identify merge keys (common identifier columns)
 merge_keys = ['unique_id', 'ISO3', 'Country', 'geometry_year_africapolis', 'Agglomeration_Name', 'Surface km2']
 
-df_merged = pd.merge(
+df = pd.merge(
     df_pop, 
     df_builtup,
     on=merge_keys,
@@ -33,6 +33,12 @@ df_merged = pd.merge(
     suffixes=('_pop', '_builtup'),  # Add suffixes if there are any other duplicate columns
 )
 
+df['buppercapita_2020'] = df[f'worldpop_built_km2_2020'] * 1e6 / df[f'africapolis_pop_2020']
+
+# Remove cities withh no pop in 2025 which merged to other cities
+df = df[df['africapolis_pop_2025'] != 0]
+
+df['africapolis_pop_cagr_2020_2025'] = ((df[f'africapolis_pop_2025'] / df[f'africapolis_pop_2020']) ** (1/5) - 1)
+
 # Save the merged file
-print(f"\nSaving merged data to: {output_file}")
-df_merged.to_csv(output_file, index=False)
+df.to_csv(output_file, index=False)

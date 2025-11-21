@@ -5,13 +5,11 @@ Shows population growth rate vs built-up area growth rate for cities (2015-2020)
 
 from dash import Input, Output, html
 import plotly.graph_objects as go
-import pandas as pd
 
 from ...utils.data_loader import load_cities_growth_rate
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
 from ...utils.component_helpers import create_simple_error_message
 from ...utils.download_helpers import create_simple_download_callback
-from ...utils.color_utils import CITY_SIZE_COLORS, CITY_SIZE_CATEGORIES_ORDERED
 from config.settings import CHART_STYLES
 
 def register_cities_growth_rate_callbacks(app):
@@ -20,7 +18,8 @@ def register_cities_growth_rate_callbacks(app):
     # Load static data once at registration time for performance
     data = load_cities_growth_rate()
     countries_dict = load_subsaharan_countries_and_regions_dict()
-    
+    year = 2020
+
     @app.callback(
         [Output('cities-growth-rate-chart', 'figure'),
          Output('cities-growth-rate-chart', 'style'),
@@ -40,120 +39,80 @@ def register_cities_growth_rate_callbacks(app):
             if filtered_data.empty:
                 raise Exception(f"No data available for {countries_dict.get(selected_country, selected_country)}")
             
-            # Convert CAGR from decimal to percentage
-            filtered_data['pop_cagr_pct'] = filtered_data['worldpop_pop_cagr_2015_2020'] * 100
-            filtered_data['built_up_cagr_pct'] = filtered_data['worldpop_built_cagr_2015_2020'] * 100
-            
             # Create figure
             fig = go.Figure()
-            
-            # Add scatter traces for each size category (reversed for largest first in legend)
-            for category in reversed(CITY_SIZE_CATEGORIES_ORDERED):
-                category_data = filtered_data[filtered_data['size_category'] == category]
                 
-                if not category_data.empty:
-                    # Calculate marker sizes based on 2020 population (logarithmic scaling)
-                    # Scale from ~4 to ~28 pixels based on population size for better visual distinction
-                    min_size = 4
-                    max_size = 28
-                    pop_min = filtered_data['africapolis_pop_2020'].min()
-                    pop_max = filtered_data['africapolis_pop_2020'].max()
-                    
-                    if pop_max > pop_min:
-                        # Logarithmic scaling to handle wide range of population sizes
-                        sizes = []
-                        for pop in category_data['africapolis_pop_2020']:
-                            # Use log scale, but ensure minimum size for small cities
-                            log_size = min_size + (max_size - min_size) * (pop - pop_min) / (pop_max - pop_min)
-                            sizes.append(max(min_size, min(max_size, log_size)))
-                    else:
-                        sizes = [12] * len(category_data)  # Default size if all same
-                    
-                    # Create hover text
-                    hover_texts = []
-                    for _, row in category_data.iterrows():
-                        hover_texts.append(
-                            f"<b>{row['Agglomeration_Name']}</b><br>" +
-                            f"Population Growth Rate (2015-2020): {row['pop_cagr_pct']:.2f}%<br>" +
-                            f"Built-up Growth Rate (2015-2020): {row['built_up_cagr_pct']:.2f}%<br>" +
-                            f"Size Category: {row['size_category']}<br>"
-                        )
-                    
-                    fig.add_trace(go.Scatter(
-                        x=category_data['pop_cagr_pct'],
-                        y=category_data['built_up_cagr_pct'],
-                        mode='markers',
-                        name=category,
-                        marker=dict(
-                            size=sizes,
-                            color=CITY_SIZE_COLORS.get(category, '#95a5a6'),
-                            line=dict(width=1, color='white'),
-                            sizemode='diameter',
-                            opacity=0.8
-                        ),
-                        text=hover_texts,
-                        hoverinfo='text',
-                        showlegend=True
-                    ))
-            
-            # Add diagonal reference line (y=x) where population and built-up growth are equal
-            x_range = [filtered_data['pop_cagr_pct'].min() - 1, filtered_data['pop_cagr_pct'].max() + 1]
-            y_range = [filtered_data['built_up_cagr_pct'].min() - 1, filtered_data['built_up_cagr_pct'].max() + 1]
-            
-            # Find the common range for the diagonal line
-            min_val = min(x_range[0], y_range[0])
-            max_val = max(x_range[1], y_range[1])
+            # Create hover text
+            hover_texts = []
+            for _, row in filtered_data.iterrows():
+                hover_texts.append(
+                    f"<b>{row['Agglomeration_Name']}</b><br>" +
+                    f"Population ({year}): {row[f'africapolis_pop_{year}']:,}<br>" +
+                    f"Built-up ({year}): {row[f'worldpop_built_km2_{year}']:.1f} km²<br>"
+                    f"Built-up per capita: {row[f'buppercapita_{year}']:.1f} m²/person<br>"
+                )
             
             fig.add_trace(go.Scatter(
-                x=[min_val, max_val],
-                y=[min_val, max_val],
-                mode='lines',
-                name='Equal Growth (y=x)',
-                line=dict(color='gray', width=1, dash='dash'),
-                showlegend=True,
-                hoverinfo='skip'
+                x=filtered_data[f'africapolis_pop_{year}'],
+                y=filtered_data[f'buppercapita_{year}'],
+                mode='markers',
+                marker=dict(
+                    size=12,
+                    color='#95a5a6',
+                    line=dict(width=1, color='white'),
+                    sizemode='diameter',
+                    opacity=0.8
+                ),
+                text=hover_texts,
+                hoverinfo='text',
+                showlegend=False
             ))
+            
+            # Set x-axis to start at 0
+            fig.update_xaxes(range=[4, None])
+            # Add vertical line at x=10^4 (start of plot)
+            fig.add_shape(
+                type='line',
+                x0=10**4, x1=10**4,
+                y0=0, y1=1,
+                yref='paper',
+                line=dict(color='#374151', width=1),
+                layer='below'
+            )
             
             country_name = countries_dict.get(selected_country, selected_country)
             
             # Create separate title
-            chart_title = html.H6([html.B(country_name), ' | Built-up and Population Growth Rate in Cities (2015-2020)'], 
+            chart_title = html.H6([html.B(country_name), f' | Built-up per capita in Cities ({year})'], 
                                  className='chart-title')
             
             fig.update_layout(
                 xaxis=dict(
-                    title='Population Growth Rate (%)',
+                    title='Population (log scale)',
                     showgrid=True,
                     gridcolor='#e2e8f0',
                     zeroline=True,
                     zerolinecolor='#374151',
                     zerolinewidth=1,
-                    ticksuffix='%'
+                    type='log',
+                    range=[4, None]
                 ),
+                
                 yaxis=dict(
-                    title='Built-up Area Growth Rate (%)',
+                    title='Built-up Area per Capita (m² per person)',
                     showgrid=True,
                     gridcolor='#e2e8f0',
                     zeroline=True,
                     zerolinecolor='#374151',
                     zerolinewidth=1,
-                    ticksuffix='%'
+                    ticksuffix='',
+                    range=[0, None]
                 ),
+                
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
-                showlegend=True,
-                legend=dict(
-                    title="Size Categories",
-                    orientation="v",
-                    yanchor="top",
-                    y=1,
-                    xanchor="left",
-                    x=1.02,
-                    bgcolor="rgba(255, 255, 255, 0.8)",
-                    bordercolor="#e2e8f0",
-                    borderwidth=0
-                ),
+                showlegend=False,
                 margin=dict(t=40, b=80, l=80, r=150),
                 height=600,
                 hovermode='closest'

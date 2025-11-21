@@ -324,7 +324,7 @@ def load_africapolis_centroids() -> pd.DataFrame:
     # Get the absolute path to the project root directory
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.join(current_dir, '..', '..')
-    file_path = os.path.join(project_root, 'data', 'processed', 'africapolis2023_centroids.csv')
+    file_path = os.path.join(project_root, 'data', 'processed', 'africapolis2024_centroids.csv')
     
     try:
         df = pd.read_csv(file_path)

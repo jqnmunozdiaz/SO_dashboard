@@ -20,6 +20,7 @@ from .urbanization.Urban_Density_callbacks import register_urban_density_callbac
 from .urbanization.Cities_builtup_per_capita import register_cities_growth_rate_callbacks
 from .urbanization.Cities_Growth_callbacks import register_cities_growth_callbacks
 from .urbanization.Population_Economic_Activity_callbacks import register_population_economic_activity_callbacks
+from .urbanization.Urban_System_callbacks import register_urban_system_callbacks
 from .country_benchmark_callbacks import register_country_benchmark_options_callback, register_combined_benchmark_options_callback
 
 from ..utils.data_loader import load_urbanization_indicators_notes_dict
@@ -44,6 +45,7 @@ def register_callbacks(app):
     register_cities_growth_rate_callbacks(app)
     register_cities_growth_callbacks(app)
     register_population_economic_activity_callbacks(app)
+    register_urban_system_callbacks(app)
     
     # Register combined benchmark dropdown callbacks (countries + regions in one dropdown)
     register_combined_benchmark_options_callback(app, 'slums-combined-benchmark-selector', default_regional_codes=['SSA'])
@@ -450,6 +452,36 @@ def register_callbacks(app):
                     html.P([html.B("Data Source: "), "Population data from WorldPop 2020, GDP data from Kummu et al. 2025 (", html.A("https://doi.org/10.1038/s41597-025-04487-x", href="https://doi.org/10.1038/s41597-025-04487-x", target="_blank"), ").", html.Br(), html.B("Note:"), " Spatial distribution of population and economic activity (GDP) at 1km resolution for the year 2020. These maps show the concentration of people and economic output across the country. The color classification follows the Jenks natural breaks algorithm, which optimizes groupings based on data distribution to enhance visual interpretation. While such visualizations are useful for illustrating spatial patterns, they can also be misleading if not interpreted carefully—for instance, differences in scale, color scheme, or data normalization can distort perceptions of density and magnitude. Comparisons between the population and GDP maps for 2020 are therefore more meaningful than the absolute magnitudes, as spatial distributions tend to evolve gradually over time."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('population-economic-activity-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container")
+                ], className="indicator-note-container")
+            ], className="chart-container")
+        elif active_subtab == 'urban-system':
+            return html.Div([
+                # Title
+                html.Div(id='urban-system-title', className='chart-title'),
+                # Radio button to toggle between display modes
+                html.Div([
+                    html.Label('Display Mode:', className='filter-label'),
+                    dcc.RadioItems(
+                        id='urban-system-mode',
+                        options=[
+                            {'label': 'Absolute Population', 'value': 'absolute'},
+                            {'label': 'Relative Distribution', 'value': 'relative_1'},
+                            {'label': 'Pattern of Urbanization', 'value': 'relative_2'}
+                        ],
+                        value='absolute',
+                        className='radio-buttons',
+                        labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
+                    )
+                ], className='filter-container'),
+                # Chart
+                dcc.Graph(id="urban-system-chart"),
+                # Indicator note
+                html.Div([
+                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2025.", html.Br(), html.B("Note:"), " Distribution of population across Cities, Towns, and Rural areas over time. The Degree of Urbanization classifies areas based on population density and total population: Cities (urban centers): Continuous high-density areas with at least 1,500 people per km² and a minimum of 50,000 residents. Towns and semi-dense areas (urban clusters): Moderately dense settlements with at least 300 people per km² and a minimum of about 5,000 residents. These typically include suburban and peri-urban zones. Rural areas: Low-density areas with fewer than 300 people per km², or small settlements not classified as cities or towns (e.g., villages and dispersed communities)."], className="indicator-note"),
+                    html.Div([
+                        create_download_trigger_button('urban-system-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")

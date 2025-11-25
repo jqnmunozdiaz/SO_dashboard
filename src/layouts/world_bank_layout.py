@@ -227,6 +227,7 @@ def create_dashboard_layout():
                 create_download_component("disaster-deaths-download"),
                 create_download_component("urban-population-projections-download"),
                 create_download_component("urbanization-rate-download"),
+                create_download_component("urban-system-download"),
                 create_download_component("urban-population-slums-download"),
                 create_download_component("access-to-drinking-water-download"),
                 create_download_component("access-to-sanitation-download"),
@@ -345,6 +346,7 @@ def create_world_bank_urbanization_tab_content():
                     [
                         dbc.Tab(label="Population", tab_id="urban-population-projections", label_class_name="tab-blue"),
                         dbc.Tab(label="Urbanization Level", tab_id="urbanization-rate", label_class_name="tab-blue"),
+                        dbc.Tab(label="Urban System", tab_id="urban-system", label_class_name="tab-blue"),
                         dbc.Tab(label="GDP vs Urbanization", tab_id="gdp-vs-urbanization", label_class_name="tab-blue"),
                         dbc.Tab(label="Built-up per capita", tab_id="urban-density", label_class_name="tab-blue"),
                         dbc.Tab(label="Population Living in Slums", tab_id="urban-population-slums", label_class_name="tab-blue"),

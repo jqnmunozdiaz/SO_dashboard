@@ -127,7 +127,7 @@ def register_callbacks(app):
                 dcc.Graph(id="urban-population-projections-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "Computed using UN DESA datasets (World Population Prospects 2024 & World Urbanization Prospects 2018).", html.Br(), html.B("Note:"), " Uncertainty bands show 95% and 80% confidence intervals for future projections. The 2025 value corresponds to an estimation based on UN DESA datasets. Growth rates correspond to Compound Annual Growth Rates (CAGR)."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "Computed using UN DESA datasets (World Population Prospects 2024 & World Urbanization Prospects 2025).", html.Br(), html.B("Note:"), " Uncertainty bands show 95% and 80% confidence intervals for future projections. Growth rates correspond to Compound Annual Growth Rates (CAGR)."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('urban-population-projections-download'),
                         create_methodological_note_button()
@@ -147,7 +147,7 @@ def register_callbacks(app):
                 dcc.Graph(id="urbanization-rate-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2018.", html.Br(), html.B("Note:"), " Percentage of population living in urban areas. Shows historical trends and future projections of urbanization levels. The 2025 value corresponds to an estimation based on UN DESA datasets."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2025.", html.Br(), html.B("Note:"), " Percentage of population living in urban areas. Shows historical trends and future projections of urbanization levels."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('urbanization-rate-download'),
                         create_methodological_note_button()
@@ -449,7 +449,7 @@ def register_callbacks(app):
                 html.Div(id='population-economic-activity-container'),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "Population data from WorldPop 2020, GDP data from Kummu et al. 2025 (", html.A("https://doi.org/10.1038/s41597-025-04487-x", href="https://doi.org/10.1038/s41597-025-04487-x", target="_blank"), ").", html.Br(), html.B("Note:"), " Spatial distribution of population and economic activity (GDP) at 1km resolution for the year 2020. These maps show the concentration of people and economic output across the country. The color classification follows the Jenks natural breaks algorithm, which optimizes groupings based on data distribution to enhance visual interpretation. While such visualizations are useful for illustrating spatial patterns, they can also be misleading if not interpreted carefully—for instance, differences in scale, color scheme, or data normalization can distort perceptions of density and magnitude. Comparisons between the population and GDP maps for 2020 are therefore more meaningful than the absolute magnitudes, as spatial distributions tend to evolve gradually over time."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "Population data from WorldPop 2020, GDP data from Kummu et al. 2025 (", html.A("https://doi.org/10.1038/s41597-025-04487-x", href="https://doi.org/10.1038/s41597-025-04487-x", target="_blank"), ").", html.Br(), html.B("Note:"), " The boundaries, colors, denominations, and other information shown on any map in this work do not imply any judgment on the part of The World Bank concerning the legal status of any territory or the endorsement or acceptance of such boundaries. Spatial distribution of population and economic activity (GDP) at 1km resolution for the year 2020. These maps show the concentration of people and economic output across the country. The color classification follows the Jenks natural breaks algorithm, which optimizes groupings based on data distribution to enhance visual interpretation. While such visualizations are useful for illustrating spatial patterns, they can also be misleading if not interpreted carefully—for instance, differences in scale, color scheme, or data normalization can distort perceptions of density and magnitude. Comparisons between the population and GDP maps for 2020 are therefore more meaningful than the absolute magnitudes, as spatial distributions tend to evolve gradually over time."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('population-economic-activity-download'),
                         create_methodological_note_button()

@@ -1,13 +1,13 @@
 """
 Callbacks for Urbanization Level visualization
 Shows line chart of urban population percentage over time for selected country with regional benchmarks
-Based on UN DESA World Urbanization Prospects data
+Based on UN DESA World Urbanization Prospects 2025 (WUP2025) National Definitions data
 """
 
 from dash import Input, Output, html
 import plotly.graph_objects as go
 
-from ...utils.data_loader import load_undesa_urban_projections
+from ...utils.data_loader import load_wup2025_national_data
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
 from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
 from ...utils.component_helpers import create_simple_error_message
@@ -19,7 +19,7 @@ def register_urbanization_rate_callbacks(app):
     """Register callbacks for Urbanization Rate chart"""
     
     # Load static data once at registration time for performance
-    undesa_data = load_undesa_urban_projections()
+    wup_data = load_wup2025_national_data()
     countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
     benchmark_colors_dict = get_benchmark_colors()
     benchmark_names = get_benchmark_names()
@@ -38,36 +38,31 @@ def register_urbanization_rate_callbacks(app):
             # Split combined benchmarks into regions and countries
             benchmark_regions = [b for b in (combined_benchmarks or []) if b in benchmark_colors_dict]
             benchmark_countries = [b for b in (combined_benchmarks or []) if b not in benchmark_colors_dict]
-            # Load UNDESA urban projections data (pre-loaded)
-            
-            # Load country and region mapping for ISO code to full name conversion (pre-loaded)
-            
-            if undesa_data.empty:
+
+            # Load country and region mapping for ISO code to full name conversion (pre-loaded)            
+            if wup_data.empty:
                 return create_simple_error_message("No data available")
-            
-            # Filter for urban proportion data only
-            urban_prop_data = undesa_data[undesa_data['indicator'] == 'wup_urban_prop'].copy()
             
             # Create the figure
             fig = go.Figure()
             
             # Get country data
-            if selected_country and selected_country in urban_prop_data['ISO3'].values:
-                country_data = urban_prop_data[urban_prop_data['ISO3'] == selected_country].copy()
-                country_data = country_data.sort_values('year')
+            if selected_country and selected_country in wup_data['ISO3_Code'].values:
+                country_data = wup_data[wup_data['ISO3_Code'] == selected_country].copy()
+                country_data = country_data.sort_values('Year')
                 
                 if not country_data.empty:
                     country_name = countries_and_regions_dict.get(selected_country, selected_country)
                     
                     # Split data for historical (<=2025) and projections (>=2025)
-                    hist_data = country_data[country_data['year'] <= 2025]
-                    proj_data = country_data[country_data['year'] >= 2025]
+                    hist_data = country_data[country_data['Year'] <= 2025]
+                    proj_data = country_data[country_data['Year'] >= 2025]
 
                     # Add historical (solid line)
                     if not hist_data.empty:
                         fig.add_trace(go.Scatter(
-                            x=hist_data['year'],
-                            y=hist_data['value'] * 100,
+                            x=hist_data['Year'],
+                            y=hist_data['Urbanization_Rate'] * 100,
                             mode='lines',
                             name=country_name,
                             line=dict(color='#295e84', width=3),
@@ -78,8 +73,8 @@ def register_urbanization_rate_callbacks(app):
                     # Add projections (dashed line)
                     if not proj_data.empty:
                         fig.add_trace(go.Scatter(
-                            x=proj_data['year'],
-                            y=proj_data['value'] * 100,
+                            x=proj_data['Year'],
+                            y=proj_data['Urbanization_Rate'] * 100,
                             mode='lines',
                             name=country_name,
                             line=dict(color='#295e84', width=3, dash='dash'),
@@ -97,23 +92,23 @@ def register_urbanization_rate_callbacks(app):
             
             if benchmark_regions:
                 for region in benchmark_regions:
-                    if region in urban_prop_data['ISO3'].values:
-                        region_data = urban_prop_data[urban_prop_data['ISO3'] == region].copy()
-                        region_data = region_data.sort_values('year')
+                    if region in wup_data['ISO3_Code'].values:
+                        region_data = wup_data[wup_data['ISO3_Code'] == region].copy()
+                        region_data = region_data.sort_values('Year')
                         
                         if not region_data.empty:
                             region_name = benchmark_names.get(region, region)
                             region_color = benchmark_colors_dict.get(region, '#95a5a6')
                             
                             # Split data for historical (<=2025) and projections (>=2025)
-                            region_hist = region_data[region_data['year'] <= 2025]
-                            region_proj = region_data[region_data['year'] >= 2025]
+                            region_hist = region_data[region_data['Year'] <= 2025]
+                            region_proj = region_data[region_data['Year'] >= 2025]
                             
                             # Add historical (solid line)
                             if not region_hist.empty:
                                 fig.add_trace(go.Scatter(
-                                    x=region_hist['year'],
-                                    y=region_hist['value'] * 100,
+                                    x=region_hist['Year'],
+                                    y=region_hist['Urbanization_Rate'] * 100,
                                     mode='lines',
                                     name=region_name,
                                     line=dict(color=region_color, width=2),
@@ -124,8 +119,8 @@ def register_urbanization_rate_callbacks(app):
                             # Add projections (dashed line)
                             if not region_proj.empty:
                                 fig.add_trace(go.Scatter(
-                                    x=region_proj['year'],
-                                    y=region_proj['value'] * 100,
+                                    x=region_proj['Year'],
+                                    y=region_proj['Urbanization_Rate'] * 100,
                                     mode='lines',
                                     name=region_name,
                                     line=dict(color=region_color, width=2, dash='dash'),
@@ -139,9 +134,9 @@ def register_urbanization_rate_callbacks(app):
                 country_colors = ['#e74c3c', '#f39c12', '#27ae60', '#3498db', '#9b59b6', '#1abc9c', '#34495e', '#e67e22']
                 
                 for i, country_iso in enumerate(benchmark_countries):
-                    if country_iso in urban_prop_data['ISO3'].values:
-                        country_benchmark_data = urban_prop_data[urban_prop_data['ISO3'] == country_iso].copy()
-                        country_benchmark_data = country_benchmark_data.sort_values('year')
+                    if country_iso in wup_data['ISO3_Code'].values:
+                        country_benchmark_data = wup_data[wup_data['ISO3_Code'] == country_iso].copy()
+                        country_benchmark_data = country_benchmark_data.sort_values('Year')
                         
                         if not country_benchmark_data.empty:
                             country_name = countries_and_regions_dict.get(country_iso, country_iso)
@@ -149,14 +144,14 @@ def register_urbanization_rate_callbacks(app):
                             color = country_colors[i % len(country_colors)]
                             
                             # Split data for historical (<=2025) and projections (>=2025)
-                            country_hist = country_benchmark_data[country_benchmark_data['year'] <= 2025]
-                            country_proj = country_benchmark_data[country_benchmark_data['year'] >= 2025]
+                            country_hist = country_benchmark_data[country_benchmark_data['Year'] <= 2025]
+                            country_proj = country_benchmark_data[country_benchmark_data['Year'] >= 2025]
                             
                             # Add historical (solid line with markers)
                             if not country_hist.empty:
                                 fig.add_trace(go.Scatter(
-                                    x=country_hist['year'],
-                                    y=country_hist['value'] * 100,
+                                    x=country_hist['Year'],
+                                    y=country_hist['Urbanization_Rate'] * 100,
                                     mode='lines+markers',
                                     name=country_name,
                                     line=dict(color=color, width=2),
@@ -168,8 +163,8 @@ def register_urbanization_rate_callbacks(app):
                             # Add projections (dashed line with markers)
                             if not country_proj.empty:
                                 fig.add_trace(go.Scatter(
-                                    x=country_proj['year'],
-                                    y=country_proj['value'] * 100,
+                                    x=country_proj['Year'],
+                                    y=country_proj['Urbanization_Rate'] * 100,
                                     mode='lines+markers',
                                     name=country_name,
                                     line=dict(color=color, width=2, dash='dot'),
@@ -250,6 +245,6 @@ def register_urbanization_rate_callbacks(app):
     create_simple_download_callback(
         app,
         'urbanization-rate-download',
-        lambda: undesa_data,
-        'undesa_urbanization_rate'
+        lambda: wup_data,
+        'wup2025_urbanization_rate'
     )

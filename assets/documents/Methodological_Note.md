@@ -37,7 +37,7 @@ This dashboard integrates data from multiple authoritative sources to provide a 
 ### 2.1 Urban Population & Projections
 *   **Source:** United Nations Department of Economic and Social Affairs (UN DESA).
     *   **Population:** [World Population Prospects (WPP) 2024](https://population.un.org/wpp/).
-    *   **Urbanization Rates:** [World Urbanization Prospects (WUP) 2018](https://population.un.org/wup/).
+    *   **Urbanization Rates:** [World Urbanization Prospects (WUP) 2025](https://population.un.org/wup/).
 *   **Methodology:**
     *   Urban population is calculated by applying WUP urbanization rates to WPP total population estimates.
     *   **Uncertainty Bands:** The dashboard presents probabilistic projections (Median, 80% prediction interval, 95% prediction interval) to reflect demographic uncertainty.

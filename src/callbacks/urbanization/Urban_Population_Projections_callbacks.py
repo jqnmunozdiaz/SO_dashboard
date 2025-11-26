@@ -8,7 +8,7 @@ from dash import Input, Output, html
 import plotly.graph_objects as go
 import pandas as pd
 
-from ...utils.data_loader import load_undesa_urban_projections, load_undesa_urban_growth_rates
+from ...utils.data_loader import load_WUP_urban_projections, load_WUP_urban_growth_rates
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
 from ...utils.component_helpers import create_simple_error_message
 from ...utils.download_helpers import create_simple_download_callback
@@ -18,8 +18,8 @@ def register_urban_population_projections_callbacks(app):
     """Register callbacks for Urban Population Projections chart"""
     
     # Load static data once at registration time for performance
-    undesa_projections = load_undesa_urban_projections()
-    undesa_growth_rates = load_undesa_urban_growth_rates()
+    undesa_projections = load_WUP_urban_projections()
+    undesa_growth_rates = load_WUP_urban_growth_rates()
     countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
     
     @app.callback(
@@ -268,10 +268,30 @@ def register_urban_population_projections_callbacks(app):
             fig, style = create_simple_error_message(str(e))
             return fig, style, ""
     
-    # Register download callback using the reusable helper
-    create_simple_download_callback(
-        app,
-        'urban-population-projections-download',
-        lambda: undesa_projections,
-        'undesa_urban_population_projections'
+    # Register download callback that switches between projections and growth rates
+    @app.callback(
+        Output('urban-population-projections-download', 'data'),
+        [Input('urban-population-projections-download-button', 'n_clicks'),
+         Input('main-country-filter', 'value'),
+         Input('urban-population-projections-mode', 'value')],
+        prevent_initial_call=True
     )
+    def download_urban_population_data(n_clicks, selected_country, display_mode):
+        """Download data based on current display mode"""
+        if not n_clicks:
+            return None
+        
+        # Default to absolute values if mode not specified
+        if display_mode is None:
+            display_mode = 'absolute'
+        
+        # Select appropriate dataset based on display mode
+        if display_mode == 'growth_rate':
+            data = undesa_growth_rates.copy()
+            filename = 'urban_population_growth_rates'
+        else:
+            data = undesa_projections.copy()
+            filename = 'urban_population_projections'       
+        
+        from ...utils.download_helpers import prepare_csv_download
+        return prepare_csv_download(data, filename)

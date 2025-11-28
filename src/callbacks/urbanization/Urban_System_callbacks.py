@@ -196,17 +196,39 @@ def register_urban_system_callbacks(app):
                     category_data = country_data[country_data['Category'] == category]
                     
                     if not category_data.empty:
-                        fig.add_trace(
-                            go.Scatter(
-                                x=category_data['Year'],
-                                y=category_data[value_column],
-                                mode='lines',
-                                name=category,
-                                line=dict(color=category_colors[category], width=3),
-                                marker=dict(size=6),
-                                hovertemplate=hover_template
+                        # Split data for historical (<=2025) and projections (>=2025)
+                        hist_data = category_data[category_data['Year'] <= 2025]
+                        proj_data = category_data[category_data['Year'] >= 2025]
+                        
+                        # Add historical (solid line)
+                        if not hist_data.empty:
+                            fig.add_trace(
+                                go.Scatter(
+                                    x=hist_data['Year'],
+                                    y=hist_data[value_column],
+                                    mode='lines',
+                                    name=category,
+                                    line=dict(color=category_colors[category], width=3),
+                                    marker=dict(size=6),
+                                    hovertemplate=hover_template,
+                                    showlegend=True
+                                )
                             )
-                        )
+                        
+                        # Add projections (dashed line)
+                        if not proj_data.empty:
+                            fig.add_trace(
+                                go.Scatter(
+                                    x=proj_data['Year'],
+                                    y=proj_data[value_column],
+                                    mode='lines',
+                                    name=category,
+                                    line=dict(color=category_colors[category], width=3, dash='dash'),
+                                    marker=dict(size=6),
+                                    hovertemplate=hover_template,
+                                    showlegend=False
+                                )
+                            )
 
                 # Create title
                 chart_title = html.H6([html.B(country_name), f' | {chart_subtitle}'], 

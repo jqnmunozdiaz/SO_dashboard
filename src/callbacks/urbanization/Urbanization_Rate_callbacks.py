@@ -152,7 +152,7 @@ def register_urbanization_rate_callbacks(app):
                                 fig.add_trace(go.Scatter(
                                     x=country_hist['Year'],
                                     y=country_hist['Urbanization_Rate'] * 100,
-                                    mode='lines+markers',
+                                    mode='lines',
                                     name=country_name,
                                     line=dict(color=color, width=2),
                                     marker=dict(size=4, color=color),
@@ -165,7 +165,7 @@ def register_urbanization_rate_callbacks(app):
                                 fig.add_trace(go.Scatter(
                                     x=country_proj['Year'],
                                     y=country_proj['Urbanization_Rate'] * 100,
-                                    mode='lines+markers',
+                                    mode='lines',
                                     name=country_name,
                                     line=dict(color=color, width=2, dash='dot'),
                                     marker=dict(size=4, color=color),

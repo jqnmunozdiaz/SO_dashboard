@@ -424,7 +424,7 @@ def register_callbacks(app):
                 dcc.Graph(id="cities-growth-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "Africapolis & WorldPop.", html.Br(), html.B("Note:"), " Shows absolute values in 2025 and Compound Annual Growth Rate (CAGR) between 2020 and 2025 for selected cities."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "Africapolis (Population) & WorldPop (Built-up).", html.Br(), html.B("Note:"), " Shows absolute values in 2025 and Compound Annual Growth Rate (CAGR) between 2020 and 2025 for selected cities."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('cities-growth-download'),
                         create_methodological_note_button()

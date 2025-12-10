@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/pyright/main/packages/pyright/schema/pyrightconfig.schema.json",
+  "typeCheckingMode": "standard",
+  "venvPath": "C:/ProgramData/miniforge3/envs",
+  "venv": "py313",
+  "include": ["src", "scripts", "config", "app.py"],
+  "extraPaths": ["src", "scripts"],
+  "reportUnusedVariable": "warning",
+  "reportUnusedImport": "warning",
+  "reportUnusedFunction": "warning",
+  "reportUnusedClass": "warning",
+  "reportUnnecessaryTypeIgnoreComment": "warning"
+}

@@ -24,9 +24,14 @@ Dash-based dashboard for analyzing disaster risk management (DRM), urbanization,
 ## Dashboard Structure
 
 1. **Historical Disasters** (EM-DAT): Overview, By Year, Affected Population, Deaths
-2. **Historical Urbanization** (WDI/UN DESA): Projections, Rate, Density, Slums, Electricity, GDP vs Urban, Cities Distribution/Evolution, Pop & Economic Activity
-3. **Flood Hazard** (Fathom3): National Exposure, Cities Exposure
-4. **Flood Projections**: Precipitation Changes, Urbanization vs Climate
+2. **Historical Urbanization** (WDI/UN DESA/World Bank): 
+   - Population projections (absolute & growth rates), urbanization rate, density, slums access
+   - Infrastructure: drinking water, sanitation, electricity access (urban populations)
+   - Economic activity: GDP vs urbanization, population & economic activity correlation
+   - City-level: distribution, evolution, growth rates, built-up per capita
+3. **Flood Hazard** (Fathom3/GHSL): National & city-level exposure analysis with interactive mapping
+4. **Flood Projections**: Climate scenario impacts, urbanization vs climate change drivers
+5. **Contact Form**: User feedback submission with logging and session storage
 
 ## Key Patterns
 
@@ -97,21 +102,56 @@ from src.utils.ui_helpers import create_benchmark_selectors
 
 ```python
 # Orchestrators coordinate feature areas
-src/callbacks/disaster_callbacks.py
-src/callbacks/urbanization_callbacks.py
-src/callbacks/flood_callbacks.py
-src/callbacks/flood_projections_callbacks.py
+src/callbacks/disaster_callbacks.py                  # Disaster charts
+src/callbacks/urbanization_callbacks.py              # Urbanization charts
+src/callbacks/flood_callbacks.py                     # Flood exposure charts
+src/callbacks/flood_projections_callbacks.py         # Flood projections
+src/callbacks/main_callbacks.py                      # Navigation & header
+src/callbacks/country_benchmark_callbacks.py         # Country dropdown population
+src/callbacks/contact_callbacks.py                   # Contact form submission
 
 # Individual chart callbacks in subdirectories
-src/callbacks/disaster/Frequency_by_Type_callbacks.py
-src/callbacks/urbanization/Urban_Population_Projections_callbacks.py
-src/callbacks/flood/National_Flood_Exposure_callbacks.py
+src/callbacks/disaster/                             # Disaster chart callbacks
+src/callbacks/urbanization/                         # Urbanization chart callbacks (14+ charts)
+src/callbacks/flood/                                # Flood exposure chart callbacks
+src/callbacks/flood_projections/                    # Flood projections chart callbacks
 
 # Registration ONLY in app.py
-from src.callbacks import disaster_callbacks, urbanization_callbacks
+from src.callbacks import disaster_callbacks, urbanization_callbacks, flood_callbacks
+from src.callbacks.main_callbacks import register_main_callbacks
+from src.callbacks.contact_callbacks import register_contact_callbacks
+
 disaster_callbacks.register_callbacks(app)
 urbanization_callbacks.register_callbacks(app)
+flood_callbacks.register_callbacks(app)
+register_main_callbacks(app)
+register_contact_callbacks(app)
 ```
+
+### Contact Form & Disclaimers
+
+Contact form functionality is handled in `src/callbacks/contact_callbacks.py`:
+- **Session storage**: Uses `dcc.Store` (`disclaimer-session-store`) to show disclaimer once per browser session
+- **Form submission**: Logs user feedback to `contact_submissions.log` with timestamp and session info
+- **Modal pattern**: Disclaimer and contact modals use callback-controlled `is_open` state
+- **Data storage**: Contact submissions stored as JSON logs for review and analytics
+
+### Key Patterns in Recent Development
+
+**Pre-loading data for performance:**
+```python
+def register_urban_population_projections_callbacks(app):
+    # Load static data once at registration time
+    undesa_projections = load_WUP_urban_projections()
+    undesa_growth_rates = load_WUP_urban_growth_rates()
+    countries_dict = load_subsaharan_countries_and_regions_dict()
+    
+    @app.callback(...)
+    def generate_chart(selected_country, display_mode):
+        # Use pre-loaded data in callback
+        country_data = undesa_projections[undesa_projections['ISO3'] == selected_country]
+```
+This pattern loads expensive data once at app startup rather than on each callback invocation.
 
 ### Error Handling Pattern (REQUIRED)
 
@@ -170,9 +210,32 @@ except Exception as e:
 
 #### UN DESA Urban Projections Flow
 1. **Raw data**: `data/raw/Urban/` - UN World Urbanization Prospects and Population Division data
-2. **Processing script**: `scripts/process_urban_population.py` - processes urban projections with uncertainty
-3. **Processed data**: `data/processed/UNDESA_Country/{ISO3}_urban_population_projections.csv` - projections per country
-4. **Consolidated**: `data/processed/UNDESA_Country/UNDESA_urban_projections_consolidated.csv` - all countries combined
+2. **Processing scripts**: 
+   - `scripts/process_urban_population.py` - UNDESA projections
+   - `scripts/process_urban_population_and_growth_rates_WUP2025.py` - WUP2025 with WPP2024 uncertainty
+3. **Processed data**: 
+   - `data/processed/UNDESA_Country/{ISO3}_urban_population_projections.csv` - individual country projections
+   - `data/processed/UNDESA_Country/UNDESA_urban_projections_consolidated.csv` - all countries
+   - `data/processed/WUP/` - WUP2025 with uncertainty bounds and growth rates
+4. **Column formats**: 
+   - Absolute: `['ISO3', 'year', 'indicator', 'value']` where indicator = urban/rural/total
+   - Growth rates: `['ISO3', 'year', 'urban_median_growth_rate', 'urban_lower95_growth_rate', ...]`
+   - Uncertainty: `['ISO3', 'indicator', 'year', 'wpp_median', 'wpp_lower95', 'wpp_upper95', ...]`
+
+#### City-Level Analysis Flow (Africapolis + Fathom3 + GHSL)
+1. **Raw data**: 
+   - Africapolis agglomerations: `data/raw/Africapolis/` (2020 and 2025 versions)
+   - Flood exposure (Fathom3): `data/raw/Fathom3/`
+   - Built-up data (GHSL): From Fathom3 merged datasets
+2. **Processing scripts**:
+   - `scripts/clean_africapolis_gpkg.py` - Extract centroids and attributes
+   - `scripts/merge_africapolis_fathom_ghsl_built_s.py` - Merge all sources
+   - `scripts/process_city_size_distribution.py` - Size class analysis
+3. **Processed data**:
+   - `data/processed/africapolis_fathom_ghsl_merged.csv` - All cities with flood/built-up
+   - `data/processed/africapolis_2025_agglomeration_merged.csv` - Latest city attributes
+   - `data/processed/city_size_distribution.csv` - City classification by size
+4. **Key columns**: City name, country code, population, area, flood exposure %, built-up per capita, size class
 
 #### Country Definitions
 - `data/Definitions/WB_Classification.csv` - **Authoritative source** for:
@@ -390,7 +453,8 @@ Global regional benchmarks:
    - EM-DAT: `['Disaster Type', 'ISO', 'Year', 'Total Deaths', 'Total Affected', 'Number of Events']`
    - WDI: `['Country Code', 'Year', 'Value']`
    - UNDESA: Wide format with years as columns, indicators as rows
-   - Fathom3 Flood: Country code, flood type, return period, built-up area/population values
+   - WUP projections: `['ISO3', 'indicator', 'year', 'value']` with uncertainty bounds (wpp_median, wpp_lower95, etc.)
+   - City data: `['Country Code', 'City Name', 'Population', 'Area', 'Flood Exposure %', 'Built-up per Capita', 'Size Class']`
 5. **Regional benchmarks**: NEVER hardcode colors or names - always use `get_benchmark_colors()` and `get_benchmark_names()`
 6. **Error handling**: ALWAYS use `create_error_chart()` - never create local error functions
 7. **No country selected**: Use `create_error_chart()` with appropriate message - don't raise exceptions
@@ -405,6 +469,8 @@ Global regional benchmarks:
 13. **UI Helper Imports**: Always import the specific helper you need (`create_download_trigger_button`, `create_methodological_note_button`, etc.) not generic names
 14. **Hero Map Button**: City-level platform button positioned in `.hero-map-action` (positioned absolutely within `.hero-map`)
 15. **Flood Tab Structure**: 4 subtabs with flood-type-selector and return-period-selector; each subtab follows standard download/methodological pattern
+16. **Data Pre-loading**: Load expensive datasets (WUP projections, city data) at callback registration time, not in the callback function itself - store as closure variables
+17. **Display Modes**: Some charts support multiple modes (e.g., 'absolute' vs 'growth_rate') - pass as callback Input and conditionally load appropriate dataset
 
 ## Folder Structure
 ```

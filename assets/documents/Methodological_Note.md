@@ -3,7 +3,7 @@
 **Last Updated:** November 2025
 
 ## Overview
-This dashboard integrates data from multiple authoritative sources to provide a comprehensive view of disaster risk, urbanization trends, and climate exposure in Sub-Saharan Africa. This note details the data sources, processing methodologies, and known limitations for each component of the dashboard.
+This dashboard integrates data from multiple authoritative sources to provide a comprehensive view of disaster risk, urbanization trends, and climate exposure in Sub-Saharan Africa. This note details the data sources, processing methodologies, and known limitations for each component of the dashboard. Users should be aware that, because the dashboard draws on multiple data sources, some estimates may not align perfectly.
 
 ---
 

@@ -9,6 +9,7 @@ to create a consolidated dataset with three years per unique_id:
 """
 
 import pandas as pd
+import geopandas as gpd
 import os
 
 # Get project root directory
@@ -85,7 +86,125 @@ df_final_merged = df_ftm_merged.merge(
     validate='m:1'  # Many ftm rows to one worldpop row
 )
 
-# Save the final merged dataset
-print(f"\nSaving final merged dataset to: {final_output_file}")
+#%%
+# Add Africapolis population data
+
+# Load Africapolis GeoPackage
+africapolis_gpkg = os.path.join(project_root, 'data', 'raw', 'Africapolis_GIS_2024.gpkg')
+gdf_africapolis = gpd.read_file(africapolis_gpkg)
+
+# Create unique_id in Africapolis data (ISO3_Agglomeration_ID)
+gdf_africapolis['unique_id'] = gdf_africapolis['ISO3'] + '_' + gdf_africapolis['Agglomeration_ID'].astype(int).astype(str)
+
+# Reshape Africapolis population data to long format for years 2015, 2020, 2025
+africapolis_pop = []
+for year in [2015, 2020, 2025]:
+    year_data = gdf_africapolis[['unique_id', f'Population_{year}']].copy()
+    year_data['worldpop_year'] = year
+    year_data = year_data.rename(columns={f'Population_{year}': 'africapolis_pop'})
+    africapolis_pop.append(year_data)
+
+df_africapolis_pop = pd.concat(africapolis_pop, ignore_index=True)
+
+# Convert africapolis_pop to numeric and handle any non-numeric values
+df_africapolis_pop['africapolis_pop'] = pd.to_numeric(df_africapolis_pop['africapolis_pop'], errors='coerce')
+
+# Remove only exact duplicates (same values across all columns)
+exact_duplicates = df_africapolis_pop.duplicated(keep='first')
+if exact_duplicates.any():
+    print(f"\nWarning: Found {exact_duplicates.sum()} exact duplicate rows in Africapolis data")
+    print("Removing exact duplicates")
+    df_africapolis_pop = df_africapolis_pop.drop_duplicates(keep='first')
+
+# Check for non-exact duplicates (same keys but different values)
+key_duplicates = df_africapolis_pop.duplicated(subset=['unique_id', 'worldpop_year'], keep=False)
+if key_duplicates.any():
+    print(f"\nERROR: Found {key_duplicates.sum()} non-exact duplicates with same unique_id/year but different population values")
+    print("Problematic rows:")
+    print(df_africapolis_pop[key_duplicates].sort_values(['unique_id', 'worldpop_year']))
+    raise ValueError("Cannot merge: Africapolis data has conflicting population values for same unique_id/year")
+
+# Merge Africapolis population into final dataset
+df_final_merged = df_final_merged.merge(
+    df_africapolis_pop,
+    on=['unique_id', 'worldpop_year'],
+    how='left',
+    validate='m:1'  # Many ftm rows to one africapolis row per unique_id/year
+)
+
+# Save the final merged dataset with Africapolis population
+print(f"\nSaving updated dataset with Africapolis population to: {final_output_file}")
 df_final_merged.to_csv(final_output_file, index=False)
+
+#%%
+# Create wide format version (format_1) for growth rate analysis
+# This format has years as column suffixes and includes CAGR calculations
+
+format_1_output = os.path.join(project_root, 'data', 'processed', 'africapolis_worldpop_final_merged_format_1.csv')
+
+# Get unique cities (one row per unique_id, ignoring return periods)
+# Use first return period for each city/year combination
+df_wide = df_final_merged[df_final_merged['ftm_return_period'] == df_final_merged['ftm_return_period'].min()].copy()
+
+# Pivot built-up surface to wide format
+built_pivot = df_wide.pivot_table(
+    index=['unique_id', 'ISO3', 'Agglomeration_Name', 'Surface km2', 'africapolis_geometry_year'],
+    columns='worldpop_year',
+    values='worldpop_built_surface_km2',
+    aggfunc='first'
+).reset_index()
+
+# Rename built columns
+built_pivot.columns.name = None
+built_pivot = built_pivot.rename(columns={
+    2015: 'worldpop_built_km2_2015',
+    2020: 'worldpop_built_km2_2020',
+    2025: 'worldpop_built_km2_2025'
+})
+
+# Pivot Africapolis population to wide format
+pop_pivot = df_wide.pivot_table(
+    index='unique_id',
+    columns='worldpop_year',
+    values='africapolis_pop',
+    aggfunc='first'
+).reset_index()
+
+# Rename population columns
+pop_pivot.columns.name = None
+pop_pivot = pop_pivot.rename(columns={
+    2015: 'africapolis_pop_2015',
+    2020: 'africapolis_pop_2020',
+    2025: 'africapolis_pop_2025'
+})
+
+# Merge pivoted data
+df_format_1 = built_pivot.merge(pop_pivot, on='unique_id', how='left')
+
+# Calculate CAGR for built-up surface (2015-2020)
+df_format_1['worldpop_built_cagr_2015_2020'] = (
+    (df_format_1['worldpop_built_km2_2020'] / df_format_1['worldpop_built_km2_2015']) ** (1/5) - 1
+)
+
+# Calculate CAGR for built-up surface (2020-2025)
+df_format_1['worldpop_built_cagr_2020_2025'] = (
+    (df_format_1['worldpop_built_km2_2025'] / df_format_1['worldpop_built_km2_2020']) ** (1/5) - 1
+)
+
+# Calculate CAGR for Africapolis population (2015-2020)
+df_format_1['africapolis_pop_cagr_2015_2020'] = (
+    (df_format_1['africapolis_pop_2020'] / df_format_1['africapolis_pop_2015']) ** (1/5) - 1
+)
+
+# Calculate CAGR for Africapolis population (2020-2025)
+df_format_1['africapolis_pop_cagr_2020_2025'] = (
+    (df_format_1['africapolis_pop_2025'] / df_format_1['africapolis_pop_2020']) ** (1/5) - 1
+)
+
+# Replace inf values with NaN (division by zero cases)
+df_format_1 = df_format_1.replace([float('inf'), float('-inf')], pd.NA)
+
+# Save format_1 file
+print(f"\nSaving format_1 dataset to: {format_1_output}")
+df_format_1.to_csv(format_1_output, index=False)
 

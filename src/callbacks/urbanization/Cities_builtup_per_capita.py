@@ -128,6 +128,5 @@ def register_cities_growth_rate_callbacks(app):
     create_simple_download_callback(
         app,
         'cities-growth-rate-download',
-        lambda: data,
-        'cities_growth_rates_2015_2020'
+        lambda: data
     )

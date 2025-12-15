@@ -151,6 +151,5 @@ def register_cities_distribution_callbacks(app):
     create_simple_download_callback(
         app,
         'cities-distribution-download',
-        lambda: data,
-        'cities_size_distribution'
+        lambda: data
     )

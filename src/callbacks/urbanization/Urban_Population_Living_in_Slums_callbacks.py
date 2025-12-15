@@ -162,6 +162,5 @@ def register_urban_population_living_in_slums_callbacks(app):
     create_simple_download_callback(
         app,
         'urban-population-slums-download',
-        lambda: slums_data,
-        'urban_population_slums'
+        lambda: slums_data
     )

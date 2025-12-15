@@ -24,10 +24,12 @@ def _load_csv(file_path: str, error_context: str, **kwargs) -> pd.DataFrame:
         **kwargs: Additional arguments to pass to pd.read_csv
         
     Returns:
-        DataFrame loaded from CSV
+        DataFrame loaded from CSV with original filename attached as metadata
     """
     try:
         df = pd.read_csv(file_path, **kwargs)
+        # Attach original filename (without extension) as metadata
+        df.attrs['original_filename'] = os.path.splitext(os.path.basename(file_path))[0]
         return df
     except FileNotFoundError:
         raise FileNotFoundError(f"{error_context} data file not found: {file_path}")

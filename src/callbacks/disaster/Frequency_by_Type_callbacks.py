@@ -170,6 +170,5 @@ def setup_frequency_by_type_callbacks(app):
     create_simple_download_callback(
         app,
         'disaster-frequency-download',
-        lambda: load_emdat_data(),
-        'african_disasters_emdat'
+        lambda: load_emdat_data()
     )

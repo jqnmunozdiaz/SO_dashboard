@@ -169,6 +169,5 @@ def register_urban_density_callbacks(app):
     create_simple_download_callback(
         app,
         'urban-density-download',
-        lambda: density_data_cache,
-        'built_up_per_capita_cities'
+        lambda: density_data_cache
     )

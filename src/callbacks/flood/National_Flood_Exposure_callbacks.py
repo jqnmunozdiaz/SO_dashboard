@@ -141,6 +141,5 @@ def register_national_flood_exposure_callbacks(app):
     create_simple_download_callback(
         app,
         'national-flood-exposure-download',
-        lambda: data,
-        'national_flood_exposure_built_up'
+        lambda: data
     )

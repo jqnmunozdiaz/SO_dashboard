@@ -311,6 +311,5 @@ def register_urban_system_callbacks(app):
     create_simple_download_callback(
         app,
         'urban-system-download',
-        lambda: urban_system_data_cache,
-        'urban_system_wup2025_level1'
+        lambda: urban_system_data_cache
     )

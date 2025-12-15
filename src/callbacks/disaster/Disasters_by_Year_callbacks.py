@@ -146,6 +146,5 @@ def setup_disasters_by_year_callbacks(app):
     create_simple_download_callback(
         app,
         'disaster-timeline-download',
-        lambda: load_emdat_data(),
-        'african_disasters_emdat'
+        lambda: load_emdat_data()
     )

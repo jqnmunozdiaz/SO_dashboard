@@ -95,7 +95,7 @@ def register_national_flood_exposure_population_callbacks(app):
             # Update layout (flood type is hardcoded to Fluvial & Pluvial (Defended))
             fig.update_layout(
                 xaxis_title='Year',
-                yaxis_title='Population (persons)',
+                yaxis_title='Population',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
@@ -139,6 +139,5 @@ def register_national_flood_exposure_population_callbacks(app):
     create_simple_download_callback(
         app,
         'national-flood-exposure-population-download',
-        lambda: data,
-        'national_flood_exposure_population'
+        lambda: data
     )

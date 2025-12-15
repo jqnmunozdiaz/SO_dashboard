@@ -381,14 +381,6 @@ def register_callbacks(app):
             return html.Div([
                 # Title
                 html.Div(id='cities-growth-title', className='chart-title'),
-                # Note about data update
-                html.Div([
-                    html.P([
-                        html.I(className='fas fa-exclamation-triangle', style={'color': '#f39c12', 'margin-right': '8px'}),
-                        html.B("Note: "),
-                        "This tab will be updated with BU data for 2025."
-                    ], style={'background-color': '#fff3cd', 'border-left': '4px solid #f39c12', 'padding': '12px', 'margin-bottom': '16px', 'border-radius': '4px'})
-                ]),
                 # Metric selector (Built-up vs Population)
                 html.Div([
                     html.Div([
@@ -424,7 +416,7 @@ def register_callbacks(app):
                 dcc.Graph(id="cities-growth-chart"),
                 # Indicator note
                 html.Div([
-                    html.P([html.B("Data Source: "), "Africapolis (Population) & WorldPop (Built-up).", html.Br(), html.B("Note:"), " Shows absolute values in 2025 and Compound Annual Growth Rate (CAGR) between 2020 and 2025 for selected cities."], className="indicator-note"),
+                    html.P([html.B("Data Source: "), "Africapolis (Population) & WorldPop (Built-up).", html.Br(), html.B("Note:"), " Population data covers 2020-2025, while built-up data covers 2015-2020. This standardized approach enables cross-country comparisons. However, city dynamics can vary significantly between countries. A tailored assessment is recommended if further detailed analysis is required, notably concerning city delineation."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('cities-growth-download'),
                         create_methodological_note_button()

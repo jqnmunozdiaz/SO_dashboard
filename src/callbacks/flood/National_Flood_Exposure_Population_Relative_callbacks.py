@@ -206,6 +206,5 @@ def register_national_flood_exposure_population_relative_callbacks(app):
     create_simple_download_callback(
         app,
         'national-flood-exposure-population-relative-download',
-        lambda: flood_data,  # Pre-loaded data captured in closure
-        'national_flood_exposure_population_relative'
+        lambda: flood_data  # Pre-loaded data captured in closure
     )

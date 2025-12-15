@@ -182,8 +182,7 @@ def setup_total_affected_population_callbacks(app):
     create_simple_download_callback(
         app,
         'disaster-affected-download',
-        lambda: load_emdat_data(),
-        'african_disasters_emdat'
+        lambda: load_emdat_data()
     )
     
     

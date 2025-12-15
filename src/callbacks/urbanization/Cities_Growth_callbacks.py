@@ -10,7 +10,7 @@ import dash_leaflet as dl
 
 from ...utils.data_loader import load_africapolis_centroids, load_cities_data
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-from ...utils.component_helpers import create_simple_error_message
+from ...utils.component_helpers import create_simple_error_message, calculate_map_zoom
 from ...utils.download_helpers import create_simple_download_callback
 from config.settings import CHART_STYLES
 
@@ -19,9 +19,6 @@ KeyError: 'worldpop_built_km2_2025'
 Cities Growth: 
 Population : Africapolis
 built-up: World pop (romain a deja evnoye les donnees, mais dois rajouter worldpop_built_cagr_2015_2020 pour 2020-2025) avec les AOIs actualisees
-
-I use false data for now! worldpop_built_km2_2015	worldpop_built_km2_2020	worldpop_built_cagr_2015_2020
-
 '''
 
 def register_cities_growth_callbacks(app):
@@ -33,19 +30,21 @@ def register_cities_growth_callbacks(app):
     centroids_data = load_africapolis_centroids()
     countries_dict = load_subsaharan_countries_and_regions_dict()
     
-    year1 = 2020
-    year2 = 2025
+    pop_year1 = 2020   
+    pop_year2 = 2025
+
+    bu_year1 = 2015
+    bu_year2 = 2020
     
     data = data_or.copy()
     
-    # !!!! FIX THIS
-    data[f'BU_{year1}'] = data[f'worldpop_built_km2_{year1}'] 
-    data[f'BU_{year2}'] = data[f'worldpop_built_km2_{year2}']
-    data[f'BU_CAGR_{year1}_{year2}'] = data[f'worldpop_built_cagr_{year1}_{year2}'] * 100
+    data[f'BU_{bu_year1}'] = data[f'worldpop_built_km2_{bu_year1}'] 
+    data[f'BU_{bu_year2}'] = data[f'worldpop_built_km2_{bu_year2}']
+    data[f'BU_CAGR_{bu_year1}_{bu_year2}'] = data[f'worldpop_built_cagr_{bu_year1}_{bu_year2}'] * 100
     
-    data[f'POP_{year1}'] = data[f'africapolis_pop_{year1}']
-    data[f'POP_{year2}'] = data[f'africapolis_pop_{year2}']
-    data[f'POP_CAGR_{year1}_{year2}'] = data[f'africapolis_pop_cagr_{year1}_{year2}'] * 100
+    data[f'POP_{pop_year1}'] = data[f'africapolis_pop_{pop_year1}']
+    data[f'POP_{pop_year2}'] = data[f'africapolis_pop_{pop_year2}']
+    data[f'POP_CAGR_{pop_year1}_{pop_year2}'] = data[f'africapolis_pop_cagr_{pop_year1}_{pop_year2}'] * 100
     
     @app.callback(
         Output('cities-growth-city-selector', 'options'),
@@ -66,7 +65,7 @@ def register_cities_growth_callbacks(app):
                 return [], []
             
             # Sort by year2 population (descending) for getting top 5
-            country_data_sorted = country_data.sort_values(f'POP_{year2}', ascending=False)
+            country_data_sorted = country_data.sort_values(f'POP_{pop_year2}', ascending=False)
             
             # Create options for all cities sorted alphabetically
             country_data_alpha = country_data.sort_values('Agglomeration_Name')
@@ -124,30 +123,34 @@ def register_cities_growth_callbacks(app):
                 raise Exception(f"No data available for selected cities")
             
             # Sort by year2 population (descending) to maintain consistent ordering
-            filtered_data = filtered_data.sort_values(f'POP_{year2}', ascending=True)
+            filtered_data = filtered_data.sort_values(f'POP_{pop_year2}', ascending=True)
             
             # Determine which columns to use based on metric
             if selected_metric == 'BU':
-                col_year2 = f'BU_{year2}'
-                col_cagr = f'BU_CAGR_{year1}_{year2}'
+                col_year2 = f'BU_{bu_year2}'
+                col_cagr = f'BU_CAGR_{bu_year1}_{bu_year2}'
                 metric_name = 'Built-up'
                 unit_year2 = 'km²'
                 unit_cagr = '%'
                 title_suffix = 'Built-up Area'
+                year2_label = f'{bu_year2}'
+                year_range_label = f'{bu_year1}-{bu_year2}'
             else:  # POP
-                col_year2 = f'POP_{year2}'
-                col_cagr = f'POP_CAGR_{year1}_{year2}'
+                col_year2 = f'POP_{pop_year2}'
+                col_cagr = f'POP_CAGR_{pop_year1}_{pop_year2}'
                 metric_name = 'Population'
                 unit_year2 = ''
                 unit_cagr = '%'
                 title_suffix = 'Population'
+                year2_label = f'{pop_year2}'
+                year_range_label = f'{pop_year1}-{pop_year2}'
             
             # Create subplots: 2 columns, 1 row
             fig = make_subplots(
                 rows=1, cols=2,
                 subplot_titles=(
-                    f'{year2}',
-                    f'{year1}-{year2}'
+                    year2_label,
+                    year_range_label
                 ),
                 horizontal_spacing=0.15,
                 specs=[[{"type": "bar"}, {"type": "bar"}]]
@@ -163,10 +166,10 @@ def register_cities_growth_callbacks(app):
                     x=filtered_data[col_year2],
                     orientation='h',
                     marker=dict(color=bar_color),
-                    text=filtered_data[col_year2].apply(lambda x: f'{x:.0f}' if selected_metric == 'BU' else f'{x:,.0f}'),
+                    text=filtered_data[col_year2].apply(lambda x: f'{x:,.1f}' if selected_metric == 'BU' else f'{x:,.0f}'),
                     textposition='auto',
                     textfont=dict(size=10),
-                    hovertemplate='<b>%{y}</b><br>' + f'{metric_name}: %{{x:,.2f}} {unit_year2}<extra></extra>',
+                    hoverinfo='skip',
                     showlegend=False
                 ),
                 row=1, col=1
@@ -182,7 +185,7 @@ def register_cities_growth_callbacks(app):
                     text=filtered_data[col_cagr].apply(lambda x: f'{x:.1f}%'),
                     textposition='auto',
                     textfont=dict(size=10),
-                    hovertemplate='<b>%{y}</b><br>' + f'Annual growth rate: %{{x:,.2f}}{unit_cagr}<extra></extra>',
+                    hoverinfo='skip',
                     showlegend=False
                 ),
                 row=1, col=2
@@ -208,14 +211,14 @@ def register_cities_growth_callbacks(app):
             
             # Update x-axes
             fig.update_xaxes(
-                title_text=f'Total {metric_name} ({unit_year2})' if unit_year2 else f'Total {metric_name}',
+                title_text=f'Total {metric_name} ({unit_year2})<br>{year2_label}' if unit_year2 else f'Total {metric_name}<br>{year2_label}',
                 showgrid=True,
                 gridcolor='#e5e7eb',
                 row=1, col=1
             )
             
             fig.update_xaxes(
-                title_text=f'Annual Growth Rate ({unit_cagr})',
+                title_text=f'Annual Growth Rate ({unit_cagr})<br>{year_range_label}',
                 showgrid=True,
                 gridcolor='#e5e7eb',
                 ticksuffix='%',
@@ -246,8 +249,7 @@ def register_cities_growth_callbacks(app):
     create_simple_download_callback(
         app,
         'cities-growth-download',
-        lambda: data,
-        'cities_built_up_growth'
+        lambda: data
     )
     
     @app.callback(
@@ -290,19 +292,7 @@ def register_cities_growth_callbacks(app):
             # Calculate appropriate zoom level based on city spread
             lat_range = filtered_centroids['Latitude'].max() - filtered_centroids['Latitude'].min()
             lon_range = filtered_centroids['Longitude'].max() - filtered_centroids['Longitude'].min()
-            max_range = max(lat_range, lon_range)
-            
-            # Determine zoom level
-            if max_range > 10:
-                zoom = 5
-            elif max_range > 5:
-                zoom = 6
-            elif max_range > 2:
-                zoom = 7
-            elif max_range > 1:
-                zoom = 8
-            else:
-                zoom = 9
+            zoom = calculate_map_zoom(lat_range, lon_range)
             
             # Create markers for each city
             markers = []

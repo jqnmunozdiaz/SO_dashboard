@@ -181,6 +181,5 @@ def setup_total_deaths_callbacks(app):
     create_simple_download_callback(
         app,
         'disaster-deaths-download',
-        lambda: load_emdat_data(),
-        'african_disasters_emdat'
+        lambda: load_emdat_data()
     )

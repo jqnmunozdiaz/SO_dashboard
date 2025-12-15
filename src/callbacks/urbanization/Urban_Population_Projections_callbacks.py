@@ -274,6 +274,5 @@ def register_urban_population_projections_callbacks(app):
     create_simple_download_callback(
         app,
         'urban-population-projections-download',
-        lambda: undesa_projections,
-        'urban_population_projections'
+        lambda: undesa_projections
     )

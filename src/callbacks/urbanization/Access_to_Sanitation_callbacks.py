@@ -127,6 +127,5 @@ def register_access_to_sanitation_callbacks(app):
     create_simple_download_callback(
         app,
         'access-to-sanitation-download',
-        lambda: sanitation_data,
-        'access_to_sanitation_urban'
+        lambda: sanitation_data
     )

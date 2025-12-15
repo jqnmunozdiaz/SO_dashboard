@@ -162,3 +162,19 @@ def create_error_chart(error_message, chart_type='line', xaxis_title="", yaxis_t
     fig.update_layout(**layout_updates)
 
     return fig
+
+
+def calculate_map_zoom(lat_range, lon_range):
+    """Return a Leaflet zoom level for the provided coordinate span."""
+
+    max_range = max(lat_range or 0, lon_range or 0)
+
+    if max_range > 10:
+        return 5
+    if max_range > 5:
+        return 6
+    if max_range > 2:
+        return 7
+    if max_range > 1:
+        return 8
+    return 9

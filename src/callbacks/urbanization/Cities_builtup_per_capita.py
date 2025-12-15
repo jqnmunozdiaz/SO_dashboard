@@ -18,7 +18,7 @@ def register_cities_growth_rate_callbacks(app):
     # Load static data once at registration time for performance
     data = load_cities_growth_rate()
     countries_dict = load_subsaharan_countries_and_regions_dict()
-    year = 2020
+    year = 2025
 
     @app.callback(
         [Output('cities-growth-rate-chart', 'figure'),
@@ -47,7 +47,7 @@ def register_cities_growth_rate_callbacks(app):
             for _, row in filtered_data.iterrows():
                 hover_texts.append(
                     f"<b>{row['Agglomeration_Name']}</b><br>" +
-                    f"Population ({year}): {row[f'africapolis_pop_{year}']:,}<br>" +
+                    f"Population ({year}): {int(row[f'africapolis_pop_{year}']):,}<br>" +
                     f"Built-up ({year}): {row[f'worldpop_built_km2_{year}']:.1f} km²<br>"
                     f"Built-up per capita: {row[f'buppercapita_{year}']:.1f} m²/person<br>"
                 )

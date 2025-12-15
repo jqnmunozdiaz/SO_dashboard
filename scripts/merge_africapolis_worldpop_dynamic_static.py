@@ -200,8 +200,14 @@ df_format_1['africapolis_pop_cagr_2020_2025'] = (
     (df_format_1['africapolis_pop_2025'] / df_format_1['africapolis_pop_2020']) ** (1/5) - 1
 )
 
+# Calculate built-up per capita (km2 per person)
+df_format_1['buppercapita_2015'] = df_format_1['worldpop_built_km2_2015'] / df_format_1['africapolis_pop_2015'] * 1e6
+df_format_1['buppercapita_2020'] = df_format_1['worldpop_built_km2_2020'] / df_format_1['africapolis_pop_2020'] * 1e6
+df_format_1['buppercapita_2025'] = df_format_1['worldpop_built_km2_2025'] / df_format_1['africapolis_pop_2025'] * 1e6
+
 # Replace inf values with NaN (division by zero cases)
 df_format_1 = df_format_1.replace([float('inf'), float('-inf')], pd.NA)
+
 
 # Save format_1 file
 print(f"\nSaving format_1 dataset to: {format_1_output}")

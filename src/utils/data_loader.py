@@ -176,12 +176,12 @@ def load_cities_growth_rate() -> pd.DataFrame:
     # Get the absolute path to the project root directory
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.join(current_dir, '..', '..')
-    file_path = os.path.join(project_root, 'data', 'processed', 'agglomeration_population_builtup_merged.csv')
+    file_path = os.path.join(project_root, 'data', 'processed', 'africapolis_worldpop_final_merged_format_1.csv')
     
     try:
         df = pd.read_csv(file_path)
         
-        # Add size category based on africapolis_pop_2020
+        # Add size category based on africapolis_pop_2025
         def categorize_city_size(pop):
             if pd.isna(pop) or pop == 0:
                 return 'Fewer than 300 000'
@@ -198,7 +198,7 @@ def load_cities_growth_rate() -> pd.DataFrame:
             else:
                 return 'Fewer than 300 000'
         
-        df['size_category'] = df['africapolis_pop_2020'].apply(categorize_city_size)
+        df['size_category'] = df['africapolis_pop_2025'].apply(categorize_city_size)
         
         return df
         

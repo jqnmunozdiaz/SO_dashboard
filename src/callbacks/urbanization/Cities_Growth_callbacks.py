@@ -39,9 +39,9 @@ def register_cities_growth_callbacks(app):
     data = data_or.copy()
     
     # !!!! FIX THIS
-    data[f'BU_{year1}'] = data[f'worldpop_built_km2_2015'] 
-    data[f'BU_{year2}'] = data[f'worldpop_built_km2_2020']
-    data[f'BU_CAGR_{year1}_{year2}'] = data[f'worldpop_built_cagr_2015_2020'] * 100
+    data[f'BU_{year1}'] = data[f'worldpop_built_km2_{year1}'] 
+    data[f'BU_{year2}'] = data[f'worldpop_built_km2_{year2}']
+    data[f'BU_CAGR_{year1}_{year2}'] = data[f'worldpop_built_cagr_{year1}_{year2}'] * 100
     
     data[f'POP_{year1}'] = data[f'africapolis_pop_{year1}']
     data[f'POP_{year2}'] = data[f'africapolis_pop_{year2}']

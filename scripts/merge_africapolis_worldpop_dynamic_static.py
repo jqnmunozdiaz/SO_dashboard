@@ -14,7 +14,6 @@ import os
 
 # Get project root directory
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-a = 3
 
 # Define file paths
 data_dir = os.path.join(project_root, 'data', 'raw', 'data_worldpopg2_fathom3_nov2025')
@@ -148,7 +147,7 @@ df_wide = df_final_merged[df_final_merged['ftm_return_period'] == df_final_merge
 
 # Pivot built-up surface to wide format
 built_pivot = df_wide.pivot_table(
-    index=['unique_id', 'ISO3', 'Agglomeration_Name', 'Surface km2', 'africapolis_geometry_year'],
+    index=['unique_id', 'ISO3', 'Agglomeration_Name'],
     columns='worldpop_year',
     values='worldpop_built_surface_km2',
     aggfunc='first'
@@ -208,3 +207,5 @@ df_format_1 = df_format_1.replace([float('inf'), float('-inf')], pd.NA)
 print(f"\nSaving format_1 dataset to: {format_1_output}")
 df_format_1.to_csv(format_1_output, index=False)
 
+
+# %%

@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import dash_leaflet as dl
 
-from ...utils.data_loader import load_africapolis_centroids, load_cities_growth_rate
+from ...utils.data_loader import load_africapolis_centroids, load_cities_data
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
 from ...utils.component_helpers import create_simple_error_message
 from ...utils.download_helpers import create_simple_download_callback
@@ -28,7 +28,7 @@ def register_cities_growth_callbacks(app):
     """Register callbacks for Cities Growth chart"""
     
     # Load static data once at registration time for performance
-    data_or = load_cities_growth_rate()
+    data_or = load_cities_data()
 
     centroids_data = load_africapolis_centroids()
     countries_dict = load_subsaharan_countries_and_regions_dict()

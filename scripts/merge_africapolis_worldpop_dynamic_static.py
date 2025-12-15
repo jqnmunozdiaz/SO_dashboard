@@ -205,6 +205,28 @@ df_format_1['buppercapita_2015'] = df_format_1['worldpop_built_km2_2015'] / df_f
 df_format_1['buppercapita_2020'] = df_format_1['worldpop_built_km2_2020'] / df_format_1['africapolis_pop_2020'] * 1e6
 df_format_1['buppercapita_2025'] = df_format_1['worldpop_built_km2_2025'] / df_format_1['africapolis_pop_2025'] * 1e6
 
+# Add size category based on population for each year
+def categorize_city_size(pop):
+    """Categorize city by population size"""
+    if pd.isna(pop) or pop == 0:
+        return 'Fewer than 300 000'
+    elif pop >= 10_000_000:
+        return '10 million or more'
+    elif pop >= 5_000_000:
+        return '5 to 10 million'
+    elif pop >= 1_000_000:
+        return '1 to 5 million'
+    elif pop >= 500_000:
+        return '500 000 to 1 million'
+    elif pop >= 300_000:
+        return '300 000 to 500 000'
+    else:
+        return 'Fewer than 300 000'
+
+df_format_1['size_category_2015'] = df_format_1['africapolis_pop_2015'].apply(categorize_city_size)
+df_format_1['size_category_2020'] = df_format_1['africapolis_pop_2020'].apply(categorize_city_size)
+df_format_1['size_category_2025'] = df_format_1['africapolis_pop_2025'].apply(categorize_city_size)
+
 # Replace inf values with NaN (division by zero cases)
 df_format_1 = df_format_1.replace([float('inf'), float('-inf')], pd.NA)
 

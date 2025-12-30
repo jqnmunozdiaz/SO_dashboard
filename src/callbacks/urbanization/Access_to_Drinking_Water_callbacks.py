@@ -128,6 +128,5 @@ def register_access_to_drinking_water_callbacks(app):
     create_simple_download_callback(
         app,
         'access-to-drinking-water-download',
-        lambda: water_data,
-        'access_to_drinking_water_urban'
+        lambda: water_data
     )

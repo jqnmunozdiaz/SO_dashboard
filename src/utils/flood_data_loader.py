@@ -13,13 +13,15 @@ def load_flood_exposure_data(data_type='built_s'):
         data_type: Type of data to load ('built_s', 'pop', etc.)
         
     Returns:
-        DataFrame with flood exposure data
+        DataFrame with flood exposure data and original filename metadata
     """
     project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     file_path = os.path.join(project_root, 'data', 'processed', 'flood', 
                              f'country_ftm3_current_ghsl2023_{data_type}.csv')
     
     df = pd.read_csv(file_path)
+    # Attach original filename as metadata
+    df.attrs['original_filename'] = f'country_ftm3_current_ghsl2023_{data_type}'
     return df
 
 
@@ -109,7 +111,9 @@ def load_city_flood_exposure_data():
     """
     project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     file_path = os.path.join(project_root, 'data', 'processed', 
-                             'agglomeration_population_builtup_merged.csv')
+                             'africapolis_worldpop_final_merged_format_2.csv')
     
     df = pd.read_csv(file_path)
+    # Attach original filename as metadata
+    df.attrs['original_filename'] = 'africapolis_worldpop_final_merged_format_2'
     return df

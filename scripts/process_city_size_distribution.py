@@ -9,6 +9,7 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from src.utils.country_utils import load_subsaharan_countries_dict
+from src.utils.city_helpers import get_city_size_category
 
 # Load Sub-Saharan African countries
 SUB_SAHARAN_COUNTRIES = load_subsaharan_countries_dict()
@@ -19,21 +20,6 @@ country_code_to_iso3 = dict(zip(locations_df['Country Code'].astype(int), locati
 
 # Years to extract (based on user requirement)
 SELECTED_YEARS = [2020, 2025, 2030, 2035]
-
-def get_city_size_category(population):
-    """Determine city size category based on population (in thousands)"""
-    if population >= 10000:
-        return '10 million or more'
-    elif population >= 5000:
-        return '5 to 10 million'
-    elif population >= 1000:
-        return '1 to 5 million'
-    elif population >= 500:
-        return '500 000 to 1 million'
-    elif population >= 300:
-        return '300 000 to 500 000'
-    else:
-        return 'Fewer than 300 000'
 
 def load_aggregate_totals():
     """Load aggregate totals by size class from F17a"""

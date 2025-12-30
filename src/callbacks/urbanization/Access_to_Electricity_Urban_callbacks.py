@@ -151,6 +151,5 @@ def register_access_to_electricity_urban_callbacks(app):
     create_simple_download_callback(
         app,
         'access-to-electricity-urban-download',
-        lambda: electricity_data,
-        'access_to_electricity_urban'
+        lambda: electricity_data
     )

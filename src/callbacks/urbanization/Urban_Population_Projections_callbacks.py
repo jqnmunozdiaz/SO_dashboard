@@ -268,30 +268,11 @@ def register_urban_population_projections_callbacks(app):
             fig, style = create_simple_error_message(str(e))
             return fig, style, ""
     
-    # Register download callback that switches between projections and growth rates
-    @app.callback(
-        Output('urban-population-projections-download', 'data'),
-        [Input('urban-population-projections-download-button', 'n_clicks'),
-         Input('main-country-filter', 'value'),
-         Input('urban-population-projections-mode', 'value')],
-        prevent_initial_call=True
+    # Register download callback using the reusable helper
+    # Note: Downloads projections data (not growth rates) to match other subtabs
+    from ...utils.download_helpers import create_simple_download_callback
+    create_simple_download_callback(
+        app,
+        'urban-population-projections-download',
+        lambda: undesa_projections
     )
-    def download_urban_population_data(n_clicks, selected_country, display_mode):
-        """Download data based on current display mode"""
-        if not n_clicks:
-            return None
-        
-        # Default to absolute values if mode not specified
-        if display_mode is None:
-            display_mode = 'absolute'
-        
-        # Select appropriate dataset based on display mode
-        if display_mode == 'growth_rate':
-            data = undesa_growth_rates.copy()
-            filename = 'urban_population_growth_rates'
-        else:
-            data = undesa_projections.copy()
-            filename = 'urban_population_projections'       
-        
-        from ...utils.download_helpers import prepare_csv_download
-        return prepare_csv_download(data, filename)

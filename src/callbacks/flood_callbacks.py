@@ -226,7 +226,7 @@ def register_callbacks(app):
         
         # Data source note
         data_source = "Fathom3 flood maps, WorldPop Built-up Surface (2025), Africapolis Population (2025), and Africapolis city boundaries."
-        note_prefix = "This chart shows 2020 flood exposure values (left) and annual growth rates between 2015-2020 (right) for selected cities. Data comprises fluvial and pluvial floods. Relative values are displayed as a share of total city population or built-up."
+        note_prefix = "This chart shows flood exposure values (left) and annual growth rates between (right) for selected cities. Data comprises fluvial and pluvial floods. Relative values are displayed as a share of total city population or built-up."
         note_text = [
             html.B("Data Source: "), 
             data_source,

@@ -24,10 +24,12 @@ def _load_csv(file_path: str, error_context: str, **kwargs) -> pd.DataFrame:
         **kwargs: Additional arguments to pass to pd.read_csv
         
     Returns:
-        DataFrame loaded from CSV
+        DataFrame loaded from CSV with original filename attached as metadata
     """
     try:
         df = pd.read_csv(file_path, **kwargs)
+        # Attach original filename (without extension) as metadata
+        df.attrs['original_filename'] = os.path.splitext(os.path.basename(file_path))[0]
         return df
     except FileNotFoundError:
         raise FileNotFoundError(f"{error_context} data file not found: {file_path}")
@@ -171,41 +173,11 @@ def load_jmp_sanitation_data() -> pd.DataFrame:
     return _load_csv(file_path, "JMP sanitation")
 
 
-def load_cities_growth_rate() -> pd.DataFrame:
-    """Load city population and built-up area growth rates (2015-2020) with size categories"""
-    # Get the absolute path to the project root directory
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.join(current_dir, '..', '..')
-    file_path = os.path.join(project_root, 'data', 'processed', 'agglomeration_population_builtup_merged.csv')
-    
-    try:
-        df = pd.read_csv(file_path)
-        
-        # Add size category based on africapolis_pop_2020
-        def categorize_city_size(pop):
-            if pd.isna(pop) or pop == 0:
-                return 'Fewer than 300 000'
-            elif pop >= 10000000:
-                return '10 million or more'
-            elif pop >= 5000000:
-                return '5 to 10 million'
-            elif pop >= 1000000:
-                return '1 to 5 million'
-            elif pop >= 500000:
-                return '500 000 to 1 million'
-            elif pop >= 300000:
-                return '300 000 to 500 000'
-            else:
-                return 'Fewer than 300 000'
-        
-        df['size_category'] = df['africapolis_pop_2020'].apply(categorize_city_size)
-        
-        return df
-        
-    except FileNotFoundError:
-        raise FileNotFoundError(f"Cities growth rate data file not found: {file_path}")
-    except Exception as e:
-        raise Exception(f"Error loading cities growth rate data: {str(e)}")
+def load_cities_data() -> pd.DataFrame:
+    """Load city population and built-up area data with size categories"""
+    project_root = _get_project_root()
+    file_path = os.path.join(project_root, 'data', 'processed', 'africapolis_worldpop_final_merged_format_1.csv')
+    return _load_csv(file_path, "Cities data")
 
 
 def load_africapolis_ghsl_simple() -> pd.DataFrame:
@@ -271,4 +243,4 @@ def load_wup2025_national_data(file_path: Optional[str] = None) -> pd.DataFrame:
 from .country_utils import get_subsaharan_countries, load_subsaharan_countries_dict, load_subsaharan_countries_and_regions_dict
 
 # Re-export for backward compatibility
-__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections', 'load_city_size_distribution', 'load_city_agglomeration_counts', 'load_population_data', 'load_jmp_water_data', 'load_jmp_sanitation_data', 'load_cities_growth_rate', 'load_urban_density_data', 'load_precipitation_data', 'load_flood_projections_data', 'load_wup2025_level1_data', 'load_wup2025_national_data']
+__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections', 'load_city_size_distribution', 'load_city_agglomeration_counts', 'load_population_data', 'load_jmp_water_data', 'load_jmp_sanitation_data', 'load_cities_data', 'load_urban_density_data', 'load_precipitation_data', 'load_flood_projections_data', 'load_wup2025_level1_data', 'load_wup2025_national_data']

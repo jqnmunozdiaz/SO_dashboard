@@ -263,6 +263,5 @@ def register_urbanization_vs_climate_change_callbacks(app):
     create_simple_download_callback(
         app,
         'urbanization-vs-climate-change-download',
-        lambda: load_flood_projections_data(),
-        'urbanization_vs_climate_flood_exposure'
+        lambda: load_flood_projections_data()
     )

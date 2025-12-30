@@ -245,6 +245,5 @@ def register_urbanization_rate_callbacks(app):
     create_simple_download_callback(
         app,
         'urbanization-rate-download',
-        lambda: wup_data,
-        'wup2025_urbanization_rate'
+        lambda: wup_data
     )

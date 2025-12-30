@@ -217,6 +217,5 @@ def register_precipitation_callbacks(app):
     create_simple_download_callback(
         app,
         'precipitation-download',
-        lambda: load_precipitation_data('1day'),
-        'future_precipitation_patterns'
+        lambda: load_precipitation_data('1day')
     )

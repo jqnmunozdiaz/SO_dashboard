@@ -11,7 +11,7 @@ import pandas as pd
 
 from ...utils.flood_data_loader import load_city_flood_exposure_data
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-from ...utils.component_helpers import create_simple_error_message
+from ...utils.component_helpers import create_simple_error_message, calculate_map_zoom
 from ...utils.download_helpers import create_simple_download_callback
 from ...utils.data_loader import load_africapolis_centroids
 from config.settings import CHART_STYLES
@@ -116,47 +116,50 @@ def register_cities_flood_exposure_callbacks(app):
             
             # Determine column names and labels based on exposure type and measurement type
             if exposure_type == 'pop':
-                col_2020 = f'pop_ftm3_fluvial_pluvial_flood_rp{return_period}_2020'
-                col_cagr = f'pop_ftm3_fluvial_pluvial_flood_rp{return_period}_cagr_2015_2020'
-                col_total = 'africapolis_pop_2020'
-                metric_name = 'Population'
+                year1 = 2020
+                year2 = 2025
                 
                 if measurement_type == 'absolute':
-                    unit_2020 = ''
+                    col_year2 = f'worldpop_population_ftm_total_rp{return_period}_{year2}'
+                    unit_measurement = ''
                     title_suffix = 'Population Exposed to Floods'
+                    left_title = f'Population Exposed<br>{year2}'
+                    text_format = filtered_data[col_year2].apply(lambda x: f'{x:,.0f}')
                 else:  # relative
-                    unit_2020 = '%'
+                    col_year2 = f'worldpop_population_ftm_share_rp{return_period}_{year2}'
+                    unit_measurement = '%'
                     title_suffix = 'Population Exposed to Floods (%)'
+                    left_title = f'Population Exposed (%)<br>{year2}'
+                    text_format = (filtered_data[col_year2] * 100).apply(lambda x: f'{x:.1f}%')
+                
+                col_cagr = f'pop_ftm3_fluvial_pluvial_flood_rp{return_period}_cagr_{year1}_{year2}'
+                right_title = f'Annual Growth Rate (%)<br>{year1}-{year2}'
             else:  # built
-                col_2020 = f'built_ftm3_fluvial_pluvial_flood_rp{return_period}_2020'
-                col_cagr = f'built_ftm3_fluvial_pluvial_flood_rp{return_period}_cagr_2015_2020'
-                col_total = 'worldpop_built_km2_2020'
-                metric_name = 'Built-up Area'
+                year1 = 2015
+                year2 = 2020
                 
                 if measurement_type == 'absolute':
-                    unit_2020 = 'km²'
+                    col_year2 = f'worldpop_built_surface_ftm_km2_rp{return_period}_{year2}'
+                    unit_measurement = 'km²'
                     title_suffix = 'Built-up Area Exposed to Floods'
+                    left_title = f'Built-up Area Exposed ({unit_measurement})<br>{year2}'
+                    text_format = filtered_data[col_year2].apply(lambda x: f'{x:.2f}')
                 else:  # relative
-                    unit_2020 = '%'
+                    col_year2 = f'worldpop_built_surface_ftm_share_rp{return_period}_{year2}'
+                    unit_measurement = '%'
                     title_suffix = 'Built-up Area Exposed to Floods (%)'
+                    left_title = f'Built-up Area Exposed (%)<br>{year2}'
+                    text_format = (filtered_data[col_year2] * 100).apply(lambda x: f'{x:.1f}%')
+                
+                col_cagr = f'built_ftm3_fluvial_pluvial_flood_rp{return_period}_cagr_{year1}_{year2}'
+                right_title = f'Annual Growth Rate (%)<br>{year1}-{year2}'
             
             # Check if columns exist
-            if col_2020 not in filtered_data.columns or col_cagr not in filtered_data.columns:
+            if col_year2 not in filtered_data.columns or col_cagr not in filtered_data.columns:
                 raise Exception(f"Data not available for selected flood type and return period")
             
-            # Calculate values for left chart
-            if measurement_type == 'relative':
-                # Calculate percentage: (exposed / total) * 100
-                filtered_data['left_values'] = (filtered_data[col_2020] / filtered_data[col_total]) * 100
-            else:
-                # Use absolute values
-                filtered_data['left_values'] = filtered_data[col_2020]
-            
-            # CAGR values (convert from decimal to percentage)
-            filtered_data['cagr_values'] = filtered_data[col_cagr] * 100
-            
-            # Handle missing CAGR values
-            filtered_data['cagr_display'] = filtered_data['cagr_values'].apply(
+            # Handle missing CAGR values (convert from decimal to percentage)
+            filtered_data['cagr_display'] = (filtered_data[col_cagr] * 100).apply(
                 lambda x: 'N/A' if pd.isna(x) else f'{x:.1f}%'
             )
             
@@ -164,8 +167,8 @@ def register_cities_flood_exposure_callbacks(app):
             fig = make_subplots(
                 rows=1, cols=2,
                 subplot_titles=(
-                    f'2020',
-                    f'2015-2020'
+                    f'{year2}',
+                    f'{year1}-{year2}'
                 ),
                 horizontal_spacing=0.15,
                 specs=[[{"type": "bar"}, {"type": "bar"}]]
@@ -174,36 +177,28 @@ def register_cities_flood_exposure_callbacks(app):
             # Define orange color for bars
             bar_color = '#e67e22'  # Orange color
             
-            # Left chart: 2020 absolute or relative values
-            if measurement_type == 'absolute':
-                if exposure_type == 'pop':
-                    text_format = filtered_data['left_values'].apply(lambda x: f'{x:,.0f}')
-                    hover_template = '<b>%{y}</b><br>' + f'{metric_name}: %{{x:,.0f}} {unit_2020}<extra></extra>'
-                else:  # built
-                    text_format = filtered_data['left_values'].apply(lambda x: f'{x:.2f}')
-                    hover_template = '<b>%{y}</b><br>' + f'{metric_name}: %{{x:.2f}} {unit_2020}<extra></extra>'
-            else:  # relative
-                text_format = filtered_data['left_values'].apply(lambda x: f'{x:.1f}%')
-                hover_template = '<b>%{y}</b><br>' + f'{metric_name}: %{{x:.1f}}{unit_2020}<extra></extra>'
+            # Left chart: absolute or relative values
+            # For relative values, multiply by 100 to convert to percentage
+            x_values = filtered_data[col_year2] * 100 if measurement_type == 'relative' else filtered_data[col_year2]
             
             fig.add_trace(
                 go.Bar(
                     y=filtered_data['Agglomeration_Name'],
-                    x=filtered_data['left_values'],
+                    x=x_values,
                     orientation='h',
                     marker=dict(color=bar_color),
                     text=text_format,
                     textposition='auto',
                     textfont=dict(size=10),
-                    hovertemplate=hover_template,
+                    hoverinfo='skip',
                     showlegend=False
                 ),
                 row=1, col=1
             )
             
-            # Right chart: CAGR values
+            # Right chart: CAGR values (convert from decimal to percentage)
             # Filter out N/A values for plotting, but show them in hover
-            cagr_x_values = filtered_data['cagr_values'].fillna(0)  # Replace NaN with 0 for plotting
+            cagr_x_values = (filtered_data[col_cagr] * 100).fillna(0)  # Replace NaN with 0 for plotting
             
             fig.add_trace(
                 go.Bar(
@@ -214,7 +209,7 @@ def register_cities_flood_exposure_callbacks(app):
                     text=filtered_data['cagr_display'],
                     textposition='auto',
                     textfont=dict(size=10),
-                    hovertemplate='<b>%{y}</b><br>Annual growth rate: %{text}<extra></extra>',
+                    hoverinfo='skip',
                     showlegend=False
                 ),
                 row=1, col=2
@@ -237,11 +232,6 @@ def register_cities_flood_exposure_callbacks(app):
             )
             
             # Update x-axes
-            if measurement_type == 'absolute':
-                left_title = f'{metric_name} Exposed ({unit_2020})' if unit_2020 else f'{metric_name} Exposed'
-            else:
-                left_title = f'{metric_name} Exposed (%)'
-            
             fig.update_xaxes(
                 title_text=left_title,
                 showgrid=True,
@@ -251,7 +241,7 @@ def register_cities_flood_exposure_callbacks(app):
             )
             
             fig.update_xaxes(
-                title_text='Annual Growth Rate (%)',
+                title_text=right_title,
                 showgrid=True,
                 gridcolor='#e5e7eb',
                 ticksuffix='%',
@@ -282,8 +272,7 @@ def register_cities_flood_exposure_callbacks(app):
     create_simple_download_callback(
         app,
         'cities-flood-exposure-download',
-        lambda: data,
-        'cities_flood_exposure'
+        lambda: data
     )
     
     @app.callback(
@@ -351,18 +340,7 @@ def register_cities_flood_exposure_callbacks(app):
                 # Calculate zoom based on city spread
                 lat_range = city_centroids['Latitude'].max() - city_centroids['Latitude'].min()
                 lon_range = city_centroids['Longitude'].max() - city_centroids['Longitude'].min()
-                max_range = max(lat_range, lon_range)
-                
-                if max_range < 1:
-                    zoom = 9
-                elif max_range < 3:
-                    zoom = 8
-                elif max_range < 5:
-                    zoom = 7
-                elif max_range < 10:
-                    zoom = 6
-                else:
-                    zoom = 5
+                zoom = calculate_map_zoom(lat_range, lon_range)
             else:
                 center_lat, center_lon, zoom = 0, 20, 4
             

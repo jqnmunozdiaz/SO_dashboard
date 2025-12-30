@@ -164,6 +164,5 @@ def register_cities_evolution_callbacks(app):
     create_simple_download_callback(
         app,
         'cities-evolution-download',
-        lambda: data,
-        'cities_individual_evolution'
+        lambda: data
     )

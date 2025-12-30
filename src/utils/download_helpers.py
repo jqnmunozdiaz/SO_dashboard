@@ -14,11 +14,11 @@ def prepare_csv_download(df, filename):
     Prepare a DataFrame for CSV download
     
     Args:
-        df (pd.DataFrame): DataFrame to download
-        filename (str): Filename without extension (e.g., 'urban_population_data')
+        df: DataFrame to download
+        filename: Filename without extension
         
     Returns:
-        dict: Download data dictionary for dcc.send_data_frame
+        Download data dictionary for dcc.send_data_frame
     """
     return dcc.send_data_frame(df.to_csv, f"{filename}.csv", index=False)
 
@@ -28,11 +28,11 @@ def prepare_multi_csv_download(dataframes_dict, zip_filename):
     Prepare multiple DataFrames for download as a ZIP file
     
     Args:
-        dataframes_dict (dict): Dictionary mapping filenames (without extension) to DataFrames
-        zip_filename (str): Name for the ZIP file without extension
+        dataframes_dict: Dictionary mapping filenames to DataFrames
+        zip_filename: ZIP filename without extension
         
     Returns:
-        dict: Download data dictionary for dcc.send_bytes
+        Download data dictionary for dcc.send_bytes
     """
     # Create a bytes buffer for the ZIP file
     zip_buffer = io.BytesIO()
@@ -51,38 +51,15 @@ def prepare_multi_csv_download(dataframes_dict, zip_filename):
     return dcc.send_bytes(zip_buffer.getvalue(), f"{zip_filename}.zip")
 
 
-def create_simple_download_callback(app, download_id, data_loader, filename):
+def create_simple_download_callback(app, download_id, data_loader, filename=None):
     """
-    Create a standard download callback for a chart with automatic error handling
-    
-    This eliminates the need to write repetitive download callback code in each chart file.
+    Create a download callback for a chart with automatic error handling
     
     Args:
         app: Dash app instance
-        download_id: ID of the dcc.Download component (e.g., 'disaster-frequency-download')
-        data_loader: Callable that returns a DataFrame (e.g., lambda: load_emdat_data())
-                    Or a DataFrame directly if data is pre-loaded
-        filename: Base filename for the CSV without extension (e.g., 'african_disasters_emdat')
-        
-    Usage in callback files:
-        # At the end of register_callbacks function:
-        from src.utils.download_helpers import create_simple_download_callback
-        
-        # For dynamic data loading:
-        create_simple_download_callback(
-            app, 
-            'disaster-frequency-download',
-            lambda: load_emdat_data(),
-            'african_disasters_emdat'
-        )
-        
-        # For pre-loaded static data (captured in closure):
-        create_simple_download_callback(
-            app,
-            'slums-download', 
-            lambda: slums_data,  # Reference to pre-loaded data
-            'urban_population_slums'
-        )
+        download_id: ID of the dcc.Download component
+        data_loader: Callable that returns a DataFrame, or DataFrame directly
+        filename: Optional CSV filename without extension. If None, uses original filename from DataFrame metadata
     """
     @app.callback(
         Output(download_id, 'data'),
@@ -97,7 +74,13 @@ def create_simple_download_callback(app, download_id, data_loader, filename):
         try:
             # Get the data (either by calling function or using pre-loaded data)
             data = data_loader() if callable(data_loader) else data_loader
-            return prepare_csv_download(data, filename)
+            
+            # Use provided filename, or extract from DataFrame metadata, or fallback to download_id
+            output_filename = filename
+            if output_filename is None:
+                output_filename = data.attrs.get('original_filename', download_id.replace('-download', ''))
+            
+            return prepare_csv_download(data, output_filename)
         except Exception as e:
             print(f"Error preparing download: {str(e)}")
             return None
@@ -112,29 +95,8 @@ def create_multi_csv_download_callback(app, download_id, dataframes_dict_loader,
     Args:
         app: Dash app instance
         download_id: ID of the dcc.Download component
-        dataframes_dict_loader: Callable that returns a dict mapping filenames to DataFrames
-                               Or a dict directly if data is pre-loaded
-        zip_filename: Base filename for the ZIP file without extension
-        
-    Usage:
-        # For dynamic data:
-        create_multi_csv_download_callback(
-            app,
-            'gdp-vs-urbanization-download',
-            lambda: {
-                f'gdp_per_capita_{GDP_INDICATOR}': load_wdi_data(GDP_INDICATOR),
-                f'urbanization_rate_{URBAN_INDICATOR}': load_wdi_data(URBAN_INDICATOR)
-            },
-            'gdp_urbanization'
-        )
-        
-        # For pre-loaded data:
-        create_multi_csv_download_callback(
-            app,
-            'chart-download',
-            lambda: {'file1': df1, 'file2': df2},
-            'combined_data'
-        )
+        dataframes_dict_loader: Callable returning dict mapping filenames to DataFrames
+        zip_filename: ZIP filename without extension
     """
     @app.callback(
         Output(download_id, 'data'),
@@ -162,11 +124,11 @@ def prepare_images_zip_download(image_paths_dict, zip_filename):
     Prepare multiple image files for download as a ZIP file
     
     Args:
-        image_paths_dict (dict): Dictionary mapping filenames (with extension) to file paths
-        zip_filename (str): Name for the ZIP file without extension
+        image_paths_dict: Dictionary mapping filenames to file paths
+        zip_filename: ZIP filename without extension
         
     Returns:
-        dict: Download data dictionary for dcc.send_bytes
+        Download data dictionary for dcc.send_bytes
     """
     # Create a bytes buffer for the ZIP file
     zip_buffer = io.BytesIO()

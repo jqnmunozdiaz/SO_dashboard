@@ -6,7 +6,7 @@ Shows population growth rate vs built-up area growth rate for cities (2015-2020)
 from dash import Input, Output, html
 import plotly.graph_objects as go
 
-from ...utils.data_loader import load_cities_growth_rate
+from ...utils.data_loader import load_cities_data
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
 from ...utils.component_helpers import create_simple_error_message
 from ...utils.download_helpers import create_simple_download_callback
@@ -16,9 +16,9 @@ def register_cities_growth_rate_callbacks(app):
     """Register callbacks for Cities Growth Rate scatterplot chart"""
     
     # Load static data once at registration time for performance
-    data = load_cities_growth_rate()
+    data = load_cities_data()
     countries_dict = load_subsaharan_countries_and_regions_dict()
-    year = 2020
+    year = 2025
 
     @app.callback(
         [Output('cities-growth-rate-chart', 'figure'),
@@ -47,7 +47,7 @@ def register_cities_growth_rate_callbacks(app):
             for _, row in filtered_data.iterrows():
                 hover_texts.append(
                     f"<b>{row['Agglomeration_Name']}</b><br>" +
-                    f"Population ({year}): {row[f'africapolis_pop_{year}']:,}<br>" +
+                    f"Population ({year}): {int(row[f'africapolis_pop_{year}']):,}<br>" +
                     f"Built-up ({year}): {row[f'worldpop_built_km2_{year}']:.1f} km²<br>"
                     f"Built-up per capita: {row[f'buppercapita_{year}']:.1f} m²/person<br>"
                 )
@@ -128,6 +128,5 @@ def register_cities_growth_rate_callbacks(app):
     create_simple_download_callback(
         app,
         'cities-growth-rate-download',
-        lambda: data,
-        'cities_growth_rates_2015_2020'
+        lambda: data
     )

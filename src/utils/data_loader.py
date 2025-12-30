@@ -243,4 +243,38 @@ def load_wup2025_national_data(file_path: Optional[str] = None) -> pd.DataFrame:
 from .country_utils import get_subsaharan_countries, load_subsaharan_countries_dict, load_subsaharan_countries_and_regions_dict
 
 # Re-export for backward compatibility
-__all__ = ['get_subsaharan_countries', 'load_subsaharan_countries_dict', 'load_subsaharan_countries_and_regions_dict', 'load_wdi_data', 'load_urbanization_indicators_dict', 'load_urbanization_indicators_notes_dict', 'load_undesa_urban_projections', 'load_city_size_distribution', 'load_city_agglomeration_counts', 'load_population_data', 'load_jmp_water_data', 'load_jmp_sanitation_data', 'load_cities_data', 'load_urban_density_data', 'load_precipitation_data', 'load_flood_projections_data', 'load_wup2025_level1_data', 'load_wup2025_national_data']
+__all__ = [
+    # Country utilities (re-exported from country_utils)
+    'get_subsaharan_countries',
+    'load_subsaharan_countries_dict',
+    'load_subsaharan_countries_and_regions_dict',
+    # EM-DAT
+    'load_emdat_data',
+    # WDI
+    'load_wdi_data',
+    'load_urbanization_indicators_dict',
+    'load_urbanization_indicators_notes_dict',
+    # UNDESA
+    'load_undesa_urban_projections',
+    'load_undesa_urban_growth_rates',
+    # WUP
+    'load_WUP_urban_projections',
+    'load_WUP_urban_growth_rates',
+    'load_wup2025_level1_data',
+    'load_wup2025_national_data',
+    # Cities
+    'load_city_size_distribution',
+    'load_cities_data',
+    'load_africapolis_ghsl_simple',
+    'load_africapolis_centroids',
+    # Population
+    'load_population_data',
+    # JMP WASH
+    'load_jmp_water_data',
+    'load_jmp_sanitation_data',
+    # Urban density
+    'load_urban_density_data',
+    # Climate/Flood projections
+    'load_precipitation_data',
+    'load_flood_projections_data',
+]

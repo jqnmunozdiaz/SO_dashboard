@@ -226,14 +226,14 @@ def register_callbacks(app):
         
         # Data source note
         data_source = "Fathom3 flood maps, WorldPop Built-up Surface (2025), Africapolis Population (2025), and Africapolis city boundaries."
-        note_prefix = "This chart shows flood exposure values (left) and annual growth rates between (right) for selected cities. Data comprises fluvial and pluvial floods. Relative values are displayed as a share of total city population or built-up."
+        note_prefix = "This chart shows flood exposure values (left) and annual growth rates (right) for selected cities. Data comprises fluvial and pluvial floods. Relative values are displayed as a share of total city population or built-up."
         note_text = [
             html.B("Data Source: "), 
             data_source,
             html.Br(),
             html.B("Note: "), 
             note_prefix,
-            "CAGR (Compound Annual Growth Rate) measures the annual growth rate of flood exposure. ",
+            " CAGR (Compound Annual Growth Rate) measures the annual growth rate of flood exposure. ",
             "A 1-in-100 year flood has a 1% probability of occurring in any given year. ",
             html.A("Learn more about flood return periods", 
                    href="https://www.gfdrr.org/en/100-year-flood", 

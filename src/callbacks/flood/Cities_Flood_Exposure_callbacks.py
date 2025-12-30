@@ -121,13 +121,11 @@ def register_cities_flood_exposure_callbacks(app):
                 
                 if measurement_type == 'absolute':
                     col_year2 = f'worldpop_population_ftm_total_rp{return_period}_{year2}'
-                    unit_measurement = ''
                     title_suffix = 'Population Exposed to Floods'
                     left_title = f'Population Exposed<br>{year2}'
                     text_format = filtered_data[col_year2].apply(lambda x: f'{x:,.0f}')
                 else:  # relative
                     col_year2 = f'worldpop_population_ftm_share_rp{return_period}_{year2}'
-                    unit_measurement = '%'
                     title_suffix = 'Population Exposed to Floods (%)'
                     left_title = f'Population Exposed (%)<br>{year2}'
                     text_format = (filtered_data[col_year2] * 100).apply(lambda x: f'{x:.1f}%')
@@ -140,13 +138,11 @@ def register_cities_flood_exposure_callbacks(app):
                 
                 if measurement_type == 'absolute':
                     col_year2 = f'worldpop_built_surface_ftm_km2_rp{return_period}_{year2}'
-                    unit_measurement = 'km²'
                     title_suffix = 'Built-up Area Exposed to Floods'
-                    left_title = f'Built-up Area Exposed ({unit_measurement})<br>{year2}'
+                    left_title = f'Built-up Area Exposed (km²)<br>{year2}'
                     text_format = filtered_data[col_year2].apply(lambda x: f'{x:.2f}')
                 else:  # relative
                     col_year2 = f'worldpop_built_surface_ftm_share_rp{return_period}_{year2}'
-                    unit_measurement = '%'
                     title_suffix = 'Built-up Area Exposed to Floods (%)'
                     left_title = f'Built-up Area Exposed (%)<br>{year2}'
                     text_format = (filtered_data[col_year2] * 100).apply(lambda x: f'{x:.1f}%')

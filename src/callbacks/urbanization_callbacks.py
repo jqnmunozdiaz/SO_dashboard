@@ -49,7 +49,7 @@ def register_callbacks(app):
     
     # Register combined benchmark dropdown callbacks (countries + regions in one dropdown)
     register_combined_benchmark_options_callback(app, 'slums-combined-benchmark-selector', default_regional_codes=['SSA'])
-    register_combined_benchmark_options_callback(app, 'urbanization-rate-combined-benchmark-selector', default_regional_codes=['SSA'])
+    register_combined_benchmark_options_callback(app, 'urbanization-rate-combined-benchmark-selector', default_regional_codes=['SSA'], use_full_regions=True)
     register_combined_benchmark_options_callback(app, 'urban-density-combined-benchmark-selector', default_regional_codes=['SSA'])
     register_combined_benchmark_options_callback(app, 'electricity-combined-benchmark-selector', default_regional_codes=['SSA'])
     

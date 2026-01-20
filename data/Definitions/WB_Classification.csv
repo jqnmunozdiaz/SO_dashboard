@@ -47,3 +47,173 @@ Uganda,UGA,SSA,AFE,Low income,IDA
 South Africa,ZAF,SSA,AFE,Upper middle income,IBRD
 Zambia,ZMB,SSA,AFE,Lower middle income,IDA
 Zimbabwe,ZWE,SSA,AFE,Lower middle income,Blend
+American Samoa,ASM,EAP,,High income,
+Australia,AUS,EAP,,High income,
+Brunei Darussalam,BRN,EAP,,High income,
+Cambodia,KHM,EAP,,Lower middle income,IDA
+China,CHN,EAP,,Upper middle income,IBRD
+Fiji,FJI,EAP,,Upper middle income,Blend
+French Polynesia,PYF,EAP,,High income,
+Guam,GUM,EAP,,High income,
+"Hong Kong SAR, China",HKG,EAP,,High income,
+Indonesia,IDN,EAP,,Upper middle income,IBRD
+Japan,JPN,EAP,,High income,
+Kiribati,KIR,EAP,,Lower middle income,IDA
+"Korea, Dem. People's Rep.",PRK,EAP,,Low income,
+"Korea, Rep.",KOR,EAP,,High income,
+Lao PDR,LAO,EAP,,Lower middle income,IDA
+"Macao SAR, China",MAC,EAP,,High income,
+Malaysia,MYS,EAP,,Upper middle income,IBRD
+Marshall Islands,MHL,EAP,,Upper middle income,IDA
+"Micronesia, Fed. Sts.",FSM,EAP,,Lower middle income,IDA
+Mongolia,MNG,EAP,,Upper middle income,IBRD
+Myanmar,MMR,EAP,,Lower middle income,IDA
+Nauru,NRU,EAP,,High income,IBRD
+New Caledonia,NCL,EAP,,High income,
+New Zealand,NZL,EAP,,High income,
+Northern Mariana Islands,MNP,EAP,,High income,
+Palau,PLW,EAP,,High income,IBRD
+Papua New Guinea,PNG,EAP,,Lower middle income,Blend
+Philippines,PHL,EAP,,Lower middle income,IBRD
+Samoa,WSM,EAP,,Upper middle income,IDA
+Singapore,SGP,EAP,,High income,
+Solomon Islands,SLB,EAP,,Lower middle income,IDA
+"Taiwan, China",TWN,EAP,,High income,
+Thailand,THA,EAP,,Upper middle income,IBRD
+Timor-Leste,TLS,EAP,,Lower middle income,Blend
+Tonga,TON,EAP,,Upper middle income,IDA
+Tuvalu,TUV,EAP,,Upper middle income,IDA
+Vanuatu,VUT,EAP,,Lower middle income,IDA
+Vietnam,VNM,EAP,,Lower middle income,IBRD
+Albania,ALB,ECA,,Upper middle income,IBRD
+Andorra,AND,ECA,,High income,
+Armenia,ARM,ECA,,Upper middle income,IBRD
+Austria,AUT,ECA,,High income,
+Azerbaijan,AZE,ECA,,Upper middle income,IBRD
+Belarus,BLR,ECA,,Upper middle income,IBRD
+Belgium,BEL,ECA,,High income,
+Bosnia and Herzegovina,BIH,ECA,,Upper middle income,IBRD
+Bulgaria,BGR,ECA,,High income,IBRD
+Channel Islands,CHI,ECA,,High income,
+Croatia,HRV,ECA,,High income,IBRD
+Cyprus,CYP,ECA,,High income,
+Czechia,CZE,ECA,,High income,
+Denmark,DNK,ECA,,High income,
+Estonia,EST,ECA,,High income,
+Faroe Islands,FRO,ECA,,High income,
+Finland,FIN,ECA,,High income,
+France,FRA,ECA,,High income,
+Georgia,GEO,ECA,,Upper middle income,IBRD
+Germany,DEU,ECA,,High income,
+Gibraltar,GIB,ECA,,High income,
+Greece,GRC,ECA,,High income,
+Greenland,GRL,ECA,,High income,
+Hungary,HUN,ECA,,High income,
+Iceland,ISL,ECA,,High income,
+Ireland,IRL,ECA,,High income,
+Isle of Man,IMN,ECA,,High income,
+Italy,ITA,ECA,,High income,
+Kazakhstan,KAZ,ECA,,Upper middle income,IBRD
+Kosovo,XKX,ECA,,Upper middle income,IDA
+Kyrgyz Republic,KGZ,ECA,,Lower middle income,IDA
+Latvia,LVA,ECA,,High income,
+Liechtenstein,LIE,ECA,,High income,
+Lithuania,LTU,ECA,,High income,
+Luxembourg,LUX,ECA,,High income,
+Moldova,MDA,ECA,,Upper middle income,IBRD
+Monaco,MCO,ECA,,High income,
+Montenegro,MNE,ECA,,Upper middle income,IBRD
+Netherlands,NLD,ECA,,High income,
+North Macedonia,MKD,ECA,,Upper middle income,IBRD
+Norway,NOR,ECA,,High income,
+Poland,POL,ECA,,High income,IBRD
+Portugal,PRT,ECA,,High income,
+Romania,ROU,ECA,,High income,IBRD
+Russian Federation,RUS,ECA,,High income,IBRD
+San Marino,SMR,ECA,,High income,
+Serbia,SRB,ECA,,Upper middle income,IBRD
+Slovak Republic,SVK,ECA,,High income,
+Slovenia,SVN,ECA,,High income,
+Spain,ESP,ECA,,High income,
+Sweden,SWE,ECA,,High income,
+Switzerland,CHE,ECA,,High income,
+Tajikistan,TJK,ECA,,Lower middle income,IDA
+Türkiye,TUR,ECA,,Upper middle income,IBRD
+Turkmenistan,TKM,ECA,,Upper middle income,IBRD
+Ukraine,UKR,ECA,,Upper middle income,IBRD
+United Kingdom,GBR,ECA,,High income,
+Uzbekistan,UZB,ECA,,Lower middle income,Blend
+Antigua and Barbuda,ATG,LCN,,High income,IBRD
+Argentina,ARG,LCN,,Upper middle income,IBRD
+Aruba,ABW,LCN,,High income,
+"Bahamas, The",BHS,LCN,,High income,
+Barbados,BRB,LCN,,High income,IBRD
+Belize,BLZ,LCN,,Upper middle income,Blend
+Bolivia,BOL,LCN,,Lower middle income,IBRD
+Brazil,BRA,LCN,,Upper middle income,IBRD
+British Virgin Islands,VGB,LCN,,High income,
+Cayman Islands,CYM,LCN,,High income,
+Chile,CHL,LCN,,High income,IBRD
+Colombia,COL,LCN,,Upper middle income,IBRD
+Costa Rica,CRI,LCN,,High income,IBRD
+Cuba,CUB,LCN,,Upper middle income,
+Curaçao,CUW,LCN,,High income,
+Dominica,DMA,LCN,,Upper middle income,Blend
+Dominican Republic,DOM,LCN,,Upper middle income,IBRD
+Ecuador,ECU,LCN,,Upper middle income,IBRD
+El Salvador,SLV,LCN,,Upper middle income,IBRD
+Grenada,GRD,LCN,,Upper middle income,Blend
+Guatemala,GTM,LCN,,Upper middle income,IBRD
+Guyana,GUY,LCN,,High income,IDA
+Haiti,HTI,LCN,,Lower middle income,IDA
+Honduras,HND,LCN,,Lower middle income,IDA
+Jamaica,JAM,LCN,,Upper middle income,IBRD
+Mexico,MEX,LCN,,Upper middle income,IBRD
+Nicaragua,NIC,LCN,,Lower middle income,IDA
+Panama,PAN,LCN,,High income,IBRD
+Paraguay,PRY,LCN,,Upper middle income,IBRD
+Peru,PER,LCN,,Upper middle income,IBRD
+Puerto Rico (U.S.),PRI,LCN,,High income,
+Sint Maarten (Dutch part),SXM,LCN,,High income,
+St. Kitts and Nevis,KNA,LCN,,High income,IBRD
+St. Lucia,LCA,LCN,,Upper middle income,Blend
+St. Martin (French part),MAF,LCN,,High income,
+St. Vincent and the Grenadines,VCT,LCN,,Upper middle income,Blend
+Suriname,SUR,LCN,,Upper middle income,Blend
+Trinidad and Tobago,TTO,LCN,,High income,IBRD
+Turks and Caicos Islands,TCA,LCN,,High income,
+Uruguay,URY,LCN,,High income,IBRD
+"Venezuela, RB",VEN,LCN,,,IBRD
+Virgin Islands (U.S.),VIR,LCN,,High income,
+Afghanistan,AFG,MENA,,Low income,IDA
+Algeria,DZA,MENA,,Upper middle income,IBRD
+Bahrain,BHR,MENA,,High income,
+Djibouti,DJI,MENA,,Lower middle income,IDA
+"Egypt, Arab Rep.",EGY,MENA,,Lower middle income,IBRD
+"Iran, Islamic Rep.",IRN,MENA,,Upper middle income,IBRD
+Iraq,IRQ,MENA,,Upper middle income,IBRD
+Israel,ISR,MENA,,High income,
+Jordan,JOR,MENA,,Lower middle income,IBRD
+Kuwait,KWT,MENA,,High income,
+Lebanon,LBN,MENA,,Lower middle income,IBRD
+Libya,LBY,MENA,,Upper middle income,IBRD
+Malta,MLT,MENA,,High income,
+Morocco,MAR,MENA,,Lower middle income,IBRD
+Oman,OMN,MENA,,High income,
+Pakistan,PAK,MENA,,Lower middle income,Blend
+Qatar,QAT,MENA,,High income,
+Saudi Arabia,SAU,MENA,,High income,
+Syrian Arab Republic,SYR,MENA,,Low income,IDA
+Tunisia,TUN,MENA,,Lower middle income,IBRD
+United Arab Emirates,ARE,MENA,,High income,
+West Bank and Gaza,PSE,MENA,,Lower middle income,
+"Yemen, Rep.",YEM,MENA,,Low income,IDA
+Bermuda,BMU,NAC,,High income,
+Canada,CAN,NAC,,High income,
+United States,USA,NAC,,High income,
+Bangladesh,BGD,SAS,,Lower middle income,IDA
+Bhutan,BTN,SAS,,Lower middle income,IDA
+India,IND,SAS,,Lower middle income,IBRD
+Maldives,MDV,SAS,,Upper middle income,IDA
+Nepal,NPL,SAS,,Lower middle income,IDA
+Sri Lanka,LKA,SAS,,Lower middle income,IDA

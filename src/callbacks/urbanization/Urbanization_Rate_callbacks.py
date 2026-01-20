@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 
 from ...utils.data_loader import load_wup2025_national_data
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict
-from ...utils.benchmark_config import get_benchmark_colors, get_benchmark_names
+from ...utils.benchmark_config import get_full_regional_benchmark_colors, get_full_regional_benchmark_names
 from ...utils.component_helpers import create_simple_error_message
 from ...utils.download_helpers import create_simple_download_callback
 from config.settings import CHART_STYLES
@@ -21,8 +21,8 @@ def register_urbanization_rate_callbacks(app):
     # Load static data once at registration time for performance
     wup_data = load_wup2025_national_data()
     countries_and_regions_dict = load_subsaharan_countries_and_regions_dict()
-    benchmark_colors_dict = get_benchmark_colors()
-    benchmark_names = get_benchmark_names()
+    benchmark_colors_dict = get_full_regional_benchmark_colors()
+    benchmark_names = get_full_regional_benchmark_names()
     
     @app.callback(
         [Output('urbanization-rate-chart', 'figure'),

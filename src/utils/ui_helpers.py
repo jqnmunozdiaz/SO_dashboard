@@ -94,7 +94,7 @@ def create_benchmark_selectors(
 def create_combined_benchmark_selector(dropdown_id, default_regional_codes=None):
     """
     Create a combined benchmark selector that includes both countries and regions in a single dropdown.
-    Countries are listed first alphabetically, followed by regional benchmarks at the end.
+    Regional benchmarks are listed first, followed by countries alphabetically.
     
     Args:
         dropdown_id (str): ID for the combined benchmark dropdown

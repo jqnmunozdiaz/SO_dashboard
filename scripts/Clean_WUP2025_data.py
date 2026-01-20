@@ -16,17 +16,22 @@ project_root = os.path.dirname(script_dir)
 sys.path.append(project_root)
 
 # Import centralized country utilities
-from src.utils.country_utils import load_wb_regional_classifications
+from src.utils.country_utils import get_all_regional_mappings
 
-# Load World Bank regional classifications
-afe_countries, afw_countries, ssa_countries = load_wb_regional_classifications()
+# Load World Bank regional classifications dynamically
+regional_mappings = get_all_regional_mappings()
 
-def add_regional_aggregates(df, group_by_cols=['Category', 'Year'], agg_cols={'Pop': 'sum'}):
+# Create output directory if it doesn't exist
+output_dir = os.path.join(project_root, 'data', 'processed', 'WUP')
+os.makedirs(output_dir, exist_ok=True)
+
+def add_regional_aggregates(df, region_codes, group_by_cols=['Category', 'Year'], agg_cols={'Pop': 'sum'}):
     """
-    Add regional aggregates (AFE, AFW, SSA) to a DataFrame
+    Add regional aggregates to a DataFrame based on specified region codes.
     
     Args:
         df: DataFrame with ISO3_Code column and data to aggregate
+        region_codes: List of region/subregion codes to aggregate (e.g., ['SSA', 'AFE', 'AFW'])
         group_by_cols: List of columns to group by (in addition to region grouping)
         agg_cols: Dictionary of {column_name: aggregation_function} for aggregation
         
@@ -34,11 +39,10 @@ def add_regional_aggregates(df, group_by_cols=['Category', 'Year'], agg_cols={'P
         DataFrame with regional aggregates appended
     """
     regional_data = []
-    region_mappings = {
-        'AFE': afe_countries,
-        'AFW': afw_countries,
-        'SSA': ssa_countries
-    }
+    
+    # Build region mappings only for requested region codes
+    region_map = {code: regional_mappings.get(code, []) for code in region_codes}
+
     
     # Get all unique combinations of grouping columns
     if group_by_cols:
@@ -52,7 +56,7 @@ def add_regional_aggregates(df, group_by_cols=['Category', 'Year'], agg_cols={'P
                 group_data = group_data[group_data[col] == group_row[col]]
             
             # Calculate aggregates for each region
-            for region_code, country_list in region_mappings.items():
+            for region_code, country_list in region_map.items():
                 region_data = group_data[group_data['ISO3_Code'].isin(country_list)]
                 if not region_data.empty:
                     # Build the regional row
@@ -86,13 +90,7 @@ Add regional aggregates for SSA, AFE, AFW
 # Read raw data
 raw_path = os.path.join(project_root, 'data', 'raw', 'WUP2025', 
                         'WUP2025-DB-DEGURBA-Level1-Population-Surface-Data.csv')
-df = pd.read_csv(raw_path, low_memory=False)
-
-# Keep only specified columns
-df = df[['ISO3_Code', 'Category', 'Year', 'Pop']]
-
-# Filter for Sub-Saharan African countries only
-df = df[df['ISO3_Code'].isin(ssa_countries)]
+df = pd.read_csv(raw_path, usecols=['ISO3_Code', 'Category', 'Year', 'Pop'], low_memory=False)
 
 # Delete rows where Category is 'Cities and Towns' or 'Total'
 df = df[~df['Category'].isin(['Cities and Towns', 'Total'])]
@@ -101,17 +99,13 @@ df = df[~df['Category'].isin(['Cities and Towns', 'Total'])]
 df['Pop'] = df['Pop'] * 1000
 
 # Add regional aggregates
-df = add_regional_aggregates(df, group_by_cols=['Category', 'Year'], agg_cols={'Pop': 'sum'})
+df = add_regional_aggregates(df, region_codes=list(regional_mappings.keys()), group_by_cols=['Category', 'Year'], agg_cols={'Pop': 'sum'})
 
 # Calculate Pop_rel (share of total population for each year and ISO3_Code)
 df['Pop_rel'] = df.groupby(['Year', 'ISO3_Code'])['Pop'].transform(lambda x: x / x.sum())
 
 # Sort by year, ISO3_Code, and category
 df = df.sort_values(['Year', 'ISO3_Code', 'Category'])
-
-# Create output directory if it doesn't exist
-output_dir = os.path.join(project_root, 'data', 'processed', 'WUP')
-os.makedirs(output_dir, exist_ok=True)
 
 # Save processed data
 output_path = os.path.join(output_dir, 'WUP2025_Level1_Population_Surface_processed.csv')
@@ -127,19 +121,13 @@ Add regional aggregates for SSA, AFE, AFW
 # Read raw data
 raw_path = os.path.join(project_root, 'data', 'raw', 'WUP2025', 
                         'WUP2025-DB-DEGURBA-Population-by-size-class-of-cities.csv')
-df = pd.read_csv(raw_path, low_memory=False)
-
-# Keep only specified columns
-df = df[['ISO3_Code', 'Category', 'Year', 'Cities', 'Pop']]
-
-# Filter for Sub-Saharan African countries only
-df = df[df['ISO3_Code'].isin(ssa_countries)]
+df = pd.read_csv(raw_path, usecols=['ISO3_Code', 'Category', 'Year', 'Cities', 'Pop'], low_memory=False)
 
 # Convert population from thousands to actual values
 df['Pop'] = df['Pop'] * 1000
 
 # Add regional aggregates
-df = add_regional_aggregates(df, group_by_cols=['Category', 'Year'], agg_cols={'Cities': 'sum', 'Pop': 'sum'})
+df = add_regional_aggregates(df, region_codes=list(regional_mappings.keys()), group_by_cols=['Category', 'Year'], agg_cols={'Cities': 'sum', 'Pop': 'sum'})
 
 # Calculate Pop_rel and Cities_rel (share of total for each year and ISO3_Code)
 df['Pop_rel'] = df.groupby(['Year', 'ISO3_Code'])['Pop'].transform(lambda x: x / x.sum())
@@ -147,10 +135,6 @@ df['Cities_rel'] = df.groupby(['Year', 'ISO3_Code'])['Cities'].transform(lambda 
 
 # Sort by year, ISO3_Code, and category
 df = df.sort_values(['Year', 'ISO3_Code', 'Category'])
-
-# Create output directory if it doesn't exist
-output_dir = os.path.join(project_root, 'data', 'processed', 'WUP')
-os.makedirs(output_dir, exist_ok=True)
 
 # Save processed data
 output_path = os.path.join(output_dir, 'WUP2025_Population_by_Size_Class_processed.csv')
@@ -169,13 +153,7 @@ Add regional aggregates for SSA, AFE, AFW
 # Read raw data
 raw_path = os.path.join(project_root, 'data', 'raw', 'WUP2025', 
                         'WUP2025-DB-National-Definitions-Population-Data.csv')
-df = pd.read_csv(raw_path, low_memory=False)
-
-# Keep only specified columns
-df = df[['ISO3_Code', 'Category', 'Year', 'Pop']]
-
-# Filter for Sub-Saharan African countries only
-df = df[df['ISO3_Code'].isin(ssa_countries)]
+df = pd.read_csv(raw_path, usecols=['ISO3_Code', 'Category', 'Year', 'Pop'], low_memory=False)
 
 # Delete rows where Category is 'Total'
 df = df[df['Category'] != 'Total']
@@ -184,7 +162,7 @@ df = df[df['Category'] != 'Total']
 df['Pop'] = df['Pop'] * 1000
 
 # Add regional aggregates
-df = add_regional_aggregates(df, group_by_cols=['Category', 'Year'], agg_cols={'Pop': 'sum'})
+df = add_regional_aggregates(df, region_codes=list(regional_mappings.keys()), group_by_cols=['Category', 'Year'], agg_cols={'Pop': 'sum'})
 
 # Calculate Pop_Rel (share of total population for each year and ISO3_Code)
 df['Pop_Rel'] = df.groupby(['Year', 'ISO3_Code'])['Pop'].transform(lambda x: x / x.sum())
@@ -192,14 +170,9 @@ df['Pop_Rel'] = df.groupby(['Year', 'ISO3_Code'])['Pop'].transform(lambda x: x /
 # Sort by year, ISO3_Code, and category
 df = df.sort_values(['Year', 'ISO3_Code', 'Category'])
 
-# Create output directory if it doesn't exist
-output_dir = os.path.join(project_root, 'data', 'processed', 'WUP')
-os.makedirs(output_dir, exist_ok=True)
-
 # Save processed data
 output_path = os.path.join(output_dir, 'WUP2025_National_Definitions_Population_processed.csv')
 df.to_csv(output_path, index=False)
-
 
 # Pivot the data to get Urban and Rural in separate columns
 pivot_df = df.pivot_table(

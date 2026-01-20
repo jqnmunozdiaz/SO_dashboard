@@ -41,16 +41,25 @@ def register_country_benchmark_options_callback(app, output_id):
             return []
 
 
-def register_combined_benchmark_options_callback(app, output_id, default_regional_codes=None):
+def register_combined_benchmark_options_callback(app, output_id, default_regional_codes=None, use_full_regions=False):
     """
     Register a callback to populate combined benchmark dropdown with countries and regions.
-    Countries are listed first alphabetically, followed by regional benchmarks.
+    Regional benchmarks are listed first, followed by countries alphabetically.
     
     Args:
         app: Dash app instance
         output_id: ID of the dropdown to populate (e.g., 'slums-combined-benchmark-selector')
         default_regional_codes: List of regional codes to select by default (e.g., ['SSA'])
+        use_full_regions: If True, use FULL_REGIONAL_BENCHMARK_CONFIG (all WB regions);
+                         if False, use BENCHMARK_CONFIG (SSA, AFE, AFW only)
     """
+    # Import the appropriate regional names function based on use_full_regions flag
+    if use_full_regions:
+        from ..utils.benchmark_config import get_full_regional_benchmark_names
+        get_regional_names = get_full_regional_benchmark_names
+    else:
+        get_regional_names = get_benchmark_names
+    
     # Also read the flood-benchmark-store if present so we can set the dropdown value
     # from the persisted store when available. This prevents the options callback from
     # overwriting server-rendered initial values with an empty list.
@@ -63,31 +72,36 @@ def register_combined_benchmark_options_callback(app, output_id, default_regiona
         """Populate dropdown with countries (excluding selected) and regions"""
         try:
             countries_dict = load_subsaharan_countries_dict()
-            regional_names = get_benchmark_names()
+            regional_names = get_regional_names()
             
             # Create country options list excluding the selected country and regional codes
             country_options = []
             for iso_code, country_name in countries_dict.items():
-                # Exclude selected country and regional aggregates (SSA, AFE, AFW)
+                # Exclude selected country and regional aggregates
                 if iso_code != selected_country and iso_code not in regional_names:
                     country_options.append({'label': country_name, 'value': iso_code})
             
             # Sort countries by name
             country_options.sort(key=lambda x: x['label'])
             
-            # Add regional benchmarks at the end
+            # Add regional benchmarks at the beginning
             regional_options = [
                 {'label': f"{name}", 'value': code}
                 for code, name in regional_names.items()
             ]
             
-            # Combine countries and regions
-            all_options = country_options + regional_options
+            # Combine regions and countries (regions first)
+            all_options = regional_options + country_options
+            
+            # Build set of valid codes for this dropdown
+            valid_codes = set(regional_names.keys()) | set(countries_dict.keys())
             
             # Prefer the stored benchmarks (from the persistent store) if available.
+            # Filter to only include codes valid for this dropdown's config.
             # Fall back to the default_regional_codes provided at registration time.
             if stored_benchmarks:
-                default_value = stored_benchmarks
+                # Filter stored benchmarks to only include valid codes for this dropdown
+                default_value = [code for code in stored_benchmarks if code in valid_codes]
             else:
                 default_value = default_regional_codes if default_regional_codes else []
 

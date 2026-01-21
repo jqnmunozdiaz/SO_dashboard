@@ -20,7 +20,7 @@ _ADDITIONAL_REGIONS = {
         'color': '#d35400'
     },
     'MEA': {
-        'name': 'Middle East & North Africa',
+        'name': 'Middle East, North Africa, Afghanistan and Pakistan',
         'color': '#16a085'
     },
     'TSA': {

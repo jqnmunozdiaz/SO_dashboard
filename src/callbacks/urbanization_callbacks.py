@@ -484,8 +484,24 @@ def register_callbacks(app):
             return html.Div([
                 # Title
                 html.Div(id='urbanization-bubble-title', className='chart-title'),
-                # Chart
-                dcc.Graph(id="urbanization-bubble-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='urbanization-bubble-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="urbanization-bubble-chart"),
+                    id='urbanization-bubble-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2025.", html.Br(), html.B("Note:"), " Each bubble represents a Sub-Saharan African country. The x-axis shows the current urbanization level (2025), the y-axis shows the urban population growth rate (annual %), and the bubble size represents the expected increase in urban population by 2050 relative to today's urban population."], className="indicator-note"),

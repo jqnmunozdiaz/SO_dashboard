@@ -220,3 +220,12 @@ def register_urbanization_bubble_callbacks(app):
         'urbanization-bubble-download',
         lambda: wup_data[wup_data['ISO3_Code'].isin(ssa_codes)]
     )
+    
+    # Width slider callback
+    @app.callback(
+        Output('urbanization-bubble-chart-wrapper', 'style'),
+        Input('urbanization-bubble-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_bubble_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

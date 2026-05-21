@@ -21,6 +21,7 @@ from .urbanization.Cities_builtup_per_capita import register_cities_growth_rate_
 from .urbanization.Cities_Growth_callbacks import register_cities_growth_callbacks
 from .urbanization.Population_Economic_Activity_callbacks import register_population_economic_activity_callbacks
 from .urbanization.Urban_System_callbacks import register_urban_system_callbacks
+from .urbanization.Urbanization_Bubble_callbacks import register_urbanization_bubble_callbacks
 from .country_benchmark_callbacks import register_country_benchmark_options_callback, register_combined_benchmark_options_callback
 
 from ..utils.data_loader import load_urbanization_indicators_notes_dict
@@ -46,6 +47,7 @@ def register_callbacks(app):
     register_cities_growth_callbacks(app)
     register_population_economic_activity_callbacks(app)
     register_urban_system_callbacks(app)
+    register_urbanization_bubble_callbacks(app)
     
     # Register combined benchmark dropdown callbacks (countries + regions in one dropdown)
     register_combined_benchmark_options_callback(app, 'slums-combined-benchmark-selector', default_regional_codes=['SSA'])
@@ -474,6 +476,37 @@ def register_callbacks(app):
                     html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2025.", html.Br(), html.B("Note:"), " Distribution of population across Cities, Towns, and Rural areas over time. The Degree of Urbanization classifies areas based on population density and total population: Cities (urban centers): Continuous high-density areas with at least 1,500 people per km² and a minimum of 50,000 residents. Towns and semi-dense areas (urban clusters): Moderately dense settlements with at least 300 people per km² and a minimum of about 5,000 residents. These typically include suburban and peri-urban zones. Rural areas: Low-density areas with fewer than 300 people per km², or small settlements not classified as cities or towns (e.g., villages and dispersed communities)."], className="indicator-note"),
                     html.Div([
                         create_download_trigger_button('urban-system-download'),
+                        create_methodological_note_button()
+                    ], className="buttons-container")
+                ], className="indicator-note-container")
+            ], className="chart-container")
+        elif active_subtab == 'urbanization-bubble':
+            return html.Div([
+                # Title
+                html.Div(id='urbanization-bubble-title', className='chart-title'),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='urbanization-bubble-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="urbanization-bubble-chart"),
+                    id='urbanization-bubble-chart-wrapper'
+                ),
+                # Indicator note
+                html.Div([
+                    html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2025.", html.Br(), html.B("Note:"), " Each bubble represents a Sub-Saharan African country. The x-axis shows the current urbanization level (2025), the y-axis shows the urban population growth rate (annual %), and the bubble size represents the expected increase in urban population by 2050 relative to today's urban population."], className="indicator-note"),
+                    html.Div([
+                        create_download_trigger_button('urbanization-bubble-download'),
                         create_methodological_note_button()
                     ], className="buttons-container")
                 ], className="indicator-note-container")

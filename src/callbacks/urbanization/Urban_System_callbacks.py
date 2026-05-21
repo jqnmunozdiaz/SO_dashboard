@@ -313,3 +313,12 @@ def register_urban_system_callbacks(app):
         'urban-system-download',
         lambda: urban_system_data_cache
     )
+
+    # Width slider callback
+    @app.callback(
+        Output('urban-system-chart-wrapper', 'style'),
+        Input('urban-system-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_urban_system_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

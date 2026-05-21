@@ -153,3 +153,12 @@ def register_access_to_electricity_urban_callbacks(app):
         'access-to-electricity-urban-download',
         lambda: electricity_data
     )
+
+    # Width slider callback
+    @app.callback(
+        Output('access-to-electricity-urban-chart-wrapper', 'style'),
+        Input('access-to-electricity-urban-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_access_to_electricity_urban_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

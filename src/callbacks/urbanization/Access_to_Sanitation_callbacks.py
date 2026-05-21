@@ -129,3 +129,12 @@ def register_access_to_sanitation_callbacks(app):
         'access-to-sanitation-download',
         lambda: sanitation_data
     )
+
+    # Width slider callback
+    @app.callback(
+        Output('access-to-sanitation-chart-wrapper', 'style'),
+        Input('access-to-sanitation-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_access_to_sanitation_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

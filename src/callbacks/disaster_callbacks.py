@@ -49,8 +49,24 @@ def register_callbacks(app):
                         labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
                     )
                 ], className='filter-container'),
-                # Chart
-                dcc.Graph(id="disaster-frequency-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='disaster-frequency-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="disaster-frequency-chart"),
+                    id='disaster-frequency-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
@@ -64,8 +80,24 @@ def register_callbacks(app):
             return html.Div([
                 # Title
                 html.Div(id='disaster-timeline-title', className='chart-title'),
-                # Chart
-                dcc.Graph(id="disaster-timeline-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='disaster-timeline-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="disaster-timeline-chart"),
+                    id='disaster-timeline-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
@@ -81,8 +113,24 @@ def register_callbacks(app):
                 html.Div(id='disaster-affected-title', className='chart-title'),
                 # Display mode selector
                 create_absolute_relative_selector('disaster-affected-mode-selector'),
-                # Chart
-                dcc.Graph(id="disaster-affected-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='disaster-affected-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="disaster-affected-chart"),
+                    id='disaster-affected-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),
@@ -98,8 +146,24 @@ def register_callbacks(app):
                 html.Div(id='disaster-deaths-title', className='chart-title'),
                 # Display mode selector
                 create_absolute_relative_selector('disaster-deaths-mode-selector'),
-                # Chart
-                dcc.Graph(id="disaster-deaths-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='disaster-deaths-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="disaster-deaths-chart"),
+                    id='disaster-deaths-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "EM-DAT (Emergency Events Database).", html.Br(), html.B("Note:"), " Figures may be lower than actual values due to gaps in data reporting."], className="indicator-note"),

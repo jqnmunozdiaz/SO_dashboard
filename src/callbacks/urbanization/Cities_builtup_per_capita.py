@@ -130,3 +130,12 @@ def register_cities_growth_rate_callbacks(app):
         'cities-growth-rate-download',
         lambda: data
     )
+
+    # Width slider callback
+    @app.callback(
+        Output('cities-growth-rate-chart-wrapper', 'style'),
+        Input('cities-growth-rate-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_cities_growth_rate_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

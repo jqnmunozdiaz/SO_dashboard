@@ -183,3 +183,12 @@ def setup_total_deaths_callbacks(app):
         'disaster-deaths-download',
         load_emdat_data
     )
+
+    # Width slider callback
+    @app.callback(
+        Output('disaster-deaths-chart-wrapper', 'style'),
+        Input('disaster-deaths-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_disaster_deaths_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

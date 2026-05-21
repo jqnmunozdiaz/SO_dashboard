@@ -172,3 +172,12 @@ def setup_frequency_by_type_callbacks(app):
         'disaster-frequency-download',
         load_emdat_data
     )
+
+    # Width slider callback
+    @app.callback(
+        Output('disaster-frequency-chart-wrapper', 'style'),
+        Input('disaster-frequency-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_disaster_frequency_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

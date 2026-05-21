@@ -148,3 +148,12 @@ def setup_disasters_by_year_callbacks(app):
         'disaster-timeline-download',
         load_emdat_data
     )
+
+    # Width slider callback
+    @app.callback(
+        Output('disaster-timeline-chart-wrapper', 'style'),
+        Input('disaster-timeline-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_disaster_timeline_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

@@ -184,5 +184,12 @@ def setup_total_affected_population_callbacks(app):
         'disaster-affected-download',
         load_emdat_data
     )
-    
-    
+
+    # Width slider callback
+    @app.callback(
+        Output('disaster-affected-chart-wrapper', 'style'),
+        Input('disaster-affected-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_disaster_affected_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

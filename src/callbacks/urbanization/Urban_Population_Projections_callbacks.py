@@ -276,3 +276,12 @@ def register_urban_population_projections_callbacks(app):
         'urban-population-projections-download',
         lambda: undesa_projections
     )
+
+    # Width slider callback
+    @app.callback(
+        Output('urban-population-projections-chart-wrapper', 'style'),
+        Input('urban-population-projections-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_population_projections_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

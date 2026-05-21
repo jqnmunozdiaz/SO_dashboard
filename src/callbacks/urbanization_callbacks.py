@@ -125,8 +125,24 @@ def register_callbacks(app):
                         labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
                     )
                 ], className='filter-container'),
-                # Chart
-                dcc.Graph(id="urban-population-projections-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='urban-population-projections-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="urban-population-projections-chart"),
+                    id='urban-population-projections-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "Computed using UN DESA datasets (World Population Prospects 2024 & World Urbanization Prospects 2025).", html.Br(), html.B("Note:"), " Uncertainty bands show 95% and 80% confidence intervals for future projections. Growth rates correspond to Compound Annual Growth Rates (CAGR)."], className="indicator-note"),
@@ -145,8 +161,24 @@ def register_callbacks(app):
                     dropdown_id='urbanization-rate-combined-benchmark-selector',
                     default_regional_codes=['SSA']
                 ),
-                # Chart
-                dcc.Graph(id="urbanization-rate-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='urbanization-rate-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="urbanization-rate-chart"),
+                    id='urbanization-rate-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2025.", html.Br(), html.B("Note:"), " Percentage of population living in urban areas. Shows historical trends and future projections of urbanization levels."], className="indicator-note"),
@@ -165,8 +197,24 @@ def register_callbacks(app):
                     dropdown_id='urban-density-combined-benchmark-selector',
                     default_regional_codes=['SSA']
                 ),
-                # Chart
-                dcc.Graph(id="urban-density-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='urban-density-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="urban-density-chart"),
+                    id='urban-density-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([
@@ -190,8 +238,24 @@ def register_callbacks(app):
                     dropdown_id='slums-combined-benchmark-selector',
                     default_regional_codes=[]
                 ),
-                # Chart
-                dcc.Graph(id="urban-population-slums-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='urban-population-slums-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="urban-population-slums-chart"),
+                    id='urban-population-slums-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "World Bank World Development Indicators (WDI).", html.Br(), html.B("Note:"), f" {slums_note}"], className="indicator-note"),
@@ -205,8 +269,24 @@ def register_callbacks(app):
             return html.Div([
                 # Title
                 html.Div(id='access-to-drinking-water-title', className='chart-title'),
-                # Chart
-                dcc.Graph(id="access-to-drinking-water-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='access-to-drinking-water-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="access-to-drinking-water-chart"),
+                    id='access-to-drinking-water-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "WHO/UNICEF Joint Monitoring Programme (JMP) for Water Supply, Sanitation and Hygiene.", html.Br(), html.B("Note:"),
@@ -224,8 +304,24 @@ def register_callbacks(app):
             return html.Div([
                 # Title
                 html.Div(id='access-to-sanitation-title', className='chart-title'),
-                # Chart
-                dcc.Graph(id="access-to-sanitation-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='access-to-sanitation-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="access-to-sanitation-chart"),
+                    id='access-to-sanitation-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "WHO/UNICEF Joint Monitoring Programme (JMP) for Water Supply, Sanitation and Hygiene.", html.Br(), html.B("Note:"),
@@ -249,8 +345,24 @@ def register_callbacks(app):
                     dropdown_id='electricity-combined-benchmark-selector',
                     default_regional_codes=[]
                 ),
-                # Chart
-                dcc.Graph(id="access-to-electricity-urban-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='access-to-electricity-urban-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="access-to-electricity-urban-chart"),
+                    id='access-to-electricity-urban-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "World Bank World Development Indicators (WDI).", html.Br(), html.B("Note:"), f" {electricity_note}"], className="indicator-note"),
@@ -298,8 +410,24 @@ def register_callbacks(app):
                         )
                     ], style={'display': 'flex', 'alignItems': 'center', 'gap': '0.96rem', 'marginBottom': '0rem'})
                 ], style={'marginBottom': '0.5rem'}),
-                # Chart
-                dcc.Graph(id="gdp-vs-urbanization-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='gdp-vs-urbanization-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="gdp-vs-urbanization-chart"),
+                    id='gdp-vs-urbanization-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "World Bank World Development Indicators (WDI).", html.Br(), html.B("Note:"), " Urban population refers to people living in urban areas as defined by national statistical offices. The data are collected by the UN Population Division. Cross-country comparisons should be made with caution since this data does not rely on an internationally harmonized definition of urban areas. Gross domestic product (GDP) is expressed in constant international dollars, converted by purchasing power parities (PPPs) which account for the different price levels across countries."], className="indicator-note"),
@@ -345,8 +473,24 @@ def register_callbacks(app):
             return html.Div([
                 # Title
                 html.Div(id='cities-evolution-title', className='chart-title'),
-                # Chart
-                dcc.Graph(id="cities-evolution-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='cities-evolution-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="cities-evolution-chart"),
+                    id='cities-evolution-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "Africapolis 2024.", html.Br(), html.B("Note:"), " Urban population evolution showing individual cities stacked and colored by size category."], className="indicator-note"),
@@ -368,8 +512,24 @@ def register_callbacks(app):
                 #         "This figure uses an outdated data source and will be updated in November 2025 for consistency with other figures."
                 #     ], style={'background-color': '#fff3cd', 'border-left': '4px solid #f39c12', 'padding': '12px', 'margin-bottom': '16px', 'border-radius': '4px'})
                 # ]),
-                # Chart
-                dcc.Graph(id="cities-growth-rate-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='cities-growth-rate-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="cities-growth-rate-chart"),
+                    id='cities-growth-rate-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "Africapolis & WorldPop.", html.Br(), html.B("Note:"), " Scatterplot showing the relationship between built-up per capita and population for cities. X-axis in log scale."], className="indicator-note"),
@@ -379,6 +539,7 @@ def register_callbacks(app):
                     ], className="buttons-container")
                 ], className="indicator-note-container")
             ], className="chart-container")
+
         elif active_subtab == 'cities-growth':
             return html.Div([
                 # Title
@@ -469,8 +630,24 @@ def register_callbacks(app):
                         labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
                     )
                 ], className='filter-container'),
-                # Chart
-                dcc.Graph(id="urban-system-chart"),
+                # Figure width slider
+                html.Div([
+                    html.Label("Figure Width:", className="filter-label"),
+                    dcc.Slider(
+                        id='urban-system-width-slider',
+                        min=50,
+                        max=100,
+                        step=5,
+                        value=100,
+                        marks={i: f'{i}%' for i in range(50, 101, 10)},
+                        tooltip={"placement": "bottom", "always_visible": False}
+                    )
+                ], className="filter-container", style={'maxWidth': '400px'}),
+                # Chart wrapper with dynamic width
+                html.Div(
+                    dcc.Graph(id="urban-system-chart"),
+                    id='urban-system-chart-wrapper'
+                ),
                 # Indicator note
                 html.Div([
                     html.P([html.B("Data Source: "), "UN DESA World Urbanization Prospects 2025.", html.Br(), html.B("Note:"), " Distribution of population across Cities, Towns, and Rural areas over time. The Degree of Urbanization classifies areas based on population density and total population: Cities (urban centers): Continuous high-density areas with at least 1,500 people per km² and a minimum of 50,000 residents. Towns and semi-dense areas (urban clusters): Moderately dense settlements with at least 300 people per km² and a minimum of about 5,000 residents. These typically include suburban and peri-urban zones. Rural areas: Low-density areas with fewer than 300 people per km², or small settlements not classified as cities or towns (e.g., villages and dispersed communities)."], className="indicator-note"),

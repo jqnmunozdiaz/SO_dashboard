@@ -166,3 +166,12 @@ def register_cities_evolution_callbacks(app):
         'cities-evolution-download',
         lambda: data
     )
+
+    # Width slider callback
+    @app.callback(
+        Output('cities-evolution-chart-wrapper', 'style'),
+        Input('cities-evolution-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_cities_evolution_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

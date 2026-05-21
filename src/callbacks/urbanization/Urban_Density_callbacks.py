@@ -171,3 +171,12 @@ def register_urban_density_callbacks(app):
         'urban-density-download',
         lambda: density_data_cache
     )
+
+    # Width slider callback
+    @app.callback(
+        Output('urban-density-chart-wrapper', 'style'),
+        Input('urban-density-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_urban_density_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

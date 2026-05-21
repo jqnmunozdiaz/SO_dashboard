@@ -247,3 +247,12 @@ def register_urbanization_rate_callbacks(app):
         'urbanization-rate-download',
         lambda: wup_data
     )
+
+    # Width slider callback
+    @app.callback(
+        Output('urbanization-rate-chart-wrapper', 'style'),
+        Input('urbanization-rate-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_urbanization_rate_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

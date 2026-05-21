@@ -130,3 +130,12 @@ def register_access_to_drinking_water_callbacks(app):
         'access-to-drinking-water-download',
         lambda: water_data
     )
+
+    # Width slider callback
+    @app.callback(
+        Output('access-to-drinking-water-chart-wrapper', 'style'),
+        Input('access-to-drinking-water-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_access_to_drinking_water_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

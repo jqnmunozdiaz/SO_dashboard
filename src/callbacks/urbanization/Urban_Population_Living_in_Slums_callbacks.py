@@ -164,3 +164,12 @@ def register_urban_population_living_in_slums_callbacks(app):
         'urban-population-slums-download',
         lambda: slums_data
     )
+
+    # Width slider callback
+    @app.callback(
+        Output('urban-population-slums-chart-wrapper', 'style'),
+        Input('urban-population-slums-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_urban_population_slums_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

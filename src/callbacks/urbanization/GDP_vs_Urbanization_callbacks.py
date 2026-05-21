@@ -146,3 +146,12 @@ def register_gdp_vs_urbanization_callbacks(app):
         },
         'gdp_urbanization'
     )
+
+    # Width slider callback
+    @app.callback(
+        Output('gdp-vs-urbanization-chart-wrapper', 'style'),
+        Input('gdp-vs-urbanization-width-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def update_gdp_vs_urbanization_chart_width(width_pct):
+        return {'width': f'{width_pct}%'}

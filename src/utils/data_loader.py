@@ -239,6 +239,22 @@ def load_wup2025_national_data(file_path: Optional[str] = None) -> pd.DataFrame:
     return _load_csv(file_path, "WUP2025 National Definitions")
 
 
+def load_giri_aals_data(file_path: Optional[str] = None) -> pd.DataFrame:
+    """Load GIRI Average Annual Loss (AAL) data"""
+    if file_path is None:
+        project_root = _get_project_root()
+        file_path = os.path.join(project_root, 'data', 'processed', 'GIRI', 'GIRI_AALs.csv')
+    return _load_csv(file_path, "GIRI AALs")
+
+
+def load_weo_expenditure_data(file_path: Optional[str] = None) -> pd.DataFrame:
+    """Load WEO total expenditure (GGX_NGDP) data"""
+    if file_path is None:
+        project_root = _get_project_root()
+        file_path = os.path.join(project_root, 'data', 'processed', 'WEO_GGX_NGDP_cleaned.csv')
+    return _load_csv(file_path, "WEO GGX_NGDP")
+
+
 # Import centralized country utilities
 from .country_utils import get_subsaharan_countries, load_subsaharan_countries_dict, load_subsaharan_countries_and_regions_dict
 
@@ -277,4 +293,8 @@ __all__ = [
     # Climate/Flood projections
     'load_precipitation_data',
     'load_flood_projections_data',
+    # GIRI AAL
+    'load_giri_aals_data',
+    # WEO Gov Expenditure
+    'load_weo_expenditure_data',
 ]

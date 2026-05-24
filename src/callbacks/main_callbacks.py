@@ -8,6 +8,7 @@ from src.layouts.world_bank_layout import (
     create_world_bank_urbanization_tab_content,
     create_world_bank_flood_exposure_tab_content,
     create_world_bank_flood_projections_tab_content,
+    create_world_bank_risk_estimates_tab_content,
     create_dashboard_layout,
     create_methodological_note_layout
 )
@@ -61,6 +62,8 @@ def register_main_callbacks(app):
             return create_world_bank_flood_exposure_tab_content()
         elif active_tab == 'flood-projections':
             return create_world_bank_flood_projections_tab_content()
+        elif active_tab == 'risk-estimates':
+            return create_world_bank_risk_estimates_tab_content()
         else:
             return html.Div([
                 html.H3("Welcome to the Sub-Saharan Africa Disaster Risk & Urbanization Analytics Dashboard"),

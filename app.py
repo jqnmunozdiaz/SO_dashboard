@@ -10,7 +10,13 @@ from flask import redirect, request, send_from_directory
 import os
 
 from src.layouts.world_bank_layout import create_world_bank_layout
-from src.callbacks import disaster_callbacks, urbanization_callbacks, flood_callbacks, flood_projections_callbacks
+from src.callbacks import (
+    disaster_callbacks, 
+    urbanization_callbacks, 
+    flood_callbacks, 
+    flood_projections_callbacks,
+    risk_estimates_callbacks
+)
 from src.callbacks.main_callbacks import register_main_callbacks
 from src.callbacks.contact_callbacks import register_contact_callbacks
 
@@ -110,6 +116,7 @@ disaster_callbacks.register_callbacks(app)
 urbanization_callbacks.register_callbacks(app)
 flood_callbacks.register_callbacks(app)
 flood_projections_callbacks.register_callbacks(app)
+risk_estimates_callbacks.register_callbacks(app)
 
 # Print startup duration (helps estimate Cloud Run cold start time)
 _startup_seconds = time.time() - _startup_t0

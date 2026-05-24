@@ -131,3 +131,16 @@ This analysis decomposes future flood risk into two drivers: **Climate Change** 
 *   **SSA (Sub-Saharan Africa):** Includes all 48 countries defined as Sub-Saharan Africa by the World Bank.
 *   **AFE (Eastern and Southern Africa):** A World Bank operational region comprising 26 countries (e.g., Kenya, South Africa, Ethiopia, DRC).
 *   **AFW (Western and Central Africa):** A World Bank operational region comprising 22 countries (e.g., Nigeria, Ghana, Senegal).
+
+---
+
+## 6. GIRI Risk Estimates
+
+### Data Source
+*   **Source:** Global Infrastructure Risk Model and Resilience Index (GIRI).
+*   **Scenario:** Existing Climate (Baseline risk profiles).
+*   **Risk Metric:** Average Annual Loss (AAL).
+
+### Methodology
+*   **Average Annual Loss (AAL):** Represents the expected long-term average loss per year from a specific natural hazard, computed across all sectors and subsectors.
+*   **Hazards Analyzed:** Includes seven hazard types: `Flood`, `Tropical cyclone`, `Landslide`, `Tsunami`, `Earthquake`, `Volcano`, and `Storm surge`.

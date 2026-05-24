@@ -206,6 +206,7 @@ def create_dashboard_layout():
                             dbc.Tab(label="Urbanization Trends", tab_id="urbanization"),
                             dbc.Tab(label="Exposure to Flood Hazard", tab_id="flood-exposure"),
                             dbc.Tab(label="Future Precipitation Extremes and Flood Exposure", tab_id="flood-projections"),
+                            dbc.Tab(label="Risk Estimates", tab_id="risk-estimates"),
                         ],
                         id="main-tabs",
                         active_tab="disasters",
@@ -245,6 +246,7 @@ def create_dashboard_layout():
                 create_download_component("cities-flood-exposure-download"),
                 create_download_component("precipitation-download"),
                 create_download_component("urbanization-vs-climate-change-download"),
+                create_download_component("risk-estimates-download"),
                 # Store for flood benchmark selections
                 dcc.Store(id='flood-benchmark-store', data=[]),
                 # Store for contact form submission status
@@ -400,6 +402,24 @@ def create_world_bank_flood_projections_tab_content():
                 ],
             ),
             html.Div(id="flood-projections-content"),
+        ], className="tab-content-inner"),
+    ], className="tab-content-container")
+
+
+def create_world_bank_risk_estimates_tab_content():
+    return html.Div([
+        html.Div([
+            html.Div([
+                dbc.Tabs(
+                    [
+                        dbc.Tab(label="Average Annual Loss", tab_id="average-annual-loss", label_class_name="tab-blue"),
+                    ],
+                    id="risk-estimates-subtabs",
+                    active_tab="average-annual-loss",
+                    className="sub-nav-tabs subtabs-container",
+                )
+            ]),
+            html.Div([html.Div(id="risk-estimates-chart-container")])
         ], className="tab-content-inner"),
     ], className="tab-content-container")
 

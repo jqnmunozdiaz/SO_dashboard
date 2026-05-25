@@ -300,7 +300,8 @@ def create_methodological_note_layout():
                 dcc.Markdown(
                     markdown_content,
                     className="methodological-note-content",
-                    dangerously_allow_html=True
+                    dangerously_allow_html=True,
+                    mathjax=True
                 )
             ], className="note-container", style={"maxWidth": "1200px", "margin": "0 auto", "padding": "2rem", "backgroundColor": "white", "borderRadius": "8px", "boxShadow": "0 2px 4px rgba(0,0,0,0.1)"})
         ], className="main-content", style={"paddingTop": "2rem", "paddingBottom": "4rem", "backgroundColor": "#f8f9fa"}),

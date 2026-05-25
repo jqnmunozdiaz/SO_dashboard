@@ -158,7 +158,7 @@ This analysis decomposes future flood risk into two drivers: **Climate Change** 
     $$\text{Scaling Factor} = \frac{\text{Total AAL}}{\text{Buildings AAL}}$$
     *   *Total AAL* represents the sum of AAL across all GIRI sectors, and *Buildings AAL* is the sum of AAL across the Buildings sector.
     *   The "Buildings" PML loss at each Return Period is multiplied by this scaling factor to estimate the national **Overall PML Loss**:
-        $$\text{Overall Loss (all\_assets)} = \text{Buildings Loss} \times \text{Scaling Factor}$$
+        $$\text{Overall Loss (all_assets)} = \text{Buildings Loss} \times \text{Scaling Factor}$$
 
 #### Multi-Hazard Combined PML (Monte Carlo Simulation)
 *   To aggregate separate hazard PML curves into a **Combined** multi-hazard curve (Flood and Earthquake) without double-counting, a **stochastic catalog sampling (Monte Carlo simulation)** is performed:

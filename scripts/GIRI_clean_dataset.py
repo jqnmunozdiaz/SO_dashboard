@@ -65,11 +65,12 @@ df.rename(
 
 # Compute GDP = pop * gdp_capita
 df['GDP'] = df['pop'] * df['gdp_capita']
+df['CAP_Stock'] = df['pop'] * df['cap_stock_capita']
 
 # Keep only the requested columns (including the computed GDP)
 final_cols = [
     'iso3cd', 'hazard', 'sector', 'subsector', 'risk_metric_abbr', 
-    'Loss', 'RP', 'pop', 'cap_stock_capita', 'gdp_capita', 'GDP'
+    'Loss', 'RP', 'GDP', 'CAP_Stock'
 ]
 df = df[final_cols].copy()
 
@@ -85,18 +86,14 @@ df_aal = df[df['risk_metric_abbr'] == 'AAL'].copy()
 # Aggregate AAL per country and hazard
 aal_summary = df_aal.groupby(['iso3cd', 'hazard']).agg({
     'Loss': 'sum',
-    'pop': 'first',
-    'cap_stock_capita': 'first',
-    'gdp_capita': 'first',
+    'CAP_Stock': 'first',
     'GDP': 'first'
 }).reset_index()
 
 # Generate "Combined" hazard type per country
 combined_aal = aal_summary.groupby('iso3cd').agg({
     'Loss': 'sum',
-    'pop': 'first',
-    'cap_stock_capita': 'first',
-    'gdp_capita': 'first',
+    'CAP_Stock': 'first',
     'GDP': 'first'
 }).reset_index()
 combined_aal['hazard'] = 'Combined'
@@ -105,7 +102,7 @@ combined_aal['hazard'] = 'Combined'
 giri_aals = pd.concat([aal_summary, combined_aal], ignore_index=True)
 
 # Reorder and sort columns for output
-final_aal_cols = ['iso3cd', 'hazard', 'Loss', 'pop', 'cap_stock_capita', 'gdp_capita', 'GDP']
+final_aal_cols = ['iso3cd', 'hazard', 'Loss', 'CAP_Stock', 'GDP']
 giri_aals = giri_aals[final_aal_cols].sort_values(['iso3cd', 'hazard']).reset_index(drop=True)
 
 # Save GIRI_AALs to CSV

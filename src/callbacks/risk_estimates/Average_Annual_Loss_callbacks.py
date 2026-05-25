@@ -14,13 +14,120 @@ from ...utils.download_helpers import create_simple_download_callback
 from config.settings import CHART_STYLES
 
 
+def create_aal_table(filtered_df, display_mode):
+    """Create a styled HTML table with AAL values for each hazard and the overall total"""
+    # Calculate overall total
+    total_val = filtered_df['Value_Display'].sum()
+    
+    # Sort the hazards in descending order of value for better readability
+    sorted_df = filtered_df.sort_values(by='Value_Display', ascending=False)
+    
+    # Define unit labels and formats
+    if display_mode == 'relative_gov_exp':
+        unit_label = "% of Gov. Exp."
+        value_format = "{:.4f}%"
+    elif display_mode == 'relative':
+        unit_label = "% of GDP"
+        value_format = "{:.4f}%"
+    else:
+        unit_label = "Million USD"
+        value_format = "${:,.2f} M"
+        
+    # Premium colors for hazards matching the chart
+    HAZARD_COLORS = {
+        'Flood': '#1f77b4',             # Mid blue
+        'Tropical cyclone': '#ff7f0e',   # Warm orange
+        'Landslide': '#8c564b',          # Earthy brown
+        'Tsunami': '#17becf',            # Bright teal/cyan
+        'Earthquake': '#d62728',         # Soft red
+        'Volcano': '#9467bd',            # Purple
+        'Storm surge': '#2ca02c'         # Soft green
+    }
+    
+    rows = []
+    for _, row in sorted_df.iterrows():
+        hazard_name = row['hazard']
+        val = row['Value_Display']
+        color = HAZARD_COLORS.get(hazard_name, '#6c757d')
+        
+        rows.append(
+            html.Tr([
+                html.Td([
+                    html.Span(
+                        style={
+                            'display': 'inline-block',
+                            'width': '12px',
+                            'height': '12px',
+                            'borderRadius': '50%',
+                            'backgroundColor': color,
+                            'marginRight': '8px',
+                            'verticalAlign': 'middle'
+                        }
+                    ),
+                    html.Span(hazard_name, style={'fontWeight': '500', 'verticalAlign': 'middle'})
+                ], style={'padding': '12px 16px', 'verticalAlign': 'middle', 'borderBottom': '1px solid #dee2e6'}),
+                html.Td(
+                    value_format.format(val),
+                    style={'padding': '12px 16px', 'textAlign': 'right', 'fontWeight': '600', 'fontFamily': 'monospace', 'borderBottom': '1px solid #dee2e6'}
+                )
+            ])
+        )
+        
+    # Add overall row
+    rows.append(
+        html.Tr([
+            html.Td(
+                html.B("Overall (Total)"),
+                style={'padding': '12px 16px', 'borderTop': '2px solid #dee2e6', 'verticalAlign': 'middle', 'borderBottom': 'none'}
+            ),
+            html.Td(
+                html.B(value_format.format(total_val)),
+                style={'padding': '12px 16px', 'textAlign': 'right', 'borderTop': '2px solid #dee2e6', 'fontFamily': 'monospace', 'borderBottom': 'none'}
+            )
+        ], style={'backgroundColor': '#f8f9fa'})
+    )
+    
+    return html.Div([
+        html.Div([
+            html.H6("AAL Values Summary", style={
+                'color': '#002f6c',
+                'fontWeight': 'bold',
+                'marginBottom': '1rem',
+                'borderBottom': '2px solid #002f6c',
+                'paddingBottom': '0.5rem'
+            }),
+            html.Table([
+                html.Thead(
+                    html.Tr([
+                        html.Th("Hazard Type", style={'padding': '10px 16px', 'textAlign': 'left', 'color': '#495057', 'borderBottom': '2px solid #dee2e6', 'fontWeight': 'bold'}),
+                        html.Th(f"Value ({unit_label})", style={'padding': '10px 16px', 'textAlign': 'right', 'color': '#495057', 'borderBottom': '2px solid #dee2e6', 'fontWeight': 'bold'})
+                    ])
+                ),
+                html.Tbody(rows)
+            ], style={
+                'width': '100%',
+                'borderCollapse': 'collapse',
+                'backgroundColor': 'white',
+                'fontSize': '0.9rem'
+            })
+        ], style={
+            'border': '1px solid #dee2e6',
+            'borderRadius': '6px',
+            'boxShadow': '0 2px 4px rgba(0,0,0,0.05)',
+            'padding': '1.5rem',
+            'backgroundColor': 'white'
+        })
+    ])
+
+
 def setup_average_annual_loss_callbacks(app):
     """Setup callbacks for GIRI AAL visualization"""
     
     @app.callback(
         [Output('risk-estimates-chart', 'figure'),
          Output('risk-estimates-chart', 'style'),
-         Output('risk-estimates-title', 'children')],
+         Output('risk-estimates-title', 'children'),
+         Output('risk-estimates-table-container', 'children')],
         [Input('main-country-filter', 'value'),
          Input('risk-estimates-mode-selector', 'value')],
         prevent_initial_call=False
@@ -208,11 +315,14 @@ def setup_average_annual_loss_callbacks(app):
                 )
             )
             
-            return fig, {'display': 'block', 'width': '100%', 'maxWidth': '800px', 'margin': '0 auto'}, chart_title
+            # Build summary table html content
+            table_content = create_aal_table(filtered_df, display_mode)
+            
+            return fig, {'display': 'block', 'width': '100%'}, chart_title, table_content
             
         except Exception as e:
             fig, style = create_simple_error_message(str(e))
-            return fig, style, ""
+            return fig, style, "", ""
 
     # Register download callback using standard helper
     create_simple_download_callback(

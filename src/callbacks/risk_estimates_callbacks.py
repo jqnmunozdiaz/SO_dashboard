@@ -4,6 +4,7 @@ Coordinates all GIRI-related visualization callbacks organized in risk_estimates
 """
 
 from dash import Input, Output, dcc, html
+import dash_bootstrap_components as dbc
 
 # Import individual sub-callback setup modules from the risk_estimates subfolder
 from .risk_estimates.Average_Annual_Loss_callbacks import setup_average_annual_loss_callbacks
@@ -55,11 +56,18 @@ def register_callbacks(app):
                     ], className='filter-control-group', style={'flex': '1', 'min-width': '250px'})
                 ], className='filter-container', style={'display': 'flex', 'gap': '2rem', 'flex-wrap': 'wrap'}),
                 
-                # Chart
-                dcc.Graph(
-                    id="risk-estimates-chart",
-                    style={'display': 'block', 'width': '100%', 'maxWidth': '800px', 'margin': '0 auto'}
-                ),
+                # Chart and Table row
+                dbc.Row([
+                    dbc.Col([
+                        dcc.Graph(
+                            id="risk-estimates-chart",
+                            style={'display': 'block', 'width': '100%'}
+                        )
+                    ], xs=12, lg=7),
+                    dbc.Col([
+                        html.Div(id="risk-estimates-table-container")
+                    ], xs=12, lg=5)
+                ], className="g-4 align-items-center", style={'marginTop': '1rem', 'marginBottom': '2rem'}),
                 
                 # Indicator note and download button
                 html.Div([

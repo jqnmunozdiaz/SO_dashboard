@@ -102,7 +102,7 @@ merged_df['sector'] = merged_df['sector'].replace('Buildings', 'all_assets')
 final_cols = [
     'iso3cd', 'hazard', 'sector', 'Loss', 'RP', 
     'Buildings_Loss', 'Total_AAL', 'Buildings_AAL', 'Scaling_Factor',
-    'CAP_Stock', 'GDP'
+    'GDP'
 ]
 output_df = merged_df[final_cols].copy()
 

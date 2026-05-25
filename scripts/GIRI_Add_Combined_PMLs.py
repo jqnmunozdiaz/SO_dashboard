@@ -124,8 +124,7 @@ for country in countries:
     losses_combined = losses_eq + losses_fl
     
     # 5. Extract metadata from the existing rows
-    # CAP_Stock and GDP are inherited from the country values
-    cap_stock = country_df['CAP_Stock'].iloc[0] if len(country_df) > 0 else 0.0
+    # GDP is inherited from the country values
     gdp = country_df['GDP'].iloc[0] if len(country_df) > 0 else 0.0
     sector = country_df['sector'].iloc[0] if len(country_df) > 0 else 'all_assets'
     
@@ -161,7 +160,6 @@ for country in countries:
             'Total_AAL': total_aal_sum,
             'Buildings_AAL': buildings_aal_sum,
             'Scaling_Factor': 0.0,
-            'CAP_Stock': cap_stock,
             'GDP': gdp
         })
 

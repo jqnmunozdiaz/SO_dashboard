@@ -414,6 +414,7 @@ def create_world_bank_risk_estimates_tab_content():
                     [
                         dbc.Tab(label="Average Annual Loss", tab_id="average-annual-loss", label_class_name="tab-blue"),
                         dbc.Tab(label="Probable Maximum Losses", tab_id="probable-maximum-losses", label_class_name="tab-blue"),
+                        dbc.Tab(label="Probable Maximum Loss Benchmark", tab_id="probable-maximum-loss-benchmark", label_class_name="tab-blue"),
                     ],
                     id="risk-estimates-subtabs",
                     active_tab="average-annual-loss",

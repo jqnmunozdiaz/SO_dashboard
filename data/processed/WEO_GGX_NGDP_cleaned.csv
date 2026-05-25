@@ -1,48 +1,49 @@
 ISO3,Country,Value,Year
-AGO,Angola,17.295,2025
-BDI,Burundi,23.526,2025
-BEN,Benin,18.701,2025
-BFA,Burkina Faso,24.117,2025
-BWA,Botswana,34.213,2025
-CAF,Central African Republic,17.85,2025
-CIV,Côte d’Ivoire,20.435,2025
-CMR,Cameroon,16.263,2025
-COD,Democratic Republic of Congo,17.359,2025
-COG,Congo,21.902,2025
-COM,Comoros,21.606,2025
-CPV,Cabo Verde,29.515,2025
-ETH,Ethiopia,11.644,2025
-GAB,Gabon,26.309,2025
-GHA,Ghana,18.783,2025
-GIN,Guinea,17.27,2025
-GMB,Gambia,23.983,2025
-GNB,Guinea-Bissau,18.527,2025
-GNQ,Equatorial Guinea,18.719,2025
-KEN,Kenya,22.978,2025
-LBR,Liberia,22.357,2025
-LSO,Lesotho,52.401,2025
-MDG,Madagascar,15.707,2025
-MLI,Mali,26.185,2025
-MOZ,Mozambique,32.195,2025
-MRT,Mauritania,25.532,2025
-MUS,Mauritius,28.564,2025
-MWI,Malawi,28.027,2025
-NAM,Namibia,39.308,2025
-NER,Niger,13.447,2025
-NGA,Nigeria,18.524,2025
-RWA,Rwanda,27.381,2025
-SDN,Sudan,6.169,2025
-SEN,Senegal,28.99,2025
-SLE,Sierra Leone,17.736,2025
-SOM,Somalia,8.618,2025
-SSD,South Sudan,26.733,2025
-STP,São Tomé and Príncipe,24.459,2025
-SWZ,Eswatini,32.011,2025
-SYC,Seychelles,36.006,2025
-TCD,Chad,18.305,2025
-TGO,Togo,21.607,2025
-TZA,Tanzania,19.19,2025
-UGA,Uganda,21.385,2025
-ZAF,South Africa,34.009,2025
-ZMB,Zambia,27.253,2025
-ZWE,Zimbabwe,19.053,2025
+AGO,Angola,18.265,2018
+BDI,Burundi,26.019,2018
+BEN,Benin,16.568,2018
+BFA,Burkina Faso,24.192,2018
+BWA,Botswana,35.591,2018
+CAF,Central African Republic,17.606,2018
+CIV,Côte d’Ivoire,17.561,2018
+CMR,Cameroon,17.953,2018
+COD,Democratic Republic of Congo,11.729,2018
+COG,Congo,17.787,2018
+COM,Comoros,19.168,2018
+CPV,Cabo Verde,27.539,2018
+ERI,Eritrea,26.357,2018
+ETH,Ethiopia,16.099,2018
+GAB,Gabon,17.13,2018
+GHA,Ghana,20.895,2018
+GIN,Guinea,15.916,2018
+GMB,Gambia,19.008,2018
+GNB,Guinea-Bissau,19.476,2018
+GNQ,Equatorial Guinea,19.053,2018
+KEN,Kenya,24.479,2018
+LBR,Liberia,32.66,2018
+LSO,Lesotho,51.916,2018
+MDG,Madagascar,14.351,2018
+MLI,Mali,20.307,2018
+MOZ,Mozambique,31.167,2018
+MRT,Mauritania,18.99,2018
+MUS,Mauritius,25.821,2018
+MWI,Malawi,19.381,2018
+NAM,Namibia,36.33,2018
+NER,Niger,21.158,2018
+NGA,Nigeria,12.82,2018
+RWA,Rwanda,26.375,2018
+SDN,Sudan,16.833,2018
+SEN,Senegal,22.552,2018
+SLE,Sierra Leone,13.652,2018
+SOM,Somalia,3.401,2018
+SSD,South Sudan,56.384,2018
+STP,São Tomé and Príncipe,27.961,2018
+SWZ,Eswatini,34.598,2018
+SYC,Seychelles,33.021,2018
+TCD,Chad,9.63,2018
+TGO,Togo,18.796,2018
+TZA,Tanzania,17.278,2018
+UGA,Uganda,16.185,2018
+ZAF,South Africa,30.152,2018
+ZMB,Zambia,27.733,2018
+ZWE,Zimbabwe,20.306,2018

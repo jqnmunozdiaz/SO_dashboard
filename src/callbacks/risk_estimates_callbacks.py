@@ -10,6 +10,7 @@ import dash_bootstrap_components as dbc
 from .risk_estimates.Average_Annual_Loss_callbacks import setup_average_annual_loss_callbacks
 from .risk_estimates.PML_by_Sector_callbacks import setup_pml_by_sector_callbacks
 from .risk_estimates.Probable_Maximum_Losses_callbacks import setup_probable_maximum_losses_callbacks, render_probable_maximum_losses_layout
+from .risk_estimates.Probable_Maximum_Loss_Benchmark_callbacks import setup_probable_maximum_loss_benchmark_callbacks, render_probable_maximum_loss_benchmark_layout
 
 from ..utils.country_utils import load_subsaharan_countries_and_regions_dict
 from ..utils.ui_helpers import create_download_trigger_button, create_methodological_note_button
@@ -23,6 +24,7 @@ def register_callbacks(app):
     setup_average_annual_loss_callbacks(app)
     setup_pml_by_sector_callbacks(app)
     setup_probable_maximum_losses_callbacks(app)
+    setup_probable_maximum_loss_benchmark_callbacks(app)
     
     # 1. Main chart container callback (orchestrates layout and controls based on subtab selection)
     @app.callback(
@@ -73,7 +75,7 @@ def register_callbacks(app):
                 html.Div([
                     html.P([
                         html.B("Data Source: "), "Global Infrastructure Risk Model & Resilience Index (GIRI). ",
-                        "General government total expenditure (GGX_NGDP) data for 2025 obtained from the IMF's WEO dataset, v. April 2025.", html.Br(),
+                        "General government total expenditure (GGX_NGDP) data for 2018 obtained from the IMF's WEO dataset.", html.Br(),
                         html.B("Note: "), "This stacked bar chart shows the Average Annual Loss (AAL) by hazard under existing climate conditions. ",
                         "Losses are stacked by hazard type. ",
                         "Due to data limitations, only Earthquakes and Floods are included in this analysis. ",
@@ -87,6 +89,8 @@ def register_callbacks(app):
             ], className="chart-container")
         elif active_subtab == 'probable-maximum-losses':
             return render_probable_maximum_losses_layout(selected_country)
+        elif active_subtab == 'probable-maximum-loss-benchmark':
+            return render_probable_maximum_loss_benchmark_layout(selected_country)
         elif active_subtab == 'pml-by-sector':
             countries_dict = load_subsaharan_countries_and_regions_dict()
             label_name = countries_dict.get(selected_country, selected_country)

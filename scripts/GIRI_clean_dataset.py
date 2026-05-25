@@ -34,8 +34,7 @@ print(f"Reading raw data from: {raw_file_path}")
 cols_to_load = [
     'iso3cd', 'hazard', 'sector', 'subsector', 
     'climate_scenario', 'risk_metric_abbr', 
-    'value_axis_1', 'value_axis_2', 
-    'pop', 'cap_stock_capita', 'gdp_capita'
+    'value_axis_1', 'value_axis_2'
 ]
 
 # Load the CSV file
@@ -63,14 +62,20 @@ df.rename(
     inplace=True
 )
 
-# Compute GDP = pop * gdp_capita
-df['GDP'] = df['pop'] * df['gdp_capita']
-df['CAP_Stock'] = df['pop'] * df['cap_stock_capita']
+# Load World Bank GDP data (current US$) for 2018 (Indicator: NY.GDP.MKTP.CD)
+wdi_file_path = os.path.join(project_root, 'data', 'raw', 'WDI_CSV', 'WDICSV.csv')
+print(f"Reading GDP 2018 data from WDI dataset: {wdi_file_path}")
+wdi_df = pd.read_csv(wdi_file_path, usecols=['Country Code', 'Indicator Code', '2018'])
+gdp_2018 = wdi_df[wdi_df['Indicator Code'] == 'NY.GDP.MKTP.CD'].copy()
+gdp_2018 = gdp_2018.rename(columns={'Country Code': 'iso3cd', '2018': 'GDP'})
 
-# Keep only the requested columns (including the computed GDP)
+# Merge WDI GDP into df
+df = df.merge(gdp_2018[['iso3cd', 'GDP']], on='iso3cd', how='left')
+
+# Keep only the requested columns (including the merged GDP)
 final_cols = [
     'iso3cd', 'hazard', 'sector', 'subsector', 'risk_metric_abbr', 
-    'Loss', 'RP', 'GDP', 'CAP_Stock'
+    'Loss', 'RP', 'GDP'
 ]
 df = df[final_cols].copy()
 
@@ -86,14 +91,12 @@ df_aal = df[df['risk_metric_abbr'] == 'AAL'].copy()
 # Aggregate AAL per country and hazard
 aal_summary = df_aal.groupby(['iso3cd', 'hazard']).agg({
     'Loss': 'sum',
-    'CAP_Stock': 'first',
     'GDP': 'first'
 }).reset_index()
 
 # Generate "Combined" hazard type per country
 combined_aal = aal_summary.groupby('iso3cd').agg({
     'Loss': 'sum',
-    'CAP_Stock': 'first',
     'GDP': 'first'
 }).reset_index()
 combined_aal['hazard'] = 'Combined'
@@ -102,7 +105,7 @@ combined_aal['hazard'] = 'Combined'
 giri_aals = pd.concat([aal_summary, combined_aal], ignore_index=True)
 
 # Reorder and sort columns for output
-final_aal_cols = ['iso3cd', 'hazard', 'Loss', 'CAP_Stock', 'GDP']
+final_aal_cols = ['iso3cd', 'hazard', 'Loss', 'GDP']
 giri_aals = giri_aals[final_aal_cols].sort_values(['iso3cd', 'hazard']).reset_index(drop=True)
 
 # Save GIRI_AALs to CSV

@@ -255,6 +255,25 @@ def load_giri_processed_data(file_path: Optional[str] = None) -> pd.DataFrame:
     return _load_csv(file_path, "GIRI Processed")
 
 
+def load_giri_pmls_data(file_path: Optional[str] = None) -> pd.DataFrame:
+    """Load GIRI Probable Maximum Losses (PML) data from GIRI_Overall_Loss_with_Added_PMLs.csv"""
+    if file_path is None:
+        project_root = _get_project_root()
+        file_path = os.path.join(project_root, 'data', 'processed', 'GIRI', 'GIRI_Overall_Loss_with_Added_PMLs.csv')
+    
+    df = _load_csv(file_path, "GIRI PMLs")
+    
+    # Clean string-formatted numbers with commas
+    if 'Loss' in df.columns:
+        df['Loss'] = df['Loss'].astype(str).str.replace(',', '', regex=False).astype(float)
+    if 'GDP' in df.columns:
+        df['GDP'] = df['GDP'].astype(str).str.replace(',', '', regex=False).astype(float)
+    if 'Total_AAL' in df.columns:
+        df['Total_AAL'] = df['Total_AAL'].astype(str).str.replace(',', '', regex=False).astype(float)
+        
+    return df
+
+
 def load_weo_expenditure_data(file_path: Optional[str] = None) -> pd.DataFrame:
     """Load WEO total expenditure (GGX_NGDP) data"""
     if file_path is None:
@@ -304,6 +323,7 @@ __all__ = [
     # GIRI AAL
     'load_giri_aals_data',
     'load_giri_processed_data',
+    'load_giri_pmls_data',
     # WEO Gov Expenditure
     'load_weo_expenditure_data',
 ]

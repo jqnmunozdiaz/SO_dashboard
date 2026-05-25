@@ -25,13 +25,13 @@ def create_aal_table(filtered_df, display_mode):
     # Define unit labels and formats
     if display_mode == 'relative_gov_exp':
         unit_label = "% of Gov. Exp."
-        value_format = "{:.4f}%"
+        value_format = "{:.2f}%"
     elif display_mode == 'relative':
         unit_label = "% of GDP"
-        value_format = "{:.4f}%"
+        value_format = "{:.2f}%"
     else:
         unit_label = "Million USD"
-        value_format = "${:,.2f} M"
+        value_format = "${:,.1f} M"
         
     # Premium colors for hazards matching the chart
     HAZARD_COLORS = {
@@ -215,19 +215,19 @@ def setup_average_annual_loss_callbacks(app):
                 # Relative view: percentage of Government Expenditure
                 filtered_df['Value_Display'] = (filtered_df['Loss'] / filtered_df['Gov_Exp_USD']) * 100.0
                 yaxis_title = "Average Annual Loss (% of Government Expenditure)"
-                hover_format = ".4f"
+                hover_format = ".2f"
                 hover_suffix = "% of Government Expenditure"
             elif display_mode == 'relative':
                 # Relative view: percentage of GDP
                 filtered_df['Value_Display'] = (filtered_df['Loss'] / filtered_df['GDP']) * 100.0
                 yaxis_title = "Average Annual Loss (% of GDP)"
-                hover_format = ".4f"
+                hover_format = ".2f"
                 hover_suffix = "% of GDP"
             else:
                 # Absolute view: Million USD
                 filtered_df['Value_Display'] = filtered_df['Loss'] / 1e6
                 yaxis_title = "Average Annual Loss (Million USD)"
-                hover_format = ",.2f"
+                hover_format = ",.1f"
                 hover_suffix = "M USD"
             
             # Premium color palette for hazards (harmonious and modern DRM tones)
@@ -310,7 +310,7 @@ def setup_average_annual_loss_callbacks(app):
                     showline=True,
                     linewidth=1,
                     linecolor='#e2e8f0',
-                    tickformat=',.4f' if display_mode in ['relative', 'relative_gov_exp'] else ',.1f',
+                    tickformat=',.2f' if display_mode in ['relative', 'relative_gov_exp'] else ',.1f',
                     range=[0, y_max]
                 )
             )

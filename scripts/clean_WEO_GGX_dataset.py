@@ -15,12 +15,12 @@ sys.path.append(PROJECT_ROOT)
 from src.utils.country_utils import load_subsaharan_countries_dict
 
 # Define file paths relative to project root
-input_file = os.path.join(PROJECT_ROOT, 'data', 'raw', 'WEO_Data.xlsx')
+input_file = os.path.join(PROJECT_ROOT, 'data', 'raw', 'WEO_Data.xls')
 output_file = os.path.join(PROJECT_ROOT, 'data', 'processed', 'WEO_GGX_NGDP_cleaned.csv')
   
 print(f"Loading raw WEO data from: {input_file}...")
-# Read the excel file
-df = pd.read_excel(input_file)
+# Read the TSV file (WEO_Data.xls is actually tab-separated)
+df = pd.read_csv(input_file, sep='\t')
 
 # Cast column names to string to handle numeric and string years robustly
 df.columns = df.columns.astype(str)
@@ -39,17 +39,17 @@ df_ssa = df_exp[df_exp['ISO'].isin(ssa_countries.keys())].copy()
 
 print(f"Found {len(df_ssa)} SSA countries in the dataset.")
 
-# Convert '2025' column to numeric, converting string N/As (like 'n/a' or '--') to NaN
-df_ssa['2025'] = pd.to_numeric(df_ssa['2025'], errors='coerce')
+# Convert '2018' column to numeric, converting string N/As (like 'n/a' or '--') to NaN
+df_ssa['2018'] = pd.to_numeric(df_ssa['2018'], errors='coerce')
     
-# Extract the 2025 value for each country
+# Extract the 2018 value for each country
 cleaned_records = []
 for _, row in df_ssa.iterrows():
     iso = row['ISO']
     # Use official country name from country utilities if available, else fallback to WEO's name
     country_name = ssa_countries.get(iso, row['Country'])
     
-    val = row['2025']
+    val = row['2018']
     
     # Skip if no valid value was found (handles the "remove the n/a" requirement)
     if pd.notna(val):
@@ -57,7 +57,7 @@ for _, row in df_ssa.iterrows():
             'ISO3': iso,
             'Country': country_name,
             'Value': val,
-            'Year': 2025
+            'Year': 2018
         })
         
 # Create a DataFrame from the cleaned records

@@ -247,6 +247,14 @@ def load_giri_aals_data(file_path: Optional[str] = None) -> pd.DataFrame:
     return _load_csv(file_path, "GIRI AALs")
 
 
+def load_giri_processed_data(file_path: Optional[str] = None) -> pd.DataFrame:
+    """Load complete GIRI Processed data containing both AAL and PML metrics"""
+    if file_path is None:
+        project_root = _get_project_root()
+        file_path = os.path.join(project_root, 'data', 'processed', 'GIRI', 'GIRI_Processed.csv')
+    return _load_csv(file_path, "GIRI Processed")
+
+
 def load_weo_expenditure_data(file_path: Optional[str] = None) -> pd.DataFrame:
     """Load WEO total expenditure (GGX_NGDP) data"""
     if file_path is None:
@@ -295,6 +303,7 @@ __all__ = [
     'load_flood_projections_data',
     # GIRI AAL
     'load_giri_aals_data',
+    'load_giri_processed_data',
     # WEO Gov Expenditure
     'load_weo_expenditure_data',
 ]

@@ -136,11 +136,25 @@ This analysis decomposes future flood risk into two drivers: **Climate Change** 
 
 ## 6. GIRI Risk Estimates
 
-### Data Source
+### 6.1 Average Annual Loss (AAL)
+
+#### Data Source
 *   **Source:** Global Infrastructure Risk Model and Resilience Index (GIRI).
 *   **Scenario:** Existing Climate (Baseline risk profiles).
 *   **Risk Metric:** Average Annual Loss (AAL).
 
-### Methodology
+#### Methodology
 *   **Average Annual Loss (AAL):** Represents the expected long-term average loss per year from a specific natural hazard, computed across all sectors and subsectors.
 *   **Hazards Analyzed:** Includes seven hazard types: `Flood`, `Tropical cyclone`, `Landslide`, `Tsunami`, `Earthquake`, `Volcano`, and `Storm surge`.
+
+### 6.2 Probable Maximum Losses (PML)
+
+#### Risk Metric
+*   **Probable Maximum Loss (PML):** Represents the maximum loss expected from natural hazards within a specified return period (e.g., 50, 100, 250, and 500 years).
+
+#### Methodology & Assumptions
+*   **Scope:** Due to methodological limitations, data is only presented for `Flood`, `Earthquake`, and `Tsunami`. Landslides and Tropical Cyclones have been excluded from this analysis.
+*   **Aggregation Logic:** PMLs from the original risk assessment, which are provided with a high level of disaggregation, were aggregated based on two key assumptions:
+    1.  **Shape of the Curve:** The shape of the exceedance probability curve of the whole asset portfolio matches the shape of the exceedance probability curve of buildings.
+    2.  **Independent Perils:** The perils assessed are independent.
+*   **Interpretation:** These two assumptions are important, and results should be treated as a first order approximation rather than a full risk assessment.

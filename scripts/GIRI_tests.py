@@ -1,3 +1,4 @@
+#%%
 """
 Script to analyze GIRI Processed dataset and generate a figure with pie plots.
 Produces a grid of subfigures (one per country) showing the overall AAL (Average Annual Loss) 
@@ -141,6 +142,135 @@ plt.tight_layout(rect=[0, 0.04, 1, 0.95])
 # Save the figure
 print(f"Saving overall AAL pie plot figure to: {output_image}")
 plt.savefig(output_image, dpi=200, bbox_inches='tight')
-plt.close()
+
+# Check if running in Jupyter notebook / IPython to determine whether to show or close the plot
+try:
+    shell = get_ipython().__class__.__name__
+    is_jupyter = (shell == 'ZMQInteractiveShell')
+except NameError:
+    is_jupyter = False
+
+if is_jupyter:
+    plt.show()
+else:
+    plt.close()
 
 print("Figure generated and saved successfully!")
+
+#%%
+# ==============================================================================
+# NEW SECTION: Buildings Share of AAL for Earthquake and Flood
+# ==============================================================================
+print("\n" + "="*80)
+print(" STARTING BUILDINGS SHARE OF AAL ANALYSIS ")
+print("="*80)
+
+# 1. Calculate total AAL per country and hazard (excluding Combined hazard)
+total_aal = df_aal.groupby(['iso3cd', 'hazard'])['Loss'].sum().reset_index(name='Total_AAL')
+
+# 2. Calculate Buildings AAL per country and hazard
+buildings_aal = df_aal[df_aal['sector'] == 'Buildings'].groupby(['iso3cd', 'hazard'])['Loss'].sum().reset_index(name='Buildings_AAL')
+
+# Merge to match total and sector loss
+share_df = pd.merge(total_aal, buildings_aal, on=['iso3cd', 'hazard'], how='left').fillna(0)
+
+# Calculate share percentage
+share_df['Share_Pct'] = np.where(
+    share_df['Total_AAL'] > 0,
+    (share_df['Buildings_AAL'] / share_df['Total_AAL']) * 100.0,
+    0.0
+)
+
+# Sort for output
+share_df = share_df.sort_values(by=['iso3cd', 'hazard']).reset_index(drop=True)
+
+# Print table to console
+print("\n" + "="*95)
+print(f"{'Country':<25} | {'Hazard':<15} | {'Buildings AAL (USD)':<20} | {'Total AAL (USD)':<20} | {'Buildings Share (%)':<10}")
+print("="*95)
+for idx, row in share_df.iterrows():
+    c_name = country_names.get(row['iso3cd'], row['iso3cd'])
+    print(f"{c_name:<25} | {row['hazard']:<15} | {row['Buildings_AAL']:<20,.2f} | {row['Total_AAL']:<20,.2f} | {row['Share_Pct']:<10.2f}%")
+print("="*95 + "\n")
+
+# Save table as a text file in outputs directory
+output_table_file = os.path.join(output_dir, 'GIRI_Buildings_Share_Table.txt')
+with open(output_table_file, 'w', encoding='utf-8') as f:
+    f.write("="*95 + "\n")
+    f.write(f"{'Country':<25} | {'Hazard':<15} | {'Buildings AAL (USD)':<20} | {'Total AAL (USD)':<20} | {'Buildings Share (%)':<10}\n")
+    f.write("="*95 + "\n")
+    for idx, row in share_df.iterrows():
+        c_name = country_names.get(row['iso3cd'], row['iso3cd'])
+        f.write(f"{c_name:<25} | {row['hazard']:<15} | {row['Buildings_AAL']:<20,.2f} | {row['Total_AAL']:<20,.2f} | {row['Share_Pct']:<10.2f}%\n")
+    f.write("="*95 + "\n")
+print(f"Table successfully saved to: {output_table_file}")
+
+def format_loss(val):
+    if val >= 1e6:
+        return f"{val/1e6:.1f} M"
+    elif val >= 1e3:
+        return f"{val/1e3:.1f} K"
+    else:
+        return f"{val:.0f}"
+
+# Create a figure with one subplot for Earthquake and one for Floods
+fig_share, (ax_eq, ax_fl) = plt.subplots(1, 2, figsize=(16, 8), dpi=150)
+
+# Filter data for each hazard
+eq_data = share_df[share_df['hazard'] == 'Earthquake'].copy()
+fl_data = share_df[share_df['hazard'] == 'Flood'].copy()
+
+# Add country labels for plotting
+eq_data['Country_Label'] = eq_data['iso3cd'].map(country_names).fillna(eq_data['iso3cd'])
+fl_data['Country_Label'] = fl_data['iso3cd'].map(country_names).fillna(fl_data['iso3cd'])
+
+# Sort countries alphabetically for cleaner y-axis
+eq_data = eq_data.sort_values(by='Country_Label', ascending=False)
+fl_data = fl_data.sort_values(by='Country_Label', ascending=False)
+
+# Earthquake subplot
+bars_eq = ax_eq.barh(eq_data['Country_Label'], eq_data['Share_Pct'], color='#d62728', edgecolor='none', height=0.6)
+ax_eq.set_title('Earthquake: "Buildings" Sector AAL Share (%)', fontsize=12, weight='bold', pad=15, color='#2c3e50')
+ax_eq.set_xlabel('Share of Total Earthquake AAL (%)', fontsize=10, weight='bold')
+ax_eq.set_xlim(0, 175)
+ax_eq.grid(axis='x', linestyle='--', alpha=0.5)
+
+# Add value labels inside/beside the bars
+for bar, row in zip(bars_eq, eq_data.itertuples()):
+    width = bar.get_width()
+    label_text = f'{width:.1f}% ({format_loss(row.Buildings_AAL)} out of {format_loss(row.Total_AAL)})'
+    ax_eq.text(width + 1.5, bar.get_y() + bar.get_height()/2, label_text, 
+               va='center', ha='left', fontsize=7, color='#475569', weight='bold')
+
+# Flood subplot
+bars_fl = ax_fl.barh(fl_data['Country_Label'], fl_data['Share_Pct'], color='#1f77b4', edgecolor='none', height=0.6)
+ax_fl.set_title('Flood: "Buildings" Sector AAL Share (%)', fontsize=12, weight='bold', pad=15, color='#2c3e50')
+ax_fl.set_xlabel('Share of Total Flood AAL (%)', fontsize=10, weight='bold')
+ax_fl.set_xlim(0, 175)
+ax_fl.grid(axis='x', linestyle='--', alpha=0.5)
+
+# Add value labels inside/beside the bars
+for bar, row in zip(bars_fl, fl_data.itertuples()):
+    width = bar.get_width()
+    label_text = f'{width:.1f}% ({format_loss(row.Buildings_AAL)} out of {format_loss(row.Total_AAL)})'
+    ax_fl.text(width + 1.5, bar.get_y() + bar.get_height()/2, label_text, 
+               va='center', ha='left', fontsize=7, color='#475569', weight='bold')
+
+# Main overall figure title
+fig_share.suptitle('GIRI AAL: Share of "Buildings" Sector relative to Total Hazard AAL by Country', 
+                   fontsize=15, weight='bold', y=0.98, color='#2c3e50')
+
+# Adjust layout to fit titles and axes neatly
+plt.tight_layout(rect=[0, 0.02, 1, 0.94])
+
+# Save the figure
+output_image_share = os.path.join(output_dir, 'GIRI_Buildings_Share_by_Country.png')
+plt.savefig(output_image_share, dpi=200, bbox_inches='tight')
+
+if is_jupyter:
+    plt.show()
+else:
+    plt.close()
+print(f"Buildings share subplots figure saved to: {output_image_share}")
+print("Analysis complete!")
+

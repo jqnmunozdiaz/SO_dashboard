@@ -131,3 +131,44 @@ This analysis decomposes future flood risk into two drivers: **Climate Change** 
 *   **SSA (Sub-Saharan Africa):** Includes all 48 countries defined as Sub-Saharan Africa by the World Bank.
 *   **AFE (Eastern and Southern Africa):** A World Bank operational region comprising 26 countries (e.g., Kenya, South Africa, Ethiopia, DRC).
 *   **AFW (Western and Central Africa):** A World Bank operational region comprising 22 countries (e.g., Nigeria, Ghana, Senegal).
+
+---
+
+## 6. GIRI Risk Estimates
+
+### 6.1 Data Source & Scope
+*   **Source:** Global Infrastructure Risk Model and Resilience Index (GIRI).
+*   **Scenario:** Existing Climate (Baseline risk profiles under current environmental conditions).
+*   **Hazards Analyzed:** Filters out other perils to focus on **Flood** and **Earthquake** due to data density and modeling confidence in the region.
+*   **National GDP Data:** Merged with World Development Indicators (WDI) GDP data for **2018** (current USD) to calculate relative risk metrics.
+
+### 6.2 Average Annual Loss (AAL)
+*   **Definition:** Represents the long-term expected average loss per year from a specific natural hazard.
+*   **Methodology:**
+    *   For individual hazards (Flood, Earthquake), national-level AAL is computed by summing GIRI baseline AAL values across all asset sectors and subsectors.
+    *   A **Combined AAL** is generated per country as the direct arithmetic sum of the national-level Earthquake and Flood AAL values:
+        $$\text{Combined AAL} = \text{Earthquake AAL} + \text{Flood AAL}$$
+
+### 6.3 Probable Maximum Losses (PML) - Scaling & Combined Risk
+*   **Definition:** Represents the maximum loss expected from natural hazards within a specified Return Period (RP).
+
+#### AAL-Based PML Scaling to "Overall Assets"
+*   The raw GIRI database provides PML curves specifically for the **Buildings** sector (`sector == 'Buildings'`, `subsector == 'all'`).
+*   To estimate PML curves representing **Overall Assets** (`all_assets`), an AAL-based scaling factor is computed and applied to each country-hazard combination:
+    $$\text{Scaling Factor} = \frac{\text{Total AAL}}{\text{Buildings AAL}}$$
+    *   *Total AAL* represents the sum of AAL across all GIRI sectors, and *Buildings AAL* is the sum of AAL across the Buildings sector.
+    *   The "Buildings" PML loss at each Return Period is multiplied by this scaling factor to estimate the national **Overall PML Loss**:
+        $$\text{Overall Loss (all_assets)} = \text{Buildings Loss} \times \text{Scaling Factor}$$
+
+#### Multi-Hazard Combined PML (Monte Carlo Simulation)
+*   To aggregate separate hazard PML curves into a **Combined** multi-hazard curve (Flood and Earthquake) without double-counting, a **stochastic catalog sampling (Monte Carlo simulation)** is performed:
+    1.  **Exceedance Probability Curves:** For each country, the scaled Earthquake and Flood PML curves (Loss vs. Return Period) are converted into Exceedance Probability curves (Annual Exceedance Probability, $AEP = 1 / RP$).
+    2.  **Boundary Conditions:** A boundary condition of **$\text{Loss} = 0$ at $AEP \ge 0.5$** (Return Period $\le 2$ years) is added. For extremely low probabilities ($AEP < 0.0002$, corresponding to $RP > 5,000$ years), linear interpolation is flat-capped at the maximum 5,000-year loss value.
+    3.  **Monte Carlo Simulation:** A joint stochastic catalog is generated using **100,000,000 trials** representing simulated independent years.
+    4.  **Independent Sampling:** For each trial, two independent random numbers $u_{\text{EQ}}$ and $u_{\text{FL}}$ are drawn from a uniform distribution $U(0, 1)$ to simulate independent annual exceedance probabilities.
+    5.  **Loss Interpolation & Summation:** Annual losses for each peril in each trial are interpolated from their respective exceedance probability curves (using linear interpolation) and summed trial-by-trial to compute a joint annual loss:
+        $$\text{Combined Loss}_{\text{trial}} = \text{Earthquake Loss}(u_{\text{EQ}}) + \text{Flood Loss}(u_{\text{FL}})$$
+    6.  **Combined PML Extraction:** The Combined PML for target Return Periods (10, 25, 50, 100, 250, 500, and 1000 years) is extracted from the corresponding percentiles of the joint simulated loss distribution:
+        $$\text{Combined PML}(RP) = \text{Percentile}\left(\text{Combined Losses}, 100 \times \left(1 - \frac{1}{RP}\right)\right)$$
+*   **Trimming:** PML curves are trimmed to cap at the 1,000-year Return Period.
+

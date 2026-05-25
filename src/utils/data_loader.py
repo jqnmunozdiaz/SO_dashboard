@@ -239,6 +239,49 @@ def load_wup2025_national_data(file_path: Optional[str] = None) -> pd.DataFrame:
     return _load_csv(file_path, "WUP2025 National Definitions")
 
 
+def load_giri_aals_data(file_path: Optional[str] = None) -> pd.DataFrame:
+    """Load GIRI Average Annual Loss (AAL) data"""
+    if file_path is None:
+        project_root = _get_project_root()
+        file_path = os.path.join(project_root, 'data', 'processed', 'GIRI', 'GIRI_AALs.csv')
+    return _load_csv(file_path, "GIRI AALs")
+
+
+def load_giri_processed_data(file_path: Optional[str] = None) -> pd.DataFrame:
+    """Load complete GIRI Processed data containing both AAL and PML metrics"""
+    if file_path is None:
+        project_root = _get_project_root()
+        file_path = os.path.join(project_root, 'data', 'processed', 'GIRI', 'GIRI_Processed.csv')
+    return _load_csv(file_path, "GIRI Processed")
+
+
+def load_giri_pmls_data(file_path: Optional[str] = None) -> pd.DataFrame:
+    """Load GIRI Probable Maximum Losses (PML) data from GIRI_Overall_Loss_with_Added_PMLs.csv"""
+    if file_path is None:
+        project_root = _get_project_root()
+        file_path = os.path.join(project_root, 'data', 'processed', 'GIRI', 'GIRI_Overall_Loss_with_Added_PMLs.csv')
+    
+    df = _load_csv(file_path, "GIRI PMLs")
+    
+    # Clean string-formatted numbers with commas
+    if 'Loss' in df.columns:
+        df['Loss'] = df['Loss'].astype(str).str.replace(',', '', regex=False).astype(float)
+    if 'GDP' in df.columns:
+        df['GDP'] = df['GDP'].astype(str).str.replace(',', '', regex=False).astype(float)
+    if 'Total_AAL' in df.columns:
+        df['Total_AAL'] = df['Total_AAL'].astype(str).str.replace(',', '', regex=False).astype(float)
+        
+    return df
+
+
+def load_weo_expenditure_data(file_path: Optional[str] = None) -> pd.DataFrame:
+    """Load WEO total expenditure (GGX_NGDP) data"""
+    if file_path is None:
+        project_root = _get_project_root()
+        file_path = os.path.join(project_root, 'data', 'processed', 'WEO_GGX_NGDP_cleaned.csv')
+    return _load_csv(file_path, "WEO GGX_NGDP")
+
+
 # Import centralized country utilities
 from .country_utils import get_subsaharan_countries, load_subsaharan_countries_dict, load_subsaharan_countries_and_regions_dict
 
@@ -277,4 +320,10 @@ __all__ = [
     # Climate/Flood projections
     'load_precipitation_data',
     'load_flood_projections_data',
+    # GIRI AAL
+    'load_giri_aals_data',
+    'load_giri_processed_data',
+    'load_giri_pmls_data',
+    # WEO Gov Expenditure
+    'load_weo_expenditure_data',
 ]

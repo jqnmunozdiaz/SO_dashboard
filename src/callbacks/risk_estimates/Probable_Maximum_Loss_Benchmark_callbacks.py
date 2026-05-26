@@ -11,7 +11,7 @@ from typing import Optional
 from ...utils.data_loader import load_giri_pmls_data, load_weo_expenditure_data
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict, load_wb_regional_classifications
 from ...utils.component_helpers import create_simple_error_message
-from ...utils.ui_helpers import create_methodological_note_button
+from ...utils.ui_helpers import create_methodological_note_button, create_giri_warning_alert
 from config.settings import CHART_STYLES
 
 
@@ -20,6 +20,9 @@ def render_probable_maximum_loss_benchmark_layout(selected_country):
     return html.Div([
         # Title
         html.Div(id='pml-benchmark-title', className='chart-title'),
+        
+        # GIRI Data Warning Note
+        create_giri_warning_alert(),
         
         # Selectors in filter row
         html.Div([
@@ -82,7 +85,7 @@ def render_probable_maximum_loss_benchmark_layout(selected_country):
                 "The selected country or countries belonging to the selected region are highlighted in orange. ",
                 "PMLs from the original risk assessment, which are provided with a high level of disaggregation, were aggregated based on key risk modeling assumptions: ",
                 "(i) The shape of the exceedance probability curve of the whole asset portfolio matches the shape of the exceedance probability curve of buildings; and ",
-                "(ii) the perils assessed are independent. ",
+                "(ii) the perils assessed (Earthquakes and Floods) are independent. ",
                 "Results are a first order approximation and should be treated as such."
             ], className="indicator-note"),
             html.Div([
@@ -178,10 +181,20 @@ def setup_probable_maximum_loss_benchmark_callbacks(app):
                 )
             )
             
+            # Resolve selected country/region name
+            if selected_country == 'SSA':
+                country_name = "Sub-Saharan Africa"
+            elif selected_country == 'AFE':
+                country_name = "Eastern & Southern Africa"
+            elif selected_country == 'AFW':
+                country_name = "Western & Central Africa"
+            else:
+                country_name = countries_dict.get(selected_country, selected_country)
+
             # Chart title
             chart_title = html.H6([
-                html.B(f"{int(selected_rp)}-Year Return Period"),
-                f" | {selected_hazard} PML Benchmark (% of Government Expenditure)"
+                html.B(country_name),
+                f" | {int(selected_rp)}-Year Return Period | {selected_hazard} PML Benchmark (% of Government Expenditure)"
             ], className='chart-title')
             
             # Calculate height dynamically based on the number of countries

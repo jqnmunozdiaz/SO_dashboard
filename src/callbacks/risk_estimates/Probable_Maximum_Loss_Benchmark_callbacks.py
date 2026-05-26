@@ -63,7 +63,21 @@ def render_probable_maximum_loss_benchmark_layout(selected_country):
                     className='radio-buttons',
                     labelStyle={'display': 'inline-block', 'marginRight': '1.5rem'}
                 )
-            ], className='filter-control-group', style={'flex': '1', 'minWidth': '250px'})
+            ], className='filter-control-group', style={'flex': '1', 'minWidth': '250px'}),
+            
+            # Outlier Toggle
+            html.Div([
+                html.Label("Outliers:", className="filter-label"),
+                dcc.Checklist(
+                    id='pml-benchmark-outlier-toggle',
+                    options=[
+                        {'label': ' Hide values exceeding 100% of Government Expenditure', 'value': 'hide_outliers'}
+                    ],
+                    value=[],
+                    className='custom-checklist',
+                    labelStyle={'display': 'inline-block', 'cursor': 'pointer'}
+                )
+            ], className='filter-control-group', style={'flex': '1', 'minWidth': '380px'})
         ], className='filter-container', style={'display': 'flex', 'gap': '2rem', 'flexWrap': 'wrap'}),
         
         # Chart Row
@@ -103,10 +117,11 @@ def setup_probable_maximum_loss_benchmark_callbacks(app):
          Output('pml-benchmark-title', 'children')],
         [Input('main-country-filter', 'value'),
          Input('pml-benchmark-rp-selector', 'value'),
-         Input('pml-benchmark-hazard-selector', 'value')],
+         Input('pml-benchmark-hazard-selector', 'value'),
+         Input('pml-benchmark-outlier-toggle', 'value')],
         prevent_initial_call=False
     )
-    def generate_pml_benchmark_chart(selected_country, selected_rp, selected_hazard):
+    def generate_pml_benchmark_chart(selected_country, selected_rp, selected_hazard, outlier_options):
         """Generate horizontal bar chart of GIRI PML benchmark across all countries"""
         try:
             # Load the PML data
@@ -132,6 +147,10 @@ def setup_probable_maximum_loss_benchmark_callbacks(app):
                 
             # Compute Value Display (% of Gov Exp) with exactly 2 decimals
             filtered_df['Value_Display'] = (filtered_df['Loss'] / filtered_df['Gov_Exp_USD']) * 100.0
+            
+            # Hide outliers if selected
+            if outlier_options and 'hide_outliers' in outlier_options:
+                filtered_df = filtered_df[filtered_df['Value_Display'] <= 100.0].copy()
             
             # Map country codes to country names
             filtered_df['Country_Name'] = filtered_df['iso3cd'].map(lambda code: countries_dict.get(code, code))
@@ -199,7 +218,7 @@ def setup_probable_maximum_loss_benchmark_callbacks(app):
             
             # Calculate height dynamically based on the number of countries
             num_countries = len(filtered_df)
-            chart_height = max(450, num_countries * 20)
+            chart_height = max(350, num_countries * 16)
             
             fig.update_layout(
                 xaxis_title=f'{selected_hazard} PML (% of Government Expenditure)',
@@ -222,7 +241,8 @@ def setup_probable_maximum_loss_benchmark_callbacks(app):
                     showgrid=False,
                     showline=True,
                     linewidth=1,
-                    linecolor='#e2e8f0'
+                    linecolor='#e2e8f0',
+                    dtick=1  # Forces Plotly to display every country label
                 )
             )
             

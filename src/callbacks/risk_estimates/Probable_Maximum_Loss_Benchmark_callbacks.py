@@ -63,7 +63,7 @@ def render_probable_maximum_loss_benchmark_layout(selected_country):
                     className='radio-buttons',
                     labelStyle={'display': 'inline-block', 'marginRight': '1.5rem'}
                 )
-            ], className='filter-control-group', style={'flex': '1', 'minWidth': '250px'}),
+            ], className='filter-control-group', style={'flex': '1', 'minWidth': '380px'}),
             
             # Outlier Toggle
             html.Div([

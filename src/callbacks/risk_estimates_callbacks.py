@@ -58,7 +58,7 @@ def register_callbacks(app):
                             className='radio-buttons',
                             labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
                         )
-                    ], className='filter-control-group', style={'flex': '1', 'min-width': '250px'})
+                    ], className='filter-control-group', style={'flex': '1', 'min-width': '580px'})
                 ], className='filter-container', style={'display': 'flex', 'gap': '2rem', 'flex-wrap': 'wrap'}),
                 
                 # Chart and Table row
@@ -118,7 +118,7 @@ def register_callbacks(app):
                             className='radio-buttons',
                             labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
                         )
-                    ], className='filter-control-group', style={'flex': '1', 'min-width': '250px'})
+                    ], className='filter-control-group', style={'flex': '1', 'min-width': '300px'})
                 ], className='filter-container', style={'display': 'flex', 'gap': '2rem', 'flex-wrap': 'wrap', 'marginBottom': '1.5rem'}),
                 
                 # Chart

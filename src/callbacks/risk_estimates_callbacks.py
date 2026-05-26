@@ -13,7 +13,7 @@ from .risk_estimates.Probable_Maximum_Losses_callbacks import setup_probable_max
 from .risk_estimates.Probable_Maximum_Loss_Benchmark_callbacks import setup_probable_maximum_loss_benchmark_callbacks, render_probable_maximum_loss_benchmark_layout
 
 from ..utils.country_utils import load_subsaharan_countries_and_regions_dict
-from ..utils.ui_helpers import create_download_trigger_button, create_methodological_note_button
+from ..utils.ui_helpers import create_download_trigger_button, create_methodological_note_button, create_giri_warning_alert
 from config.settings import CHART_STYLES
 
 
@@ -39,6 +39,9 @@ def register_callbacks(app):
             return html.Div([
                 # Title
                 html.Div(id='risk-estimates-title', className='chart-title'),
+                
+                # GIRI Data Warning Note
+                create_giri_warning_alert(),
                 
                 # Display mode selector in filter row
                 html.Div([
@@ -97,6 +100,9 @@ def register_callbacks(app):
             return html.Div([
                 # Title
                 html.Div(id='pml-sector-title', className='chart-title'),
+                
+                # GIRI Data Warning Note
+                create_giri_warning_alert(),
                 
                 # Hazard Selector Row
                 html.Div([

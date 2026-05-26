@@ -11,7 +11,7 @@ from typing import Optional
 from ...utils.data_loader import load_giri_pmls_data, load_weo_expenditure_data
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict, load_wb_regional_classifications
 from ...utils.component_helpers import create_simple_error_message
-from ...utils.ui_helpers import create_methodological_note_button
+from ...utils.ui_helpers import create_methodological_note_button, create_giri_warning_alert
 from config.settings import CHART_STYLES
 
 
@@ -144,6 +144,9 @@ def render_probable_maximum_losses_layout(selected_country):
                     " | Probable Maximum Loss by Return Period"
                 ], className='chart-title'),
             ]),
+            # GIRI Data Warning Note
+            create_giri_warning_alert(),
+            
             # Warning Card
             html.Div([
                 html.Div([
@@ -173,6 +176,9 @@ def render_probable_maximum_losses_layout(selected_country):
     return html.Div([
         # Title
         html.Div(id='pml-title', className='chart-title'),
+        
+        # GIRI Data Warning Note
+        create_giri_warning_alert(),
         
         # Display mode and x-axis scale selectors in filter row
         html.Div([
@@ -227,7 +233,7 @@ def render_probable_maximum_losses_layout(selected_country):
                 html.B("Note: "), "This scatterplot shows the Probable Maximum Losses (PML) for Earthquakes, Floods, and Combined hazards across different Return Periods. ",
                 "PMLs from the original risk assessment, which are provided with a high level of disaggregation, were aggregated based on key risk modeling assumptions: ",
                 "(i) The shape of the exceedance probability curve of the whole asset portfolio matches the shape of the exceedance probability curve of buildings; and ",
-                "(ii) the perils assessed are independent. ",
+                "(ii) the perils assessed (Earthquakes and Floods) are independent. ",
                 "These assumptions are important and results should be treated as a first order approximation rather than a full risk assessment."
             ], className="indicator-note"),
             html.Div([

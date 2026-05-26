@@ -242,3 +242,30 @@ def create_absolute_relative_selector(radio_id):
             inline=True
         )
     ], className="filter-container")
+
+
+def create_giri_warning_alert():
+    """
+    Create a beautifully styled warning alert for GIRI-related data subtabs.
+    Tells the user that data comes from GIRI (2018 model, 2018 US$), and is a first-order risk approximation.
+    """
+    return html.Div([
+        html.Div([
+            html.I(
+                className="fa-solid fa-triangle-exclamation", 
+                style={'color': '#d97706', 'fontSize': '1.1rem', 'marginRight': '0.75rem', 'marginTop': '0.2rem'}
+            ),
+            html.P([
+                "These data are sourced from the Global Infrastructure Risk Model and Resilience Index (GIRI), modeled using 2018 baseline data. All monetary values are expressed in 2018 US$. ",
+                "As a first-order risk approximation, these results are from a regional assessment and should be treated with appropriate caution."
+            ], style={'margin': 0, 'fontSize': '0.85rem', 'color': '#78350f', 'lineHeight': '1.45', 'flex': '1'})
+        ], style={'display': 'flex', 'alignItems': 'flex-start'})
+    ], style={
+        'borderLeft': '4px solid #f59e0b',
+        'backgroundColor': '#fef3c7',
+        'padding': '0.85rem 1.1rem',
+        'borderRadius': '6px',
+        'marginBottom': '1.25rem',
+        'boxShadow': '0 1px 2px rgba(0,0,0,0.05)',
+        'textAlign': 'left'
+    })

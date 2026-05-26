@@ -11,7 +11,7 @@ from typing import Optional
 from ...utils.data_loader import load_giri_pmls_data, load_weo_expenditure_data
 from ...utils.country_utils import load_subsaharan_countries_and_regions_dict, load_wb_regional_classifications
 from ...utils.component_helpers import create_simple_error_message
-from ...utils.ui_helpers import create_methodological_note_button
+from ...utils.ui_helpers import create_methodological_note_button, create_giri_warning_alert
 from config.settings import CHART_STYLES
 
 
@@ -20,6 +20,9 @@ def render_probable_maximum_loss_benchmark_layout(selected_country):
     return html.Div([
         # Title
         html.Div(id='pml-benchmark-title', className='chart-title'),
+        
+        # GIRI Data Warning Note
+        create_giri_warning_alert(),
         
         # Selectors in filter row
         html.Div([
@@ -60,7 +63,21 @@ def render_probable_maximum_loss_benchmark_layout(selected_country):
                     className='radio-buttons',
                     labelStyle={'display': 'inline-block', 'marginRight': '1.5rem'}
                 )
-            ], className='filter-control-group', style={'flex': '1', 'minWidth': '250px'})
+            ], className='filter-control-group', style={'flex': '1', 'minWidth': '250px'}),
+            
+            # Outlier Toggle
+            html.Div([
+                html.Label("Outliers:", className="filter-label"),
+                dcc.Checklist(
+                    id='pml-benchmark-outlier-toggle',
+                    options=[
+                        {'label': ' Hide values exceeding 100% of Government Expenditure', 'value': 'hide_outliers'}
+                    ],
+                    value=[],
+                    className='custom-checklist',
+                    labelStyle={'display': 'inline-block', 'cursor': 'pointer'}
+                )
+            ], className='filter-control-group', style={'flex': '1', 'minWidth': '380px'})
         ], className='filter-container', style={'display': 'flex', 'gap': '2rem', 'flexWrap': 'wrap'}),
         
         # Chart Row
@@ -82,7 +99,7 @@ def render_probable_maximum_loss_benchmark_layout(selected_country):
                 "The selected country or countries belonging to the selected region are highlighted in orange. ",
                 "PMLs from the original risk assessment, which are provided with a high level of disaggregation, were aggregated based on key risk modeling assumptions: ",
                 "(i) The shape of the exceedance probability curve of the whole asset portfolio matches the shape of the exceedance probability curve of buildings; and ",
-                "(ii) the perils assessed are independent. ",
+                "(ii) the perils assessed (Earthquakes and Floods) are independent. ",
                 "Results are a first order approximation and should be treated as such."
             ], className="indicator-note"),
             html.Div([
@@ -100,10 +117,11 @@ def setup_probable_maximum_loss_benchmark_callbacks(app):
          Output('pml-benchmark-title', 'children')],
         [Input('main-country-filter', 'value'),
          Input('pml-benchmark-rp-selector', 'value'),
-         Input('pml-benchmark-hazard-selector', 'value')],
+         Input('pml-benchmark-hazard-selector', 'value'),
+         Input('pml-benchmark-outlier-toggle', 'value')],
         prevent_initial_call=False
     )
-    def generate_pml_benchmark_chart(selected_country, selected_rp, selected_hazard):
+    def generate_pml_benchmark_chart(selected_country, selected_rp, selected_hazard, outlier_options):
         """Generate horizontal bar chart of GIRI PML benchmark across all countries"""
         try:
             # Load the PML data
@@ -129,6 +147,10 @@ def setup_probable_maximum_loss_benchmark_callbacks(app):
                 
             # Compute Value Display (% of Gov Exp) with exactly 2 decimals
             filtered_df['Value_Display'] = (filtered_df['Loss'] / filtered_df['Gov_Exp_USD']) * 100.0
+            
+            # Hide outliers if selected
+            if outlier_options and 'hide_outliers' in outlier_options:
+                filtered_df = filtered_df[filtered_df['Value_Display'] <= 100.0].copy()
             
             # Map country codes to country names
             filtered_df['Country_Name'] = filtered_df['iso3cd'].map(lambda code: countries_dict.get(code, code))
@@ -178,15 +200,25 @@ def setup_probable_maximum_loss_benchmark_callbacks(app):
                 )
             )
             
+            # Resolve selected country/region name
+            if selected_country == 'SSA':
+                country_name = "Sub-Saharan Africa"
+            elif selected_country == 'AFE':
+                country_name = "Eastern & Southern Africa"
+            elif selected_country == 'AFW':
+                country_name = "Western & Central Africa"
+            else:
+                country_name = countries_dict.get(selected_country, selected_country)
+
             # Chart title
             chart_title = html.H6([
-                html.B(f"{int(selected_rp)}-Year Return Period"),
-                f" | {selected_hazard} PML Benchmark (% of Government Expenditure)"
+                html.B(country_name),
+                f" | {int(selected_rp)}-Year Return Period | {selected_hazard} PML Benchmark (% of Government Expenditure)"
             ], className='chart-title')
             
             # Calculate height dynamically based on the number of countries
             num_countries = len(filtered_df)
-            chart_height = max(450, num_countries * 20)
+            chart_height = max(350, num_countries * 16)
             
             fig.update_layout(
                 xaxis_title=f'{selected_hazard} PML (% of Government Expenditure)',
@@ -209,7 +241,8 @@ def setup_probable_maximum_loss_benchmark_callbacks(app):
                     showgrid=False,
                     showline=True,
                     linewidth=1,
-                    linecolor='#e2e8f0'
+                    linecolor='#e2e8f0',
+                    dtick=1  # Forces Plotly to display every country label
                 )
             )
             

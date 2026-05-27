@@ -40,18 +40,18 @@ def create_pml_table(filtered_df, display_mode, aal_dict=None):
     
     # Generate table headers
     header_cols = [
-        html.Th("Return Period", style={'padding': '10px 12px', 'textAlign': 'left', 'color': '#495057', 'borderBottom': '2px solid #dee2e6', 'fontWeight': 'bold'})
+        html.Th("Return Period", style={'padding': '10px 12px', 'textAlign': 'left', 'color': '#495057', 'borderBottom': '2px solid #dee2e6', 'fontWeight': 'bold', 'whiteSpace': 'nowrap'})
     ]
     for h in available_hazards:
         header_cols.append(
-            html.Th(h, style={'padding': '10px 12px', 'textAlign': 'right', 'color': '#495057', 'borderBottom': '2px solid #dee2e6', 'fontWeight': 'bold'})
+            html.Th(h, style={'padding': '10px 12px', 'textAlign': 'right', 'color': '#495057', 'borderBottom': '2px solid #dee2e6', 'fontWeight': 'bold', 'whiteSpace': 'nowrap'})
         )
         
     # Generate table rows
     rows = []
     for rp, row in pivot_df.iterrows():
         row_cols = [
-            html.Td(f"{int(rp)} Years", style={'padding': '10px 12px', 'fontWeight': 'bold', 'verticalAlign': 'middle', 'borderBottom': '1px solid #dee2e6'})
+            html.Td(f"{int(rp)} Years", style={'padding': '10px 12px', 'fontWeight': 'bold', 'verticalAlign': 'middle', 'borderBottom': '1px solid #dee2e6', 'whiteSpace': 'nowrap'})
         ]
         for h in available_hazards:
             val = row.get(h)
@@ -62,7 +62,8 @@ def create_pml_table(filtered_df, display_mode, aal_dict=None):
                 'textAlign': 'right',
                 'fontFamily': 'monospace',
                 'borderBottom': '1px solid #dee2e6',
-                'verticalAlign': 'middle'
+                'verticalAlign': 'middle',
+                'whiteSpace': 'nowrap'
             }
             if h == 'Combined':
                 style['fontWeight'] = 'bold'
@@ -91,7 +92,8 @@ def create_pml_table(filtered_df, display_mode, aal_dict=None):
                 'borderTop': '2px solid #dee2e6',
                 'borderBottom': 'none',
                 'verticalAlign': 'middle',
-                'fontWeight': 'bold'
+                'fontWeight': 'bold',
+                'whiteSpace': 'nowrap'
             }
             if h == 'Combined':
                 style['color'] = '#002f6c'  # Dark blue emphasis
@@ -205,7 +207,7 @@ def render_probable_maximum_losses_layout(selected_country):
                         {'label': ' Linear Scale', 'value': 'linear'},
                         {'label': ' Logarithmic Scale', 'value': 'log'}
                     ],
-                    value='linear',
+                    value='log',
                     className='radio-buttons',
                     labelStyle={'display': 'inline-block', 'margin-right': '1.5rem'}
                 )
@@ -345,12 +347,13 @@ def setup_probable_maximum_losses_callbacks(app):
                 category_orders={
                     'hazard': ['Combined', 'Flood', 'Earthquake']
                 },
-                labels={'RP': 'Return Period (Years)', 'Value_Display': yaxis_title, 'hazard': 'Hazard'}
+                labels={'RP': 'Return Period (Years)', 'Value_Display': yaxis_title, 'hazard': 'Hazard'},
+                custom_data=['RP']
             )
             
             # Standardize hover template
             hover_template = (
-                "<b>Return Period: %{x} Years</b><br>" +
+                "<b>Return Period: %{customdata[0]:.0f} Years</b><br>" +
                 "Hazard: %{fullData.name}<br>" +
                 f"PML: %{{y:{hover_format}}}{hover_suffix}<br>" +
                 "<extra></extra>"
@@ -363,6 +366,12 @@ def setup_probable_maximum_losses_callbacks(app):
                 f" | Probable Maximum Loss by Return Period"
             ], className='chart-title')
             
+            # Omit '25' label in linear scale to avoid compression overlap
+            if scale_mode == 'linear':
+                tick_text = ['10', '', '50', '100', '250', '500', '1000']
+            else:
+                tick_text = ['10', '25', '50', '100', '250', '500', '1000']
+
             # Layout updates matching World Bank styling
             fig.update_layout(
                 xaxis_title='Return Period (Years)' + (' [Log Scale]' if scale_mode == 'log' else ''),
@@ -387,8 +396,8 @@ def setup_probable_maximum_losses_callbacks(app):
                 xaxis=dict(
                     type=scale_mode,
                     tickvals=[10, 25, 50, 100, 250, 500, 1000],
-                    ticktext=['10', '25', '50', '100', '250', '500', '1000'],
-                    showgrid=True,
+                    ticktext=tick_text,
+                    showgrid=False,
                     gridcolor='#f0f0f0',
                     showline=True,
                     linewidth=1,
@@ -401,7 +410,8 @@ def setup_probable_maximum_losses_callbacks(app):
                     showline=True,
                     linewidth=1,
                     linecolor='#e2e8f0',
-                    tickformat=',.2f' if display_mode in ['relative', 'relative_gov_exp'] else ',.1f'
+                    tickformat=',.2f' if display_mode in ['relative', 'relative_gov_exp'] else ',.1f',
+                    rangemode='tozero'
                 )
             )
             

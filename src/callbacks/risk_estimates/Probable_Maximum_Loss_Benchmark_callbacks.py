@@ -67,7 +67,7 @@ def render_probable_maximum_loss_benchmark_layout(selected_country):
             
             # Outlier Toggle
             html.Div([
-                html.Label("Outliers:", className="filter-label"),
+                html.Label("Filter Extreme Values:", className="filter-label"),
                 dcc.Checklist(
                     id='pml-benchmark-outlier-toggle',
                     options=[

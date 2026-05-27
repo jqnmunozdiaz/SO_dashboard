@@ -53,6 +53,10 @@ df = df[df['risk_metric_abbr'].isin(['AAL', 'PML'])].copy()
 # 3.5. Remove rows where hazard is "Landslide", "Tsunami", or "Tropical cyclone"
 df = df[~df['hazard'].str.lower().isin(['landslide', 'tsunami', 'tropical cyclone'])].copy()
 
+# 3.6. Remove Earthquake data for specific countries where model results were too low
+low_eq_countries = ['NER', 'TCD', 'MLI', 'MRT', 'BFA', 'GIN', 'GAB', 'COG', 'SDN', 'MDG', 'STP']
+df = df[~((df['hazard'].str.lower() == 'earthquake') & (df['iso3cd'].isin(low_eq_countries)))].copy()
+
 # Rename columns
 df.rename(
     columns={

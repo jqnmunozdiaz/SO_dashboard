@@ -241,28 +241,28 @@ def setup_average_annual_loss_callbacks(app):
                 'Storm surge': '#2ca02c'         # Soft green
             }
             
-            # Create stacked bar chart using plotly express
-            fig = px.bar(
+            # Create donut chart using plotly express
+            fig = px.pie(
                 filtered_df,
-                x='Country_Label',
-                y='Value_Display',
+                names='hazard',
+                values='Value_Display',
                 color='hazard',
                 color_discrete_map=HAZARD_COLORS,
-                category_orders={
-                    'Country_Label': [label_name],
-                    'hazard': sorted(list(HAZARD_COLORS.keys()))
-                },
-                labels={'Country_Label': '', 'Value_Display': yaxis_title, 'hazard': 'Hazard'}
+                hole=0.4,  # Donut chart
+                labels={'hazard': 'Hazard', 'Value_Display': yaxis_title}
             )
             
-            # Standardize hover template
+            # Standardize hover template for pie/donut chart
             hover_template = (
-                "<b>%{x}</b><br>" +
-                "Hazard: %{fullData.name}<br>" +
-                f"AAL: %{{y:{hover_format}}}{hover_suffix}<br>" +
+                "<b>Hazard: %{label}</b><br>" +
+                f"AAL: %{{value:{hover_format}}}{hover_suffix}<br>" +
                 "<extra></extra>"
             )
-            fig.update_traces(hovertemplate=hover_template)
+            fig.update_traces(
+                hovertemplate=hover_template,
+                textposition='inside',
+                textinfo='percent'
+            )
             
             # Chart title
             chart_title = html.H6([
@@ -270,15 +270,8 @@ def setup_average_annual_loss_callbacks(app):
                 f" | Average Annual Loss by Hazard"
             ], className='chart-title')
             
-            # Calculate y-axis range to give headroom at the top (30% padding)
-            total_height = filtered_df['Value_Display'].sum()
-            y_max = total_height * 1.30 if total_height > 0 else 1.0
-            
             # Layout updates matching World Bank styling
             fig.update_layout(
-                xaxis_title='',
-                yaxis_title=yaxis_title,
-                barmode='stack',
                 plot_bgcolor='white',
                 paper_bgcolor='white',
                 font={'color': CHART_STYLES['colors']['primary']},
@@ -286,33 +279,16 @@ def setup_average_annual_loss_callbacks(app):
                 legend=dict(
                     title="Hazards",
                     orientation="v",
-                    yanchor="top",
-                    y=1,
+                    yanchor="middle",
+                    y=0.5,
                     xanchor="left",
                     x=1.02,
                     bgcolor="rgba(255, 255, 255, 0.8)",
                     bordercolor="#e2e8f0",
                     borderwidth=0
                 ),
-                height=550,
-                margin=dict(r=200, l=80, t=40, b=40),  # reduced bottom margin since tick is not rotated
-                xaxis=dict(
-                    showgrid=False,
-                    showline=True,
-                    linewidth=1,
-                    linecolor='#e2e8f0',
-                    tickangle=0
-                ),
-                yaxis=dict(
-                    showgrid=True,
-                    gridwidth=1,
-                    gridcolor='#f0f0f0',
-                    showline=True,
-                    linewidth=1,
-                    linecolor='#e2e8f0',
-                    tickformat=',.2f' if display_mode in ['relative', 'relative_gov_exp'] else ',.1f',
-                    range=[0, y_max]
-                )
+                height=500,
+                margin=dict(r=200, l=50, t=40, b=40)
             )
             
             # Build summary table html content

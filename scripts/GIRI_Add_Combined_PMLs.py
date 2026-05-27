@@ -39,7 +39,7 @@ countries = df['iso3cd'].unique()
 print(f"Found {len(countries)} unique countries in the dataset.")
 
 # Number of stochastic trials
-N_trials = 100_000_000
+N_trials = 10_000_000
 print(f"Generating stochastic catalog with N = {N_trials:,} trials per country...")
 
 combined_rows = []

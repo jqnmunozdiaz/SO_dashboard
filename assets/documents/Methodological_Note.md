@@ -140,6 +140,7 @@ This analysis decomposes future flood risk into two drivers: **Climate Change** 
 *   **Source:** Global Infrastructure Risk Model and Resilience Index (GIRI).
 *   **Scenario:** Existing Climate (Baseline risk profiles under current environmental conditions).
 *   **Hazards Analyzed:** Filters out other perils to focus on **Flood** and **Earthquake** due to data density and modeling confidence in the region.
+*   **Earthquake Data Filtering**: For countries with extremely low seismicity in model results, earthquake risk metrics were removed. Specifically, for Burkina Faso, Chad, Congo, Gabon, Guinea, Madagascar, Mali, Mauritania, Niger, São Tomé and Príncipe, and Sudan.
 *   **National GDP Data:** Merged with World Development Indicators (WDI) GDP data for **2018** (current USD) to calculate relative risk metrics.
 
 ### 6.2 Average Annual Loss (AAL)

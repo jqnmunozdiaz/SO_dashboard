@@ -142,6 +142,7 @@ This analysis decomposes future flood risk into two drivers: **Climate Change** 
 *   **Hazards Analyzed:** Filters out other perils to focus on **Flood** and **Earthquake** due to data density and modeling confidence in the region.
 *   **Earthquake Data Filtering**: For countries with extremely low seismicity in model results, earthquake risk metrics were removed. Specifically, for Burkina Faso, Chad, Congo, Gabon, Guinea, Madagascar, Mali, Mauritania, Niger, São Tomé and Príncipe, and Sudan.
 *   **National GDP Data:** Merged with World Development Indicators (WDI) GDP data for **2018** (current USD) to calculate relative risk metrics.
+*   **Asset Damage vs. Economic Loss:** These estimates correspond to direct asset damages (the cost to reconstruct the assets), which are expressed in relative terms as % of GDP and % of government expenditure. They do not include economic losses, which can be greater as contingent liabilities materialize, etc.
 
 ### 6.2 Average Annual Loss (AAL)
 *   **Definition:** Represents the long-term expected average loss per year from a specific peril.

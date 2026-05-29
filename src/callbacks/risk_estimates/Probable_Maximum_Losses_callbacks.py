@@ -236,7 +236,8 @@ def render_probable_maximum_losses_layout(selected_country):
                 "PMLs from the original risk assessment, which are provided with a high level of disaggregation, were aggregated based on key risk modeling assumptions: ",
                 "(i) The shape of the exceedance probability curve of the whole asset portfolio matches the shape of the exceedance probability curve of buildings; and ",
                 "(ii) the perils assessed (Earthquakes and Floods) are independent. ",
-                "These assumptions are important and results should be treated as a first order approximation rather than a full risk assessment."
+                "These assumptions are important and results should be treated as a first order app roximation rather than a full risk assessment. ",
+                "The Combined hazard metrics presented for each country are derived using Monte Carlo simulations. The Combined PMLs do not correspond to a straight sum of the individual peril PMLs."
             ], className="indicator-note"),
             html.Div([
                 create_methodological_note_button()

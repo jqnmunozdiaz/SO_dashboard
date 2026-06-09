@@ -94,7 +94,7 @@ def render_probable_maximum_loss_benchmark_layout(selected_country):
         html.Div([
             html.P([
                 html.B("Data Source: "), "Global Infrastructure Risk Model & Resilience Index (GIRI). ",
-                "General government total expenditure (GGX_NGDP) data for 2018 obtained from the IMF's WEO dataset.", html.Br(),
+                "General government total expenditure (GGX_NGDP) data obtained from the IMF's WEO dataset, using the average of 2017, 2018, and 2019 values to mitigate volatility.", html.Br(),
                 html.B("Note: "), "This horizontal bar chart compares the selected hazard PML (as % of Government Expenditure) across all countries in Sub-Saharan Africa for the selected Return Period. ",
                 "The selected country or countries belonging to the selected region are highlighted in orange. ",
                 "PMLs from the original risk assessment, which are provided with a high level of disaggregation, were aggregated based on key risk modeling assumptions: ",

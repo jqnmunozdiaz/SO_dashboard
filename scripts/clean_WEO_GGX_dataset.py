@@ -39,17 +39,20 @@ df_ssa = df_exp[df_exp['ISO'].isin(ssa_countries.keys())].copy()
 
 print(f"Found {len(df_ssa)} SSA countries in the dataset.")
 
-# Convert '2018' column to numeric, converting string N/As (like 'n/a' or '--') to NaN
+# Convert '2017', '2018', and '2019' columns to numeric, converting string N/As to NaN
+df_ssa['2017'] = pd.to_numeric(df_ssa['2017'], errors='coerce')
 df_ssa['2018'] = pd.to_numeric(df_ssa['2018'], errors='coerce')
+df_ssa['2019'] = pd.to_numeric(df_ssa['2019'], errors='coerce')
     
-# Extract the 2018 value for each country
+# Extract the average of 2017, 2018, and 2019 values for each country
 cleaned_records = []
 for _, row in df_ssa.iterrows():
     iso = row['ISO']
     # Use official country name from country utilities if available, else fallback to WEO's name
     country_name = ssa_countries.get(iso, row['Country'])
     
-    val = row['2018']
+    # Take the mean of the 3 years (ignoring NaNs if some years are missing)
+    val = row[['2017', '2018', '2019']].mean()
     
     # Skip if no valid value was found (handles the "remove the n/a" requirement)
     if pd.notna(val):
@@ -57,7 +60,7 @@ for _, row in df_ssa.iterrows():
             'ISO3': iso,
             'Country': country_name,
             'Value': val,
-            'Year': 2018
+            'Year': '2017-2019'
         })
         
 # Create a DataFrame from the cleaned records

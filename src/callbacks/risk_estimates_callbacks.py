@@ -78,7 +78,7 @@ def register_callbacks(app):
                 html.Div([
                     html.P([
                         html.B("Data Source: "), "Global Infrastructure Risk Model & Resilience Index (GIRI). ",
-                        "General government total expenditure (GGX_NGDP) data for 2018 obtained from the IMF's WEO dataset.", html.Br(),
+                        "General government total expenditure (GGX_NGDP) data obtained from the IMF's WEO dataset, using the average of 2017, 2018, and 2019 values to mitigate volatility.", html.Br(),
                         html.B("Note: "), "This stacked bar chart shows the Average Annual Loss (AAL) by hazard under existing climate conditions. ",
                         "Losses are stacked by hazard type. ",
                         "Due to data limitations, only Earthquakes and Floods are included in this analysis. ",

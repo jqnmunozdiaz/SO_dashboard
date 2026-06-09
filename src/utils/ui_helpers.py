@@ -256,7 +256,7 @@ def create_giri_warning_alert():
                 style={'color': '#d97706', 'fontSize': '1.1rem', 'marginRight': '0.75rem', 'marginTop': '0.2rem'}
             ),
             html.P([
-                "These data are sourced from the Global Infrastructure Risk Model and Resilience Index (GIRI), modeled using 2018 baseline data. All monetary values are expressed in 2018 US$. ",
+                "These data are sourced from the Global Infrastructure Risk Model and Resilience Index (GIRI), modeled using 2018 baseline data. All monetary values are expressed in 2018 US$. Relative metrics (% of GDP and % of government expenditure) are calculated using the 3-year average of GDP and expenditures (2017–2019) to mitigate annual volatility in national accounts. ",
                 "As a first-order risk approximation, these results are from a regional assessment and should be treated with appropriate caution. These estimates represent direct asset damages (replacement costs) and can be viewed in absolute terms or relative to GDP and government expenditure. They do not account for indirect economic losses or emerging contingent liabilities, which may be significantly higher."
             ], style={'margin': 0, 'fontSize': '0.85rem', 'color': '#78350f', 'lineHeight': '1.45', 'flex': '1'})
         ], style={'display': 'flex', 'alignItems': 'flex-start'})

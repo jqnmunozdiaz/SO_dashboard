@@ -66,15 +66,19 @@ df.rename(
     inplace=True
 )
 
-# Load World Bank GDP data (current US$) for 2018 (Indicator: NY.GDP.MKTP.CD)
+# Load World Bank GDP data (current US$) for 2017, 2018, and 2019 (Indicator: NY.GDP.MKTP.CD)
 wdi_file_path = os.path.join(project_root, 'data', 'raw', 'WDI_CSV', 'WDICSV.csv')
-print(f"Reading GDP 2018 data from WDI dataset: {wdi_file_path}")
-wdi_df = pd.read_csv(wdi_file_path, usecols=['Country Code', 'Indicator Code', '2018'])
-gdp_2018 = wdi_df[wdi_df['Indicator Code'] == 'NY.GDP.MKTP.CD'].copy()
-gdp_2018 = gdp_2018.rename(columns={'Country Code': 'iso3cd', '2018': 'GDP'})
+print(f"Reading GDP 2017-2019 data from WDI dataset: {wdi_file_path}")
+wdi_df = pd.read_csv(wdi_file_path, usecols=['Country Code', 'Indicator Code', '2017', '2018', '2019'])
+gdp_3yr = wdi_df[wdi_df['Indicator Code'] == 'NY.GDP.MKTP.CD'].copy()
+gdp_3yr['2017'] = pd.to_numeric(gdp_3yr['2017'], errors='coerce')
+gdp_3yr['2018'] = pd.to_numeric(gdp_3yr['2018'], errors='coerce')
+gdp_3yr['2019'] = pd.to_numeric(gdp_3yr['2019'], errors='coerce')
+gdp_3yr['GDP'] = gdp_3yr[['2017', '2018', '2019']].mean(axis=1)
+gdp_3yr = gdp_3yr.rename(columns={'Country Code': 'iso3cd'})
 
 # Merge WDI GDP into df
-df = df.merge(gdp_2018[['iso3cd', 'GDP']], on='iso3cd', how='left')
+df = df.merge(gdp_3yr[['iso3cd', 'GDP']], on='iso3cd', how='left')
 
 # Keep only the requested columns (including the merged GDP)
 final_cols = [

@@ -199,7 +199,7 @@ def create_methodological_note_button():
     )
 
 
-def create_city_platform_button(href: str = "https://urban-risk-observatory.web.app/"):
+def create_city_platform_button(href: str = "https://urban-risk-observatory.vercel.app/"):
     """
     Create a styled action button that links to an external city-level platform.
 

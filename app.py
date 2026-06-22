@@ -41,11 +41,11 @@ app = dash.Dash(
         },
         {
             'property': 'og:title',
-            'content': 'Sub-Saharan Africa DRM Dashboard'
+            'content': 'Country Disaster Risk Analytics Dashboard'
         },
         {
             'property': 'og:description',
-            'content': 'Interactive dashboard for analyzing disaster risk management and urbanization trends across Sub-Saharan Africa'
+            'content': 'Interactive dashboard for analyzing country disaster risk and urbanization trends across Sub-Saharan Africa'
         },
         {
             'property': 'og:type',
@@ -104,7 +104,7 @@ def serve_sitemap():
     return send_from_directory('assets', 'sitemap.xml')
 
 # Set the title
-app.title = "Sub-Saharan Africa DRM Dashboard"
+app.title = "Country Disaster Risk Analytics Dashboard"
 
 # Create the World Bank-styled layout
 app.layout = create_world_bank_layout()

@@ -148,7 +148,7 @@ def create_dashboard_layout():
             html.Div([
                 html.Div([
                     html.Div([
-                        html.H1("Disaster Risk & Urbanization Analytics Dashboard", className="hero-title"),
+                        html.H1("Country Disaster Risk Analytics Dashboard", className="hero-title"),
                         html.P("Sub-Saharan Africa", className="hero-subtitle"),
                         html.P([
                             html.B("This platform enables users to analyze disaster risk and urbanization trends across Sub-Saharan Africa. "),
@@ -162,7 +162,7 @@ def create_dashboard_layout():
                         ], className="hero-description"),
                         html.P([
                             "For detailed subnational analysis and city-specific data, visit the ",
-                            html.A("city-level platform", href="https://urban-risk-observatory.web.app/", target="_blank", style={'color': "#358EDD", 'text-decoration': 'none', 'font-weight': 'bold'}),
+                            html.A("city-level platform", href="https://urban-risk-observatory.vercel.app/", target="_blank", style={'color': "#358EDD", 'text-decoration': 'none', 'font-weight': 'bold'}),
                             "."
                         ], className="hero-description"),
                     ], className="hero-content"),
@@ -193,7 +193,7 @@ def create_dashboard_layout():
                             ], className="filter-dropdown-container"),
                         ], className="filter-control-group"),
                     ], className="filter-card"),
-                    create_city_platform_button("https://urban-risk-observatory.web.app/"),
+                    create_city_platform_button("https://urban-risk-observatory.vercel.app/"),
                 ], className="filter-inner"),
             ], className="filter-section"),
 
@@ -274,7 +274,7 @@ def create_methodological_note_layout():
             html.Div([
                 html.Div([
                     html.H2(
-                        "Sub-Saharan Africa DRM Dashboard | Methodological Note",
+                        "Country Disaster Risk Analytics Dashboard | Methodological Note",
                         className="header-title",
                     )
                 ], className="header-title-container"),

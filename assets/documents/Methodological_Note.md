@@ -1,4 +1,4 @@
-# Methodological Note: Sub-Saharan Africa DRM Dashboard
+# Methodological Note: Country Disaster Risk Analytics Dashboard
 
 **Last Updated:** May 2026
 

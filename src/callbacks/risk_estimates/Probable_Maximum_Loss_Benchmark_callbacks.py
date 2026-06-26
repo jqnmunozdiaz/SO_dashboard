@@ -17,6 +17,48 @@ from config.settings import CHART_STYLES
 
 def render_probable_maximum_loss_benchmark_layout(selected_country):
     """Render the Probable Maximum Loss Benchmark layout"""
+    countries_dict = load_subsaharan_countries_and_regions_dict()
+    label_name = countries_dict.get(selected_country, selected_country)
+    is_region = selected_country in ['SSA', 'AFE', 'AFW']
+    
+    if is_region:
+        return html.Div([
+            # Title
+            html.Div([
+                html.H6([
+                    html.B(label_name),
+                    " | Probable Maximum Loss Benchmark"
+                ], className='chart-title'),
+            ]),
+            # GIRI Data Warning Note
+            create_giri_warning_alert(),
+            
+            # Warning Card
+            html.Div([
+                html.Div([
+                    html.H5("Probable Maximum Losses (PML)", style={'fontWeight': 'bold', 'color': '#002f6c', 'marginBottom': '1rem'}),
+                    html.P([
+                        "Probable Maximum Loss (PML) estimates are only available at the country level. ",
+                        "PML curve aggregation for regional portfolios requires specific asset correlation and joint exceedance probability assumptions that are not representative at a regional scale. ",
+                        html.Br(), html.Br(),
+                        html.B("Please select an individual country from the dropdown at the top to view the PML curves and summary values table.")
+                    ], style={'fontSize': '1rem', 'lineHeight': '1.6'})
+                ], style={
+                    'border': '1px solid #dee2e6',
+                    'borderRadius': '8px',
+                    'padding': '3rem',
+                    'backgroundColor': '#f8f9fa',
+                    'textAlign': 'center',
+                    'boxShadow': '0 2px 4px rgba(0,0,0,0.05)',
+                    'maxWidth': '700px',
+                    'margin': '2rem auto'
+                })
+            ]),
+            html.Div([
+                create_methodological_note_button()
+            ], className="buttons-container", style={'justifyContent': 'center', 'marginTop': '2rem'})
+        ], className="chart-container")
+
     return html.Div([
         # Title
         html.Div(id='pml-benchmark-title', className='chart-title'),

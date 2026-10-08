@@ -58,6 +58,16 @@ ftm_static_file = os.path.join(data_dir, 'df_agglo_worldpop_ftm_stats_geom_stati
 df_ftm_dynamic = pd.read_csv(ftm_dynamic_file)
 df_ftm_static = pd.read_csv(ftm_static_file)
 
+# The original extraction returned 1-in-100 exposure = 0 for Cabo Verde (below 1-in-10, which is
+# impossible). Replace all CPV rows with the corrected re-extraction provided by the data producer.
+# NOTE: only the static file was corrected; the dynamic file still has the CPV error.
+ftm_static_cpv_file = os.path.join(data_dir, 'df_agglo_worldpop_ftm_stats_geom_static_2020_cpv.csv')
+df_ftm_static_cpv = pd.read_csv(ftm_static_cpv_file)
+assert list(df_ftm_static_cpv.columns) == list(df_ftm_static.columns)
+df_ftm_static = pd.concat(
+    [df_ftm_static[df_ftm_static['ISO3'] != 'CPV'], df_ftm_static_cpv], ignore_index=True
+)
+
 # Filter for FLUVIAL_PLUVIAL_DEFENDED only
 df_ftm_dynamic = df_ftm_dynamic[df_ftm_dynamic['ftm_flood_type'] == 'FLUVIAL_PLUVIAL_DEFENDED'].copy()
 df_ftm_static = df_ftm_static[df_ftm_static['ftm_flood_type'] == 'FLUVIAL_PLUVIAL_DEFENDED'].copy()

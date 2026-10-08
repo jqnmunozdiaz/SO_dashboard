@@ -16,10 +16,18 @@ dfft_file = os.path.join(data_dir, 'df_country_worldpop_ftm_stats.csv')
 output_file = os.path.join(project_root, 'data', 'processed', 'df_country_worldpop_stats_merged.csv')
 
 # Load both CSV files
-df = pd.read_csv(df_file)
+# Cabo Verde (CPV) was mis-extracted (1-in-100 exposure below 1-in-10). Replace CPV rows with the
+# corrected re-extractions provided by the data producer.
+def load_with_cpv_fix(path):
+    df_all = pd.read_csv(path)
+    df_cpv = pd.read_csv(path.replace('.csv', '_cpv.csv'))
+    assert list(df_cpv.columns) == list(df_all.columns)
+    return pd.concat([df_all[df_all['ISO_A3'] != 'CPV'], df_cpv], ignore_index=True)
+
+df = load_with_cpv_fix(df_file)
 df = df[['ISO_A3', 'worldpop_year', 'worldpop_population_total', 'worldpop_built_surface_km2', 'worldpop_built_volume_m3']]
 
-dfft = pd.read_csv(dfft_file)
+dfft = load_with_cpv_fix(dfft_file)
 dfft = dfft[['ISO_A3', 'worldpop_year', 'ftm_return_period', 'ftm_flood_type', 'worldpop_population_ftm_total', 'worldpop_population_ftm_share', 'worldpop_built_surface_ftm_km2', 'worldpop_built_surface_ftm_share', 'worldpop_built_volume_ftm_m3', 'worldpop_built_volume_ftm_share']]
 
 dfft = dfft[dfft['ftm_flood_type'] == 'FLUVIAL_PLUVIAL_DEFENDED']
